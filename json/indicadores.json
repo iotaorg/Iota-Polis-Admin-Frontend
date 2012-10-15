@@ -1,0 +1,18 @@
+{
+    "dados": [{
+     		   "id": "1",
+		       "name": "Distribuição de Renda",
+			   "explanation": "- Descrição indicador -"
+		      },
+			  {
+		       "id": "2",
+		       "name": "Homicídios",
+			   "explanation": "- Descrição indicador -"
+		      },
+			  {
+		       "id": "3",
+		       "name": "Rede de Esgotos",
+			   "explanation": "- Descrição indicador -"
+		      }
+			  ]
+}

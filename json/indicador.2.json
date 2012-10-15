@@ -1,0 +1,18 @@
+{
+    "dados": [{
+     		   "id": "1",
+		       "cidade": "São Paulo",
+		       "valores": [ 10, 15 , 25, 20]
+		      },
+			  {
+     		   "id": "2",
+		       "cidade": "Rio de Janeiro",
+		       "valores": [ 15, 25 , 20, 18]
+		      },
+			  {
+     		   "id": "3",
+		       "cidade": "Brasília",
+		       "valores": [ 5, 8 , 15, 21]
+		      }
+			  ]
+}

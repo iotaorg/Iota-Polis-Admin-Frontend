@@ -1,0 +1,691 @@
+*{
+	font-family: "Asap", tahoma, sans-serif;
+	color: #666;
+}
+body{
+	margin: 0 auto;	
+	padding: 0;
+}
+body, td, div{
+	font-size: 11pt;	
+}
+
+.clear{
+	clear: both;	
+}
+
+a{
+	text-decoration: none;	
+}
+
+#top{
+	margin: 0 auto;
+	padding: 0;
+	text-align: center;
+}
+
+#top .content{
+	margin: auto;
+	padding: 10px 0;
+	text-align: left;
+	width: 900px;
+}
+
+#top .content .sociais{
+	width: 900px;
+	position: absolute;
+	text-align: right;
+	margin-top: 2px;
+	margin-right: 2px;
+}
+
+
+#top .content .logo{
+	float: left;
+	clear: left;
+}
+#top .content .link{
+	margin: 60px 0 0 20px;
+	float: left;
+	font-size: 10pt;
+}
+#top .content .facebook{
+	margin: 58px 0 -3px 148px;
+	float: left;
+}
+#top .content .link a{	
+	color: #999;
+	text-decoration: none;
+}
+#top .content .link a:hover{
+	color: #20c1c1;
+}
+#top .content .link a span.clique{
+	color: #20c1c1;
+}
+
+#menu{
+	margin: 10px auto;
+	text-align: center;
+	background-color: #20c1c1;
+	clear: both;
+}
+
+#menu .content{
+	margin: 0 auto;
+	text-align: left;
+	width: 900px;
+}
+
+#menu ul{
+	list-style: none;
+	padding: 0;
+}
+#menu ul li{
+	float: left;
+	padding: 5px 0 2px 0;
+	margin: 0 20px;
+	font-size: 11pt;
+	font-weight: bolder;
+	color: #fff;
+	border-bottom: 3px solid #20c1c1;
+}
+#menu ul li.selected{
+	border-bottom: 3px solid #fff;
+}
+#menu ul li a{
+	color: #ccffff;
+	text-decoration: none;
+}
+#menu ul li a:hover{
+	color: #fff;
+}
+
+#content{
+	margin: auto;
+	text-align: center;
+}
+
+#content .content{
+	margin: auto;
+	text-align: left;
+	width: 900px;
+	padding-bottom: 10px;
+}
+
+#header-title{
+	border: 1px solid #e0e0e0;
+	padding: 15px;
+	margin-bottom: 10px;
+}
+#header-title .content{
+	width: auto;
+}
+#header-title .title{
+	font-size: 13pt;
+	color: #009999;
+}
+#header-title .description{
+	color: #999;
+	padding-top: 5px;
+}
+
+#user-info{
+	text-align: right;
+	margin-top: -20px;
+	margin-bottom: -20px;
+}
+
+#aviso{
+	color: #990000;
+	padding: 5px 10px;
+}
+#aviso div{
+	color: #990000;
+	padding: 5px 10px;
+}
+
+
+input.botao-form,
+a.botao-form{
+	clear: both;
+	background: url("../images/bg_botao.gif") repeat-x top center;
+	padding: 2px 20px;
+	font-family: "PT Sans";
+	font-weight: bolder;
+	font-size: 12pt;
+	color: #fff;
+	text-shadow:#004f98 1px 1px 0px;
+	-moz-text-shadow:#004f98 1px 1px 0px;
+	-webkit-text-shadow:#004f98 1px 1px 0px;
+	border-radius:3px;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border: 1px solid #637aa6;
+	margin: 2px 5px;	
+}
+
+input.botao-form:hover,
+a.botao-form:hover{
+	background: url("../images/bg_botao.gif") repeat-x bottom center;
+	color: #fff;
+	border: 1px solid #4e6286;
+}
+
+a.button-add{
+	clear: both;
+	background: #ffffff;
+	padding: 2px 20px;
+	font-family: "PT Sans";
+	font-weight: bolder;
+	font-size: 12pt;
+	color: #419f91;
+	text-shadow:#d0d0d0 1px 1px 0px;
+	-moz-text-shadow:#d0d0d0 1px 1px 0px;
+	-webkit-text-shadow:#d0d0d0 1px 1px 0px;
+	border-radius:3px;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border: 1px solid #d3eeea;
+	margin: 5px 0px;	
+}
+
+a.button-add:hover{
+	background: #f5f5f5;
+	color: #000000;
+	border: 1px solid #4e867c;
+}
+
+#dashboard{
+	text-align: left;	
+	min-height: 350px;
+}
+
+#dashboard #form-login{
+	text-align: center;
+}
+#dashboard #form-login .content{
+	text-align: center;
+}
+
+.form{
+	padding: 0;
+	margin: 0;
+	border: 1px solid #20c1c1;
+	display:inline-block;
+	border-bottom: 5px solid #20c1c1;
+	margin-bottom: 10px;
+	min-width: 600px;
+}
+.form .title{
+	margin: 0;
+	background-color: #20c1c1;
+	padding: 4px;
+	clear: both;
+	color: #fff;
+}
+.form .form-aviso{
+	text-align: center;
+}
+.form .form-aviso div{
+	color: #1e7fbf;
+	text-align: center;
+	padding: 5px 10px;
+}
+.form .field{
+	clear: both;
+	padding: 5px;
+	border-bottom: 1px solid #e0e0e0;
+}
+.form .odd{
+	background-color: #f5f5f5;	
+}
+.form .label{
+	float: left;
+	text-align: right;
+	clear: left;
+	width: 120px;
+	padding-right: 4px;
+	padding-top: 4px;
+}
+.form .input{
+	float: left;
+	text-align: left;
+	clear: right;
+}
+
+.form input.itext,
+.form textarea.itext{
+	font-size: 10pt;
+	width: 400px;
+	border: 1px solid #bbb;
+	padding: 5px;
+	box-shadow: inset 0 0 5px #e0e0e0;
+	-moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	-webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+}
+.form input.itext200px{
+	font-size: 10pt;
+	width: 200px;
+	border: 1px solid #bbb;
+	padding: 5px;
+	box-shadow: inset 0 0 5px #e0e0e0;
+	-moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	-webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+}
+.form input.itextdata{
+	font-size: 10pt;
+	width: 120px;
+	border: 1px solid #bbb;
+	padding: 5px;
+	box-shadow: inset 0 0 5px #e0e0e0;
+	-moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	-webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+}
+.form select.iselect{
+	font-size: 10pt;
+	border: 1px solid #bbb;
+	padding: 2px;
+	box-shadow: inset 0 0 5px #e0e0e0;
+	-moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	-webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+}
+
+.form select.iselect200px{
+	width: 200px;
+	font-size: 10pt;
+	border: 1px solid #bbb;
+	padding: 2px;
+	box-shadow: inset 0 0 5px #e0e0e0;
+	-moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	-webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+}
+
+.form textarea.itext{
+	min-height: 80px;
+	_height: 80px;
+}
+
+.form input.icheckbox{
+	margin-top: 5px;
+}
+
+.form .field.prefeitura{
+	display: none;
+}
+
+.form div.ilabel{
+	padding-top: 4px;
+	font-weight: bolder;
+}
+
+input.ilogin{
+	width: 250px;
+	border: 1px solid #bbb;
+	padding: 5px;
+	box-shadow: inset 0 0 5px #e0e0e0;
+	-moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	-webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	margin: 5px;
+}
+
+.form input#identity_num.itext{
+	width: 180px;
+}
+
+
+input.idisabled{
+}
+
+.form-buttons{
+	text-align: center;
+}
+
+a.button-default{
+	clear: both;
+	background: url("../images/bg_botao.gif") repeat-x top center;
+	padding: 2px 20px;
+	font-family: "PT Sans";
+	font-weight: bolder;
+	font-size: 12pt;
+	color: #fff;
+	text-shadow:#009893 1px 1px 0px;
+	-moz-text-shadow:#009893 1px 1px 0px;
+	-webkit-text-shadow:#009893 1px 1px 0px;
+	border-radius:3px;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border: 1px solid #63a6a4;
+	margin: 0 10px;
+}
+
+.button-default:hover{
+	background: url("../images/bg_botao.gif") repeat-x bottom center;
+	color: #fff;
+	border: 1px solid #4e7f86;
+}
+
+a.icone{
+	float: left;
+	padding: 0 2px;
+	text-align: left;
+	width: 22px;
+	height: 22px;
+	background: url('../images/icones.png') no-repeat;
+	text-indent: -999em;
+	display: block;
+	white-space: nowrap;
+	overflow: hidden;
+	opacity:0.50;
+	-moz-opacity:.50;
+	filter:alpha(opacity=50);
+}
+a.icone:hover{
+	opacity:0.85;
+	-moz-opacity:.85;
+	filter:alpha(opacity=85);
+}
+a.icone.edit{
+	background-position: 0px -44px;
+}
+a.icone.delete{
+	background-position: 0px -66px;
+}
+a.icone.config{
+	background-position: 0px -22px;
+}
+
+
+table#results td.botoes{
+	text-align: center;
+}
+table#results td.botoes a{
+	margin: 0;
+}
+table#results a.edit,
+table#results a.delete{
+	font-size: 9pt;	
+}
+
+table#results span.noresults{
+	font-size: 10pt;
+	font-style: italic;	
+}
+
+#formula-editor{
+	width: 600px;
+}
+#formula-editor .editor{
+	float: left;
+	width: 398px;
+	height: 200px;
+	border: 1px solid #bbb;
+}
+#formula-editor .editor .editor-content{
+	background-color: #fff;
+	padding: 5px;
+	clear: both;
+	width: 388px;
+	height: 190px;
+	overflow-y: auto;
+	box-shadow: inset 0 0 5px #e0e0e0;
+	-moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	-webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+}
+
+#formula-editor .editor .editor-content div{
+	float: left;
+	padding: 0 2px;
+}
+#formula-editor .editor .editor-content div:hover{
+	background-color: #FFC;
+}
+#formula-editor .editor .editor-content div.selected{
+	background-color: #FFC;
+	border: 1px solid #FC6;
+}
+#formula-editor .editor .editor-content .f-variable{
+	color: #009595;
+}
+#formula-editor .editor .editor-content .f-operator{
+	color: #0033ff;
+}
+#formula-editor .editor .editor-content .f-input{
+	color: #006600;
+}
+#formula-editor .editor .editor-content .f-variable:hover,
+#formula-editor .editor .editor-content .f-operator:hover,
+#formula-editor .editor .editor-content .f-input:hover{
+	cursor: default;
+}
+#formula-editor .button{
+	background-color: #fff;
+	margin: 90px 0px 80px 5px;
+	padding: 6px;
+	float: left;
+	width: 13px;
+	height: 13px;
+	border: 1px solid #bbb;
+	color: #666;
+	font-size: 8pt;
+	font-weight: bolder;
+	font-family: arial;
+}
+
+#formula-editor .button:hover{
+	cursor: pointer;
+	cursor: hand;
+	background-color: #c9ffff;
+	color: #000;
+}
+
+#formula-editor .variables{
+	background-color: #fff;
+	margin-left: 5px;
+	float: left;
+	width: 150px;
+	height: 172px;
+	border: 1px solid #bbb;
+	overflow-y: auto;
+}
+#formula-editor .variables .item{
+	padding: 2px 5px;
+	clear: both;
+	background-color: #f5f5f5;
+	border-bottom: 1px solid #e0e0e0;
+	font-size: 10pt;
+	color: #666;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+#formula-editor .variables .item:hover{
+	cursor: pointer;
+	cursor: hand;
+	background-color: #c9ffff;
+	color: #000;
+}
+#formula-editor .variables .item.selected{
+	background-color: #20c1c1;
+	color: #b8feff;
+}
+
+#formula-editor .user-input{
+	margin: 5px 0 0 5px;
+	float: left;
+	width: 150px;
+	height: 25px;
+	clear: right;
+	overflow-y: auto;
+}
+#formula-editor .user-input input{
+	padding: 2px 3px;
+	border: 1px solid #bbb;
+	width: 100%;
+	box-shadow: inset 0 0 5px #e0e0e0;
+	-moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	-webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	color: #006600;
+}
+#formula-editor .user-input input.active{
+	border: 1px solid #006600;
+}
+
+#formula-editor .operators{
+	margin-top: 5px;
+	clear: both;
+}
+
+#formula-editor .op-button,
+#formula-editor .reset-button{
+	background-color: #fff;
+	margin: 5px;
+	padding: 5px 0px;
+	float: left;
+	width: 25px;
+	height: 15px;
+	border: 1px solid #bbb;
+	color: #0033ff;
+	font-size: 9pt;
+	font-weight: bolder;
+	font-family: arial;
+	text-align: center;
+}
+#formula-editor .reset-button{
+	width: auto;
+	padding: 5px;
+}
+#formula-editor .reset-button:hover,
+#formula-editor .op-button:hover{
+	cursor: pointer;
+	cursor: hand;
+	background-color: #c9ffff;
+	color: #000;
+}
+#formula-editor .op-button-disabled{
+	background-color: #f0f0f0;
+	margin: 5px;
+	padding: 5px 0px;
+	float: left;
+	width: 25px;
+	height: 15px;
+	border: 1px solid #bbb;
+	color: #ccc;
+	font-size: 9pt;
+	font-weight: bolder;
+	font-family: arial;
+	text-align: center;
+}
+#formula-editor .op-button-disabled:hover{
+	cursor: default;
+	background-color: #f0f0f0;
+	color: #ccc;
+}
+
+
+a#help-formula{
+	color: #099;
+	font-size: 9pt;
+	text-decoration: underline;
+}
+a#help-formula:hover{
+	color: #666;
+	text-decoration: none;
+}
+
+#footer-menu,
+#footer{
+	margin: auto;
+	text-align: center;
+	clear: both;
+}
+#footer-menu{
+	margin-top: 20px;
+}
+
+#footer-menu .content,
+#footer .content{
+	margin: auto;
+	text-align: left;
+	width: 900px;
+	clear: both;
+	font-size: 10pt;
+}
+
+#footer-menu{
+	border-top: 1px solid #dadada;	
+	background-color: #efefef;
+	clear: both;
+}
+#footer-menu .content{
+	padding: 20px 0;
+}
+#footer-menu .content .menu{
+	margin-left: 10px;
+	clear: both;
+}
+#footer-menu .content .menu ul{
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+#footer-menu .content .menu li{
+	float: left;
+	padding: 0;
+	margin-right: 50px;
+}
+#footer-menu .content .menu a{
+	text-decoration: none;
+}
+#footer-menu .content .menu a:hover{
+	color: #000;
+}
+
+#footer{
+	background-color: #dadada;
+}
+
+#footer .content .left,
+#footer .content .right{
+	padding: 7px;
+	font-size: 10pt;
+}
+#footer .content .left{
+	float: left;
+}
+#footer .content .right{
+	font-size: 9pt;
+	float: right;
+	clear: right;
+}
+
+#footer .content .right img{
+	margin-bottom: -4px;
+}
+
+#aware .content{
+	margin: auto;
+}
+
+#aware .content{
+	width: 890px;
+	text-align: right;	
+	font-size: 9pt;
+	font-family: arial;
+	padding: 5px;
+	color: #999;
+}
+#aware .content img{
+	margin-bottom: -3px;
+}
+
+#aware .content a{
+	color: #666;
+	text-decoration: none;
+}
+#aware .content a:hover{
+	color: #333;
+}

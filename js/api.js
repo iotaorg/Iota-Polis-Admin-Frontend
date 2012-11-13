@@ -1759,7 +1759,7 @@ $(document).ready(function() {
 
 					var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
 					$(formbuild).find("div .field:odd").addClass("odd");
-					$(formbuild).find(".form").width(745);
+					$(formbuild).find(".form").width(860);
 					$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 
 					$(formbuild).find("#name").qtip( $.extend(true, {}, qtip_input, {
@@ -1869,6 +1869,8 @@ $(document).ready(function() {
 					$("#formula-editor input#formula-input").focus(function(){
 						$("#formula-editor .variables .item").removeClass("selected");
 					});
+					
+					//carrega variaveis
 					$.ajax({
 						type: 'GET',
 						dataType: 'json',
@@ -1876,6 +1878,14 @@ $(document).ready(function() {
 										key: $.cookie("key")
 								}),
 						success: function(data, textStatus, jqXHR){
+							// ordena variaveis pelo nome
+							data.sort(function (a, b) {
+								a = a.variables.name,
+								b = b.variables.name;
+							
+								return a.localeCompare(b);
+							});
+							
 							$.each(data.variables, function(index,value){
 								$("#formula-editor .variables").append($("<div class='item'></div>").attr("var_id",data.variables[index].id).html(data.variables[index].name));
 							});
@@ -1906,7 +1916,6 @@ $(document).ready(function() {
 						}
 					});
 
-					
 					if ($.getUrlVar("option") == "add"){
 						$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
 							resetWarnings();

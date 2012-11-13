@@ -1879,9 +1879,9 @@ $(document).ready(function() {
 								}),
 						success: function(data, textStatus, jqXHR){
 							// ordena variaveis pelo nome
-							data.sort(function (a, b) {
-								a = a.variables.name,
-								b = b.variables.name;
+							data.variables.sort(function (a, b) {
+								a = a.name,
+								b = b.name;
 							
 								return a.localeCompare(b);
 							});

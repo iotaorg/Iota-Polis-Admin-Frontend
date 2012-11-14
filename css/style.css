@@ -263,7 +263,7 @@ a.button-add:hover{
 	float: left;
 	text-align: right;
 	clear: left;
-	width: 22%;
+	width: 21%;
 	padding: 4px;
 }
 .form .input{
@@ -271,7 +271,7 @@ a.button-add:hover{
 	text-align: left;
 	clear: right;
 	word-wrap: break-word;
-	width: 75%;
+	width: 76%;
 }
 
 .form input.itext,

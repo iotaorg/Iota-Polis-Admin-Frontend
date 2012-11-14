@@ -438,7 +438,7 @@ table#results span.noresults{
 }
 
 #formula-editor{
-	width: 715px;
+	width: 745px;
 }
 #formula-editor .editor{
 	float: left;
@@ -508,7 +508,7 @@ table#results span.noresults{
 	background-color: #fff;
 	margin-left: 5px;
 	float: left;
-	width: 265px;
+	width: 250px;
 	height: 172px;
 	border: 1px solid #bbb;
 	overflow-y: auto;
@@ -541,7 +541,7 @@ table#results span.noresults{
 #formula-editor .user-input{
 	margin: 5px 0 0 5px;
 	float: left;
-	width: 265px;
+	width: 250px;
 	height: 25px;
 	clear: right;
 	overflow-y: auto;

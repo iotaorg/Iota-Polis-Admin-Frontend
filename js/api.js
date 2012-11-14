@@ -2063,7 +2063,7 @@ $(document).ready(function() {
 
 					var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
 					$(formbuild).find("div .field:odd").addClass("odd");
-					$(formbuild).find(".form").width(860);
+					$(formbuild).find(".form").width(890);
 					$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 
 					$(formbuild).find("#name").qtip( $.extend(true, {}, qtip_input, {

@@ -764,6 +764,7 @@ div.indicadores_list .eixos .title:hover{
 }
 
 div.indicadores_list .eixos .variable{
+	display: none;
 	clear: both;
 	padding: 5px 10px;
 	border-bottom: 1px solid #f0f0f0;
@@ -771,10 +772,12 @@ div.indicadores_list .eixos .variable{
 div.indicadores_list .eixos .variable .name{
 	width: 40%;
 	float: left;
+	text-align: left;
 }
 div.indicadores_list .eixos .variable .formula{
 	width: 54%;
 	float: left;
+	text-align: left;
 }
 div.indicadores_list .eixos .variable .link{
 	width: 6%;

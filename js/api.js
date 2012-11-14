@@ -2060,6 +2060,7 @@ $(document).ready(function() {
 					newform.push({label: "Eixo", input: ["select,axis,iselect"]});
 					newform.push({label: "Fonte", input: ["text,source,itext"]});
 					newform.push({label: "Tags", input: ["text,tags,itext"]});
+					newform.push({label: "Observações", input: ["textarea,observations,itext"]});
 
 					var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
 					$(formbuild).find("div .field:odd").addClass("odd");
@@ -2263,6 +2264,7 @@ $(document).ready(function() {
 										{name: "indicator.create.axis_id", value: $(this).parent().parent().find("#axis option:selected").val()},
 										{name: "indicator.create.source", value: $(this).parent().parent().find("#source").val()},
 										{name: "indicator.create.tags", value: $(this).parent().parent().find("#tags").val()},
+										{name: "indicator.create.observations", value: $(this).parent().parent().find("#observations").val()}
 										];
 								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
 								$.ajax({
@@ -2312,6 +2314,7 @@ $(document).ready(function() {
 										$(formbuild).find("select#axis").val(data.axis_id);
 										$(formbuild).find("input#source").val(data.source);
 										$(formbuild).find("input#tags").val(data.tags);
+										$(formbuild).find("textarea#observations").val(data.observations);
 										if ($("#formula-editor .variables .item").length > 0) convertFormulaToCss();
 										break;	
 								}
@@ -2347,6 +2350,7 @@ $(document).ready(function() {
 										{name: "indicator.update.axis_id", value: $(this).parent().parent().find("#axis option:selected").val()},
 										{name: "indicator.update.source", value: $(this).parent().parent().find("#source").val()},
 										{name: "indicator.update.tags", value: $(this).parent().parent().find("#tags").val()},
+										{name: "indicator.update.observations", value: $(this).parent().parent().find("#observations").val()}
 										];
 	
 								$("#dashboard-content .content .botao-form[ref='enviar']").hide();

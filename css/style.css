@@ -756,7 +756,8 @@ div.indicadores_list .eixos .title{
 	font-size: 10pt;
 	margin: 2px;
 	padding: 5px 10px;
-}
+	text-align: left;
+}}
 div.indicadores_list .eixos .title:hover{
 	background-color: #f0f0f0;
 	cursor: pointer;

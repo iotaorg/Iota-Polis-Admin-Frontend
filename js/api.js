@@ -47,6 +47,16 @@ $.extend({
 		}else if (period == "monthly"){
 			return date.split("-")[1] + "/" + date.split("-")[0];
 		}
+	},
+	convertNumbertoBd: function(number){
+		var new_number = number.replace(".","").replace(",",".");
+
+		return new_number;
+	},
+	convertNumberFromBd: function(number){
+		var new_number = number.replace(",","").replace(".",",");
+
+		return new_number;
 	}
 });
 
@@ -2259,7 +2269,7 @@ $(document).ready(function() {
 										{name: "indicator.create.formula", value: $(this).parent().parent().find("#formula").val()},
 										{name: "indicator.create.explanation", value: $(this).parent().parent().find("#explanation").val()},
 										{name: "indicator.create.sort_diretion", value: $(this).parent().parent().find("#sort_direction option:selected").val()},
-										{name: "indicator.create.goal", value: $(this).parent().parent().find("#goal").val()},
+										{name: "indicator.create.goal", value: $.convertNumberToBd($(this).parent().parent().find("#goal").val())},
 										{name: "indicator.create.goal_source", value: $(this).parent().parent().find("#goal_source").val()},
 										{name: "indicator.create.goal_operator", value: $(this).parent().parent().find("#goal_operator option:selected").val()},
 										{name: "indicator.create.goal_explanation", value: $(this).parent().parent().find("#goal_explanation").val()},
@@ -2309,7 +2319,7 @@ $(document).ready(function() {
 										$(formbuild).find("textarea#formula").val(data.formula);
 										$(formbuild).find("textarea#explanation").val(data.explanation);
 										$(formbuild).find("select#sort_direction").val(data.sort_direction);
-										$(formbuild).find("input#goal").val(data.goal);
+										$(formbuild).find("input#goal").val($.convertNumberFromBd(data.goal));
 										$(formbuild).find("input#goal_source").val(data.goal_source);
 										$(formbuild).find("select#goal_operator").val(data.goal_operator);
 										$(formbuild).find("textarea#goal_explanation").val(data.goal_explanation);
@@ -2347,7 +2357,7 @@ $(document).ready(function() {
 										{name: "indicator.update.formula", value: $(this).parent().parent().find("#formula").val()},
 										{name: "indicator.update.explanation", value: $(this).parent().parent().find("#explanation").val()},
 										{name: "indicator.update.sort_direction", value: $(this).parent().parent().find("#sort_direction option:selected").val()},
-										{name: "indicator.update.goal", value: $(this).parent().parent().find("#goal").val()},
+										{name: "indicator.update.goal", value: $.convertNumberToBd($(this).parent().parent().find("#goal").val())},
 										{name: "indicator.update.goal_source", value: $(this).parent().parent().find("#goal_source").val()},
 										{name: "indicator.update.goal_operator", value: $(this).parent().parent().find("#goal_operator option:selected").val()},
 										{name: "indicator.update.goal_explanation", value: $(this).parent().parent().find("#goal_explanation").val()},

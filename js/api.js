@@ -2251,6 +2251,8 @@ $(document).ready(function() {
 								$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
 							}else if ($(this).parent().parent().find("#formula").val() == ""){
 								$(".form-aviso").setWarning({msg: "Por favor informe a Fórmula"});
+							}else if ($(this).parent().parent().find("#source").val() == ""){
+								$(".form-aviso").setWarning({msg: "Por favor informe a Fonte"});
 							}else{
 								args = [{name: "api_key", value: $.cookie("key"),},
 										{name: "indicator.create.name", value: $(this).parent().parent().find("#name").val()},
@@ -2337,6 +2339,8 @@ $(document).ready(function() {
 								$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
 							}else if ($(this).parent().parent().find("#formula").val() == ""){
 								$(".form-aviso").setWarning({msg: "Por favor informe a Fórmula"});
+							}else if ($(this).parent().parent().find("#source").val() == ""){
+								$(".form-aviso").setWarning({msg: "Por favor informe a Fonte"});
 							}else{
 								args = [{name: "api_key", value: $.cookie("key"),},
 										{name: "indicator.update.name", value: $(this).parent().parent().find("#name").val()},

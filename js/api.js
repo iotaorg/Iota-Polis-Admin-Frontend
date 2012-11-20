@@ -48,7 +48,7 @@ $.extend({
 			return date.split("-")[1] + "/" + date.split("-")[0];
 		}
 	},
-	convertNumbertoBd: function(number){
+	convertNumberToBd: function(number){
 		var new_number = number.replace(".","").replace(",",".");
 
 		return new_number;

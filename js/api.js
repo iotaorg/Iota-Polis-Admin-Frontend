@@ -478,6 +478,12 @@ $(document).ready(function() {
 									class: input_args[2]
 									})
 							break;
+						case "file":
+							newinput = "<form id='formFileUpload_$$id'><div class='file'><input type='file' name='$$id' id='$$id' class='$$class'></div></form><iframe id='iframe_$$id' name='iframe_$$id'> src='about:blank'></iframe>".render({
+									id: input_args[1],
+									class: input_args[2]
+									})
+							break;
 					}
 					newform += newinput;
 				}
@@ -2871,6 +2877,7 @@ $(document).ready(function() {
 				newform.push({label: "Email", input: ["text,email,itext"]});
 				newform.push({label: "Senha", input: ["password,password,itext"]});
 				newform.push({label: "Confirmar Senha", input: ["password,password_confirm,itext"]});
+				newform.push({label: "Programa de Metas (PDF)", input: ["file,arquivo,itext"]});
 	
 				var formbuild = $("#dashboard-content .content").append(buildForm(newform,"Preferências"));
 				$(formbuild).find("div .field:odd").addClass("odd");
@@ -2914,6 +2921,26 @@ $(document).ready(function() {
 					}else if ($(this).parent().parent().find("#password_confirm").val() != $(this).parent().parent().find("#password").val()){
 						$(".form-aviso").setWarning({msg: "Confirmação de senha inválida"});
 					}else{
+						
+						var form = $("#formFileUpload_arquivo");
+				
+						form.attr("action", "/api/user/$$userid/arquivo/programa_metas?api_key=$$key".render({
+								userid: $.cookie("user.id"),
+								key: $.cookie("key")
+								}));
+						form.attr("method", "post");
+						form.attr("enctype", "multipart/form-data");
+						form.attr("encoding", "multipart/form-data");
+						form.attr("target", "iframe_arquivo");
+						form.attr("file", $('#arquivo').val());
+						form.submit();
+				
+						$("#iframe_arquivo").load( function(){
+							var iframeDoc = iframe[0].contentDocument || iframe[0].contentWindow.document;
+							console.log(iframeDoc);
+							console.log(iframeDoc.innerHTML());
+						});
+						
 						args = [{name: "api_key", value: $.cookie("key"),},
 								{name: "user.update.name", value: $(this).parent().parent().find("#name").val()},
 								{name: "user.update.email", value: $(this).parent().parent().find("#email").val(),}

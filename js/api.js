@@ -193,6 +193,17 @@ $(document).ready(function() {
 		  }
 	   }
 	};
+
+
+	var findInArray = function(obj,value){
+		if (value == "") return true;
+		var retorno = false;
+		for (a = 0; a < obj.length; a++){
+			if (obj[a] == value) retorno = true;
+		}
+		return retorno;
+	}
+
 	
 	$.fn.setWarning = function(){
 		var args = arguments[0];
@@ -835,6 +846,12 @@ $(document).ready(function() {
 							user_info = data;
 							if (user_info.roles[0]){
 								var user_roles = (user_info.roles[0]) ? " (" + roles[user_info.roles[0]] + ")" : "";
+								
+								if (findInArray(user_info.roles,"_movimento")){
+									$('<link rel="stylesheet" type="text/css" href="css/style-movimento.css" >')
+								   .appendTo("head");
+								}
+								
 								var info_content = "Usuário: " + user_info.name;
 								if($("#user-info").length == 0){
 									$("#top .content").append("<div id='user-info'>" + info_content + "</div>");

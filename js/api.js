@@ -850,6 +850,9 @@ $(document).ready(function() {
 								if (findInArray(user_info.roles,"_movimento")){
 									$('<link rel="stylesheet" type="text/css" href="css/style-movimento.css" >')
 								   .appendTo("head");
+								}else{
+									$('<link rel="stylesheet" type="text/css" href="css/style.css" >')
+								   .appendTo("head");
 								}
 								
 								var info_content = "Usuário: " + user_info.name;

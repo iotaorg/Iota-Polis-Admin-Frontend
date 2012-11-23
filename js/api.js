@@ -3005,9 +3005,9 @@ $(document).ready(function() {
 						
 						var files_sent = [];
 						for (i = 0; i < files.length; i++){
-							if ($("#formFileUpload_"+files[i])){
-								console.log("form :" + $("#formFileUpload_"+files[i]));
-								if ($("#"+files[i]).val() != ""){
+							if ($(".form #"+files[i]).val() != undefined){
+								if ($(".form #"+files[i]).val() != ""){
+									console.log("input: " + $("#"+files[i]).val());
 									files_sent.push(files[i]);
 								}
 							}

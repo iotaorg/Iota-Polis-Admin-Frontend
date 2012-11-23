@@ -892,3 +892,9 @@ table.history tbody tr td.edit a:hover{
 table.history tbody tr.selected{
 	background-color: #FF9;
 }
+
+.form iframe{
+	width: 0;
+	height: 0;
+	border: none;	
+}

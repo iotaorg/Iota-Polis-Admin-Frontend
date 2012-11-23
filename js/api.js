@@ -479,7 +479,7 @@ $(document).ready(function() {
 									})
 							break;
 						case "file":
-							newinput = "<form id='formFileUpload_$$id'><div class='file'><input type='file' name='arquivo' id='$$id' class='$$class'></div></form><iframe id='iframe_$$id' name='iframe_$$id'> src='about:blank'></iframe>".render({
+							newinput = "<form id='formFileUpload_$$id'><div class='file'><input type='file' name='arquivo' id='$$id' class='$$class'></div></form><iframe id='iframe_$$id' name='iframe_$$id' frameborder='0'></iframe>".render({
 									id: input_args[1],
 									class: input_args[2]
 									})

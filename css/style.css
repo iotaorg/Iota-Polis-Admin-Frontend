@@ -138,12 +138,14 @@ a{
 
 #user-logo{
 	position: absolute;
+	width: 900px;
 	text-align: right;
+	float: right;
 	top: 5;
 }
 #user-logo .imagem{
 	width: 120px;
-	height: 80px;
+	height: 70px;
 	background-position: top right;
 	background-repeat: no-repeat;
 	

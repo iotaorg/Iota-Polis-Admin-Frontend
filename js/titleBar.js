@@ -25,6 +25,9 @@ var titleBarContent = {
 					"indicator":{
 							"title": "Indicadores",
 							"tip": "Veja os indicadores já cadastrados. Utilize o botão 'Adicionar' para criar um novo indicador."},
+					"myindicator":{
+							"title": "Indicadores",
+							"tip": "Atualize os dados dos indicadores"},
 					"tokens":{
 							"title": "Tokens",
 							"tip": ""},

@@ -3047,10 +3047,37 @@ $(document).ready(function() {
 													 });
 						
 								$("#iframe_"+file).load( function(){
-									if (cont_files_sent < files_sent.length){
-										sendFiles();
+									
+									console.log($(this).contents()[0].body.outerHTML)
+									var erro = 0;
+									if ($(this).contents()){
+										if 	($(this).contents()[0].body){
+											if 	($(this).contents()[0].body.outerHTML){
+												var retorno = $(this).contents()[0].body.outerHTML;
+												retorno = retorno.replace("<body><pre>","");
+												retorno = retorno.replace("</pre></body>","");
+												retorno = $.parseJSON(retorno);
+												console.log(retorno);
+											}else{
+												erro = 1;	
+											}
+										}else{
+											erro = 1;	
+										}
 									}else{
-										sendForm()
+										erro = 1;	
+									}
+									
+									if (erro == 0){
+										if (cont_files_sent < files_sent.length){
+											sendFiles();
+										}else{
+											sendForm();
+										}
+									}else{
+										console.log("Erro ao enviar arquivo " + file);
+										cont_files_sent = files_sent.length;
+										return;
 									}
 								});
 							}else{

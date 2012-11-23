@@ -479,7 +479,7 @@ $(document).ready(function() {
 									})
 							break;
 						case "file":
-							newinput = "<form id='formFileUpload_$$id'><div class='file'><input type='file' name='$$id' id='$$id' class='$$class'></div></form><iframe id='iframe_$$id' name='iframe_$$id'> src='about:blank'></iframe>".render({
+							newinput = "<form id='formFileUpload_$$id'><div class='file'><input type='file' name='arquivo' id='$$id' class='$$class'></div></form><iframe id='iframe_$$id' name='iframe_$$id'> src='about:blank'></iframe>".render({
 									id: input_args[1],
 									class: input_args[2]
 									})
@@ -2881,12 +2881,10 @@ $(document).ready(function() {
 				newform.push({label: "Confirmar Senha", input: ["password,password_confirm,itext"]});
 				if (findInArray(user_info.roles,"_prefeitura")){
 					newform.push({label: "Carta Compromisso (PDF)", input: ["file,carta_compromisso,itext"]});
+					newform.push({label: "Programa de Metas (PDF)", input: ["file,programa_metas,itext"]});
 				}
 				if (findInArray(user_info.roles,"_movimento")){
 					newform.push({label: "Logo(imagem)", input: ["file,logo_movimento,itext"]});
-				}
-				if (findInArray(user_info.roles,"_prefeitura") || findInArray(user_info.roles,"_movimento")){
-					newform.push({label: "Programa de Metas (PDF)", input: ["file,programa_metas,itext"]});
 				}
 	
 				var formbuild = $("#dashboard-content .content").append(buildForm(newform,"Preferências"));

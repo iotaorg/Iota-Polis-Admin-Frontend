@@ -97,7 +97,6 @@ $(document).ready(function() {
 						  "trimestral":"Trimestral",
 						  "semiannual":"Semestral"
 						  };
-
 	var goal_operators = {"":"",
 						  ">":"maior que",
 						  ">=":"maior ou igual a",
@@ -105,9 +104,18 @@ $(document).ready(function() {
 						  "menor ou igual a":"<=",
 						  "menor que":"<"
 						  };
-
 	var sort_directions = {"greater value":"MAIOR valor, melhor classificação",
 						  "lowest value":"MENOR valor, melhor classificação"
+						  };
+	var measurement_units = {"":"nenhuma",
+						  "un":"unidades",
+						  "mm":"milímetros",
+						  "cm":"centímetros",
+						  "m":"metros",
+						  "km":"quilômetros",
+						  "kg":"quilos",
+						  "gr":"gramas",
+						  "tn":"toneladas"
 						  };
 
 	var estados = {"AC":"Acre",
@@ -1591,6 +1599,7 @@ $(document).ready(function() {
 					newform.push({label: "Apelido", input: ["text,cognomen,itext"]});
 					newform.push({label: "Explicação", input: ["textarea,explanation,itext"]});
 					newform.push({label: "Tipo", input: ["select,type,iselect"]});
+					newform.push({label: "Unidade de Medida", input: ["select,measurement_unit,iselect"]});
 					newform.push({label: "Período", input: ["select,period,iselect"]});
 					newform.push({label: "Fonte", input: ["text,source,itext"]});
 					newform.push({label: "Variável básica", input: ["checkbox,is_basic,icheckbox"]});
@@ -1619,6 +1628,10 @@ $(document).ready(function() {
 						$("#dashboard-content .content select#type").append($("<option></option>").val(key).html(value));
 					});
 
+					$.each(measurement_units,function(key, value){
+						$("#dashboard-content .content select#measurement_unit").append($("<option></option>").val(key).html(value));
+					});
+
 					$.each(variable_periods,function(key, value){
 						$("#dashboard-content .content select#period").append($("<option></option>").val(key).html(value));
 					});
@@ -1636,6 +1649,7 @@ $(document).ready(function() {
 										{name: "variable.create.cognomen", value: $(this).parent().parent().find("#cognomen").val(),},
 										{name: "variable.create.explanation", value: $(this).parent().parent().find("#explanation").val(),},
 										{name: "variable.create.type", value: $(this).parent().parent().find("#type option:selected").val(),},
+										{name: "variable.create.measurement_unit", value: $(this).parent().parent().find("#measurement_unit option:selected").val(),},
 										{name: "variable.create.period", value: $(this).parent().parent().find("#period option:selected").val(),},
 										{name: "variable.create.source", value: $(this).parent().parent().find("#source").val(),}
 										];
@@ -1687,6 +1701,7 @@ $(document).ready(function() {
 										$(formbuild).find("input#cognomen").val(data.cognomen);
 										$(formbuild).find("textarea#explanation").val(data.explanation);
 										$(formbuild).find("select#type").val(data.type);
+										$(formbuild).find("select#measurement_unit").val(data.measurement_unit);
 										$(formbuild).find("select#period").val(data.period);
 										$(formbuild).find("input#source").val(data.source);
 										if (data.is_basic == 1){
@@ -1721,6 +1736,7 @@ $(document).ready(function() {
 										{name: "variable.update.cognomen", value: $(this).parent().parent().find("#cognomen").val(),},
 										{name: "variable.update.explanation", value: $(this).parent().parent().find("#explanation").val(),},
 										{name: "variable.update.type", value: $(this).parent().parent().find("#type option:selected").val(),},
+										{name: "variable.update.measurement_unit", value: $(this).parent().parent().find("#measurement_unit option:selected").val(),},
 										{name: "variable.update.period", value: $(this).parent().parent().find("#period option:selected").val(),},
 										{name: "variable.update.source", value: $(this).parent().parent().find("#source").val(),},
 										];

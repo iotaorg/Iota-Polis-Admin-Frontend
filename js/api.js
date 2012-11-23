@@ -2595,7 +2595,7 @@ $(document).ready(function() {
 								newform.push({label: "Data", input: ["select,date_filter,iselect"]});
 							}
 				
-							var formbuild = $("#dashboard-content .content .filter_indicator").append(buildForm(newform,"Pesquisar"));
+							var formbuild = $("#dashboard-content .content .filter_indicator").append(buildForm(newform,"Informe o Período"));
 							$(formbuild).find("div .field:odd").addClass("odd");
 							$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 
@@ -2618,7 +2618,7 @@ $(document).ready(function() {
 
 							$("#dashboard-content .content .filter_indicator #textlabel_periodo").html(variable_periods[data_indicator.period]);
 							
-							$("#dashboard-content .content .filter_indicator .botao-form[ref='enviar']").html("Pesquisar");
+							$("#dashboard-content .content .filter_indicator .botao-form[ref='enviar']").html("Cadastrar");
 
 							$("#dashboard-content .content .filter_indicator .botao-form[ref='cancelar']").html("Voltar");
 							$("#dashboard-content .content .filter_indicator .botao-form[ref='cancelar']").click(function(){

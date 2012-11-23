@@ -2879,7 +2879,15 @@ $(document).ready(function() {
 				newform.push({label: "Email", input: ["text,email,itext"]});
 				newform.push({label: "Senha", input: ["password,password,itext"]});
 				newform.push({label: "Confirmar Senha", input: ["password,password_confirm,itext"]});
-				newform.push({label: "Programa de Metas (PDF)", input: ["file,arquivo,itext"]});
+				if (findInArray(user_info.roles,"_prefeitura")){
+					newform.push({label: "Carta Compromisso (PDF)", input: ["file,carta_compromisso,itext"]});
+				}
+				if (findInArray(user_info.roles,"_movimento")){
+					newform.push({label: "Logo(imagem)", input: ["file,logo_movimento,itext"]});
+				}
+				if (findInArray(user_info.roles,"_prefeitura") || findInArray(user_info.roles,"_movimento")){
+					newform.push({label: "Programa de Metas (PDF)", input: ["file,programa_metas,itext"]});
+				}
 	
 				var formbuild = $("#dashboard-content .content").append(buildForm(newform,"Preferências"));
 				$(formbuild).find("div .field:odd").addClass("odd");
@@ -2915,6 +2923,7 @@ $(document).ready(function() {
 				$("#dashboard-content .content .botao-form[ref='enviar']").html("Salvar");
 	
 				$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
+					var button = $(this);
 					resetWarnings();
 					if ($(this).parent().parent().find("#name").val() == ""){
 						$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
@@ -2924,59 +2933,90 @@ $(document).ready(function() {
 						$(".form-aviso").setWarning({msg: "Confirmação de senha inválida"});
 					}else{
 						
-						var form = $("#formFileUpload_arquivo");
-				
-						form.attr("action", "/api/user/$$userid/arquivo/programa_metas?api_key=$$key&content-type=application/json".render({
-								userid: $.cookie("user.id"),
-								key: $.cookie("key")
-								}));
-						form.attr("method", "post");
-						form.attr("enctype", "multipart/form-data");
-						form.attr("encoding", "multipart/form-data");
-						form.attr("target", "iframe_arquivo");
-						form.attr("file", $('#arquivo').val());
-						form.submit();
-				
-						$("#iframe_arquivo").load( function(){
-							var iframeDoc = iframe[0].contentDocument || iframe[0].contentWindow.document;
-							console.log(iframeDoc);
-							console.log(iframeDoc.innerHTML());
-						});
+						var files = ["programa_metas","carta_compromisso","logo_movimento"];
 						
-						args = [{name: "api_key", value: $.cookie("key"),},
-								{name: "user.update.name", value: $(this).parent().parent().find("#name").val()},
-								{name: "user.update.email", value: $(this).parent().parent().find("#email").val(),}
-								];
-	
-						if ($(this).parent().parent().find("#password").val() != ""){
-							args.push({name: "user.update.password", value: $(this).parent().parent().find("#password").val(),},
-								{name: "user.update.password_confirm", value: $(this).parent().parent().find("#password").val(),});
-						}
-						$("#dashboard-content .content .botao-form[ref='enviar']").hide();
-						$.ajax({
-							type: 'POST',
-							dataType: 'json',
-							url: "/api/user/$$userid/?api_key=$$key".render({
-								userid: $.cookie("user.id"),
-								key: $.cookie("key")
-								}),
-							data: args,
-							success: function(data, textStatus, jqXHR){
-								$("#aviso").setWarning({msg: "Preferências salvas.".render({
-											codigo: jqXHR.status
-											})
-								});
-								location.hash = "#!/"+getUrlSub();
-								$("#dashboard-content .content .botao-form[ref='enviar']").show();
-							},
-							error: function(data){
-								$(".form-aviso").setWarning({msg: "Erro ao editar. ($$erro)".render({
-											erro: $.parseJSON(data.responseText).error
-											})
-								});
-								$("#dashboard-content .content .botao-form[ref='enviar']").show();
+						var files_sent = [];
+						for (i = 0; i < files.length; i++){
+							if ($("#formFileUpload_"+files[i])){
+								if ($("#"+files[i]).val() != ""){
+									files_sent.push(files[i]);
+								}
 							}
-						});
+						}
+						
+						var cont_files_sent = 0;
+						
+						console.log(files_sent);
+						
+						sendFiles(button);
+						
+						var sendFiles = function(button){
+							console.log(cont_files_sent);
+							if (cont_files_sent < files_sent.length){
+								var file = files_sent[cont_files_sent];
+								var form = $("#formFileUpload_"+file);
+								form.attr("action", "/api/user/$$userid/arquivo/$$tipo?api_key=$$key&content-type=application/json".render({
+										userid: $.cookie("user.id"),
+										tipo: file,
+										key: $.cookie("key")
+										}));
+								form.attr("method", "post");
+								form.attr("enctype", "multipart/form-data");
+								form.attr("encoding", "multipart/form-data");
+								form.attr("target", "iframe_"+file);
+								form.attr("file", $('#'+file).val());
+								cont_files_sent++;
+								form.submit();
+						
+								$("#iframe_"+file).load( function(){
+									if (cont_files_sent < files_sent.length){
+										sendFiles(button);
+									}else{
+										sendForm(button)
+									}
+								});
+							}else{
+								sendForm(button)
+							}
+						}
+						
+						var sendForm = function(button){
+							
+							args = [{name: "api_key", value: $.cookie("key"),},
+									{name: "user.update.name", value: $(button).parent().parent().find("#name").val()},
+									{name: "user.update.email", value: $(button).parent().parent().find("#email").val(),}
+									];
+		
+							if ($(this).parent().parent().find("#password").val() != ""){
+								args.push({name: "user.update.password", value: $(button).parent().parent().find("#password").val(),},
+									{name: "user.update.password_confirm", value: $(button).parent().parent().find("#password").val(),});
+							}
+							$("#dashboard-content .content .botao-form[ref='enviar']").hide();
+							$.ajax({
+								type: 'POST',
+								dataType: 'json',
+								url: "/api/user/$$userid/?api_key=$$key".render({
+									userid: $.cookie("user.id"),
+									key: $.cookie("key")
+									}),
+								data: args,
+								success: function(data, textStatus, jqXHR){
+									$("#aviso").setWarning({msg: "Preferências salvas.".render({
+												codigo: jqXHR.status
+												})
+									});
+									location.hash = "#!/"+getUrlSub();
+									$("#dashboard-content .content .botao-form[ref='enviar']").show();
+								},
+								error: function(data){
+									$(".form-aviso").setWarning({msg: "Erro ao editar. ($$erro)".render({
+												erro: $.parseJSON(data.responseText).error
+												})
+									});
+									$("#dashboard-content .content .botao-form[ref='enviar']").show();
+								}
+							});
+						}
 					}
 				});
 				$("#dashboard-content .content .botao-form[ref='cancelar']").click(function(){

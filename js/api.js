@@ -875,7 +875,13 @@ $(document).ready(function() {
 								if($("#user-info").length == 0){
 									$("#top .content").append("<div id='user-info'>" + info_content + "</div>");
 								}else{
-									$("#top #user-info").html(info_content);
+									$("#top #usera-info").html(info_content);
+								}
+								if (findInArray(user_info.roles,"_movimento")){
+									if (user_info.files.logo_movimento != undefined){
+										$("#top .content").append("<div id='user-logo'><div class='imagem'></div></div>");
+										$("#top .content #user-logo .imagem").css("background-image","url("+user_info.files.logo_movimento+")");
+									}
 								}
 								buildMenu();
 								setTitleBar();

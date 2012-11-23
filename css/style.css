@@ -136,6 +136,19 @@ a{
 	margin-bottom: -20px;
 }
 
+#user-logo{
+	position: absolute;
+	text-align: right;
+	top: 5;
+}
+#user-logo .imagem{
+	width: 120px;
+	height: 80px;
+	background-position: top right;
+	background-repeat: no-repeat;
+	
+}
+
 #aviso{
 	text-align: center;
 	color: #990000;

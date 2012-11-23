@@ -3138,6 +3138,7 @@ $(document).ready(function() {
 					success: function(data, textStatus, jqXHR){
 						switch(jqXHR.status){
 							case 200:
+								$("#top .content #user-logo").remove();
 								resetWarnings();
 								resetDashboard();
 								location.hash = "";

@@ -1138,7 +1138,7 @@ $(document).ready(function() {
 
 					$("#results").dataTable( {
 						  "oLanguage": {
-										"sUrl": "js/dataTables.pt-br.txt"
+										"sUrl": "../js/dataTables.pt-br.txt"
 										},
 						  "bProcessing": true,
 						  "sAjaxSource": '/api/user?api_key=$$key&content-type=application/json&columns=name,email,url,_,_'.render({
@@ -1383,7 +1383,7 @@ $(document).ready(function() {
 
 					$("#results").dataTable( {
 						  "oLanguage": {
-										"sUrl": "js/dataTables.pt-br.txt"
+										"sUrl": "../js/dataTables.pt-br.txt"
 										},
 						  "bProcessing": true,
 						  "sAjaxSource": '/api/city?api_key=$$key&content-type=application/json&columns=name,uf,url,_,_'.render({
@@ -1547,7 +1547,7 @@ $(document).ready(function() {
 
 					$("#results").dataTable( {
 						  "oLanguage": {
-										"sUrl": "js/dataTables.pt-br.txt"
+										"sUrl": "../js/dataTables.pt-br.txt"
 										},
 						  "bProcessing": true,
 						  "sAjaxSource": '/api/variable?api_key=$$key&content-type=application/json&columns=name,cognomen,type,created_at,is_basic,url,_,_'.render({
@@ -1796,7 +1796,7 @@ $(document).ready(function() {
 
 							$("#results").dataTable( {
 								  "oLanguage": {
-												"sUrl": "js/dataTables.pt-br.txt"
+												"sUrl": "../js/dataTables.pt-br.txt"
 												},
 								  "aoColumnDefs": [
 													{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 1 ] },
@@ -2051,7 +2051,7 @@ $(document).ready(function() {
 							});
 							$("#results").dataTable( {
 								  "oLanguage": {
-												"sUrl": "js/dataTables.pt-br.txt"
+												"sUrl": "../js/dataTables.pt-br.txt"
 												},
 								  "bProcessing": true,
 								  "sAjaxSource": '/api/indicator?api_key=$$key&content-type=application/json&columns=name,formula,created_at,url,_,_'.render({

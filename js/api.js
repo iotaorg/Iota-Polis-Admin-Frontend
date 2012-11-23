@@ -538,7 +538,7 @@ $(document).ready(function() {
 								value_id: data_variables[0].values[index].id
 								});
 					history_table += "<td class='valor'>$$valor</td><td class='edit'><a href='javascript: void(0);' value-id='$$value_id' class='edit'>editar</a>&nbsp;<a href='javascript: void(0);' value-id='$$value_id' class='delete'>apagar</a></td>".render({
-								valor: data_variables[0].values[index].value,
+								valor: $.formatNumber(data_variables[0].values[index].value, {format:"#,##0.###", locale:"br"}),
 								data: $.format.date(data_variables[0].values[index].value_of_date,"dd/MM/yyyy"),
 								value_id: data_variables[0].values[index].id
 					});
@@ -2525,7 +2525,7 @@ $(document).ready(function() {
 																	data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T")
 															});
 														});
-														history_table += "<td class='formula_valor'>$$formula_valor</td>".render({formula_valor:data.rows[index].formula_value});
+														history_table += "<td class='formula_valor'>$$formula_valor</td>".render({formula_valor: $.formatNumber(data.rows[index].formula_value, {format:"#,##0.###", locale:"br"})});
 														history_table += "</tr></tbody>";
 													});
 													history_table += "</table>";

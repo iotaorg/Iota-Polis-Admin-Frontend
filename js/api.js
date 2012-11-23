@@ -2933,53 +2933,6 @@ $(document).ready(function() {
 						$(".form-aviso").setWarning({msg: "Confirmação de senha inválida"});
 					}else{
 						
-						var files = ["programa_metas","carta_compromisso","logo_movimento"];
-						
-						var files_sent = [];
-						for (i = 0; i < files.length; i++){
-							if ($("#formFileUpload_"+files[i])){
-								if ($("#"+files[i]).val() != ""){
-									files_sent.push(files[i]);
-								}
-							}
-						}
-						
-						var cont_files_sent = 0;
-						
-						console.log(files_sent);
-						
-						sendFiles(button);
-						
-						var sendFiles = function(button){
-							console.log(cont_files_sent);
-							if (cont_files_sent < files_sent.length){
-								var file = files_sent[cont_files_sent];
-								var form = $("#formFileUpload_"+file);
-								form.attr("action", "/api/user/$$userid/arquivo/$$tipo?api_key=$$key&content-type=application/json".render({
-										userid: $.cookie("user.id"),
-										tipo: file,
-										key: $.cookie("key")
-										}));
-								form.attr("method", "post");
-								form.attr("enctype", "multipart/form-data");
-								form.attr("encoding", "multipart/form-data");
-								form.attr("target", "iframe_"+file);
-								form.attr("file", $('#'+file).val());
-								cont_files_sent++;
-								form.submit();
-						
-								$("#iframe_"+file).load( function(){
-									if (cont_files_sent < files_sent.length){
-										sendFiles(button);
-									}else{
-										sendForm(button)
-									}
-								});
-							}else{
-								sendForm(button)
-							}
-						}
-						
 						var sendForm = function(button){
 							
 							args = [{name: "api_key", value: $.cookie("key"),},
@@ -3017,6 +2970,53 @@ $(document).ready(function() {
 								}
 							});
 						}
+						
+						var sendFiles = function(button){
+							console.log(cont_files_sent);
+							if (cont_files_sent < files_sent.length){
+								var file = files_sent[cont_files_sent];
+								var form = $("#formFileUpload_"+file);
+								form.attr("action", "/api/user/$$userid/arquivo/$$tipo?api_key=$$key&content-type=application/json".render({
+										userid: $.cookie("user.id"),
+										tipo: file,
+										key: $.cookie("key")
+										}));
+								form.attr("method", "post");
+								form.attr("enctype", "multipart/form-data");
+								form.attr("encoding", "multipart/form-data");
+								form.attr("target", "iframe_"+file);
+								form.attr("file", $('#'+file).val());
+								cont_files_sent++;
+								form.submit();
+						
+								$("#iframe_"+file).load( function(){
+									if (cont_files_sent < files_sent.length){
+										sendFiles(button);
+									}else{
+										sendForm(button)
+									}
+								});
+							}else{
+								sendForm(button)
+							}
+						}
+						
+						var files = ["programa_metas","carta_compromisso","logo_movimento"];
+						
+						var files_sent = [];
+						for (i = 0; i < files.length; i++){
+							if ($("#formFileUpload_"+files[i])){
+								if ($("#"+files[i]).val() != ""){
+									files_sent.push(files[i]);
+								}
+							}
+						}
+						
+						var cont_files_sent = 0;
+						
+						console.log(files_sent);
+						
+						sendFiles(button);
 					}
 				});
 				$("#dashboard-content .content .botao-form[ref='cancelar']").click(function(){

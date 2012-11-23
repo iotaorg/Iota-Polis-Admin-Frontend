@@ -3062,8 +3062,8 @@ $(document).ready(function() {
 						
 						var files_sent = [];
 						for (i = 0; i < files.length; i++){
-							if ($(".form #"+files[i]).val() != undefined){
-								if ($(".form #"+files[i]).val() != ""){
+							if ($(".form #arquivo_"+files[i]).val() != undefined){
+								if ($(".form #arquivo_"+files[i]).val() != ""){
 									files_sent.push(files[i]);
 								}
 							}

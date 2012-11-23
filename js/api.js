@@ -2059,7 +2059,7 @@ $(document).ready(function() {
 										}),
 								  "aoColumnDefs": [
 													{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 3 ] },
-													{ "sClass": "center", "aTargets": [ 2 ] },
+													{ "sWidth": "140px", "sClass": "center", "aTargets": [ 2 ] },
 													{ "fnRender": function ( oObj, sVal ) {
 																	return $.format.date(sVal,"dd/MM/yyyy HH:mm:ss");
 																  }, "aTargets": [ 2 ]
@@ -2926,7 +2926,7 @@ $(document).ready(function() {
 						
 						var form = $("#formFileUpload_arquivo");
 				
-						form.attr("action", "/api/user/$$userid/arquivo/programa_metas?api_key=$$key".render({
+						form.attr("action", "/api/user/$$userid/arquivo/programa_metas?api_key=$$key&Content-type=application/json".render({
 								userid: $.cookie("user.id"),
 								key: $.cookie("key")
 								}));

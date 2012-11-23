@@ -2958,6 +2958,10 @@ $(document).ready(function() {
 				$("#dashboard-content .content .botao-form[ref='enviar']").html("Salvar");
 	
 				$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
+					if ($(this).attr("is-disabled") == 1) return false;
+					
+					var clickedButton = $(this);
+					
 					resetWarnings();
 					if ($(this).parent().parent().find("#name").val() == ""){
 						$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
@@ -2998,19 +3002,21 @@ $(document).ready(function() {
 									}),
 								data: args,
 								success: function(data, textStatus, jqXHR){
+									$(clickedButton).html("Salvar");
+									$(clickedButton).attr("is-disabled",0);
 									$("#aviso").setWarning({msg: "Preferências salvas.".render({
 												codigo: jqXHR.status
 												})
 									});
 									location.hash = "#!/"+getUrlSub();
-									$("#dashboard-content .content .botao-form[ref='enviar']").show();
 								},
 								error: function(data){
 									$(".form-aviso").setWarning({msg: "Erro ao editar. ($$erro)".render({
 												erro: $.parseJSON(data.responseText).error
 												})
 									});
-									$("#dashboard-content .content .botao-form[ref='enviar']").show();
+									$(clickedButton).html("Salvar");
+									$(clickedButton).attr("is-disabled",0);
 								}
 							});
 						}
@@ -3072,6 +3078,7 @@ $(document).ready(function() {
 										if (cont_files_sent < files_sent.length){
 											sendFiles();
 										}else{
+											$(clickedButton).html("Enviando Dados do Formulário...");
 											sendForm();
 										}
 									}else{
@@ -3097,11 +3104,16 @@ $(document).ready(function() {
 						}
 						
 						var cont_files_sent = 0;
+
+						$(clickedButton).html("Salvando...");
+						$(clickedButton).attr("is-disabled",1);
 						
+						$(clickedButton).html("Enviando Arquivos...");
 						sendFiles();
 					}
 				});
 				$("#dashboard-content .content .botao-form[ref='cancelar']").click(function(){
+					if ($(this).attr("is-disabled") == 1) return false;
 					resetWarnings();
 					location.hash = "#!/dashboard";
 				});

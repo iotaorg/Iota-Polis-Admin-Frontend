@@ -882,6 +882,8 @@ $(document).ready(function() {
 										$("#top .content").append("<div id='user-logo'><div class='imagem'></div></div>");
 										$("#top .content #user-logo .imagem").css("background-image","url("+user_info.files.logo_movimento+")");
 									}
+								}else{
+									$("#top .content #user-logo").remove();
 								}
 								buildMenu();
 								setTitleBar();

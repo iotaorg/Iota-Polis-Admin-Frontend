@@ -2521,7 +2521,7 @@ $(document).ready(function() {
 														history_table += "<tr><td class='periodo'>$$periodo</td>".render({periodo: $.convertDateToPeriod(data.rows[index].valid_from,indicator_period)});
 														$.each(data.rows[index].valores, function(index2,value2){
 															history_table += "<td class='valor' title='$$data'>$$valor</td>".render({
-																	valor: data.rows[index].valores[index2].value,
+																	valor: $.formatNumber(data.rows[index].valores[index2].value, {format:"#,##0.###", locale:"br"}),
 																	data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T")
 															});
 														});

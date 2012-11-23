@@ -2894,7 +2894,6 @@ $(document).ready(function() {
 				newform.push({label: "Nome", input: ["text,name,itext"]});
 				newform.push({label: "Email", input: ["text,email,itext"]});
 				newform.push({label: "Senha", input: ["password,password,itext"]});
-				newform.push({label: "Nome", input: ["text,name,itext"]});
 				newform.push({label: "Confirmar Senha", input: ["password,password_confirm,itext"]});
 
 				newform.push({label: "Endereço", input: ["text,endereco,itext"]});

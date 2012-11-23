@@ -1064,7 +1064,6 @@ $(document).ready(function() {
 							if (findCidadePrefeito(data.citys[index].id) == null || findCidadeMovimento(data.citys[index].id) == null){
 								$("#dashboard-content .content select#city_id").append($("<option></option>").val(data.citys[index].id).html(data.citys[index].name + " (" + data.citys[index].uf + ")"));
 							}else{
-								console.log(findCidadeMovimento(data.citys[index].id) + ":" + getIdFromUrl(args.city));
 								if (findCidadePrefeito(data.citys[index].id) == getIdFromUrl(args.city) || findCidadeMovimento(data.citys[index].id) == getIdFromUrl(args.city)){
 									$("#dashboard-content .content select#city_id").append($("<option></option>").val(data.citys[index].id).html(data.citys[index].name + " (" + data.citys[index].uf + ")"));
 								}
@@ -2803,7 +2802,6 @@ $(document).ready(function() {
 												
 												var to_indicator = setInterval(function(){
 													if (cont_sent < cont_total){
-														console.log($("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).attr("disabled"));
 														if ($("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).attr("disabled") == "disabled"){
 															cont_sent++;
 															cont_returned++;
@@ -2992,7 +2990,6 @@ $(document).ready(function() {
 								args.push({name: "user.update.password", value: $(".form").find("#password").val(),},
 									{name: "user.update.password_confirm", value: $(".form").find("#password").val(),});
 							}
-							$("#dashboard-content .content .botao-form[ref='enviar']").hide();
 							$.ajax({
 								type: 'POST',
 								dataType: 'json',
@@ -3054,7 +3051,6 @@ $(document).ready(function() {
 						
 								$("#iframe_"+file).load( function(){
 									
-									console.log($(this).contents()[0].body.outerHTML)
 									var erro = 0;
 									if ($(this).contents()){
 										if 	($(this).contents()[0].body){
@@ -3063,7 +3059,6 @@ $(document).ready(function() {
 												retorno = retorno.replace("<body><pre>","");
 												retorno = retorno.replace("</pre></body>","");
 												retorno = $.parseJSON(retorno);
-												console.log(retorno);
 											}else{
 												erro = 1;	
 											}
@@ -3083,6 +3078,9 @@ $(document).ready(function() {
 										}
 									}else{
 										console.log("Erro ao enviar arquivo " + file);
+										$(".form-aviso").setWarning({msg: "Erro ao enviar arquivo " + file});
+										$(clickedButton).html("Salvar");
+										$(clickedButton).attr("is-disabled",0);
 										cont_files_sent = files_sent.length;
 										return;
 									}

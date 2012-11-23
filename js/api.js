@@ -2894,7 +2894,19 @@ $(document).ready(function() {
 				newform.push({label: "Nome", input: ["text,name,itext"]});
 				newform.push({label: "Email", input: ["text,email,itext"]});
 				newform.push({label: "Senha", input: ["password,password,itext"]});
+				newform.push({label: "Nome", input: ["text,name,itext"]});
 				newform.push({label: "Confirmar Senha", input: ["password,password_confirm,itext"]});
+
+				newform.push({label: "Endereço", input: ["text,endereco,itext"]});
+				newform.push({label: "Cidade", input: ["text,cidade,itext"]});
+				newform.push({label: "Estado", input: ["text,estado,itext"]});
+				newform.push({label: "Bairro", input: ["text,bairro,itext"]});
+				newform.push({label: "CEP", input: ["text,cep,itext"]});
+				newform.push({label: "Telefone", input: ["text,telefone,itext"]});
+				newform.push({label: "Email de Contato", input: ["text,email_contato,itext"]});
+				newform.push({label: "Telefone de Contato", input: ["text,telefone_contato,itext"]});
+				newform.push({label: "Nome do responsável pelo cadastro", input: ["text,nome_responsavel_cadastro,itext"]});
+
 				if (findInArray(user_info.roles,"_prefeitura")){
 					newform.push({label: "Carta Compromisso (PDF)", input: ["file,carta_compromisso,itext"]});
 					newform.push({label: "Programa de Metas (PDF)", input: ["file,programa_metas,itext"]});
@@ -2919,6 +2931,16 @@ $(document).ready(function() {
 							case 200:
 								$(formbuild).find("input#name").val(data.name);
 								$(formbuild).find("input#email").val(data.email);
+								$(formbuild).find("input#endereco").val(data.endereco);
+								$(formbuild).find("input#cidade").val(data.cidade);
+								$(formbuild).find("input#estado").val(data.estado);
+								$(formbuild).find("input#bairro").val(data.bairro);
+								$(formbuild).find("input#cep").val(data.cep);
+								$(formbuild).find("input#telefone").val(data.telefone);
+								$(formbuild).find("input#email_contato").val(data.email_contato);
+								$(formbuild).find("input#telefone_contato").val(data.telefone_contato);
+								$(formbuild).find("input#nome_responsavel_cadastro").val(data.nome_responsavel_cadastro);
+
 								break;	
 						}
 					},
@@ -2950,9 +2972,19 @@ $(document).ready(function() {
 							
 							args = [{name: "api_key", value: $.cookie("key"),},
 									{name: "user.update.name", value: $(".form").find("#name").val()},
-									{name: "user.update.email", value: $(".form").find("#email").val(),}
+									{name: "user.update.email", value: $(".form").find("#email").val(),},
+									{name: "user.update.endereco", value: $(".form").find("#endereco").val(),},
+									{name: "user.update.cidade", value: $(".form").find("#cidade").val(),},
+									{name: "user.update.estado", value: $(".form").find("#estado").val(),},
+									{name: "user.update.bairro", value: $(".form").find("#bairro").val(),},
+									{name: "user.update.cep", value: $(".form").find("#cep").val(),},
+									{name: "user.update.telefone", value: $(".form").find("#telefone").val(),},
+									{name: "user.update.email_contato", value: $(".form").find("#email_contato").val(),},
+									{name: "user.update.telefone_contato", value: $(".form").find("#telefone_contato").val(),},
+									{name: "user.update.nome_responsavel_cadastro", value: $(".form").find("#nome_responsavel_cadastro").val(),}
 									];
 		
+
 							if ($(this).parent().parent().find("#password").val() != ""){
 								args.push({name: "user.update.password", value: $(".form").find("#password").val(),},
 									{name: "user.update.password_confirm", value: $(".form").find("#password").val(),});

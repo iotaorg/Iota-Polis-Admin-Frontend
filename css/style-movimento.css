@@ -53,6 +53,20 @@ a.button-default{
 	border: 1px solid #674e86;
 }
 
+input.botao-form,
+a.botao-form{
+	background: url("../images/bg_botao_movimento.gif") repeat-x top center;
+	text-shadow:#382465 1px 1px 0px;
+	-moz-text-shadow:#382465 1px 1px 0px;
+	-webkit-text-shadow:#382465 1px 1px 0px;
+	border: 1px solid #8463a6;
+}
+
+input.botao-form:hover,
+a.botao-form:hover{
+	background: url("../images/bg_botao_movimento.gif") repeat-x bottom center;
+	border: 1px solid #674e86;
+}
 
 table.dataTable {
 	border: 1px solid #d3e5ee;

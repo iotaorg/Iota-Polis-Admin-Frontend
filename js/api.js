@@ -2923,7 +2923,6 @@ $(document).ready(function() {
 				$("#dashboard-content .content .botao-form[ref='enviar']").html("Salvar");
 	
 				$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
-					var button = $(this);
 					resetWarnings();
 					if ($(this).parent().parent().find("#name").val() == ""){
 						$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
@@ -2933,16 +2932,16 @@ $(document).ready(function() {
 						$(".form-aviso").setWarning({msg: "Confirmação de senha inválida"});
 					}else{
 						
-						var sendForm = function(button){
+						var sendForm = function(){
 							
 							args = [{name: "api_key", value: $.cookie("key"),},
-									{name: "user.update.name", value: $(button).parent().parent().find("#name").val()},
-									{name: "user.update.email", value: $(button).parent().parent().find("#email").val(),}
+									{name: "user.update.name", value: $(".form").find("#name").val()},
+									{name: "user.update.email", value: $(".form").find("#email").val(),}
 									];
 		
 							if ($(this).parent().parent().find("#password").val() != ""){
-								args.push({name: "user.update.password", value: $(button).parent().parent().find("#password").val(),},
-									{name: "user.update.password_confirm", value: $(button).parent().parent().find("#password").val(),});
+								args.push({name: "user.update.password", value: $(".form").find("#password").val(),},
+									{name: "user.update.password_confirm", value: $(".form").find("#password").val(),});
 							}
 							$("#dashboard-content .content .botao-form[ref='enviar']").hide();
 							$.ajax({
@@ -2971,11 +2970,11 @@ $(document).ready(function() {
 							});
 						}
 						
-						var sendFiles = function(button){
-							console.log(cont_files_sent);
+						var sendFiles = function(){
 							if (cont_files_sent < files_sent.length){
 								var file = files_sent[cont_files_sent];
 								var form = $("#formFileUpload_"+file);
+								console.log(file);
 								form.attr("action", "/api/user/$$userid/arquivo/$$tipo?api_key=$$key&content-type=application/json".render({
 										userid: $.cookie("user.id"),
 										tipo: file,
@@ -2990,14 +2989,15 @@ $(document).ready(function() {
 								form.submit();
 						
 								$("#iframe_"+file).load( function(){
+									console.log("carregou"+cont_files_sent);
 									if (cont_files_sent < files_sent.length){
-										sendFiles(button);
+										sendFiles();
 									}else{
-										sendForm(button)
+										sendForm()
 									}
 								});
 							}else{
-								sendForm(button)
+								sendForm()
 							}
 						}
 						
@@ -3006,6 +3006,7 @@ $(document).ready(function() {
 						var files_sent = [];
 						for (i = 0; i < files.length; i++){
 							if ($("#formFileUpload_"+files[i])){
+								console.log("form :" + $("#formFileUpload_"+files[i]));
 								if ($("#"+files[i]).val() != ""){
 									files_sent.push(files[i]);
 								}
@@ -3014,9 +3015,7 @@ $(document).ready(function() {
 						
 						var cont_files_sent = 0;
 						
-						console.log(files_sent);
-						
-						sendFiles(button);
+						sendFiles();
 					}
 				});
 				$("#dashboard-content .content .botao-form[ref='cancelar']").click(function(){

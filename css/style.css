@@ -140,15 +140,14 @@ a{
 	position: absolute;
 	width: 900px;
 	text-align: right;
-	float: right;
 	top: 5;
 }
 #user-logo .imagem{
+	float: right;
 	width: 120px;
 	height: 70px;
 	background-position: top right;
 	background-repeat: no-repeat;
-	
 }
 
 #aviso{

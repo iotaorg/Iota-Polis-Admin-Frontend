@@ -2926,7 +2926,7 @@ $(document).ready(function() {
 						
 						var form = $("#formFileUpload_arquivo");
 				
-						form.attr("action", "/api/user/$$userid/arquivo/programa_metas?api_key=$$key&Content-type=application/json".render({
+						form.attr("action", "/api/user/$$userid/arquivo/programa_metas?api_key=$$key&content-type=application/json".render({
 								userid: $.cookie("user.id"),
 								key: $.cookie("key")
 								}));

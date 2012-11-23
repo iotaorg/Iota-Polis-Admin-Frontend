@@ -818,7 +818,7 @@ $(document).ready(function() {
 
 		var new_formula = formula;
 		$.each(variables,function(index,value){
-			var pattern = "$"+variables[index].id;
+			var pattern = "\\$"+variables[index].id;
 			var re = new RegExp(pattern, "g");
 			new_formula = new_formula.replace(re,variables[index].name);
 		});

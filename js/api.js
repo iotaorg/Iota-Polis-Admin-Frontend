@@ -487,7 +487,7 @@ $(document).ready(function() {
 									})
 							break;
 						case "file":
-							newinput = "<form id='formFileUpload_$$id'><div class='file'><input type='file' name='arquivo' id='$$id' class='$$class'></div></form><iframe id='iframe_$$id' name='iframe_$$id' frameborder='0'></iframe>".render({
+							newinput = "<form id='formFileUpload_$$id'><div class='file'><input type='file' name='arquivo_$$id' id='arquivo_$$id' original-id='arquivo_$$id' class='$$class'></div></form><iframe id='iframe_$$id' name='iframe_$$id' frameborder='0'></iframe>".render({
 									id: input_args[1],
 									class: input_args[2]
 									})
@@ -3015,11 +3015,20 @@ $(document).ready(function() {
 							});
 						}
 						
+						var original_id = "";
+						
 						var sendFiles = function(){
 							if (cont_files_sent < files_sent.length){
 								var file = files_sent[cont_files_sent];
 								var form = $("#formFileUpload_"+file);
-								console.log(file);
+								
+								original_id = $('#arquivo_'+file).attr("original-id");
+
+								$('#arquivo_'+file).attr({
+														name: "arquivo",
+														id: "arquivo"
+													 });
+
 								form.attr("action", "/api/user/$$userid/arquivo/$$tipo?api_key=$$key&content-type=application/json".render({
 										userid: $.cookie("user.id"),
 										tipo: file,
@@ -3029,12 +3038,15 @@ $(document).ready(function() {
 								form.attr("enctype", "multipart/form-data");
 								form.attr("encoding", "multipart/form-data");
 								form.attr("target", "iframe_"+file);
-								form.attr("file", $('#'+file).val());
+								form.attr("file", $('#arquivo').val());
 								cont_files_sent++;
 								form.submit();
+								$('#arquivo').attr({
+														name: original_id,
+														id: original_id
+													 });
 						
 								$("#iframe_"+file).load( function(){
-									console.log("carregou"+cont_files_sent);
 									if (cont_files_sent < files_sent.length){
 										sendFiles();
 									}else{
@@ -3052,7 +3064,6 @@ $(document).ready(function() {
 						for (i = 0; i < files.length; i++){
 							if ($(".form #"+files[i]).val() != undefined){
 								if ($(".form #"+files[i]).val() != ""){
-									console.log("input: " + $("#"+files[i]).val());
 									files_sent.push(files[i]);
 								}
 							}

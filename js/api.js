@@ -2883,6 +2883,14 @@ $(document).ready(function() {
 													if (cont_returned >= cont_total){
 														clearInterval(to_indicator);
 														var send_justification_meta = false;
+
+														var data_formatada = "";
+														if (data_indicator.period == "yearly" || data_indicator.period == "monthly"){
+															data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter option:selected").val();
+														}else if (data_indicator.period == "daily"){
+															data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter").val();
+														}
+
 														if ($("#dashboard-content .content input#no_data").attr("checked")){
 															args = [{name: "api_key", value: $.cookie("key"),},
 																	{name: "user.indicator.create.justification_of_missing_field", value: $("#dashboard-content .content .filter_result").find("#justification_of_missing_field").val()},

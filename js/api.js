@@ -2751,6 +2751,7 @@ $(document).ready(function() {
 											newform.push({type: "div"});
 										});
 	
+										newform.push({label: "Ref. de Meta", input: ["text,goal,itext"]});
 										newform.push({label: "", input: ["checkbox,no_data,icheckbox"]});
 										newform.push({label: "Justificativa", input: ["text,justification_of_missing_field,itext"]});
 							
@@ -2763,8 +2764,10 @@ $(document).ready(function() {
 										$("#dashboard-content .content .filter_result input#no_data").click(function(){
 											if ($(this).attr("checked")){
 												$("#dashboard-content .content .filter_result .field:last").show();
+												$("#dashboard-content .content .filter_result input#goal").hide();
 											}else{
 												$("#dashboard-content .content .filter_result .field:last").hide();
+												$("#dashboard-content .content .filter_result input#goal").show();
 											}
 										});
 	
@@ -2845,9 +2848,9 @@ $(document).ready(function() {
 															}else if ($("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val() == ""){
 																args = [{name: "api_key", value: $.cookie("key"),},
 																		{name: "variable.value.put.value", value: ""},
+																		{name: "variable.value.put.source", value: ""},
 																		{name: "variable.value.put.observations", value: $("#dashboard-content .content .filter_result").find("#observations_"+data_variables[cont_sent].id).val()},
-																		{name: "variable.value.put.value_of_date", value: ""},
-																		{name: "variable.value.put.justification_of_missing_field", value: $("#dashboard-content .content .filter_result").find("#justification_of_missing_field").val()}
+																		{name: "variable.value.put.value_of_date", value: ""}
 																		];
 															}else{
 																args = [{name: "api_key", value: $.cookie("key"),},
@@ -2878,18 +2881,67 @@ $(document).ready(function() {
 														}
 													}
 													if (cont_returned >= cont_total){
-														$("#aviso").setWarning({msg: "Cadastro editado com sucesso.".render({
-																	codigo: jqXHR.status
-																	})
-														});
-														$("#dashboard-content .content .filter_result .botao-form[ref='enviar']").show();
-														$("#dashboard-content .content .filter_result").empty();
-														//mostra historico
-														buildIndicatorHistory({"id":getIdFromUrl($.getUrlVar("url")),
-																			   "period":data_indicator.period,
-																			   "target":$("#dashboard-content .content div.historico")
-																			   });
 														clearInterval(to_indicator);
+														var send_justification_meta = false;
+														if ($("#dashboard-content .content input#no_data").attr("checked")){
+															args = [{name: "api_key", value: $.cookie("key"),},
+																	{name: "user.indicator.create.justification_of_missing_field", value: $("#dashboard-content .content .filter_result").find("#justification_of_missing_field").val()},
+																	{name: "user.indicator.create.valid_from", value: data_formatada},
+																	{name: "user.indicator.create.indicator_id", value: getIdFromUrl($.getUrlVar("url"))}
+																	];
+															send_justification_meta = true;
+														}else if ($("#dashboard-content .content .filter_result").find("#goal").val() != ""){
+															args = [{name: "api_key", value: $.cookie("key"),},
+																	{name: "user.indicator.create.goal", value: $("#dashboard-content .content .filter_result").find("#goal").val()},
+																	{name: "user.indicator.create.valid_from", value: data_formatada},
+																	{name: "user.indicator.create.indicator_id", value: getIdFromUrl($.getUrlVar("url"))}
+																	];
+															send_justification_meta = true;
+														}
+
+														if (send_justification_meta){
+															$.ajax({
+																type: 'POST',
+																dataType: 'json',
+																url: "/api/user/$$userid/indicator".render({
+																				userid: $.cookie("user.id")
+																			}),
+																data: args,
+																success: function(data, textStatus, jqXHR){
+																	$("#aviso").setWarning({msg: "Cadastro editado com sucesso.".render({
+																				codigo: jqXHR.status
+																				})
+																	});
+																	$("#dashboard-content .content .filter_result .botao-form[ref='enviar']").show();
+																	$("#dashboard-content .content .filter_result").empty();
+																	//mostra historico
+																	buildIndicatorHistory({"id":getIdFromUrl($.getUrlVar("url")),
+																						   "period":data_indicator.period,
+																						   "target":$("#dashboard-content .content div.historico")
+																						   });
+																},
+																error: function(data){
+																	$(".filter_result .form-aviso").setWarning({msg: "Valores enviados, mas ocorreu um erro ao enviar Justificativa/Ref. de Meta. ($$erro)".render({
+																				erro: $.parseJSON(data.responseText).error
+																				})
+																	});
+																	$("#dashboard-content .content .filter_result .botao-form[ref='enviar']").show();
+																}
+															});
+														}else{
+	
+															$("#aviso").setWarning({msg: "Cadastro editado com sucesso.".render({
+																		codigo: jqXHR.status
+																		})
+															});
+															$("#dashboard-content .content .filter_result .botao-form[ref='enviar']").show();
+															$("#dashboard-content .content .filter_result").empty();
+															//mostra historico
+															buildIndicatorHistory({"id":getIdFromUrl($.getUrlVar("url")),
+																				   "period":data_indicator.period,
+																				   "target":$("#dashboard-content .content div.historico")
+																				   });
+														}
 													}
 												},500);
 	

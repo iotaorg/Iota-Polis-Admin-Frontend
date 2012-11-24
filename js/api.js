@@ -2746,6 +2746,8 @@ $(document).ready(function() {
 										$.each(data_variables, function(index,value){
 											newform.push({label: "<b>"+data_variables[index].name+"</b>", input: ["text,var_$$id,itext".render({id:data_variables[index].id})]});
 											newform.push({label: "Descrição", input: ["textlabel,textlabel_explanation_$$id,ilabel".render({id:data_variables[index].id})]});
+											newform.push({label: "Fonte:", input: ["text,source_$$id,itext".render({id:data_variables[index].id})]});
+											newform.push({label: "Observações:", input: ["text,observations_$$id,itext".render({id:data_variables[index].id})]});
 											newform.push({type: "div"});
 										});
 	
@@ -2791,14 +2793,20 @@ $(document).ready(function() {
 											});
 											
 											var informou_valores = true;
+											var informou_fontes = true;
 											$.each(data_variables, function(index,value){
 												if ($("#dashboard-content .content .filter_result").find("#var_"+data_variables[index].id).val() == ""){
 													informou_valores = false;
+												}
+												if ($("#dashboard-content .content .filter_result").find("#var_"+data_variables[index].id).val() != "" && $("#dashboard-content .content .filter_result").find("#source_"+data_variables[index].id).val() == ""){
+													informou_fontes = false;
 												}
 											});
 	
 											if (!informou_valores && !$("#dashboard-content .content .filter_result input#no_data").attr("checked")){
 												$(".filter_result .form-aviso").setWarning({msg: "Por favor informe os valores"});
+											}else if (!informou_fontes && !$("#dashboard-content .content .filter_result input#no_data").attr("checked")){
+												$(".filter_result .form-aviso").setWarning({msg: "Por favor informe a fonte dos valores"});
 											}else if ($("#dashboard-content .content .filter_result input#no_data").attr("checked") && $("#dashboard-content .content").find("#justification_of_missing_field").val() == ""){
 												$(".filter_result .form-aviso").setWarning({msg: "Por favor informe a justificativa"});
 											}else{
@@ -2824,17 +2832,22 @@ $(document).ready(function() {
 															if (!$("#dashboard-content .content input#no_data").attr("checked")){
 																args = [{name: "api_key", value: $.cookie("key"),},
 																		{name: "variable.value.put.value", value: $("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val()},
+																		{name: "variable.value.put.source", value: $("#dashboard-content .content .filter_result").find("#source_"+data_variables[cont_sent].id).val()},
+																		{name: "variable.value.put.observations", value: $("#dashboard-content .content .filter_result").find("#observations_"+data_variables[cont_sent].id).val()},
 																		{name: "variable.value.put.value_of_date", value: data_formatada}
 																		];
 															}else if ($("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val() == ""){
 																args = [{name: "api_key", value: $.cookie("key"),},
 																		{name: "variable.value.put.value", value: ""},
+																		{name: "variable.value.put.observations", value: $("#dashboard-content .content .filter_result").find("#observations_"+data_variables[cont_sent].id).val()},
 																		{name: "variable.value.put.value_of_date", value: ""},
 																		{name: "variable.value.put.justification_of_missing_field", value: $("#dashboard-content .content .filter_result").find("#justification_of_missing_field").val()}
 																		];
 															}else{
 																args = [{name: "api_key", value: $.cookie("key"),},
 																		{name: "variable.value.put.value", value: $("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val()},
+																		{name: "variable.value.put.source", value: $("#dashboard-content .content .filter_result").find("#source_"+data_variables[cont_sent].id).val()},
+																		{name: "variable.value.put.observations", value: $("#dashboard-content .content .filter_result").find("#observations_"+data_variables[cont_sent].id).val()},
 																		{name: "variable.value.put.value_of_date", value: data_formatada}
 																		];
 															}

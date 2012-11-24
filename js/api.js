@@ -2773,9 +2773,15 @@ $(document).ready(function() {
 											if (data_variables[index].value != null && data_variables[index].value != undefined && data_variables[index].value != ""){
 												$("#dashboard-content .content .filter_result #var_$$id".render({id:data_variables[index].id})).val(data_variables[index].value);
 												$("#dashboard-content .content .filter_result #var_$$id".render({id:data_variables[index].id})).attr("disabled","disabled");
+												$("#dashboard-content .content .filter_result #source_$$id".render({id:data_variables[index].id})).val(data_variables[index].source);
+												$("#dashboard-content .content .filter_result #source_$$id".render({id:data_variables[index].id})).attr("disabled","disabled");
+												$("#dashboard-content .content .filter_result #observations_$$id".render({id:data_variables[index].id})).val(data_variables[index].observations);
+												$("#dashboard-content .content .filter_result #observations_$$id".render({id:data_variables[index].id})).attr("disabled","disabled");
 												$("#dashboard-content .content .filter_result input#no_data").attr("disabled","disabled");
 											}else{
 												$("#dashboard-content .content .filter_result #var_$$id".render({id:data_variables[index].id})).attr("disabled",false);
+												$("#dashboard-content .content .filter_result #source_$$id".render({id:data_variables[index].id})).attr("disabled",false);
+												$("#dashboard-content .content .filter_result #observations_$$id".render({id:data_variables[index].id})).attr("disabled",false);
 												$("#dashboard-content .content .filter_result input#no_data").attr("disabled",false);
 											}
 										});

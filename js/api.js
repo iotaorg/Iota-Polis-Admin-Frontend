@@ -2780,12 +2780,14 @@ $(document).ready(function() {
 												$("#dashboard-content .content .filter_result #source_$$id".render({id:data_variables[index].id})).attr("disabled","disabled");
 												$("#dashboard-content .content .filter_result #observations_$$id".render({id:data_variables[index].id})).val(data_variables[index].observations);
 												$("#dashboard-content .content .filter_result #observations_$$id".render({id:data_variables[index].id})).attr("disabled","disabled");
+												$("#dashboard-content .content .filter_result #goal").attr("disabled","disabled");
 												$("#dashboard-content .content .filter_result input#no_data").attr("disabled","disabled");
 											}else{
 												$("#dashboard-content .content .filter_result #var_$$id".render({id:data_variables[index].id})).attr("disabled",false);
 												$("#dashboard-content .content .filter_result #source_$$id".render({id:data_variables[index].id})).attr("disabled",false);
 												$("#dashboard-content .content .filter_result #observations_$$id".render({id:data_variables[index].id})).attr("disabled",false);
 												$("#dashboard-content .content .filter_result input#no_data").attr("disabled",false);
+												$("#dashboard-content .content .filter_result #goal").attr("disabled",false);
 											}
 										});
 									

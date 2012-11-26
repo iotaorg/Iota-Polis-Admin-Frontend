@@ -773,6 +773,7 @@ div.indicadores_legend{
 
 div.indicadores_legend .fillContent{
 	text-align: center;
+	display: inline-block;
 }
 
 div.indicadores_legend .item{
@@ -789,7 +790,7 @@ div.indicadores_legend .item .color{
 }
 
 div.indicadores_legend .item .color.no-data{
-	background-color: #FFC;
+	background-color: #FFFFDF;
 }
 div.indicadores_legend .item .color.last-period{
 	background-color: #D7FFD7;

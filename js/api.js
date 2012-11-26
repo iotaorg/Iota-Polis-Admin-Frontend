@@ -2516,7 +2516,15 @@ $(document).ready(function() {
 									
 									var axis_ant = "";
 									var indicators_table = "";
+									var indicators_legend = "";
 		
+									indicators_legend = "<div class='indicadores_legend'>";
+									indicators_legend += "<div class='item'><div class='color no-data'></div><div class='label'>Nenhum dado preenchido</div></div>";
+									indicators_legend += "<div class='item'><div class='color last-period'></div><div class='label'>Preenchido (exceto ano anterior ao vigente)</div></div>";
+									indicators_legend += "</div>";
+
+<div class='item'><div class='color no-data'></div><div class='label'>Não preenchidos</div></div>
+
 									indicators_table = "<div class='indicadores_list'>";
 									
 									for (i = 0; i < data_indicators.length; i++){
@@ -2528,11 +2536,12 @@ $(document).ready(function() {
 											axis_ant = data_indicators[i].axis_id;
 										}
 										var formula = formataFormula(data_indicators[i].formula,data_variables);
-										indicators_table += "<div class='variable'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$id' period='$$period'>detalhes</a><a href='$$hash?option=edit&url=$$url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
+										indicators_table += "<div class='variable' indicator-id='$$indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$id' period='$$period'>detalhes</a><a href='$$hash?option=edit&url=$$url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
 											name: data_indicators[i].name,
 											formula: formula,
 											hash: "#!/"+getUrlSub(),
 											url: "http://rnsp.aware.com.br/api/indicator/" + data_indicators[i].id,
+											indicator_id: data_indicators[i].id,
 											period: data_indicators[i].period,
 											id: data_indicators[i].id
 											});
@@ -2541,7 +2550,7 @@ $(document).ready(function() {
 									
 									indicators_table += "<div><div class='clear'>";
 		
-									$("#dashboard-content .content").append(indicators_table);
+									$("#dashboard-content .content").append(indicators_legend + indicators_table);
 
 									$("#dashboard-content .content .indicadores_list .zoom").click( function(){
 										var target = $(this).parent().parent();
@@ -2588,6 +2597,32 @@ $(document).ready(function() {
 									$("div.indicadores_list .eixos .title").click(function(){
 										$(this).parent().find(".variable").toggle();
 									});
+
+									$.ajax({
+										type: 'GET',
+										dataType: 'json',
+										url: '/api/public/user/$$userid/indicator/status?api_key=$$key'.render({
+												key: $.cookie("key"),
+												userid: $.cookie("user.id")
+												}),
+										success: function(data, textStatus, jqXHR){
+											var dataStatus = data.status;
+											$.each(dataStatus, function(index,value){
+												var class = "";
+												if (dataStatus[index].ultimo_periodo == 0 &&  dataStatus[index].outros_periodos == 0){
+													class = "no-data";
+												}else if (dataStatus[index].ultimo_periodo == 1 &&  dataStatus[index].outros_periodos == 0){
+													class = "last-period";
+												}else if (dataStatus[index].ultimo_periodo == 1 &&  dataStatus[index].outros_periodos == 1){
+													class = "full";
+												}
+												$(".indicatores_list .variable[indicator-id='$$indicator_id']".render({
+															indicator_id: data.status[index].id
+													})).addClass(class);
+											});
+										}
+									});
+
 									
 								},
 								error: function(data){

@@ -765,7 +765,42 @@ table.indicadores tr.eixos td {
 	background-color: #f5f5f5;
 }
 
+div.indicadores_legend{
+	clear: both;
+	margin-bottom: 10px;
+}
+
+div.indicadores_legend .item{
+	margin-right: 30px;
+	float: left;
+}
+
+div.indicadores_legend .item .color{
+	float: left;
+	width: 20px;
+	height: 20px;
+	border: 1px solid #f0f0f0;
+	margin-right: 5px;
+	margin-top: 2px;
+}
+
+div.indicadores_legend .item .color.no-data{
+	background-color: #FFC;
+}
+div.indicadores_legend .item .color.last-period{
+	background-color: #D7FFD7;
+}
+div.indicadores_legend .item .color.full{
+	background-color: #FFF;
+}
+
+div.indicadores_legend .item .label{
+	float: left;
+	clear: right;
+}
+
 div.indicadores_list{
+	clear: both;
 }
 
 div.indicadores_list .eixos{
@@ -793,6 +828,17 @@ div.indicadores_list .eixos .variable{
 	padding: 5px 10px;
 	border-bottom: 1px solid #f0f0f0;
 }
+
+div.indicadores_list .eixos .variable.no-data{
+	background-color: #FFC;
+}
+div.indicadores_list .eixos .variable.last-period{
+	background-color: #D7FFD7;
+}
+div.indicadores_list .eixos .variable.full{
+	background-color: #FFFFFF;
+}
+
 div.indicadores_list .eixos .variable .name{
 	width: 40%;
 	float: left;

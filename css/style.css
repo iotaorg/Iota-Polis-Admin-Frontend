@@ -836,7 +836,7 @@ div.indicadores_list .eixos .variable{
 }
 
 div.indicadores_list .eixos .variable.no-data{
-	background-color: #FFC;
+	background-color: #FFFFDF;
 }
 div.indicadores_list .eixos .variable.last-period{
 	background-color: #D7FFD7;

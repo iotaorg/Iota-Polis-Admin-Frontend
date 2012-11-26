@@ -2608,17 +2608,17 @@ $(document).ready(function() {
 										success: function(data, textStatus, jqXHR){
 											var dataStatus = data.status;
 											$.each(dataStatus, function(index,value){
-												var class = "";
+												var statusClass = "";
 												if (dataStatus[index].ultimo_periodo == 0 &&  dataStatus[index].outros_periodos == 0){
-													class = "no-data";
+													statusClass = "no-data";
 												}else if (dataStatus[index].ultimo_periodo == 1 &&  dataStatus[index].outros_periodos == 0){
-													class = "last-period";
+													statusClass = "last-period";
 												}else if (dataStatus[index].ultimo_periodo == 1 &&  dataStatus[index].outros_periodos == 1){
-													class = "full";
+													statusClass = "full";
 												}
 												$(".indicatores_list .variable[indicator-id='$$indicator_id']".render({
 															indicator_id: data.status[index].id
-													})).addClass(class);
+													})).addClass(statusClass);
 											});
 										}
 									});

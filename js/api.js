@@ -1428,7 +1428,7 @@ $(document).ready(function() {
 					newform.push({label: "Bairro", input: ["text,bairro_prefeitura,itext"]});
 					newform.push({label: "CEP", input: ["text,cep_prefeitura,itext"]});
 					newform.push({label: "Email", input: ["text,email_prefeitura,itext"]});
-					newform.push({label: "Nome do responsável", input: ["text,nome_reponsavel_prefeitura,itext"]});
+					newform.push({label: "Nome do responsável", input: ["text,nome_responsavel_prefeitura,itext"]});
 
 					var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
 					$(formbuild).find("div .field:odd").addClass("odd");
@@ -1458,7 +1458,7 @@ $(document).ready(function() {
 										{name: "city.create.bairro_prefeitura", value: $(this).parent().parent().find("#bairro_prefeitura").val()},
 										{name: "city.create.cep_prefeitura", value: $(this).parent().parent().find("#cep_prefeitura").val()},
 										{name: "city.create.email_prefeitura", value: $(this).parent().parent().find("#email_prefeitura").val()},
-										{name: "city.create.nome_reponsavel_prefeitura", value: $(this).parent().parent().find("#nome_reponsavel_prefeitura").val()}
+										{name: "city.create.nome_responsavel_prefeitura", value: $(this).parent().parent().find("#nome_responsavel_prefeitura").val()}
 										];
 								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
 								$.ajax({
@@ -1499,6 +1499,12 @@ $(document).ready(function() {
 									case 200:
 										$(formbuild).find("input#name").val(data.name);
 										$(formbuild).find("select#uf").val(data.uf);
+										$(formbuild).find("input#telefone_prefeitura").val(data.telefone_prefeitura);
+										$(formbuild).find("input#endereco_prefeitura").val(data.endereco_prefeitura);
+										$(formbuild).find("input#bairro_prefeitura").val(data.bairro_prefeitura);
+										$(formbuild).find("input#cep_prefeitura").val(data.cep_prefeitura);
+										$(formbuild).find("input#email_prefeitura").val(data.email_prefeitura);
+										$(formbuild).find("input#nome_responsavel_prefeitura").val(data.nome_responsavel_prefeitura);
 										break;	
 								}
 							},
@@ -1529,7 +1535,7 @@ $(document).ready(function() {
 										{name: "city.update.bairro_prefeitura", value: $(this).parent().parent().find("#bairro_prefeitura").val()},
 										{name: "city.update.cep_prefeitura", value: $(this).parent().parent().find("#cep_prefeitura").val()},
 										{name: "city.update.email_prefeitura", value: $(this).parent().parent().find("#email_prefeitura").val()},
-										{name: "city.update.nome_reponsavel_prefeitura", value: $(this).parent().parent().find("#nome_reponsavel_prefeitura").val()}
+										{name: "city.update.nome_responsavel_prefeitura", value: $(this).parent().parent().find("#nome_responsavel_prefeitura").val()}
 										];
 	
 								$("#dashboard-content .content .botao-form[ref='enviar']").hide();

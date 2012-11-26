@@ -434,6 +434,8 @@ $(document).ready(function() {
 		for (i = 0; i < form_args.length; i++){
 			if (form_args[i].type == "div"){
 				newform += "<div class='div'></div>";
+			}else if (form_args[i].type == "subtitle"){
+				newform += "<div class='subtitle'>$$title</div>".render({title: form_args[i].title});
 			}else{
 				if (form_args[i].class == undefined) form_args[i].class = "";
 				newform += "<div class='field $$class'>".render({class: form_args[i].class});
@@ -1420,6 +1422,13 @@ $(document).ready(function() {
 					
 					newform.push({label: "Nome", input: ["text,name,itext"]});
 					newform.push({label: "Estado", input: ["select,uf,iselect"]});
+					newform.push({type: "subtitle", title: "Dados da Prefeitura"});
+					newform.push({label: "Telefone", input: ["text,telefone_prefeitura,itext"]});
+					newform.push({label: "Endereço", input: ["text,endereco_prefeitura,itext"]});
+					newform.push({label: "Bairro", input: ["text,bairro_prefeitura,itext"]});
+					newform.push({label: "CEP", input: ["text,cep_prefeitura,itext"]});
+					newform.push({label: "Email", input: ["text,email_prefeitura,itext"]});
+					newform.push({label: "Nome do responsável", input: ["text,nome_reponsavel_prefeitura,itext"]});
 
 					var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
 					$(formbuild).find("div .field:odd").addClass("odd");
@@ -1443,7 +1452,13 @@ $(document).ready(function() {
 							}else{
 								args = [{name: "api_key", value: $.cookie("key"),},
 										{name: "city.create.name", value: $(this).parent().parent().find("#name").val()},
-										{name: "city.create.uf", value: $(this).parent().parent().find("#uf option:selected").val()}
+										{name: "city.create.uf", value: $(this).parent().parent().find("#uf option:selected").val()},
+										{name: "city.create.telefone_prefeitura", value: $(this).parent().parent().find("#telefone_prefeitura").val()},
+										{name: "city.create.endereco_prefeitura", value: $(this).parent().parent().find("#endereco_prefeitura").val()},
+										{name: "city.create.bairro_prefeitura", value: $(this).parent().parent().find("#bairro_prefeitura").val()},
+										{name: "city.create.cep_prefeitura", value: $(this).parent().parent().find("#cep_prefeitura").val()},
+										{name: "city.create.email_prefeitura", value: $(this).parent().parent().find("#email_prefeitura").val()},
+										{name: "city.create.nome_reponsavel_prefeitura", value: $(this).parent().parent().find("#nome_reponsavel_prefeitura").val()}
 										];
 								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
 								$.ajax({
@@ -1508,7 +1523,13 @@ $(document).ready(function() {
 							}else{
 								args = [{name: "api_key", value: $.cookie("key"),},
 										{name: "city.update.name", value: $(this).parent().parent().find("#name").val()},
-										{name: "city.update.uf", value: $(this).parent().parent().find("#uf option:selected").val(),}
+										{name: "city.update.uf", value: $(this).parent().parent().find("#uf option:selected").val()},
+										{name: "city.update.telefone_prefeitura", value: $(this).parent().parent().find("#telefone_prefeitura").val()},
+										{name: "city.update.endereco_prefeitura", value: $(this).parent().parent().find("#endereco_prefeitura").val()},
+										{name: "city.update.bairro_prefeitura", value: $(this).parent().parent().find("#bairro_prefeitura").val()},
+										{name: "city.update.cep_prefeitura", value: $(this).parent().parent().find("#cep_prefeitura").val()},
+										{name: "city.update.email_prefeitura", value: $(this).parent().parent().find("#email_prefeitura").val()},
+										{name: "city.update.nome_reponsavel_prefeitura", value: $(this).parent().parent().find("#nome_reponsavel_prefeitura").val()}
 										];
 	
 								$("#dashboard-content .content .botao-form[ref='enviar']").hide();

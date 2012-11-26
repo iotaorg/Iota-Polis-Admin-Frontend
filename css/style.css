@@ -768,6 +768,11 @@ table.indicadores tr.eixos td {
 div.indicadores_legend{
 	clear: both;
 	margin-bottom: 10px;
+	text-align: center;
+}
+
+div.indicadores_legend .fillContent{
+	text-align: center;
 }
 
 div.indicadores_legend .item{
@@ -777,11 +782,10 @@ div.indicadores_legend .item{
 
 div.indicadores_legend .item .color{
 	float: left;
-	width: 20px;
-	height: 20px;
+	width: 15px;
+	height: 15px;
 	border: 1px solid #f0f0f0;
 	margin-right: 5px;
-	margin-top: 2px;
 }
 
 div.indicadores_legend .item .color.no-data{
@@ -795,6 +799,7 @@ div.indicadores_legend .item .color.full{
 }
 
 div.indicadores_legend .item .label{
+	font-size: 10pt;
 	float: left;
 	clear: right;
 }

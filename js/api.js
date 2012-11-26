@@ -2518,10 +2518,10 @@ $(document).ready(function() {
 									var indicators_table = "";
 									var indicators_legend = "";
 		
-									indicators_legend = "<div class='indicadores_legend'>";
+									indicators_legend = "<div class='indicadores_legend'><div class='fillContent'>";
 									indicators_legend += "<div class='item'><div class='color no-data'></div><div class='label'>Nenhum dado preenchido</div></div>";
 									indicators_legend += "<div class='item'><div class='color last-period'></div><div class='label'>Preenchido (exceto ano anterior ao vigente)</div></div>";
-									indicators_legend += "</div>";
+									indicators_legend += "</div></div><div class='clear'></div>";
 
 <div class='item'><div class='color no-data'></div><div class='label'>Não preenchidos</div></div>
 
@@ -2616,7 +2616,7 @@ $(document).ready(function() {
 												}else if (dataStatus[index].ultimo_periodo == 1 &&  dataStatus[index].outros_periodos == 1){
 													statusClass = "full";
 												}
-												$(".indicatores_list .variable[indicator-id='$$indicator_id']".render({
+												$(".indicadores_list .variable[indicator-id='$$indicator_id']".render({
 															indicator_id: data.status[index].id
 													})).addClass(statusClass);
 											});

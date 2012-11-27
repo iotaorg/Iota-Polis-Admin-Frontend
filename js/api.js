@@ -253,6 +253,8 @@ $(document).ready(function() {
 	
 	var resetDashboard = function(){
 		$("#aviso").setWarning({msg: ""});
+		$("#top .top-right .logo").empty();
+		$("#top .top-right .logo").addClass("empty");
 		$("#user-info").remove();
 		$("#menu ul li").remove();
 		$("#menu ul").append("<li class='selected'>LOGIN</li>");
@@ -3284,7 +3286,6 @@ $(document).ready(function() {
 					success: function(data, textStatus, jqXHR){
 						switch(jqXHR.status){
 							case 200:
-								$("#top .content #user-logo").remove();
 								resetWarnings();
 								resetDashboard();
 								location.hash = "";

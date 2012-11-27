@@ -227,8 +227,10 @@ $(document).ready(function() {
 	}
 
 	var resetCookies = function(){
-		$.cookie("user.id",null,{path: "/"});
-		$.cookie("key",null,{path: "/"});
+		$.cookie("user.id",null,{path: "/", expires: -5});
+		$.cookie("key",null,{path: "/", expires: -5});
+		$.cookie("user.id",null,{expires: -5});
+		$.cookie("key",null,{expires: -5});
 	}
 
 	$.fn.setWarning = function(){
@@ -308,10 +310,7 @@ $(document).ready(function() {
 			error: function(data){
 				switch(data.status){
 					case 400:
-						$("#aviso").setWarning({msg: "Erro: $$codigo".render({
-									codigo: $.parseJSON(data.responseText).error
-									})
-						});
+						$("#aviso").setWarning({msg: "Erro ao fazer login. Tente novamente mais tarde."});
 						break;	
 				}
 			}

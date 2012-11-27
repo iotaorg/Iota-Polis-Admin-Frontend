@@ -1431,6 +1431,7 @@ $(document).ready(function() {
 					
 					newform.push({label: "Nome", input: ["text,name,itext"]});
 					newform.push({label: "Estado", input: ["select,uf,iselect"]});
+					newform.push({label: "Resumo (texto)", input: ["textarea,summary,itext"]});
 					newform.push({type: "subtitle", title: "Dados da Prefeitura"});
 					newform.push({label: "Telefone", input: ["text,telefone_prefeitura,itext"]});
 					newform.push({label: "Endereço", input: ["text,endereco_prefeitura,itext"]});
@@ -1462,6 +1463,7 @@ $(document).ready(function() {
 								args = [{name: "api_key", value: $.cookie("key"),},
 										{name: "city.create.name", value: $(this).parent().parent().find("#name").val()},
 										{name: "city.create.uf", value: $(this).parent().parent().find("#uf option:selected").val()},
+										{name: "city.create.summary", value: $(this).parent().parent().find("#summary").val()},
 										{name: "city.create.telefone_prefeitura", value: $(this).parent().parent().find("#telefone_prefeitura").val()},
 										{name: "city.create.endereco_prefeitura", value: $(this).parent().parent().find("#endereco_prefeitura").val()},
 										{name: "city.create.bairro_prefeitura", value: $(this).parent().parent().find("#bairro_prefeitura").val()},
@@ -1508,6 +1510,7 @@ $(document).ready(function() {
 									case 200:
 										$(formbuild).find("input#name").val(data.name);
 										$(formbuild).find("select#uf").val(data.uf);
+										$(formbuild).find("textarea#summary").val(data.summary);
 										$(formbuild).find("input#telefone_prefeitura").val(data.telefone_prefeitura);
 										$(formbuild).find("input#endereco_prefeitura").val(data.endereco_prefeitura);
 										$(formbuild).find("input#bairro_prefeitura").val(data.bairro_prefeitura);
@@ -1539,6 +1542,7 @@ $(document).ready(function() {
 								args = [{name: "api_key", value: $.cookie("key"),},
 										{name: "city.update.name", value: $(this).parent().parent().find("#name").val()},
 										{name: "city.update.uf", value: $(this).parent().parent().find("#uf option:selected").val()},
+										{name: "city.update.summary", value: $(this).parent().parent().find("#summary").val()},
 										{name: "city.update.telefone_prefeitura", value: $(this).parent().parent().find("#telefone_prefeitura").val()},
 										{name: "city.update.endereco_prefeitura", value: $(this).parent().parent().find("#endereco_prefeitura").val()},
 										{name: "city.update.bairro_prefeitura", value: $(this).parent().parent().find("#bairro_prefeitura").val()},

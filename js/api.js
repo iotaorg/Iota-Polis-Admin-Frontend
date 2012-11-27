@@ -3266,6 +3266,7 @@ $(document).ready(function() {
 												retorno = retorno.replace("<body><pre>","");
 												retorno = retorno.replace("</pre></body>","");
 												retorno = $.parseJSON(retorno);
+												console.log(retorno);
 											}else{
 												erro = 1;	
 											}
@@ -3277,11 +3278,19 @@ $(document).ready(function() {
 									}
 									
 									if (erro == 0){
-										if (cont_files_sent < files_sent.length){
-											sendFiles();
+										if (!retorno.error){
+											if (cont_files_sent < files_sent.length){
+												sendFiles();
+											}else{
+												$(clickedButton).html("Enviando Dados do Formulário...");
+												sendForm();
+											}
 										}else{
-											$(clickedButton).html("Enviando Dados do Formulário...");
-											sendForm();
+											$(".form-aviso").setWarning({msg: "Erro ao enviar arquivo " + file + " (" + retorno.error + ")"});
+											$(clickedButton).html("Salvar");
+											$(clickedButton).attr("is-disabled",0);
+											cont_files_sent = files_sent.length;
+											return;
 										}
 									}else{
 										console.log("Erro ao enviar arquivo " + file);

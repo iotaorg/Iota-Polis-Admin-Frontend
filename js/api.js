@@ -1151,20 +1151,22 @@ $(document).ready(function() {
 						},null,false);
 
 				$("#dashboard-content .content").append(logList);
-
+				
+//				if (findInArray(user_info.roles,"_prefeitura") || findInArray(user_info.roles,"_movimento")){
+//					var url_log = "/api/log?user_id="+$.cookie("user.id") + "&api_key=" + $.cookie("key");
+//				}else{
+					var url_log = "/api/log?api_key=" + $.cookie("key");
+//				}
 				$.ajax({
 					type: 'GET',
 					dataType: 'json',
-					url: '/api/log?user_id=$$userid&api_key=$$key'.render({
-							key: $.cookie("key"),
-							userid: $.cookie("user.id")
-							}),
+					url: url_log,
 					success: function(data, textStatus, jqXHR){
 						$.each(data.logs, function(index,value){
 							$("#dashboard-content .content #results tbody").append($("<tr><td>$$usuario</td><td>$$mensagem</td><td>$$data</td></tr>".render({
 							usuario: data.logs[index].user.nome,
-							apelido: data.logs[index].message,
-							url: data.logs[index].date})));
+							mensagem: data.logs[index].message,
+							data: data.logs[index].date})));
 						});
 
 						$("#results").dataTable( {

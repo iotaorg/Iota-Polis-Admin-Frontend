@@ -1145,6 +1145,44 @@ $(document).ready(function() {
 			$("#dashboard #form-login").hide();
 			/*  ORGANIZATION  */
 			if (getUrlSub() == "dashboard"){
+				
+				var logList = buildDataTable({
+						headers: ["Usuário","Mensagem","Data"]
+						},null,false);
+
+				$("#dashboard-content .content").append(logList);
+
+				$.ajax({
+					type: 'GET',
+					dataType: 'json',
+					url: '/api/log?user_id=$$userid&api_key=$$key'.render({
+							key: $.cookie("key"),
+							userid: $.cookie("user.id")
+							}),
+					success: function(data, textStatus, jqXHR){
+						$.each(data.logs, function(index,value){
+							$("#dashboard-content .content #results tbody").append($("<tr><td>$$usuario</td><td>$$mensagem</td><td>$$data</td></tr>".render({
+							usuario: data.logs[index].user.nome,
+							apelido: data.logs[index].message,
+							url: data.logs[index].date})));
+						});
+
+						$("#results").dataTable( {
+							  "oLanguage": {
+											"sUrl": "/frontend/js/dataTables.pt-br.txt"
+											},
+							  "aoColumnDefs": [
+												{ "bSearchable": false, "bSortable": false, "sClass": "log", "aTargets": [ 0 , 1 , 2 ] }
+											  ]
+						} );
+					},
+					error: function(data){
+						$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
+									codigo: $.parseJSON(data.responseText).error
+								})
+						});
+					}
+				});
 
 			}else if (getUrlSub() == "users"){
 				/*  USER  */
@@ -1155,7 +1193,7 @@ $(document).ready(function() {
 							headers: ["Nome","Email","_"]
 							});
 
-					$("#dashboard-content .content").append(userList);
+					$("#dashboard-content .content").append(userList)
 					
 					$("#button-add").click(function(){
 						resetWarnings();

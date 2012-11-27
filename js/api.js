@@ -308,11 +308,9 @@ $(document).ready(function() {
 				}
 			},
 			error: function(data){
-				switch(data.status){
-					case 400:
-						$("#aviso").setWarning({msg: "Erro ao fazer login. Tente novamente mais tarde."});
-						break;	
-				}
+				$("#aviso").setWarning({msg: "Erro ao fazer login. Tente novamente mais tarde ($$codigo).".render({
+						codigo: data.status
+					})});
 			}
 		});
 	};

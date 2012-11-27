@@ -887,11 +887,11 @@ $(document).ready(function() {
 								}
 								if (findInArray(user_info.roles,"_movimento")){
 									if (user_info.files.logo_movimento != undefined){
-										$("#top .top-right .logo").append("<img>");
+										$("#top .top-right .logo").empty().append("<img>");
 										$("#top .top-right .logo img").attr("src",user_info.files.logo_movimento);
 									}
 								}else{
-									$("#top .top-right .logo img").remove();
+									$("#top .top-right .logo").empty();
 									$("#top .top-right .logo").addClass("empty");
 								}
 								buildMenu();

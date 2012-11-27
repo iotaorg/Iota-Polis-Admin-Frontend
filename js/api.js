@@ -2869,7 +2869,7 @@ $(document).ready(function() {
 											newform.push({type: "div"});
 										});
 	
-										newform.push({label: "Ref. de Meta", input: ["text,goal,itext"]});
+										newform.push({label: "Meta", input: ["text,goal,itext"]});
 										newform.push({label: "", input: ["checkbox,no_data,icheckbox"]});
 										newform.push({label: "Justificativa", input: ["text,justification_of_missing_field,itext"]});
 							
@@ -3049,7 +3049,7 @@ $(document).ready(function() {
 																						   });
 																},
 																error: function(data){
-																	$(".filter_result .form-aviso").setWarning({msg: "Valores enviados, mas ocorreu um erro ao enviar Justificativa/Ref. de Meta. ($$erro)".render({
+																	$(".filter_result .form-aviso").setWarning({msg: "Valores enviados, mas ocorreu um erro ao enviar Justificativa/Meta. ($$erro)".render({
 																				erro: $.parseJSON(data.responseText).error
 																				})
 																	});

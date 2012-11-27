@@ -1175,7 +1175,8 @@ $(document).ready(function() {
 											"sUrl": "/frontend/js/dataTables.pt-br.txt"
 											},
 							  "aoColumnDefs": [
-												{ "bSearchable": false, "bSortable": false, "sClass": "log", "aTargets": [ 0 , 1 , 2 ] }
+												{ "sClass": "log", "aTargets": [ 0 , 1 , 2 ] },
+												{ "sClass": "log.data", "aTargets": [ 2 ] }
 											  ]
 						} );
 					},

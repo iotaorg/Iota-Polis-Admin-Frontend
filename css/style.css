@@ -468,6 +468,16 @@ table#results a.delete{
 	font-size: 9pt;	
 }
 
+table#results td.log{
+	font-size: 10pt;
+}
+
+table#results td.log.data{
+	text-align: center;
+}
+
+
+
 table#results span.noresults{
 	font-size: 10pt;
 	font-style: italic;	

@@ -3115,6 +3115,7 @@ $(document).ready(function() {
 				}
 				if (findInArray(user_info.roles,"_movimento")){
 					newform.push({label: "Logo(imagem)", input: ["file,logo_movimento,itext"]});
+					newform.push({label: "Imagem do perfil da cidade", input: ["file,imagem_cidade,itext"]});
 				}
 	
 				var formbuild = $("#dashboard-content .content").append(buildForm(newform,"Preferências"));
@@ -3260,6 +3261,7 @@ $(document).ready(function() {
 									if ($(this).contents()){
 										if 	($(this).contents()[0].body){
 											if 	($(this).contents()[0].body.outerHTML){
+												console.log($(this).contents()[0].body.outerHTML);
 												var retorno = $(this).contents()[0].body.outerHTML;
 												retorno = retorno.replace("<body><pre>","");
 												retorno = retorno.replace("</pre></body>","");

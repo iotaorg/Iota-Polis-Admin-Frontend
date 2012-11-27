@@ -2534,8 +2534,6 @@ $(document).ready(function() {
 									indicators_legend += "<div class='item'><div class='color last-period'></div><div class='label'>Preenchido (exceto ano anterior ao vigente)</div><div class='clear'></div></div>";
 									indicators_legend += "</div></div><div class='clear'></div>";
 
-<div class='item'><div class='color no-data'></div><div class='label'>Não preenchidos</div></div>
-
 									indicators_table = "<div class='indicadores_list'>";
 									
 									for (i = 0; i < data_indicators.length; i++){

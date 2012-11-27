@@ -3111,6 +3111,7 @@ $(document).ready(function() {
 				if (findInArray(user_info.roles,"_prefeitura")){
 					newform.push({label: "Carta Compromisso (PDF)", input: ["file,carta_compromisso,itext"]});
 					newform.push({label: "Programa de Metas (PDF)", input: ["file,programa_metas,itext"]});
+					newform.push({label: "Imagem do perfil da cidade", input: ["file,imagem_cidade,itext"]});
 				}
 				if (findInArray(user_info.roles,"_movimento")){
 					newform.push({label: "Logo(imagem)", input: ["file,logo_movimento,itext"]});
@@ -3294,7 +3295,7 @@ $(document).ready(function() {
 							}
 						}
 						
-						var files = ["programa_metas","carta_compromisso","logo_movimento"];
+						var files = ["programa_metas","carta_compromisso","logo_movimento","imagem_cidade"];
 						
 						var files_sent = [];
 						for (i = 0; i < files.length; i++){

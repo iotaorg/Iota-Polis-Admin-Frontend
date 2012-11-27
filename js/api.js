@@ -30,7 +30,15 @@ $.extend({
 		var date_split = date.split("-");
 
 		return date_split[2] + "/" + date_split[1] + "/" + date_split[0];
+	},
+	convertDateTime: function(date,splitter){
+		var date_tmp = date.split(splitter);
+		var date = date_tmp[0];
+		var time = date_tmp[1];
 		
+		var date_split = date.split("-");
+
+		return date_split[2] + "/" + date_split[1] + "/" + date_split[0] + " " + time;
 	},
 	convertDatetoBd: function(date,splitter){
 		var date_tmp = date.split(splitter);
@@ -1166,7 +1174,7 @@ $(document).ready(function() {
 							$("#dashboard-content .content #results tbody").append($("<tr><td>$$usuario</td><td>$$mensagem</td><td>$$data</td></tr>".render({
 							usuario: data.logs[index].user.nome,
 							mensagem: data.logs[index].message,
-							data: $.convertDate(data.logs[index].date,"T")
+							data: $.convertDateTime(data.logs[index].date,"T")
 							})));
 						});
 

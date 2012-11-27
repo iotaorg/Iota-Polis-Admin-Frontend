@@ -1166,7 +1166,8 @@ $(document).ready(function() {
 							$("#dashboard-content .content #results tbody").append($("<tr><td>$$usuario</td><td>$$mensagem</td><td>$$data</td></tr>".render({
 							usuario: data.logs[index].user.nome,
 							mensagem: data.logs[index].message,
-							data: data.logs[index].date})));
+							data: $.convertDate(data.logs[index].date,"T")
+							})));
 						});
 
 						$("#results").dataTable( {

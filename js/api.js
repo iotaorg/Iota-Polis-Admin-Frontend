@@ -115,7 +115,13 @@ $(document).ready(function() {
 						  "km":"quilômetros",
 						  "kg":"quilos",
 						  "gr":"gramas",
-						  "tn":"toneladas"
+						  "tn":"toneladas",
+						  "m²":"metro quadrado",
+						  "m³":"metro cúbico",
+						  "hab/m²":"habitantes por metro quadrado",
+						  "km²":"quilômetro quadrado",
+						  "hab/km²":"habitantes por quilômetro quadrado",
+						  "habitantes":"habitantes"
 						  };
 
 	var estados = {"AC":"Acre",
@@ -875,17 +881,18 @@ $(document).ready(function() {
 								
 								var info_content = "Usuário: " + user_info.name;
 								if($("#user-info").length == 0){
-									$("#top .content").append("<div id='user-info'>" + info_content + "</div>");
+									$("#top .top-right .info").append("<div id='user-info'>" + info_content + "</div>");
 								}else{
-									$("#top #usera-info").html(info_content);
+									$("#top #user-info").html(info_content);
 								}
 								if (findInArray(user_info.roles,"_movimento")){
 									if (user_info.files.logo_movimento != undefined){
-										$("#top .content").append("<div id='user-logo'><div class='imagem'></div></div>");
-										$("#top .content #user-logo .imagem").css("background-image","url("+user_info.files.logo_movimento+")");
+										$("#top .top-right .logo").append("<img>");
+										$("#top .top-right .logo img").attr("src",user_info.files.logo_movimento);
 									}
 								}else{
-									$("#top .content #user-logo").remove();
+									$("#top .top-right .logo img").remove();
+									$("#top .top-right .logo").addClass("empty");
 								}
 								buildMenu();
 								setTitleBar();
@@ -2339,8 +2346,6 @@ $(document).ready(function() {
 								$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
 							}else if ($(this).parent().parent().find("#formula").val() == ""){
 								$(".form-aviso").setWarning({msg: "Por favor informe a Fórmula"});
-							}else if ($(this).parent().parent().find("#source").val() == ""){
-								$(".form-aviso").setWarning({msg: "Por favor informe a Fonte"});
 							}else{
 								args = [{name: "api_key", value: $.cookie("key"),},
 										{name: "indicator.create.name", value: $(this).parent().parent().find("#name").val()},
@@ -2427,8 +2432,6 @@ $(document).ready(function() {
 								$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
 							}else if ($(this).parent().parent().find("#formula").val() == ""){
 								$(".form-aviso").setWarning({msg: "Por favor informe a Fórmula"});
-							}else if ($(this).parent().parent().find("#source").val() == ""){
-								$(".form-aviso").setWarning({msg: "Por favor informe a Fonte"});
 							}else{
 								args = [{name: "api_key", value: $.cookie("key"),},
 										{name: "indicator.update.name", value: $(this).parent().parent().find("#name").val()},

@@ -64,6 +64,39 @@ a{
 	color: #20c1c1;
 }
 
+#top .top-left{
+	float: left;
+	clear: left;
+}
+
+#top .top-right{
+	float: right;
+	clear: right;
+}
+
+#top .top-right .logo{
+	clear: both;
+	text-align: right;
+}
+
+#top .top-right .empty{
+	width: 100px;
+	height: 66px;
+}
+
+#top .top-right .logo img{
+	border: none;
+}
+
+#top .top-right .info{
+	clear: both;
+	text-align: right;
+}
+
+#user-info{
+	text-align: right;
+}
+
 #menu{
 	margin: 10px auto;
 	text-align: center;
@@ -128,26 +161,6 @@ a{
 #header-title .description{
 	color: #999;
 	padding-top: 5px;
-}
-
-#user-info{
-	text-align: right;
-	margin-top: -20px;
-	margin-bottom: -20px;
-}
-
-#user-logo{
-	position: absolute;
-	width: 900px;
-	text-align: right;
-	top: 5;
-}
-#user-logo .imagem{
-	float: right;
-	width: 450px;
-	height: 70px;
-	background-position: top right;
-	background-repeat: no-repeat;
 }
 
 #aviso{

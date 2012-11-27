@@ -226,7 +226,11 @@ $(document).ready(function() {
 		return retorno;
 	}
 
-	
+	var resetCookies = function(){
+		$.cookie("user.id",null,{path: "/"});
+		$.cookie("key",null,{path: "/"});
+	}
+
 	$.fn.setWarning = function(){
 		var args = arguments[0];
 		$(this).hide();
@@ -293,9 +297,9 @@ $(document).ready(function() {
 				switch(jqXHR.status){
 					case 200:
 						resetWarnings();
-						$.cookie("user.login",data.login,{ expires: 1 });
-						$.cookie("user.id",data.id,{ expires: 1 });
-						$.cookie("key",data.api_key,{ expires: 1 });
+						$.cookie("user.login",data.login,{ expires: 1, path: "/" });
+						$.cookie("user.id",data.id,{ expires: 1, path: "/" });
+						$.cookie("key",data.api_key,{ expires: 1, path: "/" });
 						$("#dashboard #form-login").hide();
 						location.hash = "!/dashboard";
 						break;	
@@ -916,8 +920,7 @@ $(document).ready(function() {
 										'Ok': {
 											'class'	: '',
 											'action': function(){
-												$.cookie("user.id",null);
-												$.cookie("key",null);
+												resetCookies();
 												resetDashboard();
 												location.hash = "";				
 											}
@@ -943,8 +946,7 @@ $(document).ready(function() {
 									'Ok': {
 										'class'	: '',
 										'action': function(){
-											$.cookie("user.id",null);
-											$.cookie("key",null);
+											resetCookies()
 											resetDashboard();
 											location.hash = "";				
 										}
@@ -960,8 +962,7 @@ $(document).ready(function() {
 									'Ok': {
 										'class'	: '',
 										'action': function(){
-											$.cookie("user.id",null);
-											$.cookie("key",null);
+											resetCookies()
 											resetDashboard();
 											location.hash = "";				
 										}
@@ -973,8 +974,7 @@ $(document).ready(function() {
 				}
 			});
 		}else{
-			$.cookie("user.id",null);
-			$.cookie("key",null);
+			resetCookies()
 			resetDashboard();
 			buildLogin();
 		}
@@ -3328,8 +3328,7 @@ $(document).ready(function() {
 				var url_logout = '/api/logout?api_key=$$key'.render({
 									key: $.cookie("key")
 							});
-				$.cookie("user.id",null);
-				$.cookie("key",null);
+				resetCookies();
 				$.ajax({
 					type: 'GET',
 					dataType: 'json',

@@ -1153,49 +1153,48 @@ $(document).ready(function() {
 			$("#dashboard #form-login").hide();
 			/*  ORGANIZATION  */
 			if (getUrlSub() == "dashboard"){
-				
-				var logList = buildDataTable({
-						headers: ["Usuário","Mensagem","Data"]
-						},null,false);
 
-				$("#dashboard-content .content").append(logList);
-				
-//				if (findInArray(user_info.roles,"_prefeitura") || findInArray(user_info.roles,"_movimento")){
-//					var url_log = "/api/log?user_id="+$.cookie("user.id") + "&api_key=" + $.cookie("key");
-//				}else{
+				if (!findInArray(user_info.roles,"_prefeitura") && !findInArray(user_info.roles,"_movimento")){
+					
+					var logList = buildDataTable({
+							headers: ["Usuário","Mensagem","Data"]
+							},null,false);
+	
+					$("#dashboard-content .content").append(logList);
+
 					var url_log = "/api/log?api_key=" + $.cookie("key");
-//				}
-				$.ajax({
-					type: 'GET',
-					dataType: 'json',
-					url: url_log,
-					success: function(data, textStatus, jqXHR){
-						$.each(data.logs, function(index,value){
-							$("#dashboard-content .content #results tbody").append($("<tr><td>$$usuario</td><td>$$mensagem</td><td>$$data</td></tr>".render({
-							usuario: data.logs[index].user.nome,
-							mensagem: data.logs[index].message,
-							data: $.convertDateTime(data.logs[index].date,"T")
-							})));
-						});
-
-						$("#results").dataTable( {
-							  "oLanguage": {
-											"sUrl": "/frontend/js/dataTables.pt-br.txt"
-											},
-							  "aoColumnDefs": [
-												{ "sClass": "log", "aTargets": [ 0 , 1 , 2 ] },
-												{ "sClass": "log.data", "aTargets": [ 2 ] }
-											  ]
-						} );
-					},
-					error: function(data){
-						$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
-									codigo: $.parseJSON(data.responseText).error
-								})
-						});
-					}
-				});
-
+					
+					$.ajax({
+						type: 'GET',
+						dataType: 'json',
+						url: url_log,
+						success: function(data, textStatus, jqXHR){
+							$.each(data.logs, function(index,value){
+								$("#dashboard-content .content #results tbody").append($("<tr><td>$$usuario</td><td>$$mensagem</td><td>$$data</td></tr>".render({
+								usuario: data.logs[index].user.nome,
+								mensagem: data.logs[index].message,
+								data: $.convertDateTime(data.logs[index].date,"T")
+								})));
+							});
+	
+							$("#results").dataTable( {
+								  "oLanguage": {
+												"sUrl": "/frontend/js/dataTables.pt-br.txt"
+												},
+								  "aoColumnDefs": [
+													{ "sClass": "log", "aTargets": [ 0 , 1 , 2 ] },
+													{ "sClass": "log.data", "aTargets": [ 2 ] }
+												  ]
+							} );
+						},
+						error: function(data){
+							$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
+										codigo: $.parseJSON(data.responseText).error
+									})
+							});
+						}
+					});
+				}
 			}else if (getUrlSub() == "users"){
 				/*  USER  */
 				loadCidades();

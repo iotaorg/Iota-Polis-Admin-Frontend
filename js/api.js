@@ -643,8 +643,14 @@ $(document).ready(function() {
 				if (data.header && data.rows != undefined){
 					var history_table = "<div class='title' title='mostrar/esconder Histórico'>Série Histórica</div><div class='historic-content'>";
 					history_table += "<table class='history'><thead><tr><th>Período</th>";
-					$.each(data.header, function(index,value){
-						history_table += "<th class='variavel'>$$variavel</th>".render({variavel:index});
+					
+					var headers = [];//corrige ordem do header
+					$.each(data.header,function(titulo, index){
+						headers[index] = titulo;
+					});
+
+					$.each(headers, function(index,value){
+						history_table += "<th class='variavel'>$$variavel</th>".render({variavel:value});
 					});
 					history_table += "<th class='formula_valor'>Valor da Fórmula</th>";
 					history_table += "</tr></thead><tbody>";
@@ -2624,8 +2630,14 @@ $(document).ready(function() {
 											success: function(data, textStatus, jqXHR){
 												if (data.header){
 													var history_table = "<table class='history'><thead><tr><th>Período</th>";
-													$.each(data.header, function(index,value){
-														history_table += "<th class='variavel'>$$variavel</th>".render({variavel:index});
+													
+													var headers = [];//corrige ordem do header
+													$.each(data.header,function(titulo, index){
+														headers[index] = titulo;
+													});
+													
+													$.each(headers, function(index,value){
+														history_table += "<th class='variavel'>$$variavel</th>".render({variavel:value});
 													});
 													history_table += "<th class='formula_valor'>Valor da Fórmula</th>";
 													history_table += "</tr><tbody>";

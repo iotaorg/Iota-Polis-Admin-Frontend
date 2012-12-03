@@ -3126,7 +3126,7 @@ $(document).ready(function() {
 					newform.push({label: "Imagem do perfil da cidade", input: ["file,imagem_cidade,itext"]});
 				}
 				if (findInArray(user_info.roles,"_movimento")){
-					newform.push({label: "Logo(imagem)<br /><font size='1'>630x135 pixels</font>", input: ["file,logo_movimento,itext"]});
+					newform.push({label: "Logo(imagem)<br /><font size='1'>(630x135 pixels)</font>", input: ["file,logo_movimento,itext"]});
 					newform.push({label: "Imagem do<br />perfil da cidade<br /><font size='1'>(altura máx: 80 pixels)</font>", input: ["file,imagem_cidade,itext"]});
 				}
 	

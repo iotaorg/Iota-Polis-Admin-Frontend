@@ -657,14 +657,24 @@ $(document).ready(function() {
 					$.each(data.rows, function(index,value){
 						history_table += "<tr><td class='periodo'>$$periodo</td>".render({periodo: $.convertDateToPeriod(data.rows[index].valid_from,args.period)});
 						$.each(data.rows[index].valores, function(index2,value2){
-							history_table += "<td class='valor' title='$$data'>$$valor</td>".render({
-									valor: $.formatNumber(data.rows[index].valores[index2].value, {format:"#,##0.###", locale:"br"}),
-									data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T")
+							if (data.rows[index].valores[index2].value != "-"){
+								history_table += "<td class='valor' title='$$data'>$$valor</td>".render({
+										valor: $.formatNumber(data.rows[index].valores[index2].value, {format:"#,##0.###", locale:"br"}),
+										data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T")
+								});
+							}else{
+								history_table += "<td class='valor' title='$$data'>-</td>".render({
+										data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T")
+								});
+							}
+						});
+						if (data.rows[index].formula_value != "-"){
+							history_table += "<td class='formula_valor'>$$valor</td>".render({
+									valor: $.formatNumber(data.rows[index].formula_value, {format:"#,##0.###", locale:"br"})
 							});
-						});
-						history_table += "<td class='formula_valor'>$$valor</td>".render({
-								valor: $.formatNumber(data.rows[index].formula_value, {format:"#,##0.###", locale:"br"})
-						});
+						}else{
+							history_table += "<td class='formula_valor'>-</td>";
+						}
 						history_table += "</tr></tbody>";
 					});
 					history_table += "</table>";
@@ -2644,12 +2654,22 @@ $(document).ready(function() {
 													$.each(data.rows, function(index,value){
 														history_table += "<tr><td class='periodo'>$$periodo</td>".render({periodo: $.convertDateToPeriod(data.rows[index].valid_from,indicator_period)});
 														$.each(data.rows[index].valores, function(index2,value2){
-															history_table += "<td class='valor' title='$$data'>$$valor</td>".render({
-																	valor: $.formatNumber(data.rows[index].valores[index2].value, {format:"#,##0.###", locale:"br"}),
-																	data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T")
-															});
+															if (data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined && data.rows[index].valores[index2].value != "-"){
+																history_table += "<td class='valor' title='$$data'>$$valor</td>".render({
+																		valor: $.formatNumber(data.rows[index].valores[index2].value, {format:"#,##0.###", locale:"br"}),
+																		data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T")
+																});
+															}else{
+																history_table += "<td class='valor' title='$$data'>-</td>".render({
+																		data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T")
+																});
+															}
 														});
-														history_table += "<td class='formula_valor'>$$formula_valor</td>".render({formula_valor: $.formatNumber(data.rows[index].formula_value, {format:"#,##0.###", locale:"br"})});
+														if (data.rows[index].formula_value != "-"){
+															history_table += "<td class='formula_valor'>$$formula_valor</td>".render({formula_valor: $.formatNumber(data.rows[index].formula_value, {format:"#,##0.###", locale:"br"})});
+														}else{
+															history_table += "<td class='formula_valor'>-</td>";
+														}
 														history_table += "</tr></tbody>";
 													});
 													history_table += "</table>";
@@ -2979,7 +2999,7 @@ $(document).ready(function() {
 																		{name: "variable.value.put.value", value: ""},
 																		{name: "variable.value.put.source", value: ""},
 																		{name: "variable.value.put.observations", value: $("#dashboard-content .content .filter_result").find("#observations_"+data_variables[cont_sent].id).val()},
-																		{name: "variable.value.put.value_of_date", value: ""}
+																		{name: "variable.value.put.value_of_date", value: data_formatada}
 																		];
 															}else{
 																args = [{name: "api_key", value: $.cookie("key"),},

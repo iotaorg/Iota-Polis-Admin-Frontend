@@ -657,7 +657,7 @@ $(document).ready(function() {
 					$.each(data.rows, function(index,value){
 						history_table += "<tr><td class='periodo'>$$periodo</td>".render({periodo: $.convertDateToPeriod(data.rows[index].valid_from,args.period)});
 						$.each(data.rows[index].valores, function(index2,value2){
-							if (data.rows[index].valores[index2].value != "-"){
+							if (data.rows[index].valores[index2].value != "-" && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined){
 								history_table += "<td class='valor' title='$$data'>$$valor</td>".render({
 										valor: $.formatNumber(data.rows[index].valores[index2].value, {format:"#,##0.###", locale:"br"}),
 										data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T")

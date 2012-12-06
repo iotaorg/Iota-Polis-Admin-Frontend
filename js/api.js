@@ -1,3 +1,5 @@
+var api_path = "";
+
 if (!String.prototype.render) {
 	String.prototype.render = function(args) {
 		var copy = this + '';
@@ -293,7 +295,7 @@ $(document).ready(function() {
 		$.ajax({
 			type: 'POST',
 			dataType: 'json',
-			url: '/api/login',
+			url: api_path + '/api/login',
 			data: args,
 			success: function(data,status,jqXHR){
 				switch(jqXHR.status){
@@ -543,7 +545,7 @@ $(document).ready(function() {
 		$.ajax({
 			type: 'GET',
 			dataType: 'json',
-			url: '/api/user/$$userid/variable?api_key=$$key'.render({
+			url: api_path + '/api/user/$$userid/variable?api_key=$$key'.render({
 					key: $.cookie("key"),
 					userid: $.cookie("user.id")
 					}),
@@ -594,7 +596,7 @@ $(document).ready(function() {
 					$.ajax({
 						type: 'GET',
 						dataType: 'json',
-						url: '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
+						url: api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
 								key: $.cookie("key"),
 								var_id: getIdFromUrl($.getUrlVar("url")),
 								value_id: $(value_selected).attr("value-id")
@@ -617,7 +619,7 @@ $(document).ready(function() {
 				$("table.history a.delete").click(function(){
 					var value_selected = $(this);
 					deleteRegister({
-						url: '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
+						url: api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
 								key: $.cookie("key"),
 								var_id: getIdFromUrl($.getUrlVar("url")),
 								value_id: $(value_selected).attr("value-id")
@@ -635,7 +637,7 @@ $(document).ready(function() {
 		$.ajax({
 			type: 'GET',
 			dataType: 'json',
-			url: '/api/indicator/$$id/variable/value?api_key=$$key'.render({
+			url: api_path + '/api/indicator/$$id/variable/value?api_key=$$key'.render({
 					key: $.cookie("key"),
 					id: args.id
 					}),
@@ -826,7 +828,7 @@ $(document).ready(function() {
 		$.ajax({
 			type: 'GET',
 			dataType: 'json',
-			url: '/api/city?api_key=$$key'.render({
+			url: api_path + '/api/city?api_key=$$key'.render({
 							key: $.cookie("key")
 					}),
 			success: function(data, textStatus, jqXHR){
@@ -887,7 +889,7 @@ $(document).ready(function() {
 			$.ajax({
 				type: 'GET',
 				dataType: 'json',
-				url: '/api/user/$$userid?api_key=$$key'.render({
+				url: api_path + '/api/user/$$userid?api_key=$$key'.render({
 						userid: $.cookie("user.id"),
 						key: $.cookie("key")
 				}),
@@ -1094,7 +1096,7 @@ $(document).ready(function() {
 		$.ajax({
 			type: 'GET',
 			dataType: 'json',
-			url: '/api/city?api_key=$$key'.render({
+			url: api_path + '/api/city?api_key=$$key'.render({
 							key: $.cookie("key")
 					}),
 			success: function(data, textStatus, jqXHR){
@@ -1163,6 +1165,7 @@ $(document).ready(function() {
 	
 	var buildContent = function(){
 		if ($.inArray(getUrlSub().toString(),["dashboard","users","cities","variable","myvariable","indicator","myindicator","tokens","reports","prefs"]) >= 0){
+			$.xhrPool.abortAll();
 			$("#dashboard #form-login").hide();
 			/*  ORGANIZATION  */
 			if (getUrlSub() == "dashboard"){
@@ -1175,7 +1178,7 @@ $(document).ready(function() {
 	
 					$("#dashboard-content .content").append(logList);
 
-					var url_log = "/api/log?api_key=" + $.cookie("key");
+					var url_log = api_path + '/api/log?api_key=' + $.cookie("key");
 					
 					$.ajax({
 						type: 'GET',
@@ -1192,19 +1195,13 @@ $(document).ready(function() {
 	
 							$("#results").dataTable( {
 								  "oLanguage": {
-												"sUrl": "/frontend/js/dataTables.pt-br.txt"
+												"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
 												},
 								  "aoColumnDefs": [
 													{ "sClass": "log", "aTargets": [ 0 , 1 , 2 ] },
 													{ "sClass": "log.data", "aTargets": [ 2 ] }
 												  ]
 							} );
-						},
-						error: function(data){
-							$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
-										codigo: $.parseJSON(data.responseText).error
-									})
-							});
 						}
 					});
 				}
@@ -1226,10 +1223,10 @@ $(document).ready(function() {
 
 					$("#results").dataTable( {
 						  "oLanguage": {
-										"sUrl": "/frontend/js/dataTables.pt-br.txt"
+										"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
 										},
 						  "bProcessing": true,
-						  "sAjaxSource": '/api/user?api_key=$$key&content-type=application/json&columns=name,email,url,_,_'.render({
+						  "sAjaxSource": api_path + '/api/user?api_key=$$key&content-type=application/json&columns=name,email,url,_,_'.render({
 								key: $.cookie("key")
 								}),
 						  "aoColumnDefs": [
@@ -1320,7 +1317,7 @@ $(document).ready(function() {
 								$.ajax({
 									type: 'POST',
 									dataType: 'json',
-									url: '/api/user',
+									url: api_path + '/api/user',
 									data: args,
 									success: function(data,status,jqXHR){
 										$("#aviso").setWarning({msg: "Cadastro efetuado com sucesso.".render({
@@ -1471,10 +1468,10 @@ $(document).ready(function() {
 
 					$("#results").dataTable( {
 						  "oLanguage": {
-										"sUrl": "/frontend/js/dataTables.pt-br.txt"
+										"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
 										},
 						  "bProcessing": true,
-						  "sAjaxSource": '/api/city?api_key=$$key&content-type=application/json&columns=name,uf,url,_,_'.render({
+						  "sAjaxSource": api_path + '/api/city?api_key=$$key&content-type=application/json&columns=name,uf,url,_,_'.render({
 								key: $.cookie("key")
 								}),
 						  "aoColumnDefs": [
@@ -1537,7 +1534,7 @@ $(document).ready(function() {
 								$.ajax({
 									type: 'POST',
 									dataType: 'json',
-									url: '/api/city',
+									url: api_path + '/api/city',
 									data: args,
 									success: function(data,status,jqXHR){
 										$("#aviso").setWarning({msg: "Cadastro efetuado com sucesso.".render({
@@ -1664,10 +1661,10 @@ $(document).ready(function() {
 
 					$("#results").dataTable( {
 						  "oLanguage": {
-										"sUrl": "/frontend/js/dataTables.pt-br.txt"
+										"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
 										},
 						  "bProcessing": true,
-						  "sAjaxSource": '/api/variable?api_key=$$key&content-type=application/json&columns=name,cognomen,type,created_at,is_basic,url,_,_'.render({
+						  "sAjaxSource": api_path + '/api/variable?api_key=$$key&content-type=application/json&columns=name,cognomen,type,created_at,is_basic,url,_,_'.render({
 								key: $.cookie("key")
 								}),
 						  "aoColumnDefs": [
@@ -1773,7 +1770,7 @@ $(document).ready(function() {
 								$.ajax({
 									type: 'POST',
 									dataType: 'json',
-									url: '/api/variable',
+									url: api_path + '/api/variable',
 									data: args,
 									success: function(data,status,jqXHR){
 										$("#aviso").setWarning({msg: "Cadastro efetuado com sucesso.".render({
@@ -1908,7 +1905,7 @@ $(document).ready(function() {
 					$.ajax({
 						type: 'GET',
 						dataType: 'json',
-						url: '/api/user/$$userid/variable?api_key=$$key&is_basic=1'.render({
+						url: api_path + '/api/user/$$userid/variable?api_key=$$key&is_basic=1'.render({
 								key: $.cookie("key"),
 								userid: $.cookie("user.id")
 								}),
@@ -1921,7 +1918,7 @@ $(document).ready(function() {
 
 							$("#results").dataTable( {
 								  "oLanguage": {
-												"sUrl": "/frontend/js/dataTables.pt-br.txt"
+												"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
 												},
 								  "aoColumnDefs": [
 													{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 1 ] },
@@ -1973,7 +1970,7 @@ $(document).ready(function() {
 									$.ajax({
 										type: 'GET',
 										dataType: 'json',
-										url: '/api/period/year?api_key=$$key'.render({
+										url: api_path + '/api/period/year?api_key=$$key'.render({
 												key: $.cookie("key")
 											}),
 										success: function(data, textStatus, jqXHR){
@@ -1992,7 +1989,7 @@ $(document).ready(function() {
 									$.ajax({
 										type: 'GET',
 										dataType: 'json',
-										url: '/api/period/year?api_key=$$key'.render({
+										url: api_path + '/api/period/year?api_key=$$key'.render({
 												key: $.cookie("key")
 											}),
 										success: function(data, textStatus, jqXHR){
@@ -2014,7 +2011,7 @@ $(document).ready(function() {
 													$.ajax({
 														type: 'GET',
 														dataType: 'json',
-														url: '/api/period/year/$$year/month?api_key=$$key'.render({
+														url: api_path + '/api/period/year/$$year/month?api_key=$$key'.render({
 																key: $.cookie("key"),
 																year: $("#dashboard-content .content select#value_of_date_year option:selected").html()
 															}),
@@ -2164,7 +2161,7 @@ $(document).ready(function() {
 					$.ajax({
 						type: 'GET',
 						dataType: 'json',
-						url: '/api/variable?api_key=$$key'.render({
+						url: api_path + '/api/variable?api_key=$$key'.render({
 								key: $.cookie("key"),
 								userid: $.cookie("user.id")
 								}),
@@ -2176,10 +2173,10 @@ $(document).ready(function() {
 							});
 							$("#results").dataTable( {
 								  "oLanguage": {
-												"sUrl": "/frontend/js/dataTables.pt-br.txt"
+												"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
 												},
 								  "bProcessing": true,
-								  "sAjaxSource": '/api/indicator?api_key=$$key&content-type=application/json&columns=name,formula,created_at,url,_,_'.render({
+								  "sAjaxSource": api_path + '/api/indicator?api_key=$$key&content-type=application/json&columns=name,formula,created_at,url,_,_'.render({
 										key: $.cookie("key")
 										}),
 								  "aoColumnDefs": [
@@ -2249,7 +2246,7 @@ $(document).ready(function() {
 					$.ajax({
 						type: 'GET',
 						dataType: 'json',
-						url: '/api/axis?api_key=$$key'.render({
+						url: api_path + '/api/axis?api_key=$$key'.render({
 								key: $.cookie("key")
 								}),
 						success: function(data, textStatus, jqXHR){
@@ -2364,7 +2361,7 @@ $(document).ready(function() {
 					$.ajax({
 						type: 'GET',
 						dataType: 'json',
-						url: '/api/variable?api_key=$$key'.render({
+						url: api_path + '/api/variable?api_key=$$key'.render({
 										key: $.cookie("key")
 								}),
 						success: function(data, textStatus, jqXHR){
@@ -2433,7 +2430,7 @@ $(document).ready(function() {
 								$.ajax({
 									type: 'POST',
 									dataType: 'json',
-									url: '/api/indicator',
+									url: api_path + '/api/indicator',
 									data: args,
 									success: function(data,status,jqXHR){
 										$("#aviso").setWarning({msg: "Cadastro efetuado com sucesso.".render({
@@ -2557,7 +2554,7 @@ $(document).ready(function() {
 					$.ajax({
 						type: 'GET',
 						dataType: 'json',
-						url: '/api/indicator?api_key=$$key'.render({
+						url: api_path + '/api/indicator?api_key=$$key'.render({
 								key: $.cookie("key"),
 								userid: $.cookie("user.id")
 								}),
@@ -2581,7 +2578,7 @@ $(document).ready(function() {
 							$.ajax({
 								type: 'GET',
 								dataType: 'json',
-								url: '/api/variable?api_key=$$key'.render({
+								url: api_path + '/api/variable?api_key=$$key'.render({
 										key: $.cookie("key"),
 										userid: $.cookie("user.id")
 										}),
@@ -2633,7 +2630,7 @@ $(document).ready(function() {
 										$.ajax({
 											type: 'GET',
 											dataType: 'json',
-											url: '/api/indicator/$$id/variable/value?api_key=$$key'.render({
+											url: api_path + '/api/indicator/$$id/variable/value?api_key=$$key'.render({
 													key: $.cookie("key"),
 													id: $(this).attr("indicator-id")
 													}),
@@ -2692,7 +2689,7 @@ $(document).ready(function() {
 									$.ajax({
 										type: 'GET',
 										dataType: 'json',
-										url: '/api/public/user/$$userid/indicator/status?api_key=$$key'.render({
+										url: api_path + '/api/public/user/$$userid/indicator/status?api_key=$$key'.render({
 												key: $.cookie("key"),
 												userid: $.cookie("user.id")
 												}),
@@ -2737,7 +2734,7 @@ $(document).ready(function() {
 					$.ajax({
 						type: 'GET',
 						dataType: 'json',
-						url: '/api/indicator/$$id?api_key=$$key'.render({
+						url: api_path + '/api/indicator/$$id?api_key=$$key'.render({
 								key: $.cookie("key"),
 								id: getIdFromUrl($.getUrlVar("url"))
 								}),
@@ -2774,7 +2771,7 @@ $(document).ready(function() {
 							$.ajax({
 								type: 'GET',
 								dataType: 'json',
-								url: '/api/variable?api_key=$$key'.render({
+								url: api_path + '/api/variable?api_key=$$key'.render({
 										key: $.cookie("key"),
 										userid: $.cookie("user.id")
 										}),
@@ -2802,7 +2799,7 @@ $(document).ready(function() {
 								$.ajax({
 									type: 'GET',
 									dataType: 'json',
-									url: '/api/period/year?api_key=$$key'.render({
+									url: api_path + '/api/period/year?api_key=$$key'.render({
 											key: $.cookie("key")
 										}),
 									success: function(data, textStatus, jqXHR){
@@ -2818,7 +2815,7 @@ $(document).ready(function() {
 								$.ajax({
 									type: 'GET',
 									dataType: 'json',
-									url: '/api/period/year?api_key=$$key'.render({
+									url: api_path + '/api/period/year?api_key=$$key'.render({
 											key: $.cookie("key")
 										}),
 									success: function(data, textStatus, jqXHR){
@@ -2842,7 +2839,7 @@ $(document).ready(function() {
 												$.ajax({
 													type: 'GET',
 													dataType: 'json',
-													url: '/api/period/year/$$year/month?api_key=$$key'.render({
+													url: api_path + '/api/period/year/$$year/month?api_key=$$key'.render({
 															key: $.cookie("key"),
 															year: $("#dashboard-content .content .filter_indicator select#date_filter_year option:selected").html()
 														}),
@@ -2881,7 +2878,7 @@ $(document).ready(function() {
 								$.ajax({
 									type: 'GET',
 									dataType: 'json',
-									url: '/api/indicator/$$id/variable/period/$$period?api_key=$$key'.render({
+									url: api_path + '/api/indicator/$$id/variable/period/$$period?api_key=$$key'.render({
 											key: $.cookie("key"),
 											id: getIdFromUrl($.getUrlVar("url")),
 											period: $("#dashboard-content .content .filter_indicator select#date_filter option:selected").val()
@@ -3013,7 +3010,7 @@ $(document).ready(function() {
 															$.ajax({
 																type: 'PUT',
 																dataType: 'json',
-																url: "/api/variable/$$var_id/value".render({var_id: data_variables[cont_sent].id}),
+																url: api_path + '/api/variable/$$var_id/value'.render({var_id: data_variables[cont_sent].id}),
 																data: args,
 																success: function(data, textStatus, jqXHR){
 																	cont_returned++;
@@ -3060,7 +3057,7 @@ $(document).ready(function() {
 															$.ajax({
 																type: 'POST',
 																dataType: 'json',
-																url: "/api/user/$$userid/indicator".render({
+																url: api_path + '/api/user/$$userid/indicator'.render({
 																				userid: $.cookie("user.id")
 																			}),
 																data: args,
@@ -3157,7 +3154,7 @@ $(document).ready(function() {
 				$.ajax({
 					type: 'GET',
 					dataType: 'json',
-					url: "/api/user/$$userid/?api_key=$$key".render({
+					url: api_path + '/api/user/$$userid/?api_key=$$key'.render({
 								userid: $.cookie("user.id"),
 								key: $.cookie("key")
 						}),
@@ -3231,7 +3228,7 @@ $(document).ready(function() {
 							$.ajax({
 								type: 'POST',
 								dataType: 'json',
-								url: "/api/user/$$userid/?api_key=$$key".render({
+								url: api_path + '/api/user/$$userid/?api_key=$$key'.render({
 									userid: $.cookie("user.id"),
 									key: $.cookie("key")
 									}),
@@ -3270,7 +3267,7 @@ $(document).ready(function() {
 														id: "arquivo"
 													 });
 
-								form.attr("action", "/api/user/$$userid/arquivo/$$tipo?api_key=$$key&content-type=application/json".render({
+								form.attr("action", api_path + '/api/user/$$userid/arquivo/$$tipo?api_key=$$key&content-type=application/json'.render({
 										userid: $.cookie("user.id"),
 										tipo: file,
 										key: $.cookie("key")
@@ -3366,7 +3363,7 @@ $(document).ready(function() {
 			}
 		}else if (getUrlSub() == "logout"){
 			if ($.cookie("key")){
-				var url_logout = '/api/logout?api_key=$$key'.render({
+				var url_logout = api_path + '/api/logout?api_key=$$key'.render({
 									key: $.cookie("key")
 							});
 				resetCookies();

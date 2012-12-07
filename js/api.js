@@ -2701,7 +2701,7 @@ $(document).ready(function() {
 													id: $(this).attr("indicator-id")
 													}),
 											success: function(data, textStatus, jqXHR){
-												if (data.header){
+												if (data.rows){
 													var history_table = "<table class='history'><thead><tr><th>Período</th>";
 													
 													var headers = [];//corrige ordem do header

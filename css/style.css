@@ -850,7 +850,7 @@ div.indicadores_legend .item .color.last-period{
 	color: #3E2800;
 }
 div.indicadores_legend .item .color.full{
-	background-color: #FFF;
+	background-color: #D7FFD7;
 }
 
 div.indicadores_legend .item .label{
@@ -896,7 +896,7 @@ div.indicadores_list .eixos .variable.last-period{
 	background-color: #FFED6C;
 }
 div.indicadores_list .eixos .variable.full{
-	background-color: #FFFFFF;
+	background-color: #D7FFD7;
 }
 
 div.indicadores_list .eixos .variable .name{

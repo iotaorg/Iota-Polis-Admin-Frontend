@@ -842,10 +842,12 @@ div.indicadores_legend .item .color{
 }
 
 div.indicadores_legend .item .color.no-data{
-	background-color: #FFFFDF;
+	background-color: #FFD9DA;
+	color: #790003;
 }
 div.indicadores_legend .item .color.last-period{
-	background-color: #D7FFD7;
+	background-color: #FFFFDF;
+	color: #3E2800;
 }
 div.indicadores_legend .item .color.full{
 	background-color: #FFF;
@@ -888,10 +890,10 @@ div.indicadores_list .eixos .variable{
 }
 
 div.indicadores_list .eixos .variable.no-data{
-	background-color: #FFFFDF;
+	background-color: #FFD9DA;
 }
 div.indicadores_list .eixos .variable.last-period{
-	background-color: #D7FFD7;
+	background-color: #FFED6C;
 }
 div.indicadores_list .eixos .variable.full{
 	background-color: #FFFFFF;

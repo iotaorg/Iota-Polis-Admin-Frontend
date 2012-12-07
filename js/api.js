@@ -1,5 +1,5 @@
 var api_path = "";
-var api_path = "http://rnsp.aware.com.br";
+//var api_path = "http://rnsp.aware.com.br";
 
 if (!String.prototype.render) {
 	String.prototype.render = function(args) {
@@ -683,7 +683,7 @@ $(document).ready(function() {
 						}else{
 							history_table += "<td class='formula_valor'>-</td>";
 						}
-						history_table += "<td class='botoes'><a href='javascript: void(0);' row-id='$$row' class='delete'>apagar</a></td>".render({
+						history_table += "<td class='edit'><a href='javascript: void(0);' row-id='$$row' class='delete'>apagar</a></td>".render({
 									row: rows
 						});
 						history_table += "</tr>";
@@ -726,7 +726,6 @@ $(document).ready(function() {
 															value_id: $(element).attr("value-id")
 														}),
 											success: function(data,status,jqXHR){
-												console.log(total_values_enviados);
 												switch(jqXHR.status){
 													case 204:
 														total_values_enviados++;
@@ -3362,12 +3361,10 @@ $(document).ready(function() {
 									if ($(this).contents()){
 										if 	($(this).contents()[0].body){
 											if 	($(this).contents()[0].body.outerHTML){
-												console.log($(this).contents()[0].body.outerHTML);
 												var retorno = $(this).contents()[0].body.outerHTML;
 												retorno = retorno.replace("<body><pre>","");
 												retorno = retorno.replace("</pre></body>","");
 												retorno = $.parseJSON(retorno);
-												console.log(retorno);
 											}else{
 												erro = 1;	
 											}

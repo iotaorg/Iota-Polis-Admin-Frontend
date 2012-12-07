@@ -1361,6 +1361,11 @@ $(document).ready(function() {
 												$(formbuild).find("select#organization_id").val(getIdFromUrl(data.organization));
 											}
 										}
+										if (!findInArray(["admin","user","app"],data.roles[0])){
+											var role_temp = data.roles[0];
+											data.roles[0] = data.roles[1];
+											data.roles[1] = role_temp;
+										}
 										$(formbuild).find("select#user_role").val(data.roles[0]);
 										if (data.roles[0] == "user"){
 											$(formbuild).find("div.prefeitura").show();

@@ -1,4 +1,5 @@
 var api_path = "";
+var api_path = "http://rnsp.aware.com.br";
 
 if (!String.prototype.render) {
 	String.prototype.render = function(args) {
@@ -897,16 +898,19 @@ $(document).ready(function() {
 					switch(jqXHR.status){
 						case 200:
 							user_info = data;
-							if (user_info.roles[0]){
-								var user_roles = (user_info.roles[0]) ? " (" + roles[user_info.roles[0]] + ")" : "";
-								
-								if (findInArray(user_info.roles,"_movimento")){
-									//$('<link rel="stylesheet" type="text/css" href="css/style-movimento.css" >')
-								   //.appendTo("head");
-								}else{
-									//$('<link rel="stylesheet" type="text/css" href="css/style.css" >')
-								   //.appendTo("head");
+							
+							user_info.role = "";
+							if (user_info.roles.length == 1){
+								user_info.role = user_info.roles[0];
+							}else if (user_info.roles.length == 2){
+								if (user_info.roles[0] == "user"){
+									user_info.role = user_info.roles[0];
+								}else if (user_info.roles[1] == "user"){
+									user_info.role = user_info.roles[1];
 								}
+							}
+							
+							if (user_info.role != ""){
 								
 								var info_content = "Usuário: " + user_info.name;
 								if($("#user-info").length == 0){
@@ -1019,7 +1023,7 @@ $(document).ready(function() {
 		menu_access["admin"] = ["dashboard","users","cities","variable","indicator","prefs","logout"];
 		menu_access["user"] = ["dashboard","myvariable","myindicator","prefs","logout"];
 		
-		$.each(menu_access[user_info.roles[0]],function(index,value){
+		$.each(menu_access[user_info.role],function(index,value){
 			var menu_class = (getUrlSub() == value) ? "selected" : "";
 			$("#menu").find("ul").append("<li class='$$class' ref='$$url_sub'>$$menu</li>".render({
 				menu: "<a href='#!/" + value + "'>" + menu_label[value] + "</a>",
@@ -1490,7 +1494,6 @@ $(document).ready(function() {
 					
 					newform.push({label: "Nome", input: ["text,name,itext"]});
 					newform.push({label: "Estado", input: ["select,uf,iselect"]});
-					newform.push({label: "Resumo (texto)", input: ["textarea,summary,itext"]});
 					newform.push({type: "subtitle", title: "Dados da Prefeitura"});
 					newform.push({label: "Telefone", input: ["text,telefone_prefeitura,itext"]});
 					newform.push({label: "Endereço", input: ["text,endereco_prefeitura,itext"]});
@@ -1522,7 +1525,6 @@ $(document).ready(function() {
 								args = [{name: "api_key", value: $.cookie("key"),},
 										{name: "city.create.name", value: $(this).parent().parent().find("#name").val()},
 										{name: "city.create.uf", value: $(this).parent().parent().find("#uf option:selected").val()},
-										{name: "city.create.summary", value: $(this).parent().parent().find("#summary").val()},
 										{name: "city.create.telefone_prefeitura", value: $(this).parent().parent().find("#telefone_prefeitura").val()},
 										{name: "city.create.endereco_prefeitura", value: $(this).parent().parent().find("#endereco_prefeitura").val()},
 										{name: "city.create.bairro_prefeitura", value: $(this).parent().parent().find("#bairro_prefeitura").val()},
@@ -1569,7 +1571,6 @@ $(document).ready(function() {
 									case 200:
 										$(formbuild).find("input#name").val(data.name);
 										$(formbuild).find("select#uf").val(data.uf);
-										$(formbuild).find("textarea#summary").val(data.summary);
 										$(formbuild).find("input#telefone_prefeitura").val(data.telefone_prefeitura);
 										$(formbuild).find("input#endereco_prefeitura").val(data.endereco_prefeitura);
 										$(formbuild).find("input#bairro_prefeitura").val(data.bairro_prefeitura);
@@ -1601,7 +1602,6 @@ $(document).ready(function() {
 								args = [{name: "api_key", value: $.cookie("key"),},
 										{name: "city.update.name", value: $(this).parent().parent().find("#name").val()},
 										{name: "city.update.uf", value: $(this).parent().parent().find("#uf option:selected").val()},
-										{name: "city.update.summary", value: $(this).parent().parent().find("#summary").val()},
 										{name: "city.update.telefone_prefeitura", value: $(this).parent().parent().find("#telefone_prefeitura").val()},
 										{name: "city.update.endereco_prefeitura", value: $(this).parent().parent().find("#endereco_prefeitura").val()},
 										{name: "city.update.bairro_prefeitura", value: $(this).parent().parent().find("#bairro_prefeitura").val()},
@@ -3127,15 +3127,18 @@ $(document).ready(function() {
 				newform.push({label: "Senha", input: ["password,password,itext"]});
 				newform.push({label: "Confirmar Senha", input: ["password,password_confirm,itext"]});
 
-				newform.push({label: "Endereço", input: ["text,endereco,itext"]});
-				newform.push({label: "Cidade", input: ["text,cidade,itext"]});
-				newform.push({label: "Estado", input: ["text,estado,itext"]});
-				newform.push({label: "Bairro", input: ["text,bairro,itext"]});
-				newform.push({label: "CEP", input: ["text,cep,itext"]});
-				newform.push({label: "Telefone", input: ["text,telefone,itext"]});
-				newform.push({label: "Email de Contato", input: ["text,email_contato,itext"]});
-				newform.push({label: "Telefone de Contato", input: ["text,telefone_contato,itext"]});
-				newform.push({label: "Nome do responsável pelo cadastro", input: ["text,nome_responsavel_cadastro,itext"]});
+				if (findInArray(user_info.roles,"_prefeitura") || findInArray(user_info.roles,"_movimento")){
+					newform.push({label: "Endereço", input: ["text,endereco,itext"]});
+					newform.push({label: "Cidade", input: ["text,cidade,itext"]});
+					newform.push({label: "Estado", input: ["text,estado,itext"]});
+					newform.push({label: "Bairro", input: ["text,bairro,itext"]});
+					newform.push({label: "CEP", input: ["text,cep,itext"]});
+					newform.push({label: "Telefone", input: ["text,telefone,itext"]});
+					newform.push({label: "Email de Contato", input: ["text,email_contato,itext"]});
+					newform.push({label: "Telefone de Contato", input: ["text,telefone_contato,itext"]});
+					newform.push({label: "Nome do responsável pelo cadastro", input: ["text,nome_responsavel_cadastro,itext"]});
+					newform.push({label: "Resumo da Cidade (texto)", input: ["textarea,city_summary,itext"]});
+				}
 
 				if (findInArray(user_info.roles,"_prefeitura")){
 					newform.push({label: "Carta Compromisso (PDF)", input: ["file,carta_compromisso,itext"]});
@@ -3169,6 +3172,7 @@ $(document).ready(function() {
 								$(formbuild).find("input#bairro").val(data.bairro);
 								$(formbuild).find("input#cep").val(data.cep);
 								$(formbuild).find("input#telefone").val(data.telefone);
+								$(formbuild).find("input#city_summary").val(data.city_summary);
 								$(formbuild).find("input#email_contato").val(data.email_contato);
 								$(formbuild).find("input#telefone_contato").val(data.telefone_contato);
 								$(formbuild).find("input#nome_responsavel_cadastro").val(data.nome_responsavel_cadastro);
@@ -3217,7 +3221,8 @@ $(document).ready(function() {
 									{name: "user.update.telefone", value: $(".form").find("#telefone").val(),},
 									{name: "user.update.email_contato", value: $(".form").find("#email_contato").val(),},
 									{name: "user.update.telefone_contato", value: $(".form").find("#telefone_contato").val(),},
-									{name: "user.update.nome_responsavel_cadastro", value: $(".form").find("#nome_responsavel_cadastro").val(),}
+									{name: "user.update.nome_responsavel_cadastro", value: $(".form").find("#nome_responsavel_cadastro").val(),},
+									{name: "user.update.city_summary", value: $(".form").find("#city_summary").val(),}
 									];
 		
 

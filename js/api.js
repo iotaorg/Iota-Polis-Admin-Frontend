@@ -2704,7 +2704,7 @@ $(document).ready(function() {
 												var statusClass = "";
 												if (dataStatus[index].ultimo_periodo == 0 &&  dataStatus[index].outros_periodos == 0){
 													statusClass = "no-data";
-												}else if (dataStatus[index].ultimo_periodo == 1 &&  dataStatus[index].outros_periodos == 0){
+												}else if (dataStatus[index].ultimo_periodo == 0 &&  dataStatus[index].outros_periodos == 1){
 													statusClass = "last-period";
 												}else if (dataStatus[index].ultimo_periodo == 1 &&  dataStatus[index].outros_periodos == 1){
 													statusClass = "full";

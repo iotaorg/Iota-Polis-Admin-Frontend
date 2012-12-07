@@ -1,5 +1,5 @@
 var api_path = "";
-//var api_path = "http://rnsp.aware.com.br";
+var api_path = "http://rnsp.aware.com.br";
 
 if (!String.prototype.render) {
 	String.prototype.render = function(args) {
@@ -655,19 +655,24 @@ $(document).ready(function() {
 					$.each(headers, function(index,value){
 						history_table += "<th class='variavel'>$$variavel</th>".render({variavel:value});
 					});
-					history_table += "<th class='formula_valor'>Valor da Fórmula</th>";
+					history_table += "<th class='formula_valor'>Valor da Fórmula</th><th></th>";
 					history_table += "</tr></thead><tbody>";
+					var rows = 0;
 					$.each(data.rows, function(index,value){
-						history_table += "<tr><td class='periodo'>$$periodo</td>".render({periodo: $.convertDateToPeriod(data.rows[index].valid_from,args.period)});
+						history_table += "<tr row-id='$$row'><td class='periodo'>$$periodo</td>".render({periodo: $.convertDateToPeriod(data.rows[index].valid_from,args.period), row: rows});
 						$.each(data.rows[index].valores, function(index2,value2){
 							if (data.rows[index].valores[index2].value != "-" && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined){
-								history_table += "<td class='valor' title='$$data'>$$valor</td>".render({
+								history_table += "<td class='valor' title='$$data' value-id='$$id' variable-id='$$variable_id'>$$valor</td>".render({
 										valor: $.formatNumber(data.rows[index].valores[index2].value, {format:"#,##0.###", locale:"br"}),
-										data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T")
+										data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T"),
+										id: data.rows[index].valores[index2].id,
+										variable_id: data.rows[index].valores[index2].variable_id
 								});
 							}else{
-								history_table += "<td class='valor' title='$$data'>-</td>".render({
-										data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T")
+								history_table += "<td class='valor' title='$$data' value-id='$$id'>-</td>".render({
+										data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T"),
+										id: data.rows[index].valores[index2].id,
+										variable_id: data.rows[index].valores[index2].variable_id
 								});
 							}
 						});
@@ -678,9 +683,13 @@ $(document).ready(function() {
 						}else{
 							history_table += "<td class='formula_valor'>-</td>";
 						}
-						history_table += "</tr></tbody>";
+						history_table += "<td class='botoes'><a href='javascript: void(0);' row-id='$$row' class='delete'>apagar</a></td>".render({
+									row: rows
+						});
+						history_table += "</tr>";
+						rows++;
 					});
-					history_table += "</table>";
+					history_table += "</tbody></table>";
 					history_table += "</div>";
 				}else{
 					var history_table = "<div class='title' title='mostrar/esconder Histórico'>Série Histórica</div><div class='historic-content'><table class='history'><thead><tr><th>nenhum registro encontrado</th></tr></thead></table></div>";
@@ -689,6 +698,58 @@ $(document).ready(function() {
 				$(args.target).append(history_table);
 				$(args.target).find(".title").click(function(){
 					$(this).parent().find(".historic-content").toggle();
+				});
+				$("table.history a.delete").click(function(){
+					var link_delete = this;
+					$.confirm({
+						'title': 'Confirmação',
+						'message': 'Você irá excluir permanentemente esse registro.<br />Continuar?',
+						'buttons': {
+							'Sim': {
+								'class'	: '',
+								'action': function(){
+									var row = $("table.history tbody tr[row-id='$$row_id']".render({row_id: $(link_delete).attr("row-id")}));
+									
+									var tds = $(row).find("td[variable-id]");
+									
+									var total_values = tds.length;
+									
+									var total_values_enviados = 0;
+									
+									$(tds).each(function(index,element){
+										$.ajax({
+											type: 'DELETE',
+											dataType: 'json',
+											url: api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
+															key: $.cookie("key"),
+															var_id: $(element).attr("variable-id"),
+															value_id: $(element).attr("value-id")
+														}),
+											success: function(data,status,jqXHR){
+												console.log(total_values_enviados);
+												switch(jqXHR.status){
+													case 204:
+														total_values_enviados++;
+														if (total_values_enviados >= total_values){
+															resetWarnings();
+															$("#aviso").setWarning({msg: "Cadastro apagado com sucesso."});
+															buildIndicatorHistory(args);
+														}
+														break;
+												}
+											}
+										});
+									});
+									
+								}
+							},
+							'Não'	: {
+								'class'	: '',
+								'action': function(){
+								}
+							}
+						}
+					});
 				});
 			}
 		});

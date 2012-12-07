@@ -1,5 +1,5 @@
 var api_path = "";
-var api_path = "http://rnsp.aware.com.br";
+//var api_path = "http://rnsp.aware.com.br";
 
 if (!String.prototype.render) {
 	String.prototype.render = function(args) {
@@ -3172,7 +3172,7 @@ $(document).ready(function() {
 								$(formbuild).find("input#bairro").val(data.bairro);
 								$(formbuild).find("input#cep").val(data.cep);
 								$(formbuild).find("input#telefone").val(data.telefone);
-								$(formbuild).find("input#city_summary").val(data.city_summary);
+								$(formbuild).find("textarea#city_summary").val(data.city_summary);
 								$(formbuild).find("input#email_contato").val(data.email_contato);
 								$(formbuild).find("input#telefone_contato").val(data.telefone_contato);
 								$(formbuild).find("input#nome_responsavel_cadastro").val(data.nome_responsavel_cadastro);
@@ -3212,17 +3212,17 @@ $(document).ready(function() {
 							
 							args = [{name: "api_key", value: $.cookie("key"),},
 									{name: "user.update.name", value: $(".form").find("#name").val()},
-									{name: "user.update.email", value: $(".form").find("#email").val(),},
-									{name: "user.update.endereco", value: $(".form").find("#endereco").val(),},
-									{name: "user.update.cidade", value: $(".form").find("#cidade").val(),},
-									{name: "user.update.estado", value: $(".form").find("#estado").val(),},
-									{name: "user.update.bairro", value: $(".form").find("#bairro").val(),},
-									{name: "user.update.cep", value: $(".form").find("#cep").val(),},
-									{name: "user.update.telefone", value: $(".form").find("#telefone").val(),},
-									{name: "user.update.email_contato", value: $(".form").find("#email_contato").val(),},
-									{name: "user.update.telefone_contato", value: $(".form").find("#telefone_contato").val(),},
-									{name: "user.update.nome_responsavel_cadastro", value: $(".form").find("#nome_responsavel_cadastro").val(),},
-									{name: "user.update.city_summary", value: $(".form").find("#city_summary").val(),}
+									{name: "user.update.email", value: $(".form").find("#email").val()},
+									{name: "user.update.endereco", value: $(".form").find("#endereco").val()},
+									{name: "user.update.cidade", value: $(".form").find("#cidade").val()},
+									{name: "user.update.estado", value: $(".form").find("#estado").val()},
+									{name: "user.update.bairro", value: $(".form").find("#bairro").val()},
+									{name: "user.update.cep", value: $(".form").find("#cep").val()},
+									{name: "user.update.telefone", value: $(".form").find("#telefone").val()},
+									{name: "user.update.email_contato", value: $(".form").find("#email_contato").val()},
+									{name: "user.update.telefone_contato", value: $(".form").find("#telefone_contato").val()},
+									{name: "user.update.nome_responsavel_cadastro", value: $(".form").find("#nome_responsavel_cadastro").val()},
+									{name: "user.update.city_summary", value: $(".form").find("#city_summary").val()}
 									];
 		
 

@@ -2600,6 +2600,7 @@ $(document).ready(function() {
 									indicators_legend = "<div class='indicadores_legend'><div class='fillContent'>";
 									indicators_legend += "<div class='item'><div class='color no-data'></div><div class='label'>Nenhum dado preenchido</div><div class='clear'></div></div>";
 									indicators_legend += "<div class='item'><div class='color last-period'></div><div class='label'>Preenchido (exceto ano anterior ao vigente)</div><div class='clear'></div></div>";
+									indicators_legend += "<div class='item'><div class='color full'></div><div class='label'>Totalmente preenchido</div><div class='clear'></div></div>";
 									indicators_legend += "</div></div><div class='clear'></div>";
 
 									indicators_table = "<div class='indicadores_list'>";

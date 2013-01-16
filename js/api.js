@@ -925,7 +925,7 @@ $(document).ready(function() {
 		$("#dashboard #form-login").show();
 	}
 	
-	var formataFormula = function(formula,variables){
+	var formataFormula = function(formula,variables,vvariables){
 		var operators_caption = {"+":"+"
 						,"-":"-"
 						,"(":"("
@@ -945,6 +945,14 @@ $(document).ready(function() {
 		$.each(operators_caption,function(index,value){
 			new_formula = new_formula.replace(index,"&nbsp;" + value + "&nbsp;");
 		});
+
+		if (vvariables){
+			$.each(vvariables,function(index,value){
+				var pattern = "\\#"+vvariables[index].id;
+				var re = new RegExp(pattern, "g");
+				new_formula = new_formula.replace(re,vvariables[index].name);
+			});
+		}
 		
 		return new_formula;
 	}
@@ -2275,7 +2283,9 @@ $(document).ready(function() {
 						location.hash = "#!/" + getUrlSub() + "?option=add";
 					});
 
+					var data_variables = [];
 					$.ajax({
+						async: false,
 						type: 'GET',
 						dataType: 'json',
 						url: api_path + '/api/variable?api_key=$$key'.render({
@@ -2283,42 +2293,55 @@ $(document).ready(function() {
 								userid: $.cookie("user.id")
 								}),
 						success: function(data, textStatus, jqXHR){
-							var data_variables = [];
 
 							$.each(data.variables, function(index,value){
 								data_variables.push({"id":data.variables[index].id,"name":data.variables[index].name});
 							});
-							$("#results").dataTable( {
-								  "oLanguage": {
-												"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-												},
-								  "bProcessing": true,
-								  "sAjaxSource": api_path + '/api/indicator?api_key=$$key&content-type=application/json&columns=name,formula,created_at,url,_,_'.render({
-										key: $.cookie("key")
-										}),
-								  "aoColumnDefs": [
-													{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 3 ] },
-													{ "sWidth": "140px", "sClass": "center", "aTargets": [ 2 ] },
-													{ "fnRender": function ( oObj, sVal ) {
-																	return $.format.date(sVal,"dd/MM/yyyy HH:mm:ss");
-																  }, "aTargets": [ 2 ]
-													},
-													{ "fnRender": function ( oObj, sVal ) {
-																	return formataFormula(sVal,data_variables);
-																  }, "aTargets": [ 1 ]
-													},
-												  ],
-								   "fnDrawCallback": function(){
-										DTdesenhaBotoes();
-									}
-							} );
-						},
-						error: function(data){
-							$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
-										codigo: $.parseJSON(data.responseText).error
-									})
+						}
+						
+					});
+
+					var data_vvariables = [];
+					$.ajax({
+						async: false,
+						type: 'GET',
+						dataType: 'json',
+						url: api_path + '/api/indicator/variable?api_key=$$key'.render({
+								key: $.cookie("key"),
+								userid: $.cookie("user.id")
+								}),
+						success: function(data, textStatus, jqXHR){
+
+							$.each(data.variables, function(index,value){
+								data_vvariables.push({"id":data.variables[index].id,"name":data.variables[index].name});
 							});
 						}
+						
+					});
+
+					$("#results").dataTable( {
+						  "oLanguage": {
+										"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
+										},
+						  "bProcessing": true,
+						  "sAjaxSource": api_path + '/api/indicator?api_key=$$key&content-type=application/json&columns=name,formula,created_at,url,_,_'.render({
+								key: $.cookie("key")
+								}),
+						  "aoColumnDefs": [
+											{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 3 ] },
+											{ "sWidth": "140px", "sClass": "center", "aTargets": [ 2 ] },
+											{ "fnRender": function ( oObj, sVal ) {
+															return $.format.date(sVal,"dd/MM/yyyy HH:mm:ss");
+														  }, "aTargets": [ 2 ]
+											},
+											{ "fnRender": function ( oObj, sVal ) {
+															return formataFormula(sVal,data_variables,data_vvariables);
+														  }, "aTargets": [ 1 ]
+											},
+										  ],
+						   "fnDrawCallback": function(){
+								DTdesenhaBotoes();
+							}
 					});
 					
 				}else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit"){
@@ -3141,7 +3164,9 @@ $(document).ready(function() {
 							   return a.axis_id - b.axis_id;
 							})
 
+							var data_variables = [];
 							$.ajax({
+								async: false,
 								type: 'GET',
 								dataType: 'json',
 								url: api_path + '/api/variable?api_key=$$key'.render({
@@ -3149,141 +3174,147 @@ $(document).ready(function() {
 										userid: $.cookie("user.id")
 										}),
 								success: function(data, textStatus, jqXHR){
-									var data_variables = [];
 									$.each(data.variables, function(index,value){
 										data_variables.push({"id":data.variables[index].id,"name":data.variables[index].name});
 									});
-									
-									var axis_ant = "";
-									var indicators_table = "";
-									var indicators_legend = "";
-		
-									indicators_legend = "<div class='indicadores_legend'><div class='fillContent'>";
-									indicators_legend += "<div class='item'><div class='color no-data'></div><div class='label'>Nenhum dado preenchido</div><div class='clear'></div></div>";
-									indicators_legend += "<div class='item'><div class='color last-period'></div><div class='label'>Preenchido (exceto ano anterior ao vigente)</div><div class='clear'></div></div>";
-									indicators_legend += "<div class='item'><div class='color full'></div><div class='label'>Totalmente preenchido</div><div class='clear'></div></div>";
-									indicators_legend += "</div></div><div class='clear'></div>";
+								}
+							});
 
-									indicators_table = "<div class='indicadores_list'>";
+							var data_vvariables = [];
+							$.ajax({
+								type: 'GET',
+								dataType: 'json',
+								url: api_path + '/api/indicator/variable?api_key=$$key'.render({
+										key: $.cookie("key"),
+										userid: $.cookie("user.id")
+										}),
+								success: function(data, textStatus, jqXHR){
+									$.each(data.variables, function(index,value){
+										data_vvariables.push({"id":data.variables[index].id,"name":data.variables[index].name});
+									});
+								}
+							});
 									
-									for (i = 0; i < data_indicators.length; i++){
-										if (data_indicators[i].axis_id != axis_ant){
-											if (i > 0){
-												indicators_table += "</div>";
-											}
-											indicators_table += "<div class='eixos'><div class='title'>$$axis</div><div class='clear'></div>".render({axis: data_indicators[i].axis.name});
-											axis_ant = data_indicators[i].axis_id;
-										}
-										var formula = formataFormula(data_indicators[i].formula,data_variables);
-										indicators_table += "<div class='variable' indicator-id='$$indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$id' period='$$period'>detalhes</a><a href='$$hash?option=edit&url=$$url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
-											name: data_indicators[i].name,
-											formula: formula,
-											hash: "#!/"+getUrlSub(),
-											url: "http://rnsp.aware.com.br/api/indicator/" + data_indicators[i].id,
-											indicator_id: data_indicators[i].id,
-											period: data_indicators[i].period,
-											id: data_indicators[i].id
-											});
-										indicators_table += "<div class='clear'></div>";
+							var axis_ant = "";
+							var indicators_table = "";
+							var indicators_legend = "";
+
+							indicators_legend = "<div class='indicadores_legend'><div class='fillContent'>";
+							indicators_legend += "<div class='item'><div class='color no-data'></div><div class='label'>Nenhum dado preenchido</div><div class='clear'></div></div>";
+							indicators_legend += "<div class='item'><div class='color last-period'></div><div class='label'>Preenchido (exceto ano anterior ao vigente)</div><div class='clear'></div></div>";
+							indicators_legend += "<div class='item'><div class='color full'></div><div class='label'>Totalmente preenchido</div><div class='clear'></div></div>";
+							indicators_legend += "</div></div><div class='clear'></div>";
+
+							indicators_table = "<div class='indicadores_list'>";
+							
+							for (i = 0; i < data_indicators.length; i++){
+								if (data_indicators[i].axis_id != axis_ant){
+									if (i > 0){
+										indicators_table += "</div>";
 									}
-									
-									indicators_table += "<div><div class='clear'>";
-		
-									$("#dashboard-content .content").append(indicators_legend + indicators_table);
-
-									$("#dashboard-content .content .indicadores_list .zoom").click( function(){
-										var target = $(this).parent().parent();
-										var indicator_period = $(this).attr("period");
-										$.ajax({
-											type: 'GET',
-											dataType: 'json',
-											url: api_path + '/api/indicator/$$id/variable/value?api_key=$$key'.render({
-													key: $.cookie("key"),
-													id: $(this).attr("indicator-id")
-													}),
-											success: function(data, textStatus, jqXHR){
-												if (data.rows){
-													var history_table = "<table class='history'><thead><tr><th>Período</th>";
-													
-													var headers = [];//corrige ordem do header
-													$.each(data.header,function(titulo, index){
-														headers[index] = titulo;
-													});
-													
-													$.each(headers, function(index,value){
-														history_table += "<th class='variavel'>$$variavel</th>".render({variavel:value});
-													});
-													history_table += "<th class='formula_valor'>Valor da Fórmula</th>";
-													history_table += "</tr><tbody>";
-													$.each(data.rows, function(index,value){
-														history_table += "<tr><td class='periodo'>$$periodo</td>".render({periodo: $.convertDateToPeriod(data.rows[index].valid_from,indicator_period)});
-														$.each(data.rows[index].valores, function(index2,value2){
-															if (data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined && data.rows[index].valores[index2].value != "-"){
-																history_table += "<td class='valor' title='$$data'>$$valor</td>".render({
-																		valor: $.formatNumber(data.rows[index].valores[index2].value, {format:"#,##0.###", locale:"br"}),
-																		data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T")
-																});
-															}else{
-																history_table += "<td class='valor' title='$$data'>-</td>".render({
-																		data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T")
-																});
-															}
-														});
-														if (data.rows[index].formula_value != "-"){
-															history_table += "<td class='formula_valor'>$$formula_valor</td>".render({formula_valor: $.formatNumber(data.rows[index].formula_value, {format:"#,##0.###", locale:"br"})});
-														}else{
-															history_table += "<td class='formula_valor'>-</td>";
-														}
-														history_table += "</tr></tbody>";
-													});
-													history_table += "</table>";
-												}else{
-													var history_table = "<table class='history'><thead><tr><th>nenhum registro encontrado</th></tr></thead></table>";
-												}
-												$(target).find(".historico-popup").html(history_table);
-												$(target).find(".historico-popup").toggle();
-											},
-											error: function(data){
-												
-											}
-										});
+									indicators_table += "<div class='eixos'><div class='title'>$$axis</div><div class='clear'></div>".render({axis: data_indicators[i].axis.name});
+									axis_ant = data_indicators[i].axis_id;
+								}
+								var formula = formataFormula(data_indicators[i].formula,data_variables,data_vvariables);
+								indicators_table += "<div class='variable' indicator-id='$$indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$id' period='$$period'>detalhes</a><a href='$$hash?option=edit&url=$$url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
+									name: data_indicators[i].name,
+									formula: formula,
+									hash: "#!/"+getUrlSub(),
+									url: "http://rnsp.aware.com.br/api/indicator/" + data_indicators[i].id,
+									indicator_id: data_indicators[i].id,
+									period: data_indicators[i].period,
+									id: data_indicators[i].id
 									});
-									
-									$("div.indicadores_list .eixos .title").click(function(){
-										$(this).parent().find(".variable").toggle();
-									});
+								indicators_table += "<div class='clear'></div>";
+							}
+							
+							indicators_table += "<div><div class='clear'>";
 
-									$.ajax({
-										type: 'GET',
-										dataType: 'json',
-										url: api_path + '/api/public/user/$$userid/indicator/status?api_key=$$key'.render({
-												key: $.cookie("key"),
-												userid: $.cookie("user.id")
-												}),
-										success: function(data, textStatus, jqXHR){
-											var dataStatus = data.status;
-											$.each(dataStatus, function(index,value){
-												var statusClass = "";
-												if (dataStatus[index].ultimo_periodo == 0 &&  dataStatus[index].outros_periodos == 0){
-													statusClass = "no-data";
-												}else if (dataStatus[index].ultimo_periodo == 0 &&  dataStatus[index].outros_periodos == 1){
-													statusClass = "last-period";
-												}else if (dataStatus[index].ultimo_periodo == 1 &&  dataStatus[index].outros_periodos == 1){
-													statusClass = "full";
-												}
-												$(".indicadores_list .variable[indicator-id='$$indicator_id']".render({
-															indicator_id: data.status[index].id
-													})).addClass(statusClass);
+							$("#dashboard-content .content").append(indicators_legend + indicators_table);
+
+							$("#dashboard-content .content .indicadores_list .zoom").click( function(){
+								var target = $(this).parent().parent();
+								var indicator_period = $(this).attr("period");
+								$.ajax({
+									type: 'GET',
+									dataType: 'json',
+									url: api_path + '/api/indicator/$$id/variable/value?api_key=$$key'.render({
+											key: $.cookie("key"),
+											id: $(this).attr("indicator-id")
+											}),
+									success: function(data, textStatus, jqXHR){
+										if (data.rows){
+											var history_table = "<table class='history'><thead><tr><th>Período</th>";
+											
+											var headers = [];//corrige ordem do header
+											$.each(data.header,function(titulo, index){
+												headers[index] = titulo;
 											});
+											
+											$.each(headers, function(index,value){
+												history_table += "<th class='variavel'>$$variavel</th>".render({variavel:value});
+											});
+											history_table += "<th class='formula_valor'>Valor da Fórmula</th>";
+											history_table += "</tr><tbody>";
+											$.each(data.rows, function(index,value){
+												history_table += "<tr><td class='periodo'>$$periodo</td>".render({periodo: $.convertDateToPeriod(data.rows[index].valid_from,indicator_period)});
+												$.each(data.rows[index].valores, function(index2,value2){
+													if (data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined && data.rows[index].valores[index2].value != "-"){
+														history_table += "<td class='valor' title='$$data'>$$valor</td>".render({
+																valor: $.formatNumber(data.rows[index].valores[index2].value, {format:"#,##0.###", locale:"br"}),
+																data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T")
+														});
+													}else{
+														history_table += "<td class='valor' title='$$data'>-</td>".render({
+																data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T")
+														});
+													}
+												});
+												if (data.rows[index].formula_value != "-"){
+													history_table += "<td class='formula_valor'>$$formula_valor</td>".render({formula_valor: $.formatNumber(data.rows[index].formula_value, {format:"#,##0.###", locale:"br"})});
+												}else{
+													history_table += "<td class='formula_valor'>-</td>";
+												}
+												history_table += "</tr></tbody>";
+											});
+											history_table += "</table>";
+										}else{
+											var history_table = "<table class='history'><thead><tr><th>nenhum registro encontrado</th></tr></thead></table>";
 										}
-									});
+										$(target).find(".historico-popup").html(history_table);
+										$(target).find(".historico-popup").toggle();
+									},
+									error: function(data){
+										
+									}
+								});
+							});
+							
+							$("div.indicadores_list .eixos .title").click(function(){
+								$(this).parent().find(".variable").toggle();
+							});
 
-									
-								},
-								error: function(data){
-									$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
-												codigo: $.parseJSON(data.responseText).error
-											})
+							$.ajax({
+								type: 'GET',
+								dataType: 'json',
+								url: api_path + '/api/public/user/$$userid/indicator/status?api_key=$$key'.render({
+										key: $.cookie("key"),
+										userid: $.cookie("user.id")
+										}),
+								success: function(data, textStatus, jqXHR){
+									var dataStatus = data.status;
+									$.each(dataStatus, function(index,value){
+										var statusClass = "";
+										if (dataStatus[index].ultimo_periodo == 0 &&  dataStatus[index].outros_periodos == 0){
+											statusClass = "no-data";
+										}else if (dataStatus[index].ultimo_periodo == 0 &&  dataStatus[index].outros_periodos == 1){
+											statusClass = "last-period";
+										}else if (dataStatus[index].ultimo_periodo == 1 &&  dataStatus[index].outros_periodos == 1){
+											statusClass = "full";
+										}
+										$(".indicadores_list .variable[indicator-id='$$indicator_id']".render({
+													indicator_id: data.status[index].id
+											})).addClass(statusClass);
 									});
 								}
 							});
@@ -3335,7 +3366,9 @@ $(document).ready(function() {
 							$(formbuild).find("div .field:odd").addClass("odd");
 							$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 
+							var data_variables = [];
 							$.ajax({
+								async: false,
 								type: 'GET',
 								dataType: 'json',
 								url: api_path + '/api/variable?api_key=$$key'.render({
@@ -3343,14 +3376,28 @@ $(document).ready(function() {
 										userid: $.cookie("user.id")
 										}),
 								success: function(data, textStatus, jqXHR){
-									var data_variables = [];
 									$.each(data.variables, function(index,value){
 										data_variables.push({"id":data.variables[index].id,"name":data.variables[index].name});
 									});
-									$("#dashboard-content .content .filter_indicator #textlabel_formula").html(formataFormula(data_indicator.formula,data_variables));
+								}
+							});
+							var data_vvariables = [];
+							$.ajax({
+								async: false,
+								type: 'GET',
+								dataType: 'json',
+								url: api_path + '/api/indicator/variable?api_key=$$key'.render({
+										key: $.cookie("key"),
+										userid: $.cookie("user.id")
+										}),
+								success: function(data, textStatus, jqXHR){
+									$.each(data.variables, function(index,value){
+										data_vvariables.push({"id":data.variables[index].id,"name":data.variables[index].name});
+									});
 								}
 							});
 
+							$("#dashboard-content .content .filter_indicator #textlabel_formula").html(formataFormula(data_indicator.formula,data_variables,data_vvariables));
 
 							$("#dashboard-content .content .filter_indicator #textlabel_periodo").html(variable_periods[data_indicator.period]);
 							
@@ -3682,16 +3729,18 @@ $(document).ready(function() {
 																	var ajax_id;
 																	if ($("#dashboard-content .content .filter_result").find("#v_"+item_variation.id + "_var_"+item_variables.id).attr("update") != undefined){
 																		ajax_method = "PUT";
+																		ajax_option = "update";
 																		ajax_id = $("#dashboard-content .content .filter_result").find("#v_"+item_variation.id + "_var_"+item_variables.id).attr("item-id");
 																	}else{
 																		ajax_method = "POST";
+																		ajax_option = "create";
 																		ajax_id = "";
 																	} 
 				
 																	args = [{name: "api_key", value: $.cookie("key"),},
-																			{name: "indicator.variation_value." + ajax_method.toLowerCase() + ".value", value: $("#dashboard-content .content .filter_result").find("#v_"+item_variation.id + "_var_"+item_variables.id).val()},
-																			{name: "indicator.variation_value." + ajax_method.toLowerCase() + ".value_of_date", value: data_formatada},
-																			{name: "indicator.variation_value." + ajax_method.toLowerCase() + ".indicator_variation_id", value: item_variation.id}
+																			{name: "indicator.variation_value." + ajax_option + ".value", value: $("#dashboard-content .content .filter_result").find("#v_"+item_variation.id + "_var_"+item_variables.id).val()},
+																			{name: "indicator.variation_value." + ajax_option + ".value_of_date", value: data_formatada},
+																			{name: "indicator.variation_value." + ajax_option + ".indicator_variation_id", value: item_variation.id}
 																			];
 										
 																	$.ajax({

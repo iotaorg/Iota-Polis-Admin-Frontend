@@ -3642,7 +3642,7 @@ $(document).ready(function() {
 																},
 																error: function(data){
 																	$(".filter_result .form-aviso").setWarning({msg: "Erro ao editar. ($$erro)".render({
-																				erro: $.parseJSON(data.responseText).error
+																				erro: data.statusText
 																				})
 																	});
 																	$("#dashboard-content .content .filter_result .botao-form[ref='enviar']").show();
@@ -3655,7 +3655,7 @@ $(document).ready(function() {
 														clearInterval(to_indicator);
 														
 														if (data_vvariables.length > 0){
-															$.each(data_variation,function(index_variation,item_variation){
+															$.each(data_variations,function(index_variation,item_variation){
 																$.each(data_vvariables,function(index_variables,item_variables){
 																	var data_formatada = "";
 																	if (data_indicator.period == "yearly" || data_indicator.period == "monthly"){

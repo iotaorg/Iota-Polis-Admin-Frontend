@@ -65,8 +65,11 @@ $.extend({
 		return new_number;
 	},
 	convertNumberFromBd: function(number){
-		var new_number = number.replace(",","").replace(".",",");
-
+		if (!number){
+			var new_number = 0;
+		}else{
+			var new_number = number.replace(",","").replace(".",",");
+		}
 		return new_number;
 	}
 });
@@ -100,6 +103,9 @@ $(document).ready(function() {
 				 "app":"Aplicativos"
 				}
 	//lista tipos variaveis
+	var indicator_types = {"normal":"normal",
+						  "varied":"variada"
+						  };
 	var variable_types = {"int":"Inteiro",
 						  "str":"Alfanumérico",
 						  "num":"Valor"};
@@ -134,6 +140,12 @@ $(document).ready(function() {
 						  "hab/km²":"habitantes por quilômetro quadrado",
 						  "habitantes":"habitantes"
 						  };
+
+	variacoes_list = [];
+	variacoes_id_temp = 0;
+	vvariacoes_list = [];
+	vvariacoes_id_temp = 0;
+
 
 	var estados = {"AC":"Acre",
 				  "AL":"Alagoas",
@@ -887,6 +899,7 @@ $(document).ready(function() {
 	var loadCidades = function(){
 		cidades_prefeitos = [];
 		$.ajax({
+			async: false,
 			type: 'GET',
 			dataType: 'json',
 			url: api_path + '/api/city?api_key=$$key'.render({
@@ -943,6 +956,27 @@ $(document).ready(function() {
 			indicator_variables[i] = indicator_variables[i].replace("$","");
 		}
 		return indicator_variables;
+	}
+
+	var trataCliqueVariaveis = function(){
+		$("#formula-editor .variables .item").unbind();
+		$("#formula-editor .variables .item").click(function(e){
+			if ($(this).hasClass("selected")){
+				$(this).removeClass("selected");
+			}else{
+				$(this).parent().find(".item").removeClass("selected");
+				$(this).addClass("selected");
+			}
+			e.stopPropagation();
+		});
+		$("#formula-editor .variables .item").dblclick(function(e){
+			if (!$(this).hasClass("selected")){
+				$(this).parent().find(".item").removeClass("selected");
+				$(this).addClass("selected");
+			}
+			$("#formula-editor .button").click();
+			e.stopPropagation();
+		});
 	}
 	
 	var buildUserInterface = function(){
@@ -1101,6 +1135,8 @@ $(document).ready(function() {
 		$("#formula-editor .editor-content div").each(function(index,element){
 			if ($(this).hasClass("f-variable")){
 				formula += "$"+$(this).attr("var_id");
+			}else if ($(this).hasClass("f-vvariable")){
+				formula += "#"+$(this).attr("var_id");
 			}else if ($(this).hasClass("f-operator")){
 				formula += $(this).attr("val");
 			}else{
@@ -1129,7 +1165,7 @@ $(document).ready(function() {
 				var var_id = "";
 				var var_caption = "";
 				for (j = i+1; j < formula.length; j++){
-					if ($.inArray(formula[j],operators) >= 0 || formula[j] == "$"){
+					if ($.inArray(formula[j],operators) >= 0 || formula[j] == "$" || formula[j] == "#"){
 						i = j - 1;
 						break;
 					}else{
@@ -1137,8 +1173,23 @@ $(document).ready(function() {
 						i = j;
 					}
 				}
-				var_caption = $("#formula-editor .variables .item[var_id='"+var_id+"']").html();
+				var_caption = $("#formula-editor .variables .item[var_id='"+var_id+"'][type='normal']").html();
 				formula_css += "<div class='f-variable' apelido='$$var_id'>$$caption</div>".render({var_id:var_id,caption:var_caption});
+			}else if (formula[i] == "#"){
+				var var_id = "";
+				var var_caption = "";
+				for (j = i+1; j < formula.length; j++){
+					if ($.inArray(formula[j],operators) >= 0 || formula[j] == "$" || formula[j] == "#"){
+						i = j - 1;
+						break;
+					}else{
+						var_id += formula[j];
+						i = j;
+					}
+				}
+				console.log(var_id);
+				var_caption = $("#formula-editor .variables .item[var_id='"+var_id+"'][type='varied']").html();
+				formula_css += "<div class='f-vvariable' apelido='$$var_id'>$$caption</div>".render({var_id:var_id,caption:var_caption});
 			}else{
 				var var_input = "";
 				for (j = i; j < formula.length; j++){
@@ -1158,6 +1209,7 @@ $(document).ready(function() {
 
 	var carregaComboCidades = function(args){
 		$.ajax({
+			async: false,
 			type: 'GET',
 			dataType: 'json',
 			url: api_path + '/api/city?api_key=$$key'.render({
@@ -2276,6 +2328,11 @@ $(document).ready(function() {
 					var newform = [];
 					
 					newform.push({label: "Nome", input: ["text,name,itext"]});
+					newform.push({label: "Tipo", input: ["select,indicator_type,iselect"]});
+					newform.push({label: "Nome da Variação", input: ["text,variety_name,itext"]});
+					newform.push({label: "Variações", input: ["text,variacoes_placeholder,itext"]});
+					newform.push({label: "Variáveis da Variação", input: ["text,vvariacoes_placeholder,itext"]});
+					newform.push({label: "Todas as variáveis são obrigatórias", input: ["checkbox,all_variations_variables_are_required,icheckbox"]});
 					newform.push({label: "Formula<br /><a href='javascript: void(0);' id='help-formula'>ajuda</a>", input: ["textarea,formula,itext"]});
 					newform.push({label: "Explicação", input: ["textarea,explanation,itext"]});
 					newform.push({label: "Direção de classificação", input: ["select,sort_direction,iselect"]});
@@ -2333,6 +2390,10 @@ $(document).ready(function() {
 						}
 					});
 
+					$.each(indicator_types,function(key, value){
+						$("#dashboard-content .content select#indicator_type").append($("<option></option>").val(key).html(value));
+					});
+
 					$.each(goal_operators,function(key, value){
 						$("#dashboard-content .content select#goal_operator").append($("<option></option>").val(key).html(value));
 					});
@@ -2341,7 +2402,7 @@ $(document).ready(function() {
 						$("#dashboard-content .content select#sort_direction").append($("<option></option>").val(key).html(value));
 					});
 
-					$("#dashboard-content .content textarea#formula").after("<div id='formula-editor'><div class='editor'><div class='editor-content'></div></div><div class='button'><<</div><div class='variables'></div><div class='user-input'></div><div class='operators'></div></div>");
+					$("#dashboard-content .content textarea#formula").after("<div id='formula-editor'><div class='editor'><div class='editor-content'></div></div><div class='button'><<</div><div class='variables-title'>Variáveis</div><div class='variables'></div><div class='user-input'></div><div class='operators'></div></div>");
 					$("#formula-editor .user-input").append("<input type='text' id='formula-input' placeholder='valor'>");
 					$("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title'>$$caption</div>".render({value: "+",caption: "+",title: "Soma"}));
 					$("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title'>$$caption</div>".render({value: "-",caption: "-",title: "Subtração"}));
@@ -2353,7 +2414,7 @@ $(document).ready(function() {
 					$("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title'>$$caption</div>".render({value: "CONCATENAR",caption: "[ ]",title: "Concatenar"}));
 					$("#formula-editor .operators").append("<div class='reset-button' val='erase' title='apagar tudo'>apagar tudo</div>");
 					$("#dashboard-content .content textarea#formula").hide();
-					
+
 					$("html").click(function(e){
 						click_editor = false;
 					});
@@ -2377,19 +2438,26 @@ $(document).ready(function() {
 					$("#formula-editor .editor").click(function(e){
 						click_editor = true;
 						e.stopPropagation();
-						if ($(e.target).hasClass("f-operator") || $(e.target).hasClass("f-variable") || $(e.target).hasClass("f-input")){
+						if ($(e.target).hasClass("f-operator") || $(e.target).hasClass("f-variable") || $(e.target).hasClass("f-vvariable") || $(e.target).hasClass("f-input")){
 							$(e.target).toggleClass("selected");
 						}
 					});
 					
 					$("#formula-editor .button").click(function(e){
 						if ($(this).parent().find(".variables .selected").length > 0){
-							var newItem = $(this).parent().find(".editor .editor-content").append("<div class='f-variable' var_id='$$var_id'>$$nome</div>".render({
-																																			nome: $(this).parent().find(".variables .selected").html(),
-																																			var_id: $(this).parent().find(".variables .selected").attr("var_id")
-																																			}));
-							var period_selected = $(this).parent().find(".variables .selected").attr("period");
-							$(this).parent().find(".variables .item[period!='"+period_selected+"']").hide();
+							if ($(this).parent().find(".variables .selected").attr("type") == "normal"){
+								var newItem = $(this).parent().find(".editor .editor-content").append("<div class='f-variable' var_id='$$var_id'>$$nome</div>".render({
+																																				nome: $(this).parent().find(".variables .selected").html(),
+																																				var_id: $(this).parent().find(".variables .selected").attr("var_id")
+																																				}));
+								var period_selected = $(this).parent().find(".variables .selected").attr("period");
+								$(this).parent().find(".variables .item[period!='"+period_selected+"'][type=='normal']").hide();
+							}else{
+								var newItem = $(this).parent().find(".editor .editor-content").append("<div class='f-vvariable' var_id='$$var_id'>$$nome</div>".render({
+																																				nome: $(this).parent().find(".variables .selected").html(),
+																																				var_id: $(this).parent().find(".variables .selected").attr("var_id")
+																																				}));
+							}
 						}else if ($(this).parent().find("input#formula-input").val() != ""){
 							var newItem = $(this).parent().find(".editor .editor-content").append("<div class='f-input'>$$valor</div>".render({
 																																			valor: $(this).parent().find("input#formula-input").val()
@@ -2424,6 +2492,7 @@ $(document).ready(function() {
 
 					//carrega variaveis
 					$.ajax({
+						async: false,
 						type: 'GET',
 						dataType: 'json',
 						url: api_path + '/api/variable?api_key=$$key'.render({
@@ -2439,25 +2508,9 @@ $(document).ready(function() {
 							});
 							
 							$.each(data.variables, function(index,value){
-								$("#formula-editor .variables").append($("<div class='item'></div>").attr({"var_id":data.variables[index].id,"period":data.variables[index].period}).html(data.variables[index].name));
+								$("#formula-editor .variables").append($("<div class='item'></div>").attr({"var_id":data.variables[index].id,"period":data.variables[index].period,"type":"normal"}).html(data.variables[index].name));
 							});
-							$("#formula-editor .variables .item").click(function(e){
-								if ($(this).hasClass("selected")){
-									$(this).removeClass("selected");
-								}else{
-									$(this).parent().find(".item").removeClass("selected");
-									$(this).addClass("selected");
-								}
-								e.stopPropagation();
-							});
-							$("#formula-editor .variables .item").dblclick(function(e){
-								if (!$(this).hasClass("selected")){
-									$(this).parent().find(".item").removeClass("selected");
-									$(this).addClass("selected");
-								}
-								$("#formula-editor .button").click();
-								e.stopPropagation();
-							});
+							trataCliqueVariaveis();
 							convertFormulaToCss();
 						},
 						error: function(data){
@@ -2468,6 +2521,216 @@ $(document).ready(function() {
 						}
 					});
 
+					//Variações
+					
+					variacoes_list = [];
+					variacoes_id_temp = 0;
+					
+					$("#dashboard-content .content input#variacoes_placeholder").after("<div id='variacoes-form'><div class='variacoes-list'><table><thead><tr><th>Nome</th><th></th><th></th><th></th></tr></thead><tbody></tbody></table></div><div class='variacoes-add'></div></div>");
+					$("#variacoes-form .variacoes-add").append("<input type='text' id='variacoes-input' placeholder=''><input type='button' value='adicionar' id='variacoes-button-add'>");
+					$("#dashboard-content .content input#variacoes_placeholder").hide();
+					
+					function updateVariacoesTable(){
+						if (variacoes_list.length > 0){
+							variacoes_list.sort(function (a, b) {
+								a = a.order.toString(),
+								b = b.order.toString();
+								return a.localeCompare(b);
+							});
+							$("#variacoes-form .variacoes-list table tbody").empty();
+							$.each(variacoes_list,function(index,item){
+								$("#variacoes-form .variacoes-list table tbody").append("<tr id='$$id' order='$$order' temp='$$temp' delete='$$delete'><td>$$name</td><td class='delete'><a href='#'>remover</a></td><td class='up'><a href='#'>subir</a></td><td class='down'><a href='#'>descer</a></td></tr>".render({
+										name: item.name,
+										id: item.id,
+										order: item.order,
+										temp: item.temp,
+										delete: item.delete
+									}));
+								if (item.delete || item.delete == "true"){
+									$("#variacoes-form .variacoes-list table tbody tr:last").hide();
+								}
+							});
+							$("#variacoes-form .variacoes-list table td.delete a").click(function(e){
+								e.preventDefault();
+								deleteVariacao($(this).parent().parent());
+							});
+							$("#variacoes-form .variacoes-list table td.up a").click(function(e){
+								e.preventDefault();
+								sobeVariacao($(this).parent().parent());
+							});
+							$("#variacoes-form .variacoes-list table td.down a").click(function(e){
+								e.preventDefault();
+								desceVariacao($(this).parent().parent());
+							});
+							
+						}else{
+							$("#variacoes-form .variacoes-list table tbody").empty();
+							$("#variacoes-form .variacoes-list table tbody").append("<tr><td colspan='4' align='center'>Nenhuma variação adicionada</td></tr>");
+						}
+					}
+					
+					function reSortVariacao(){
+						var order = 0;
+						$.each(variacoes_list,function(index,item){
+							variacoes_list[index].order = order;
+							order++;
+						});
+					}
+
+					function addVariacao(){
+						variacoes_list.push({
+								name: $("#variacoes-form .variacoes-add #variacoes-input").val(),
+								id: variacoes_id_temp,
+								order: variacoes_list.length,
+								temp: true
+								});
+						variacoes_id_temp++;
+						updateVariacoesTable();
+					}
+					
+					function deleteVariacao(item){
+						if (item.attr("temp") == "true"){
+							variacoes_list.splice(item.attr("order"),1);
+						}else{
+							$.each(variacoes_list,function(index,item2){
+								if (item2.id == item.attr("id")){
+									variacoes_list[index].delete = true;
+								}
+							});
+							item.attr("delete","true");
+						}
+						reSortVariacao();
+						updateVariacoesTable();
+					}
+
+					function sobeVariacao(item){
+						if (parseInt(item.attr("order"))  > 0 ){
+							$.each(variacoes_list,function(index,item2){
+								if (parseInt(item2.order) == (parseInt(item.attr("order")) - 1)){
+									variacoes_list[index].order = parseInt(variacoes_list[index].order) + 1;
+								}else if (parseInt(item2.order) == parseInt(item.attr("order"))){
+									variacoes_list[index].order = parseInt(variacoes_list[index].order) - 1;
+								}
+							});
+						}
+						updateVariacoesTable();
+					}
+
+					function desceVariacao(item){
+						if (parseInt(item.attr("order")) < $("#variacoes-form .variacoes-list table tbody tr").length){
+							$.each(variacoes_list,function(index,item2){
+								if (parseInt(item2.order) == (parseInt(item.attr("order")) + 1)){
+									variacoes_list[index].order = parseInt(variacoes_list[index].order) - 1;
+								}else if (parseInt(item2.order) == parseInt(item.attr("order"))){
+									variacoes_list[index].order = parseInt(variacoes_list[index].order) + 1;
+								}
+							});
+						}
+						updateVariacoesTable();
+					}
+
+					updateVariacoesTable();
+					
+					$("#variacoes-button-add").click(function(){
+						addVariacao();
+					});
+							
+					//Variáveis da Variação
+					
+					vvariacoes_list = [];
+					vvariacoes_id_temp = 0;
+					
+					$("#dashboard-content .content input#vvariacoes_placeholder").after("<div id='vvariacoes-form'><div class='vvariacoes-list'><table><thead><tr><th>Nome</th><th></th></tr></thead><tbody></tbody></table></div><div class='vvariacoes-add'></div></div>");
+					$("#vvariacoes-form .vvariacoes-add").append("<input type='text' id='vvariacoes-input' placeholder=''><input type='button' value='adicionar' id='vvariacoes-button-add'>");
+					$("#dashboard-content .content input#vvariacoes_placeholder").hide();
+					
+					function updateVVariacoesTable(){
+						if (vvariacoes_list.length > 0){
+							vvariacoes_list.sort(function (a, b) {
+								a = a.name,
+								b = b.name;
+								return a.localeCompare(b);
+							});
+							$("#vvariacoes-form .vvariacoes-list table tbody").empty();
+							$.each(vvariacoes_list,function(index,item){
+								$("#vvariacoes-form .vvariacoes-list table tbody").append("<tr id='$$id' temp='$$temp' delete='$$delete'><td>$$name</td><td class='delete'><a href='#'>remover</a></td></tr>".render({
+										name: item.name,
+										id: item.id,
+										temp: item.temp,
+										delete: item.delete
+									}));
+								if (item.delete || item.delete == "true"){
+									$("#vvariacoes-form .vvariacoes-list table tbody tr:last").hide();
+								}
+							});
+							$("#vvariacoes-form .vvariacoes-list table td.delete a").click(function(e){
+								e.preventDefault();
+								deleteVVariacao($(this).parent().parent());
+							});
+							
+						}else{
+							$("#vvariacoes-form .vvariacoes-list table tbody").empty();
+							$("#vvariacoes-form .vvariacoes-list table tbody").append("<tr><td colspan='4' align='center'>Nenhuma variável adicionada</td></tr>");
+						}
+					}
+					
+					function addVVariacao(){
+						vvariacoes_list.push({
+								name: $("#vvariacoes-form .vvariacoes-add #vvariacoes-input").val(),
+								id: vvariacoes_id_temp,
+								temp: true
+								});
+						updateVVariacoesTable();
+
+						$("#formula-editor .variables").append($("<div class='item'></div>").attr({"var_id":vvariacoes_id_temp,"type":"varied"}).html($("#vvariacoes-form .vvariacoes-add #vvariacoes-input").val()));
+						vvariacoes_id_temp++;
+						trataCliqueVariaveis();
+					}
+					
+					function deleteVVariacao(item){
+						if (item.attr("temp") == "true"){
+							var selecionado;
+							$.each(vvariacoes_list,function(index,value){
+								if (parseInt(vvariacoes_list[index].id) == parseInt(item.attr("id"))){
+									selecionado = index;
+								}
+							});
+							if (selecionado >= 0){
+								vvariacoes_list.splice(selecionado,1);
+							}
+						}else{
+							$.each(vvariacoes_list,function(index,item2){
+								if (item2.id == item.attr("id")){
+									vvariacoes_list[index].delete = true;
+								}
+							});
+							item.attr("delete","true");
+						}
+						updateVVariacoesTable();
+					}
+
+					updateVVariacoesTable();
+					
+					$("#variety_name").parent().parent().hide();
+					$("#variacoes_placeholder").parent().parent().hide();
+					$("#vvariacoes_placeholder").parent().parent().hide();
+					
+					$("#indicator_type").change(function(){
+						if ($("#indicator_type").val() == "normal"){
+							$("#variety_name").parent().parent().hide();
+							$("#variacoes_placeholder").parent().parent().hide();
+							$("#vvariacoes_placeholder").parent().parent().hide();
+							$("#formula-editor .variables")
+						}else{
+							$("#variety_name").parent().parent().show();
+							$("#variacoes_placeholder").parent().parent().show();
+							$("#vvariacoes_placeholder").parent().parent().show();
+						}
+					});
+					
+					$("#vvariacoes-button-add").click(function(){
+						addVVariacao();
+					});
 					
 					if ($.getUrlVar("option") == "add"){
 						$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
@@ -2479,6 +2742,7 @@ $(document).ready(function() {
 							}else{
 								args = [{name: "api_key", value: $.cookie("key"),},
 										{name: "indicator.create.name", value: $(this).parent().parent().find("#name").val()},
+										{name: "indicator.create.indicator_type", value: $(this).parent().parent().find("#indicator_type").val()},
 										{name: "indicator.create.formula", value: $(this).parent().parent().find("#formula").val()},
 										{name: "indicator.create.explanation", value: $(this).parent().parent().find("#explanation").val()},
 										{name: "indicator.create.sort_diretion", value: $(this).parent().parent().find("#sort_direction option:selected").val()},
@@ -2491,13 +2755,63 @@ $(document).ready(function() {
 										{name: "indicator.create.tags", value: $(this).parent().parent().find("#tags").val()},
 										{name: "indicator.create.observations", value: $(this).parent().parent().find("#observations").val()}
 										];
+
+
+								if ($(this).parent().parent().find("#indicator_type").val() == "varied"){
+									if ($(this).parent().parent().find("#all_variations_variables_are_required").attr("checked")){
+										args.push({name: "indicator.create.all_variations_variables_are_required", value: 1});
+									}else{
+										args.push({name: "indicator.create.all_variations_variables_are_required", value: 0});
+									}
+									args.push({name: "indicator.create.variety_name", value: $(this).parent().parent().find("#variety_name").val()});
+									args.push({name: "indicator.create.summarization_method", value: 'sum'});
+								}
+										
 								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
 								$.ajax({
+									async: false,
 									type: 'POST',
 									dataType: 'json',
 									url: api_path + '/api/indicator',
 									data: args,
 									success: function(data,status,jqXHR){
+										var newId = data.id;
+										if ($("#dashboard-content .content select#indicator_type").val() == "varied"){
+											
+											$.each(variacoes_list, function(index,item){
+												args = [{name: "api_key", value: $.cookie("key")},
+														{name: "indicator.variation.create.name", value: item.name},
+														{name: "indicator.variation.create.order", value: item.order}
+														];
+														
+												$.ajax({
+													async: false,
+													type: 'POST',
+													dataType: 'json',
+													url: api_path + '/api/indicator/$$newid/variation'.render({
+															newid: newId
+														}),
+													data: args
+												});
+											});
+
+											$.each(vvariacoes_list, function(index,item){
+												args = [{name: "api_key", value: $.cookie("key")},
+														{name: "indicator.variables_variation.create.name", value: item.name}
+														];
+														
+												$.ajax({
+													async: false,
+													type: 'POST',
+													dataType: 'json',
+													url: api_path + '/api/indicator/$$newid/variables_variation'.render({
+															newid: newId
+														}),
+													data: args
+												});
+											});
+										}
+
 										$("#aviso").setWarning({msg: "Cadastro efetuado com sucesso.".render({
 													codigo: jqXHR.status
 													})
@@ -2520,6 +2834,7 @@ $(document).ready(function() {
 						});
 					}else if ($.getUrlVar("option") == "edit"){
 						$.ajax({
+							async: false,
 							type: 'GET',
 							dataType: 'json',
 							url: $.getUrlVar("url") + "?api_key=$$key".render({
@@ -2529,6 +2844,60 @@ $(document).ready(function() {
 								switch(jqXHR.status){
 									case 200:
 										$(formbuild).find("input#name").val(data.name);
+										$(formbuild).find("select#indicator_type").val(data.indicator_type);
+										if(data.indicator_type == "varied"){
+											$(formbuild).find("input#variety_name").val(data.variety_name);
+											if (data.all_variations_variables_are_required == 1){
+												$(formbuild).find("input#all_variations_variables_are_required").attr("checked",true);
+											}else{
+												$(formbuild).find("input#all_variations_variables_are_required").attr("checked",false);
+											}
+											$.ajax({
+												async: false,
+												type: 'GET',
+												dataType: 'json',
+												url: api_path + '/api/indicator/$$id/variation?api_key=$$key'.render({
+														key: $.cookie("key"),
+														id: getIdFromUrl($.getUrlVar("url"))
+														}),
+												success: function(data,status,jqXHR){
+													variacoes_list = [];
+													variacoes_id_temp = 0;
+													$.each(data.variations, function(index,item){
+														variacoes_list.push({
+																id: item.id,
+																name: item.name,
+																order: item.order,
+																temp: false
+															});
+													});
+												}
+											});
+											$.ajax({
+												async: false,
+												type: 'GET',
+												dataType: 'json',
+												url: api_path + '/api/indicator/$$id/variables_variation?api_key=$$key'.render({
+														key: $.cookie("key"),
+														id: getIdFromUrl($.getUrlVar("url"))
+														}),
+												success: function(data,status,jqXHR){
+													vvariacoes_list = [];
+													vvariacoes_id_temp = 0
+													$.each(data.variables_variations, function(index,item){
+														vvariacoes_list.push({
+																id: item.id,
+																name: item.name,
+																temp: false
+															});
+													});
+												}
+											});
+											updateVariacoesTable();
+											updateVVariacoesTable();
+
+										}
+										$(formbuild).find("select#indicator_type").val(data.indicator_type);
 										$(formbuild).find("textarea#formula").val(data.formula);
 										$(formbuild).find("textarea#explanation").val(data.explanation);
 										$(formbuild).find("select#sort_direction").val(data.sort_direction);
@@ -2541,6 +2910,51 @@ $(document).ready(function() {
 										$(formbuild).find("input#tags").val(data.tags);
 										$(formbuild).find("textarea#observations").val(data.observations);
 										if ($("#formula-editor .variables .item").length > 0) convertFormulaToCss();
+
+										if (data.indicator_type == "varied"){
+											$("#variety_name").parent().parent().show();
+											$("#variacoes_placeholder").parent().parent().show();
+											$("#vvariacoes_placeholder").parent().parent().show();
+											if (data.all_variations_variables_are_required == 1){
+												$(formbuild).find("input#all_variations_variables_are_required").attr("checked","checked");
+											}else{
+												$(formbuild).find("input#all_variations_variables_are_required").attr("checked","");
+											}
+											$(formbuild).find("input#variety_name").val($.convertNumberFromBd(data.variety_name));
+											
+											//carrega variaveis
+											$.ajax({
+												async: false,
+												type: 'GET',
+												dataType: 'json',
+												url: api_path + '/api/indicator/$$indicator_id/variables_variation?api_key=$$key'.render({
+																key: $.cookie("key"),
+																indicator_id: getIdFromUrl($.getUrlVar("url"))
+														}),
+												success: function(data, textStatus, jqXHR){
+													// ordena variaveis pelo nome
+													data.variables_variations.sort(function (a, b) {
+														a = a.name,
+														b = b.name;
+													
+														return a.localeCompare(b);
+													});
+													
+													$.each(data.variables_variations, function(index,item){
+														$("#formula-editor .variables").append($("<div class='item'></div>").attr({"var_id":item.id,"period":"","type":"varied"}).html(item.name));
+													});
+													trataCliqueVariaveis();
+													convertFormulaToCss();
+												},
+												error: function(data){
+													$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
+																codigo: $.parseJSON(data.responseText).error
+															})
+													});
+												}
+											});
+										}
+
 										break;	
 								}
 							},
@@ -2565,6 +2979,7 @@ $(document).ready(function() {
 							}else{
 								args = [{name: "api_key", value: $.cookie("key"),},
 										{name: "indicator.update.name", value: $(this).parent().parent().find("#name").val()},
+										{name: "indicator.update.indicator_type", value: $(this).parent().parent().find("#indicator_type").val()},
 										{name: "indicator.update.formula", value: $(this).parent().parent().find("#formula").val()},
 										{name: "indicator.update.explanation", value: $(this).parent().parent().find("#explanation").val()},
 										{name: "indicator.update.sort_direction", value: $(this).parent().parent().find("#sort_direction option:selected").val()},
@@ -2577,6 +2992,20 @@ $(document).ready(function() {
 										{name: "indicator.update.tags", value: $(this).parent().parent().find("#tags").val()},
 										{name: "indicator.update.observations", value: $(this).parent().parent().find("#observations").val()}
 										];
+
+								if ($(this).parent().parent().find("#indicator_type").val() == "varied"){
+									if ($(this).parent().parent().find("#all_variations_variables_are_required").attr("checked")){
+										args.push({name: "indicator.update.all_variations_variables_are_required", value: 1});
+									}else{
+										args.push({name: "indicator.update.all_variations_variables_are_required", value: 0});
+									}
+									args.push({name: "indicator.update.variety_name", value: $(this).parent().parent().find("#variety_name").val()});
+									args.push({name: "indicator.update.summarization_method", value: 'sum'});
+								}else{
+									args.push({name: "indicator.update.all_variations_variables_are_required", value: ''});
+									args.push({name: "indicator.update.variety_name", value: ''});
+									args.push({name: "indicator.update.summarization_method", value: ''});
+								}
 	
 								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
 								$.ajax({
@@ -2585,6 +3014,72 @@ $(document).ready(function() {
 									url: $.getUrlVar("url"),
 									data: args,
 									success: function(data, textStatus, jqXHR){
+										var newId = data.id;
+										if ($("#dashboard-content .content select#indicator_type").val() == "varied"){
+											
+											$.each(variacoes_list, function(index,item){
+												if ((item.temp) || item.temp == "true"){
+													args = [{name: "api_key", value: $.cookie("key")},
+															{name: "indicator.variation.create.name", value: item.name},
+															{name: "indicator.variation.create.order", value: item.order}
+															];
+															
+													$.ajax({
+														async: false,
+														type: 'POST',
+														dataType: 'json',
+														url: api_path + '/api/indicator/$$newid/variation'.render({
+																newid: newId
+															}),
+														data: args
+													});
+												}else{
+													if ((item.delete) || item.delete == "true"){
+														$.ajax({
+															async: false,
+															type: 'DELETE',
+															dataType: 'json',
+															url: api_path + '/api/indicator/$$newid/variation/$$id'.render({
+																	newid: newId,
+																	id: item.id
+																}),
+															data: args
+														});
+													}
+												}
+											});
+
+											$.each(vvariacoes_list, function(index,item){
+												if ((item.temp) || item.temp == "true"){
+													args = [{name: "api_key", value: $.cookie("key")},
+															{name: "indicator.variables_variation.create.name", value: item.name}
+															];
+															
+													$.ajax({
+														async: false,
+														type: 'POST',
+														dataType: 'json',
+														url: api_path + '/api/indicator/$$newid/variables_variation'.render({
+																newid: newId
+															}),
+														data: args
+													});
+												}else{
+													if ((item.delete) || item.delete == "true"){
+														$.ajax({
+															async: false,
+															type: 'DELETE',
+															dataType: 'json',
+															url: api_path + '/api/indicator/$$newid/variables_variation/$$id'.render({
+																	newid: newId,
+																	id: item.id
+																}),
+															data: args
+														});
+													}
+												}
+											});
+										}
 										$("#aviso").setWarning({msg: "Cadastro editado com sucesso.".render({
 													codigo: jqXHR.status
 													})
@@ -2951,7 +3446,8 @@ $(document).ready(function() {
 											}),
 									success: function(data, textStatus, jqXHR){
 										var data_variables = data.rows;
-												
+										var data_vvariables;
+										var data_variations;
 										var newform = [];
 										$.each(data_variables, function(index,value){
 											newform.push({label: "<b>"+data_variables[index].name+"</b>", input: ["text,var_$$id,itext".render({id:data_variables[index].id})]});
@@ -2961,6 +3457,44 @@ $(document).ready(function() {
 											newform.push({type: "div"});
 										});
 	
+										$.ajax({
+											async: false,
+											type: 'GET',
+											dataType: 'json',
+											url: api_path + '/api/indicator/$$id/variables_variation?api_key=$$key'.render({
+													key: $.cookie("key"),
+													id: getIdFromUrl($.getUrlVar("url"))
+													}),
+											success: function(data_variables_variation, textStatus, jqXHR){
+												data_vvariables = data_variables_variation.variables_variations;
+											}
+										});
+
+										$.ajax({
+											async: false,
+											type: 'GET',
+											dataType: 'json',
+											url: api_path + '/api/indicator/$$id/variation?api_key=$$key'.render({
+													key: $.cookie("key"),
+													id: getIdFromUrl($.getUrlVar("url"))
+													}),
+											success: function(data_variation, textStatus, jqXHR){
+												data_variations = data_variation.variations;
+												$.each(data_variations, function(index_variation,item_variation){
+													newform.push({label: "Variação", input: ["textlabel,textlabel_variation_$$id,ilabel".render({id:item_variation.id})]});
+													$.each(data_vvariables, function(index_vvariables,item_vvariables){
+														newform.push({label: "<b>"+item_vvariables.name+"</b>", input: ["text,v_$$var_id_var_$$id,itext".render({
+																id: item_vvariables.id,
+																var_id: item_variation.id
+															})]});
+													});
+													if (data_vvariables.length > 0){
+														newform.push({type: "div"});	
+													}
+												});
+											}
+										});
+										
 										newform.push({label: "Meta", input: ["text,goal,itext"]});
 										newform.push({label: "", input: ["checkbox,no_data,icheckbox"]});
 										newform.push({label: "Justificativa", input: ["text,justification_of_missing_field,itext"]});
@@ -2999,6 +3533,31 @@ $(document).ready(function() {
 												$("#dashboard-content .content .filter_result input#no_data").attr("disabled",false);
 												$("#dashboard-content .content .filter_result #goal").attr("disabled",false);
 											}
+										});
+	
+										$.each(data_variations, function(index_variation,item_variation){
+											$("#dashboard-content .content .filter_result div#textlabel_variation_$$id".render({id:item_variation.id})).html(item_variation.name)
+											$.each(data_vvariables, function(index_vvariables,item_vvariables){
+												$.ajax({
+													async: false,
+													type: 'GET',
+													dataType: 'json',
+													url: api_path + '/api/indicator/$$indicator_id/variables_variation/$$id/values?valid_from=$$period&api_key=$$key'.render({
+															key: $.cookie("key"),
+															indicator_id: getIdFromUrl($.getUrlVar("url")),
+															id: item_vvariables.id,
+															period: $("#dashboard-content .content .filter_indicator select#date_filter option:selected").val()
+															}),
+													success: function(data, textStatus, jqXHR){
+														$.each(data.values,function(index_value,item_value){
+															$("#dashboard-content .content .filter_result #v_$$var_id_var_$$id".render({
+																	id: item_vvariables.id,
+																	var_id: item_variation.id
+																})).val(item_value.value);
+														});
+													}
+												});
+											});
 										});
 									
 										$("#dashboard-content .content .filter_result .botao-form[ref='enviar']").click(function(){
@@ -3094,6 +3653,47 @@ $(document).ready(function() {
 													}
 													if (cont_returned >= cont_total){
 														clearInterval(to_indicator);
+														
+														if (data_vvariables.length > 0){
+															$.each(data_variation,function(index_variation,item_variation){
+																$.each(data_vvariables,function(index_variables,item_variables){
+																	var data_formatada = "";
+																	if (data_indicator.period == "yearly" || data_indicator.period == "monthly"){
+																		data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter option:selected").val();
+																	}else if (data_indicator.period == "daily"){
+																		data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter").val();
+																	}
+				
+																	args = [{name: "api_key", value: $.cookie("key"),},
+																			{name: "indicator.variables_variation.value.put.value", value: $("#dashboard-content .content .filter_result").find("#v"+item_variation.id + "_var_"+item_variables.id).val()},
+																			{name: "indicator.variables_variation.value.put.value_of_date", value: data_formatada},
+																			{name: "indicator.variables_variation.value.put.indicator_variation_id", value: item_variation.id}
+																			];
+										
+																	$.ajax({
+																		async: false,
+																		type: 'PUT',
+																		dataType: 'json',
+																		url: api_path + '/api/indicator/$$indicator_id/variables_variation/$$var_id/value'.render({
+																				indicator_id: $.getIdFromUrl($.getUrlVar("url")),
+																				var_id: item_variables.id
+																			}),
+																		data: args,
+																		success: function(data, textStatus, jqXHR){
+																			cont_returned++;
+																		},
+																		error: function(data){
+																			$(".filter_result .form-aviso").setWarning({msg: "Erro ao editar. ($$erro)".render({
+																						erro: $.parseJSON(data.responseText).error
+																						})
+																			});
+																			$("#dashboard-content .content .filter_result .botao-form[ref='enviar']").show();
+																		}
+																	});
+																});
+															});
+														}
+														
 														var send_justification_meta = false;
 
 														var data_formatada = "";

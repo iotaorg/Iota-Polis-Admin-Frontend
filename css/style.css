@@ -489,7 +489,7 @@ table#results span.noresults{
 #formula-editor .editor{
 	float: left;
 	width: 398px;
-	height: 200px;
+	height: 240px;
 	border: 1px solid #bbb;
 }
 #formula-editor .editor .editor-content{
@@ -497,7 +497,7 @@ table#results span.noresults{
 	padding: 5px;
 	clear: both;
 	width: 388px;
-	height: 190px;
+	height: 230px;
 	overflow-y: auto;
 	box-shadow: inset 0 0 5px #e0e0e0;
 	-moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
@@ -531,7 +531,7 @@ table#results span.noresults{
 }
 #formula-editor .button{
 	background-color: #fff;
-	margin: 90px 0px 80px 5px;
+	margin: 100px 0px 90px 5px;
 	padding: 6px;
 	float: left;
 	width: 13px;
@@ -550,15 +550,24 @@ table#results span.noresults{
 	color: #000;
 }
 
+#formula-editor .variables-title{
+	margin-left: 5px;
+	float: left;
+	width: 250px;
+	height: 25px;
+}
+
+
 #formula-editor .variables{
 	background-color: #fff;
 	margin-left: 5px;
 	float: left;
 	width: 250px;
-	height: 172px;
+	height: 180px;
 	border: 1px solid #bbb;
 	overflow-y: auto;
 }
+
 #formula-editor .variables .item{
 	padding: 2px 5px;
 	clear: both;
@@ -1027,4 +1036,72 @@ table.history tbody tr.selected{
 	width: 0;
 	height: 0;
 	border: none;	
+}
+
+.variacoes-list table,
+.vvariacoes-list table{
+	border-collapse: collapse;
+	width: 400px;
+}
+.variacoes-list table thead th,
+.vvariacoes-list table thead th{
+	background-color: #ccc;
+	color: #fff;
+	font-weight: normal;
+	font-size: 10pt;
+	text-align: left;
+	padding: 2px 4px;
+}
+.variacoes-list table tbody td,
+.vvariacoes-list table tbody td{
+	background-color: #fefefe;
+	font-size: 10pt;
+	padding: 2px 4px;
+	border-bottom: 1px solid #f0f0f0;
+}
+
+.variacoes-list table tbody td.delete,
+.vvariacoes-list table tbody td.delete,
+.variacoes-list table tbody td.up,
+.vvariacoes-list table tbody td.up,
+.variacoes-list table tbody td.down,
+.vvariacoes-list table tbody td.down{
+	text-align: center;
+	font-size: 9pt;
+	width: 5px;
+}
+
+.variacoes-list table tbody td.delete a,
+.vvariacoes-list table tbody td.delete a{
+	color: #900;
+}
+
+
+.variacoes-add,
+.vvariacoes-add{
+	margin-top: 3px;	
+}
+
+#variacoes-input,
+#vvariacoes-input{
+	width: 320px;
+	border: 1px solid #bbb;
+	padding: 5px;
+	box-shadow: inset 0 0 5px #e0e0e0;
+	-moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	-webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+}
+
+#variacoes-button-add,
+#vvariacoes-button-add{
+	background-color: #fff;
+	margin-left: 5px;
+	margin-top: -4px;
+	padding: 4px 6px;
+	width: 70px;
+	border: 1px solid #bbb;
+	color: #666;
+	font-size: 8pt;
+	font-weight: bolder;
+	font-family: arial;
 }

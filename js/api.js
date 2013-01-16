@@ -3689,9 +3689,9 @@ $(document).ready(function() {
 																	}
 				
 																	args = [{name: "api_key", value: $.cookie("key"),},
-																			{name: "indicator.variables_variation.value." + ajax_method.toLowerCase() + ".value", value: $("#dashboard-content .content .filter_result").find("#v"+item_variation.id + "_var_"+item_variables.id).val()},
-																			{name: "indicator.variables_variation.value." + ajax_method.toLowerCase() + ".value_of_date", value: data_formatada},
-																			{name: "indicator.variables_variation.value." + ajax_method.toLowerCase() + ".indicator_variation_id", value: item_variation.id}
+																			{name: "indicator.variation_value.value." + ajax_method.toLowerCase() + ".value", value: $("#dashboard-content .content .filter_result").find("#v"+item_variation.id + "_var_"+item_variables.id).val()},
+																			{name: "indicator.variation_value.value." + ajax_method.toLowerCase() + ".value_of_date", value: data_formatada},
+																			{name: "indicator.variation_value.value." + ajax_method.toLowerCase() + ".indicator_variation_id", value: item_variation.id}
 																			];
 										
 																	$.ajax({

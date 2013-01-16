@@ -3689,7 +3689,7 @@ $(document).ready(function() {
 																	} 
 				
 																	args = [{name: "api_key", value: $.cookie("key"),},
-																			{name: "indicator.variation_value." + ajax_method.toLowerCase() + ".value", value: $("#dashboard-content .content .filter_result").find("#v_"+item_variation.id + "_var"+item_variables.id).val()},
+																			{name: "indicator.variation_value." + ajax_method.toLowerCase() + ".value", value: $("#dashboard-content .content .filter_result").find("#v_"+item_variation.id + "_var_"+item_variables.id).val()},
 																			{name: "indicator.variation_value." + ajax_method.toLowerCase() + ".value_of_date", value: data_formatada},
 																			{name: "indicator.variation_value." + ajax_method.toLowerCase() + ".indicator_variation_id", value: item_variation.id}
 																			];

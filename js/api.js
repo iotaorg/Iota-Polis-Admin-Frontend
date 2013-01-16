@@ -2692,6 +2692,7 @@ $(document).ready(function() {
 							var selecionado;
 							$.each(vvariacoes_list,function(index,value){
 								if (parseInt(vvariacoes_list[index].id) == parseInt(item.attr("id"))){
+									$("#formula-editor .variables .item[var_id='$$var_id'][type='varied']".render({var_id: item.attr("id")})).remove();
 									selecionado = index;
 								}
 							});
@@ -2702,6 +2703,7 @@ $(document).ready(function() {
 							$.each(vvariacoes_list,function(index,item2){
 								if (item2.id == item.attr("id")){
 									vvariacoes_list[index].delete = true;
+									$("#formula-editor .variables .item[var_id='$$var_id'][type='varied']".render({var_id: item.attr("id")})).remove();
 								}
 							});
 							item.attr("delete","true");
@@ -2714,17 +2716,20 @@ $(document).ready(function() {
 					$("#variety_name").parent().parent().hide();
 					$("#variacoes_placeholder").parent().parent().hide();
 					$("#vvariacoes_placeholder").parent().parent().hide();
+					$("#all_variations_variables_are_required").parent().parent().hide();
 					
 					$("#indicator_type").change(function(){
 						if ($("#indicator_type").val() == "normal"){
 							$("#variety_name").parent().parent().hide();
 							$("#variacoes_placeholder").parent().parent().hide();
 							$("#vvariacoes_placeholder").parent().parent().hide();
+							$("#all_variations_variables_are_required").parent().parent().hide();
 							$("#formula-editor .variables")
 						}else{
 							$("#variety_name").parent().parent().show();
 							$("#variacoes_placeholder").parent().parent().show();
 							$("#vvariacoes_placeholder").parent().parent().show();
+							$("#all_variations_variables_are_required").parent().parent().show();
 						}
 					});
 					
@@ -2915,6 +2920,7 @@ $(document).ready(function() {
 											$("#variety_name").parent().parent().show();
 											$("#variacoes_placeholder").parent().parent().show();
 											$("#vvariacoes_placeholder").parent().parent().show();
+											$("#all_variations_variables_are_required").parent().parent().show();
 											if (data.all_variations_variables_are_required == 1){
 												$(formbuild).find("input#all_variations_variables_are_required").attr("checked","checked");
 											}else{
@@ -3554,6 +3560,14 @@ $(document).ready(function() {
 																	id: item_vvariables.id,
 																	var_id: item_variation.id
 																})).val(item_value.value);
+															$("#dashboard-content .content .filter_result #v_$$var_id_var_$$id".render({
+																	id: item_vvariables.id,
+																	var_id: item_variation.id
+																})).attr("update","true");
+															$("#dashboard-content .content .filter_result #v_$$var_id_var_$$id".render({
+																	id: item_vvariables.id,
+																	var_id: item_variation.id
+																})).attr("item-id",item_value.id);
 														});
 													}
 												});
@@ -3663,16 +3677,26 @@ $(document).ready(function() {
 																	}else if (data_indicator.period == "daily"){
 																		data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter").val();
 																	}
+																	
+																	var ajax_method;
+																	var ajax_id;
+																	if ($("#dashboard-content .content .filter_result").find("#v"+item_variation.id + "_var_"+item_variables.id).attr("update") != undefined){
+																		ajax_method = "PUT";
+																		ajax_id = $("#dashboard-content .content .filter_result").find("#v"+item_variation.id + "_var_"+item_variables.id).attr("item-id");
+																	}else{
+																		ajax_method = "POST";
+																		ajax_id = "";
+																	}
 				
 																	args = [{name: "api_key", value: $.cookie("key"),},
-																			{name: "indicator.variables_variation.value.put.value", value: $("#dashboard-content .content .filter_result").find("#v"+item_variation.id + "_var_"+item_variables.id).val()},
-																			{name: "indicator.variables_variation.value.put.value_of_date", value: data_formatada},
-																			{name: "indicator.variables_variation.value.put.indicator_variation_id", value: item_variation.id}
+																			{name: "indicator.variables_variation.value." + ajax_method.toLowerCase() + ".value", value: $("#dashboard-content .content .filter_result").find("#v"+item_variation.id + "_var_"+item_variables.id).val()},
+																			{name: "indicator.variables_variation.value." + ajax_method.toLowerCase() + ".value_of_date", value: data_formatada},
+																			{name: "indicator.variables_variation.value." + ajax_method.toLowerCase() + ".indicator_variation_id", value: item_variation.id}
 																			];
 										
 																	$.ajax({
 																		async: false,
-																		type: 'PUT',
+																		type: ajax_method,
 																		dataType: 'json',
 																		url: api_path + '/api/indicator/$$indicator_id/variables_variation/$$var_id/values'.render({
 																				indicator_id: getIdFromUrl($.getUrlVar("url")),

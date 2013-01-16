@@ -3680,18 +3680,18 @@ $(document).ready(function() {
 																	
 																	var ajax_method;
 																	var ajax_id;
-																	if ($("#dashboard-content .content .filter_result").find("#v"+item_variation.id + "_var_"+item_variables.id).attr("update") != undefined){
+																	if ($("#dashboard-content .content .filter_result").find("#v_"+item_variation.id + "_var_"+item_variables.id).attr("update") != undefined){
 																		ajax_method = "PUT";
-																		ajax_id = $("#dashboard-content .content .filter_result").find("#v"+item_variation.id + "_var_"+item_variables.id).attr("item-id");
+																		ajax_id = $("#dashboard-content .content .filter_result").find("#v_"+item_variation.id + "_var_"+item_variables.id).attr("item-id");
 																	}else{
 																		ajax_method = "POST";
 																		ajax_id = "";
-																	}
+																	} 
 				
 																	args = [{name: "api_key", value: $.cookie("key"),},
-																			{name: "indicator.variation_value.value." + ajax_method.toLowerCase() + ".value", value: $("#dashboard-content .content .filter_result").find("#v"+item_variation.id + "_var_"+item_variables.id).val()},
-																			{name: "indicator.variation_value.value." + ajax_method.toLowerCase() + ".value_of_date", value: data_formatada},
-																			{name: "indicator.variation_value.value." + ajax_method.toLowerCase() + ".indicator_variation_id", value: item_variation.id}
+																			{name: "indicator.variation_value." + ajax_method.toLowerCase() + ".value", value: $("#dashboard-content .content .filter_result").find("#v_"+item_variation.id + "_var"+item_variables.id).val()},
+																			{name: "indicator.variation_value." + ajax_method.toLowerCase() + ".value_of_date", value: data_formatada},
+																			{name: "indicator.variation_value." + ajax_method.toLowerCase() + ".indicator_variation_id", value: item_variation.id}
 																			];
 										
 																	$.ajax({

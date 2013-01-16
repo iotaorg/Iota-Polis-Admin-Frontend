@@ -3603,18 +3603,13 @@ $(document).ready(function() {
 															}),
 													success: function(data, textStatus, jqXHR){
 														$.each(data.values,function(index_value,item_value){
-															$("#dashboard-content .content .filter_result #v_$$var_id_var_$$id".render({
+															var obj = "#dashboard-content .content .filter_result #v_$$var_id_var_$$id".render({
 																	id: item_vvariables.id,
-																	var_id: item_variation.id
-																})).val(item_value.value);
-															$("#dashboard-content .content .filter_result #v_$$var_id_var_$$id".render({
-																	id: item_vvariables.id,
-																	var_id: item_variation.id
-																})).attr("update","true");
-															$("#dashboard-content .content .filter_result #v_$$var_id_var_$$id".render({
-																	id: item_vvariables.id,
-																	var_id: item_variation.id
-																})).attr("item-id",item_value.id);
+																	var_id: item_value.indicator_variation_id
+																});
+															$(obj).val(item_value.value);
+															$(obj).attr("update","true");
+															$(obj).attr("item-id",item_value.id);
 														});
 													}
 												});

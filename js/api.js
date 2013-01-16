@@ -3675,7 +3675,7 @@ $(document).ready(function() {
 																		type: 'PUT',
 																		dataType: 'json',
 																		url: api_path + '/api/indicator/$$indicator_id/variables_variation/$$var_id/value'.render({
-																				indicator_id: $.getIdFromUrl($.getUrlVar("url")),
+																				indicator_id: getIdFromUrl($.getUrlVar("url")),
 																				var_id: item_variables.id
 																			}),
 																		data: args,

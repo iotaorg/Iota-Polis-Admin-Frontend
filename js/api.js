@@ -71,6 +71,19 @@ $.extend({
 			var new_number = number.replace(",","").replace(".",",");
 		}
 		return new_number;
+	},
+	trataErro: function(erro){
+		switch(erro){
+			case "Login invalid(1)":
+					return "Login Inválido";
+					break;	
+			case "Login invalid(2)":
+					return "Login Inválido";
+					break;	
+			default:
+					return erro;
+					break;	
+		}
 	}
 });
 
@@ -102,10 +115,14 @@ $(document).ready(function() {
 				 "user":"Prefeitura/Movimento da Rede",
 				 "app":"Aplicativos"
 				}
-	//lista tipos variaveis
+	var indicator_roles = {"_prefeitura,_movimento":"Prefeituras e Movimentos",
+						  "_prefeitura":"Somente Prefeituras",
+						  "_movimento":"Somente Movimentos"
+						  };
 	var indicator_types = {"normal":"normal",
 						  "varied":"variada"
 						  };
+	//lista tipos variaveis
 	var variable_types = {"int":"Inteiro",
 						  "str":"Alfanumérico",
 						  "num":"Valor"};
@@ -323,8 +340,8 @@ $(document).ready(function() {
 				}
 			},
 			error: function(data){
-				$("#aviso").setWarning({msg: "Erro ao fazer login. Tente novamente mais tarde ($$codigo).".render({
-						codigo: data.status
+				$("#aviso").setWarning({msg: "$$error".render({
+						error: $.trataErro($.parseJSON(data.responseText).error)
 					})});
 			}
 		});
@@ -1195,7 +1212,6 @@ $(document).ready(function() {
 						i = j;
 					}
 				}
-				console.log(var_id);
 				var_caption = $("#formula-editor .variables .item[var_id='"+var_id+"'][type='varied']").html();
 				formula_css += "<div class='f-vvariable' apelido='$$var_id'>$$caption</div>".render({var_id:var_id,caption:var_caption});
 			}else{
@@ -2351,6 +2367,7 @@ $(document).ready(function() {
 					var newform = [];
 					
 					newform.push({label: "Nome", input: ["text,name,itext"]});
+					newform.push({label: "Disponível para", input: ["select,indicator_role,iselect"]});
 					newform.push({label: "Tipo", input: ["select,indicator_type,iselect"]});
 					newform.push({label: "Nome da Variação", input: ["text,variety_name,itext"]});
 					newform.push({label: "Variações", input: ["text,variacoes_placeholder,itext"]});
@@ -2411,6 +2428,10 @@ $(document).ready(function() {
 									})
 							});
 						}
+					});
+
+					$.each(indicator_roles,function(key, value){
+						$("#dashboard-content .content select#indicator_role").append($("<option></option>").val(key).html(value));
 					});
 
 					$.each(indicator_types,function(key, value){
@@ -2770,6 +2791,7 @@ $(document).ready(function() {
 							}else{
 								args = [{name: "api_key", value: $.cookie("key"),},
 										{name: "indicator.create.name", value: $(this).parent().parent().find("#name").val()},
+										{name: "indicator.create.indicator_roles", value: $(this).parent().parent().find("#indicator_role").val()},
 										{name: "indicator.create.indicator_type", value: $(this).parent().parent().find("#indicator_type").val()},
 										{name: "indicator.create.formula", value: $(this).parent().parent().find("#formula").val()},
 										{name: "indicator.create.explanation", value: $(this).parent().parent().find("#explanation").val()},
@@ -2872,6 +2894,8 @@ $(document).ready(function() {
 								switch(jqXHR.status){
 									case 200:
 										$(formbuild).find("input#name").val(data.name);
+										if (data.indicator_roles ==  '_movimento,_prefeitura') data.indicator_roles = '_prefeitura,_movimento';
+										$(formbuild).find("select#indicator_role").val(data.indicator_roles);
 										$(formbuild).find("select#indicator_type").val(data.indicator_type);
 										if(data.indicator_type == "varied"){
 											$(formbuild).find("input#variety_name").val(data.variety_name);
@@ -2925,6 +2949,8 @@ $(document).ready(function() {
 											updateVVariacoesTable();
 
 										}
+										if (data.indicator_roles ==  '_movimento,_prefeitura') data.indicator_roles = '_prefeitura,_movimento';
+										$(formbuild).find("select#indicator_role").val(data.indicator_roles);
 										$(formbuild).find("select#indicator_type").val(data.indicator_type);
 										$(formbuild).find("textarea#formula").val(data.formula);
 										$(formbuild).find("textarea#explanation").val(data.explanation);
@@ -3008,6 +3034,7 @@ $(document).ready(function() {
 							}else{
 								args = [{name: "api_key", value: $.cookie("key"),},
 										{name: "indicator.update.name", value: $(this).parent().parent().find("#name").val()},
+										{name: "indicator.update.indicator_roles", value: $(this).parent().parent().find("#indicator_role").val()},
 										{name: "indicator.update.indicator_type", value: $(this).parent().parent().find("#indicator_type").val()},
 										{name: "indicator.update.formula", value: $(this).parent().parent().find("#formula").val()},
 										{name: "indicator.update.explanation", value: $(this).parent().parent().find("#explanation").val()},

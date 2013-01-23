@@ -2443,7 +2443,7 @@ $(document).ready(function() {
 					newform.push({label: "Referência de Meta", input: ["select,goal_operator,iselect200px","text,goal,itext200px"]});
 					newform.push({label: "Fonte (Ref. de Meta)", input: ["text,goal_source,itext"]});
 					newform.push({label: "Explicação (Ref. de Meta)", input: ["textarea,goal_explanation,itext"]});
-					newform.push({label: "Eixo", input: ["select,axis,iselect"]});
+					newform.push({label: "Eixo", input: ["select,axis_id,iselect"]});
 					newform.push({label: "Fonte", input: ["text,source,itext"]});
 					newform.push({label: "Tags", input: ["text,tags,itext"]});
 					newform.push({label: "Observações", input: ["textarea,observations,itext"]});
@@ -2483,7 +2483,7 @@ $(document).ready(function() {
 							});
 							
 							$.each(eixos,function(key, value){
-								$("#dashboard-content .content select#axis").append($("<option></option>").val(key).html(value));
+								$("#dashboard-content .content select#axis_id").append($("<option></option>").val(key).html(value));
 							});
 							
 						},
@@ -2641,7 +2641,6 @@ $(document).ready(function() {
 					
 					function updateVariacoesTable(){
 						if (variacoes_list.length > 0){
-
 							variacoes_list.sort(function (a, b) {
 								a = a.order.toString(),
 								b = b.order.toString();
@@ -2866,7 +2865,7 @@ $(document).ready(function() {
 										{name: "indicator.create.goal_source", value: $(this).parent().parent().find("#goal_source").val()},
 										{name: "indicator.create.goal_operator", value: $(this).parent().parent().find("#goal_operator option:selected").val()},
 										{name: "indicator.create.goal_explanation", value: $(this).parent().parent().find("#goal_explanation").val()},
-										{name: "indicator.create.axis_id", value: $(this).parent().parent().find("#axis option:selected").val()},
+										{name: "indicator.create.axis_id", value: $(this).parent().parent().find("#axis_id option:selected").val()},
 										{name: "indicator.create.source", value: $(this).parent().parent().find("#source").val()},
 										{name: "indicator.create.tags", value: $(this).parent().parent().find("#tags").val()},
 										{name: "indicator.create.observations", value: $(this).parent().parent().find("#observations").val()}
@@ -3031,7 +3030,7 @@ $(document).ready(function() {
 										$(formbuild).find("input#goal_source").val(data.goal_source);
 										$(formbuild).find("select#goal_operator").val(data.goal_operator);
 										$(formbuild).find("textarea#goal_explanation").val(data.goal_explanation);
-										$(formbuild).find("select#axis option[value='$$value']".render({value: data.axis_id})).prop("selected");
+										$(formbuild).find("select#axis_id").val(data.axis_id);
 										$(formbuild).find("input#source").val(data.source);
 										$(formbuild).find("input#tags").val(data.tags);
 										$(formbuild).find("textarea#observations").val(data.observations);
@@ -3115,7 +3114,7 @@ $(document).ready(function() {
 										{name: "indicator.update.goal_source", value: $(this).parent().parent().find("#goal_source").val()},
 										{name: "indicator.update.goal_operator", value: $(this).parent().parent().find("#goal_operator option:selected").val()},
 										{name: "indicator.update.goal_explanation", value: $(this).parent().parent().find("#goal_explanation").val()},
-										{name: "indicator.update.axis_id", value: $(this).parent().parent().find("#axis option:selected").val()},
+										{name: "indicator.update.axis_id", value: $(this).parent().parent().find("#axis_id option:selected").val()},
 										{name: "indicator.update.source", value: $(this).parent().parent().find("#source").val()},
 										{name: "indicator.update.tags", value: $(this).parent().parent().find("#tags").val()},
 										{name: "indicator.update.observations", value: $(this).parent().parent().find("#observations").val()}
@@ -3697,17 +3696,16 @@ $(document).ready(function() {
 															})]});
 													});
 													if (data_vvariables.length > 0){
-														newform.push({type: "div", class: "variacoes"});
+														newform.push({type: "div", class: "div_variacoes"});
 													}
 												});
 											}
 										});
 										
 										if (data_indicator.dynamic_variations == "1"){
-											newform.push({label: "Nova Faixa", input: ["text,new_variation,itext"]});
-											newform.push({label: "Valor", input: ["text,new_variation_value,itext"]});
+											newform.push({label: "Nova Faixa", input: ["text,new_variation,itext"],  class: "nova_variacao"});
 											newform.push({label: "", input: ["button,new_variation_add,botao-form"]});
-											newform.push({type: "div", class: "nova_variacao"});
+											newform.push({type: "div"});
 										}
 										
 										newform.push({label: "Meta", input: ["text,goal,itext"]});
@@ -3718,6 +3716,70 @@ $(document).ready(function() {
 										$(formbuild).find("div .field:odd").addClass("odd");
 										$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 										$(formbuild).find("#new_variation_add").html("Adicionar");
+
+										$(formbuild).find("#new_variation_add").click(function(){
+											$(this).html("Aguarde...");
+											$(this).unbind();
+											addNewVariation();
+										});
+										
+										function addNewVariation(){
+											var variation_id;
+											
+											args = [{name: "api_key", value: $.cookie("key"),},
+													{name: "indicator.variation.create.name", value: $(formbuild).find("div.field.nova_variacao .input input").val()},
+													{name: "indicator.variation.create.order", value: ($(formbuild).find(".div_variacoes").length+1)}
+													];
+				
+											$.ajax({
+												async: false,
+												type: "POST",
+												dataType: 'json',
+												url: api_path + '/api/indicator/$$indicator_id/variation'.render({
+														indicator_id: getIdFromUrl($.getUrlVar("url"))
+													}),
+												data: args,
+												success: function(data, textStatus, jqXHR){
+													variation_id = data.id
+													$(formbuild).find("#new_variation_add").html("Adicionar");
+													$(formbuild).find("#new_variation_add").click(function(){
+														$(this).html("Aguarde...");
+														$(this).unbind();
+														addNewVariation();
+													});
+													//Adiciona nova variação na tela
+													var newformVariation = '<div class="field "><div class="label">Faixa:</div><div class="input"><div class="ilabel" id="textlabel_variation_$$var_id">$$nome</div></div><div class="clear"></div></div>'.render({
+												var_id: variation_id,
+												nome: $(formbuild).find("div.field.nova_variacao .input input").val()
+												});
+													$.each(data_vvariables, function(index_vvariables,item_vvariables){
+													newformVariation += '<div class="field  odd"><div class="label"><b>'+item_vvariables.name+'</b>:</div><div class="input"><input name="v_$$var_id_var_$$id" id="v_$$var_id_var_$$id" class="itext" type="text"></div><div class="clear"></div></div>'.render({
+															id: item_vvariables.id,
+															var_id: variation_id
+														});
+													});
+													newformVariation += '<div class="div div_variacoes"></div>';
+													
+													$(formbuild).find("div.field.nova_variacao").before(newformVariation);
+													
+													$(formbuild).find("div.field.nova_variacao .input input").val("");
+
+												},
+												error: function(data){
+													$(".filter_result .form-aviso").setWarning({msg: "Erro ao enviar. ($$erro)".render({
+																erro: $.parseJSON(data.responseText).error
+																})
+													});
+													$(formbuild).find("#new_variation_add").html("Adicionar");
+													$(formbuild).find("#new_variation_add").click(function(){
+														$(this).html("Aguarde...");
+														$(this).unbind();
+														addNewVariation();
+													});
+												}
+											});
+											
+										}
 										
 										$("#dashboard-content .content .filter_result input#no_data").after("Não possuo os dados.");
 										$("#dashboard-content .content .filter_result .field:last").hide();

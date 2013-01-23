@@ -304,7 +304,7 @@ $(document).ready(function() {
 		$("#top .top-right .logo").addClass("empty");
 		$("#user-info").remove();
 		$("#menu ul li").remove();
-		$("#menu ul").append("<li class='selected'>LOGIN</li>");
+		$("#menu ul").append("<li class='selected'>Entrar</li>");
 		setTitleBar();
 	};
 	var resetWarnings = function(){
@@ -1406,6 +1406,7 @@ $(document).ready(function() {
 							} );
 						}
 					});
+					
 				}
 			}else if (getUrlSub() == "users"){
 				/*  USER  */
@@ -1837,6 +1838,7 @@ $(document).ready(function() {
 								});
 							}
 						});
+
 					}
 					$("#dashboard-content .content .botao-form[ref='cancelar']").click(function(){
 						resetWarnings();
@@ -2468,6 +2470,7 @@ $(document).ready(function() {
 					}));
 					
 					$.ajax({
+						async: false,
 						type: 'GET',
 						dataType: 'json',
 						url: api_path + '/api/axis?api_key=$$key'.render({
@@ -2638,6 +2641,7 @@ $(document).ready(function() {
 					
 					function updateVariacoesTable(){
 						if (variacoes_list.length > 0){
+
 							variacoes_list.sort(function (a, b) {
 								a = a.order.toString(),
 								b = b.order.toString();
@@ -3027,7 +3031,7 @@ $(document).ready(function() {
 										$(formbuild).find("input#goal_source").val(data.goal_source);
 										$(formbuild).find("select#goal_operator").val(data.goal_operator);
 										$(formbuild).find("textarea#goal_explanation").val(data.goal_explanation);
-										$(formbuild).find("select#axis").val(data.axis_id);
+										$(formbuild).find("select#axis option[value='$$value']".render({value: data.axis_id})).prop("selected");
 										$(formbuild).find("input#source").val(data.source);
 										$(formbuild).find("input#tags").val(data.tags);
 										$(formbuild).find("textarea#observations").val(data.observations);

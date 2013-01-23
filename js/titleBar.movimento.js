@@ -1,6 +1,6 @@
 var titleBarContent = {
 					"login":{
-								"title": "Login",
+								"title": "Entrar",
 								"tip": "Entre com seu usuário e senha:"
 								},
 					"dashboard":{

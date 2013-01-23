@@ -673,7 +673,7 @@ $(document).ready(function() {
 					}),
 			success: function(data, textStatus, jqXHR){
 				if (data.header && data.rows != undefined){
-					var history_table = "<div class='title' title='mostrar/esconder Histórico'>Série Histórica</div><div class='historic-content'>";
+					var history_table = "";
 					history_table += "<table class='history'><thead><tr><th>Período</th>";
 					
 					var headers = [];//corrige ordem do header
@@ -684,8 +684,9 @@ $(document).ready(function() {
 					$.each(headers, function(index,value){
 						history_table += "<th class='variavel'>$$variavel</th>".render({variavel:value});
 					});
-					history_table += "<th class='formula_valor'>Valor da Fórmula</th><th></th>";
+					history_table += "#theader_valor";
 					history_table += "</tr></thead><tbody>";
+					var vvariations = [];
 					var rows = 0;
 					$.each(data.rows, function(index,value){
 						history_table += "<tr row-id='$$row'><td class='periodo'>$$periodo</td>".render({periodo: $.convertDateToPeriod(data.rows[index].valid_from,args.period), row: rows});
@@ -705,12 +706,37 @@ $(document).ready(function() {
 								});
 							}
 						});
-						if (data.rows[index].formula_value != "-"){
-							history_table += "<td class='formula_valor'>$$valor</td>".render({
-									valor: $.formatNumber(data.rows[index].formula_value, {format:"#,##0.###", locale:"br"})
+						if (value.variations && value.variations.length > 0){
+							var th_valor = "";
+							for (i = 0; i < value.variations.length; i++){
+								th_valor += "<th class='formula_valor' variation-index='" + i + "'>Valor da Fórmula</th>";
+							}
+							history_table = history_table.replace("#theader_valor",th_valor+"<th></th>");
+							$.each(value.variations, function(index,item){
+								if (item.value != "-"){
+									history_table += "<td class='formula_valor' variation-index='$$index'>$$formula_valor</td>".render({
+												formula_valor: $.formatNumber(item.value, {format:"#,##0.###", locale:"br"}),
+												index: index
+											});
+								}else{
+									history_table += "<td class='formula_valor' variation-index='$$index'>-</td>".render({
+											index: index
+										});
+								}
+								vvariations.push({
+										name: item.name,
+										index: index
+									});
 							});
 						}else{
-							history_table += "<td class='formula_valor'>-</td>";
+							history_table = history_table.replace("#theader_valor","<th class='formula_valor'>Valor da Fórmula</th><th></th>");
+							if (data.rows[index].formula_value != "-"){
+								history_table += "<td class='formula_valor' variation-index='0'>$$valor</td>".render({
+										valor: $.formatNumber(data.rows[index].formula_value, {format:"#,##0.###", locale:"br"})
+								});
+							}else{
+								history_table += "<td class='formula_valor' variation-index='0'>-</td>";
+							}
 						}
 						history_table += "<td class='edit'><a href='javascript: void(0);' row-id='$$row' class='delete'>apagar</a></td>".render({
 									row: rows
@@ -719,15 +745,40 @@ $(document).ready(function() {
 						rows++;
 					});
 					history_table += "</tbody></table>";
-					history_table += "</div>";
 				}else{
 					var history_table = "<div class='title' title='mostrar/esconder Histórico'>Série Histórica</div><div class='historic-content'><table class='history'><thead><tr><th>nenhum registro encontrado</th></tr></thead></table></div>";
 				}
+
+				var variation_filter = "";
+				if (vvariations.length > 0){
+					variation_filter += "<div class='variation-filter'><span class='variation-filter'>Variação: </span><select class='variation-filter'>";
+					$.each(vvariations, function(index,item){
+						variation_filter += "<option value='$$index'>$$name".render({
+								index: item.index,
+								name: item.name
+							});
+					});
+					variation_filter += "</select></div>";
+				}
+
 				$(args.target).empty();
-				$(args.target).append(history_table);
+				$(args.target).append("<div class='title' title='mostrar/esconder Histórico'>Série Histórica</div><div class='historic-content'>" + variation_filter + history_table + "</div>");
 				$(args.target).find(".title").click(function(){
 					$(this).parent().find(".historic-content").toggle();
 				});
+
+
+				if (vvariations.length > 0){
+					$(args.target).find("table .formula_valor[variation-index!=0]").hide();
+					
+					$("select.variation-filter").change(function(){
+						var obj = $(this);
+						$(obj).parent().next("table").find(".formula_valor").fadeOut("fast",function(){
+							$(obj).parent().next("table").find(".formula_valor[variation-index='" + $(obj).val() + "']").show();
+						});
+					});
+				}
+
 				$("table.history a.delete").click(function(){
 					var link_delete = this;
 					$.confirm({
@@ -3281,8 +3332,9 @@ $(document).ready(function() {
 											$.each(headers, function(index,value){
 												history_table += "<th class='variavel'>$$variavel</th>".render({variavel:value});
 											});
-											history_table += "<th class='formula_valor'>Valor da Fórmula</th>";
+											history_table += "#theader_valor";
 											history_table += "</tr><tbody>";
+											var vvariations = [];
 											$.each(data.rows, function(index,value){
 												history_table += "<tr><td class='periodo'>$$periodo</td>".render({periodo: $.convertDateToPeriod(data.rows[index].valid_from,indicator_period)});
 												$.each(data.rows[index].valores, function(index2,value2){
@@ -3297,10 +3349,35 @@ $(document).ready(function() {
 														});
 													}
 												});
-												if (data.rows[index].formula_value != "-"){
-													history_table += "<td class='formula_valor'>$$formula_valor</td>".render({formula_valor: $.formatNumber(data.rows[index].formula_value, {format:"#,##0.###", locale:"br"})});
+												if (value.variations && value.variations.length > 0){
+													var th_valor = "";
+													for (i = 0; i < value.variations.length; i++){
+														th_valor += "<th class='formula_valor' variation-index='" + i + "'>Valor da Fórmula</th>";
+													}
+													history_table = history_table.replace("#theader_valor",th_valor);
+													$.each(value.variations, function(index,item){
+														if (item.value != "-"){
+															history_table += "<td class='formula_valor' variation-index='$$index'>$$formula_valor</td>".render({
+																		formula_valor: $.formatNumber(item.value, {format:"#,##0.###", locale:"br"}),
+																		index: index
+																	});
+														}else{
+															history_table += "<td class='formula_valor' variation-index='$$index'>-</td>".render({
+																	index: index
+																});
+														}
+														vvariations.push({
+																name: item.name,
+																index: index
+															});
+													});
 												}else{
-													history_table += "<td class='formula_valor'>-</td>";
+													history_table = history_table.replace("#theader_valor","<th class='formula_valor'>Valor da Fórmula</th>");
+													if (data.rows[index].formula_value != "-"){
+														history_table += "<td class='formula_valor' variation-index='0'>$$formula_valor</td>".render({formula_valor: $.formatNumber(data.rows[index].formula_value, {format:"#,##0.###", locale:"br"})});
+													}else{
+														history_table += "<td class='formula_valor' variation-index='0'>-</td>";
+													}
 												}
 												history_table += "</tr></tbody>";
 											});
@@ -3308,8 +3385,33 @@ $(document).ready(function() {
 										}else{
 											var history_table = "<table class='history'><thead><tr><th>nenhum registro encontrado</th></tr></thead></table>";
 										}
-										$(target).find(".historico-popup").html(history_table);
+										
+										var variation_filter = "";
+										if (vvariations.length > 0){
+											variation_filter += "<div class='variation-filter'><span class='variation-filter'>Variação: </span><select class='variation-filter'>";
+											$.each(vvariations, function(index,item){
+												variation_filter += "<option value='$$index'>$$name".render({
+														index: item.index,
+														name: item.name
+													});
+											});
+											variation_filter += "</select></div>";
+										}
+										
+										$(target).find(".historico-popup").html(variation_filter + history_table);
 										$(target).find(".historico-popup").toggle();
+
+										if (vvariations.length > 0){
+											$(target).find(".historico-popup table .formula_valor[variation-index!=0]").hide();
+											
+											$("select.variation-filter").change(function(){
+												var obj = $(this);
+												$(obj).parent().next("table").find(".formula_valor").fadeOut("fast",function(){
+													$(obj).parent().next("table").find(".formula_valor[variation-index='" + $(obj).val() + "']").show();
+												});
+											});
+										}
+										
 									},
 									error: function(data){
 										

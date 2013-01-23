@@ -120,7 +120,8 @@ $(document).ready(function() {
 						  "_movimento":"Somente Movimentos"
 						  };
 	var indicator_types = {"normal":"normal",
-						  "varied":"variada"
+						  "varied":"variada",
+						  "varied_dyn":"variada dinâmica"
 						  };
 	//lista tipos variaveis
 	var variable_types = {"int":"Inteiro",
@@ -482,7 +483,11 @@ $(document).ready(function() {
 		newform += "<div class='form-aviso'></div>";
 		for (i = 0; i < form_args.length; i++){
 			if (form_args[i].type == "div"){
-				newform += "<div class='div'></div>";
+				if (form_args[i].class){
+					newform += "<div class='div $$class'></div>".render({class: form_args[i].class});
+				}else{
+					newform += "<div class='div'></div>";
+				}
 			}else if (form_args[i].type == "subtitle"){
 				newform += "<div class='subtitle'>$$title</div>".render({title: form_args[i].title});
 			}else{
@@ -539,6 +544,12 @@ $(document).ready(function() {
 							break;
 						case "file":
 							newinput = "<form id='formFileUpload_$$id'><div class='file'><input type='file' name='arquivo_$$id' id='arquivo_$$id' original-id='arquivo_$$id' class='$$class'></div></form><iframe id='iframe_$$id' name='iframe_$$id' frameborder='0'></iframe>".render({
+									id: input_args[1],
+									class: input_args[2]
+									})
+							break;
+						case "button":
+							newinput = "<a href='javascript: void(0);' id='$$id' class='$$class'></a>".render({
 									id: input_args[1],
 									class: input_args[2]
 									})
@@ -751,7 +762,7 @@ $(document).ready(function() {
 
 				var variation_filter = "";
 				if (vvariations.length > 0){
-					variation_filter += "<div class='variation-filter'><span class='variation-filter'>Variação: </span><select class='variation-filter'>";
+					variation_filter += "<div class='variation-filter'><span class='variation-filter'>Faixa: </span><select class='variation-filter'>";
 					$.each(vvariations, function(index,item){
 						variation_filter += "<option value='$$index'>$$name".render({
 								index: item.index,
@@ -1178,7 +1189,7 @@ $(document).ready(function() {
 		var menu_label = [];
 		var menu_access = [];
 			
-		menu_label["dashboard"] = "Home";
+		menu_label["dashboard"] = "Início";
 		menu_label["users"] = "Usuários";
 		menu_label["cities"] = "Cidades";
 		menu_label["variable"] = "Variáveis";
@@ -1188,10 +1199,10 @@ $(document).ready(function() {
 		menu_label["tokens"] = "Tokens";
 		menu_label["reports"] = "Relatórios";
 		menu_label["prefs"] = "Preferências";
-		menu_label["logout"] = "Logout";
+		menu_label["logout"] = "Sair";
 		
-		menu_access["admin"] = ["dashboard","users","cities","variable","indicator","prefs","logout"];
-		menu_access["user"] = ["dashboard","myvariable","myindicator","prefs","logout"];
+		menu_access["admin"] = ["dashboard","prefs","users","cities","variable","indicator","logout"];
+		menu_access["user"] = ["dashboard","prefs","myvariable","myindicator","logout"];
 		
 		$.each(menu_access[user_info.role],function(index,value){
 			var menu_class = (getUrlSub() == value) ? "selected" : "";
@@ -2420,9 +2431,9 @@ $(document).ready(function() {
 					newform.push({label: "Nome", input: ["text,name,itext"]});
 					newform.push({label: "Disponível para", input: ["select,indicator_role,iselect"]});
 					newform.push({label: "Tipo", input: ["select,indicator_type,iselect"]});
-					newform.push({label: "Nome da Variação", input: ["text,variety_name,itext"]});
-					newform.push({label: "Variações", input: ["text,variacoes_placeholder,itext"]});
-					newform.push({label: "Variáveis da Variação", input: ["text,vvariacoes_placeholder,itext"]});
+					newform.push({label: "Nome da Faixa", input: ["text,variety_name,itext"]});
+					newform.push({label: "Faixas", input: ["text,variacoes_placeholder,itext"]});
+					newform.push({label: "Variáveis da Faixa", input: ["text,vvariacoes_placeholder,itext"]});
 					newform.push({label: "Todas as variáveis são obrigatórias", input: ["checkbox,all_variations_variables_are_required,icheckbox"]});
 					newform.push({label: "Formula<br /><a href='javascript: void(0);' id='help-formula'>ajuda</a>", input: ["textarea,formula,itext"]});
 					newform.push({label: "Explicação", input: ["textarea,explanation,itext"]});
@@ -2660,7 +2671,7 @@ $(document).ready(function() {
 							
 						}else{
 							$("#variacoes-form .variacoes-list table tbody").empty();
-							$("#variacoes-form .variacoes-list table tbody").append("<tr><td colspan='4' align='center'>Nenhuma variação adicionada</td></tr>");
+							$("#variacoes-form .variacoes-list table tbody").append("<tr><td colspan='4' align='center'>Nenhuma faixa adicionada</td></tr>");
 						}
 					}
 					
@@ -2843,7 +2854,7 @@ $(document).ready(function() {
 								args = [{name: "api_key", value: $.cookie("key"),},
 										{name: "indicator.create.name", value: $(this).parent().parent().find("#name").val()},
 										{name: "indicator.create.indicator_roles", value: $(this).parent().parent().find("#indicator_role").val()},
-										{name: "indicator.create.indicator_type", value: $(this).parent().parent().find("#indicator_type").val()},
+										{name: "indicator.create.indicator_type", value: $(this).parent().parent().find("#indicator_type").val().replace("_dyn","")},
 										{name: "indicator.create.formula", value: $(this).parent().parent().find("#formula").val()},
 										{name: "indicator.create.explanation", value: $(this).parent().parent().find("#explanation").val()},
 										{name: "indicator.create.sort_diretion", value: $(this).parent().parent().find("#sort_direction option:selected").val()},
@@ -2858,7 +2869,7 @@ $(document).ready(function() {
 										];
 
 
-								if ($(this).parent().parent().find("#indicator_type").val() == "varied"){
+								if ($(this).parent().parent().find("#indicator_type").val() == "varied" || $(this).parent().parent().find("#indicator_type").val() == "varied_dyn"){
 									if ($(this).parent().parent().find("#all_variations_variables_are_required").attr("checked")){
 										args.push({name: "indicator.create.all_variations_variables_are_required", value: 1});
 									}else{
@@ -2866,6 +2877,9 @@ $(document).ready(function() {
 									}
 									args.push({name: "indicator.create.variety_name", value: $(this).parent().parent().find("#variety_name").val()});
 									args.push({name: "indicator.create.summarization_method", value: 'sum'});
+									if ($(this).parent().parent().find("#indicator_type").val() == "varied_dyn"){
+										args.push({name: "indicator.create.dynamic_variations", value: 1});
+									}
 								}
 										
 								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
@@ -2877,7 +2891,7 @@ $(document).ready(function() {
 									data: args,
 									success: function(data,status,jqXHR){
 										var newId = data.id;
-										if ($("#dashboard-content .content select#indicator_type").val() == "varied"){
+										if ($("#dashboard-content .content select#indicator_type").val() == "varied" || $("#dashboard-content .content select#indicator_type").val() == "varied_dyn"){
 											
 											$.each(variacoes_list, function(index,item){
 												args = [{name: "api_key", value: $.cookie("key")},
@@ -2947,7 +2961,11 @@ $(document).ready(function() {
 										$(formbuild).find("input#name").val(data.name);
 										if (data.indicator_roles ==  '_movimento,_prefeitura') data.indicator_roles = '_prefeitura,_movimento';
 										$(formbuild).find("select#indicator_role").val(data.indicator_roles);
-										$(formbuild).find("select#indicator_type").val(data.indicator_type);
+										if (data.indicator_type == "varied" && data.dynamic_variations == "1"){
+											$(formbuild).find("select#indicator_type").val("varied_dyn");
+										}else{
+											$(formbuild).find("select#indicator_type").val(data.indicator_type);
+										}
 										if(data.indicator_type == "varied"){
 											$(formbuild).find("input#variety_name").val(data.variety_name);
 											if (data.all_variations_variables_are_required == 1){
@@ -3002,7 +3020,6 @@ $(document).ready(function() {
 										}
 										if (data.indicator_roles ==  '_movimento,_prefeitura') data.indicator_roles = '_prefeitura,_movimento';
 										$(formbuild).find("select#indicator_role").val(data.indicator_roles);
-										$(formbuild).find("select#indicator_type").val(data.indicator_type);
 										$(formbuild).find("textarea#formula").val(data.formula);
 										$(formbuild).find("textarea#explanation").val(data.explanation);
 										$(formbuild).find("select#sort_direction").val(data.sort_direction);
@@ -3086,7 +3103,7 @@ $(document).ready(function() {
 								args = [{name: "api_key", value: $.cookie("key"),},
 										{name: "indicator.update.name", value: $(this).parent().parent().find("#name").val()},
 										{name: "indicator.update.indicator_roles", value: $(this).parent().parent().find("#indicator_role").val()},
-										{name: "indicator.update.indicator_type", value: $(this).parent().parent().find("#indicator_type").val()},
+										{name: "indicator.update.indicator_type", value: $(this).parent().parent().find("#indicator_type").val().replace("_dyn","")},
 										{name: "indicator.update.formula", value: $(this).parent().parent().find("#formula").val()},
 										{name: "indicator.update.explanation", value: $(this).parent().parent().find("#explanation").val()},
 										{name: "indicator.update.sort_direction", value: $(this).parent().parent().find("#sort_direction option:selected").val()},
@@ -3100,7 +3117,7 @@ $(document).ready(function() {
 										{name: "indicator.update.observations", value: $(this).parent().parent().find("#observations").val()}
 										];
 
-								if ($(this).parent().parent().find("#indicator_type").val() == "varied"){
+								if ($(this).parent().parent().find("#indicator_type").val() == "varied" || $(this).parent().parent().find("#indicator_type").val() == "varied_dyn"){
 									if ($(this).parent().parent().find("#all_variations_variables_are_required").attr("checked")){
 										args.push({name: "indicator.update.all_variations_variables_are_required", value: 1});
 									}else{
@@ -3108,6 +3125,11 @@ $(document).ready(function() {
 									}
 									args.push({name: "indicator.update.variety_name", value: $(this).parent().parent().find("#variety_name").val()});
 									args.push({name: "indicator.update.summarization_method", value: 'sum'});
+									if ($(this).parent().parent().find("#indicator_type").val() == "varied_dyn"){
+										args.push({name: "indicator.update.dynamic_variations", value: 1});
+									}else{
+										args.push({name: "indicator.update.dynamic_variations", value: 0});
+									}
 								}else{
 									args.push({name: "indicator.update.all_variations_variables_are_required", value: ''});
 									args.push({name: "indicator.update.variety_name", value: ''});
@@ -3122,7 +3144,7 @@ $(document).ready(function() {
 									data: args,
 									success: function(data, textStatus, jqXHR){
 										var newId = data.id;
-										if ($("#dashboard-content .content select#indicator_type").val() == "varied"){
+										if ($("#dashboard-content .content select#indicator_type").val() == "varied" || $("#dashboard-content .content select#indicator_type").val() == "varied_dyn"){
 											
 											$.each(variacoes_list, function(index,item){
 												if ((item.temp) || item.temp == "true"){
@@ -3388,7 +3410,7 @@ $(document).ready(function() {
 										
 										var variation_filter = "";
 										if (vvariations.length > 0){
-											variation_filter += "<div class='variation-filter'><span class='variation-filter'>Variação: </span><select class='variation-filter'>";
+											variation_filter += "<div class='variation-filter'><span class='variation-filter'>Faixa: </span><select class='variation-filter'>";
 											$.each(vvariations, function(index,item){
 												variation_filter += "<option value='$$index'>$$name".render({
 														index: item.index,
@@ -3663,7 +3685,7 @@ $(document).ready(function() {
 											success: function(data_variation, textStatus, jqXHR){
 												data_variations = data_variation.variations;
 												$.each(data_variations, function(index_variation,item_variation){
-													newform.push({label: "Variação", input: ["textlabel,textlabel_variation_$$id,ilabel".render({id:item_variation.id})]});
+													newform.push({label: "Faixa", input: ["textlabel,textlabel_variation_$$id,ilabel".render({id:item_variation.id})]});
 													$.each(data_vvariables, function(index_vvariables,item_vvariables){
 														newform.push({label: "<b>"+item_vvariables.name+"</b>", input: ["text,v_$$var_id_var_$$id,itext".render({
 																id: item_vvariables.id,
@@ -3671,11 +3693,18 @@ $(document).ready(function() {
 															})]});
 													});
 													if (data_vvariables.length > 0){
-														newform.push({type: "div"});	
+														newform.push({type: "div", class: "variacoes"});
 													}
 												});
 											}
 										});
+										
+										if (data_indicator.dynamic_variations == "1"){
+											newform.push({label: "Nova Faixa", input: ["text,new_variation,itext"]});
+											newform.push({label: "Valor", input: ["text,new_variation_value,itext"]});
+											newform.push({label: "", input: ["button,new_variation_add,botao-form"]});
+											newform.push({type: "div", class: "nova_variacao"});
+										}
 										
 										newform.push({label: "Meta", input: ["text,goal,itext"]});
 										newform.push({label: "", input: ["checkbox,no_data,icheckbox"]});
@@ -3684,6 +3713,7 @@ $(document).ready(function() {
 										var formbuild = $("#dashboard-content .content .filter_result").append(buildForm(newform,data_indicator.name));
 										$(formbuild).find("div .field:odd").addClass("odd");
 										$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+										$(formbuild).find("#new_variation_add").html("Adicionar");
 										
 										$("#dashboard-content .content .filter_result input#no_data").after("Não possuo os dados.");
 										$("#dashboard-content .content .filter_result .field:last").hide();

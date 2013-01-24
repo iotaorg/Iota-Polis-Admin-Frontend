@@ -2499,13 +2499,14 @@ $(document).ready(function() {
 								key: $.cookie("key")
 								}),
 						success: function(data, textStatus, jqXHR){
-							var eixos = [];
-							$.each(data.axis, function(index,value){
-								eixos[String(data.axis[index].id)] = String(data.axis[index].name);
-							});
+							data.axis.sort(function (a, b) {
+								a = a.name,
+								b = b.name;
 							
-							$.each(eixos,function(key, value){
-								$("#dashboard-content .content select#axis_id").append($("<option></option>").val(key).html(value));
+								return a.localeCompare(b);
+							});
+							$.each(data.axis, function(index,item){
+								$("#dashboard-content .content select#axis_id").append($("<option></option>").val(item.id).html(item.name));
 							});
 							
 						},
@@ -3283,11 +3284,15 @@ $(document).ready(function() {
 														"axis":data.indicators[index].axis,
 														"period":'yearly',
 													 });
+													 console.log(data.indicators[index].axis);
 							});
 							
-							data_indicators.sort(function(a, b) {
-							   return a.axis_id - b.axis_id;
-							})
+							data_indicators.sort(function (a, b) {
+								a = a.axis.name,
+								b = b.axis.name;
+							
+								return a.localeCompare(b);
+							});
 
 							var data_variables = [];
 							$.ajax({

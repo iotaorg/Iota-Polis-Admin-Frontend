@@ -1015,6 +1015,11 @@ $(document).ready(function() {
 						};
 
 		var new_formula = formula;
+
+		variables.sort(function (a, b) {
+			return b.id - a.id;
+		});
+
 		$.each(variables,function(index,value){
 			var pattern = "\\$"+variables[index].id;
 			var re = new RegExp(pattern, "g");
@@ -1026,6 +1031,9 @@ $(document).ready(function() {
 		});
 
 		if (vvariables){
+			vvariables.sort(function (a, b) {
+				return b.id - a.id;
+			});
 			$.each(vvariables,function(index,value){
 				var pattern = "\\#"+vvariables[index].id;
 				var re = new RegExp(pattern, "g");
@@ -1399,6 +1407,7 @@ $(document).ready(function() {
 								  "oLanguage": {
 												"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
 												},
+								  "aaSorting": [[2,'desc']],
 								  "aoColumnDefs": [
 													{ "sClass": "log", "aTargets": [ 0 , 1 , 2 ] },
 													{ "sClass": "log.data", "aTargets": [ 2 ] }
@@ -1876,6 +1885,7 @@ $(document).ready(function() {
                         					{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "80px", "aTargets": [ 5 ] },
                         					{ "bSearchable": false, "bSortable": false, "sClass": "center is_basic", "aTargets": [ 4 ] },
                         					{ "sClass": "center", "aTargets": [ 2 , 3, 4 ] },
+                        					{ "sWidth": "300px", "aTargets": [ 0 ] },
 											{ "fnRender": function ( oObj, sVal ) {
 									        	            return variable_types[sVal];
 							    	          			  }, "aTargets": [ 2 ]
@@ -1884,8 +1894,18 @@ $(document).ready(function() {
 									        	            return $.format.date(sVal,"dd/MM/yyyy HH:mm:ss");
 							    	          			  }, "aTargets": [ 3 ]
 											},
+											{ "fnRender": function ( oObj, sVal ) {
+															var text = sVal;
+															var count = 20;
+															if(sVal.length > count) {
+															   text = text.substring(0, count) + "...";
+															}
+
+									        	            return text;
+							    	          			  }, "aTargets": [ 1 ]
+											}
                     					  ],
-						   "aaSorting": [[4,'asc'],[0,'asc']],
+						   "aaSorting": [[3,'desc'],[0,'asc']],
 						   "fnDrawCallback": function(){
 								DTdesenhaBotoes();
 								$("#results td.is_basic").each( function(){
@@ -2410,6 +2430,7 @@ $(document).ready(function() {
 						  "aoColumnDefs": [
 											{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 3 ] },
 											{ "sWidth": "140px", "sClass": "center", "aTargets": [ 2 ] },
+											{ "sClass": "formula", "aTargets": [ 1 ] },
 											{ "fnRender": function ( oObj, sVal ) {
 															return $.format.date(sVal,"dd/MM/yyyy HH:mm:ss");
 														  }, "aTargets": [ 2 ]
@@ -2419,6 +2440,7 @@ $(document).ready(function() {
 														  }, "aTargets": [ 1 ]
 											},
 										  ],
+						   "aaSorting": [[ 2 , "desc" ],[ 0 , "asc" ]],
 						   "fnDrawCallback": function(){
 								DTdesenhaBotoes();
 							}

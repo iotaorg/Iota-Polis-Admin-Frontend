@@ -65,7 +65,11 @@ $.extend({
 		return new_number;
 	},
 	convertNumberFromBd: function(number){
-		if (!number){
+		if (number == null){
+			var new_number = "";
+		}else if (number == undefined){
+			var new_number = "";
+		}else if (number == 0){
 			var new_number = 0;
 		}else{
 			var new_number = number.replace(",","").replace(".",",");
@@ -2883,7 +2887,7 @@ $(document).ready(function() {
 										{name: "indicator.create.indicator_type", value: $(this).parent().parent().find("#indicator_type").val().replace("_dyn","")},
 										{name: "indicator.create.formula", value: $(this).parent().parent().find("#formula").val()},
 										{name: "indicator.create.explanation", value: $(this).parent().parent().find("#explanation").val()},
-										{name: "indicator.create.sort_diretion", value: $(this).parent().parent().find("#sort_direction option:selected").val()},
+										{name: "indicator.create.sort_direction", value: $(this).parent().parent().find("#sort_direction option:selected").val()},
 										{name: "indicator.create.goal", value: $.convertNumberToBd($(this).parent().parent().find("#goal").val())},
 										{name: "indicator.create.goal_source", value: $(this).parent().parent().find("#goal_source").val()},
 										{name: "indicator.create.goal_operator", value: $(this).parent().parent().find("#goal_operator option:selected").val()},
@@ -3045,13 +3049,14 @@ $(document).ready(function() {
 
 										}
 										if (data.indicator_roles ==  '_movimento,_prefeitura') data.indicator_roles = '_prefeitura,_movimento';
-										$(formbuild).find("select#indicator_role").val(data.indicator_roles);
+										$(formbuild).find("select#indicator_role").val(String(data.indicator_roles));
 										$(formbuild).find("textarea#formula").val(data.formula);
 										$(formbuild).find("textarea#explanation").val(data.explanation);
-										$(formbuild).find("select#sort_direction").val(data.sort_direction);
+										$(formbuild).find("select#sort_direction").val(String(data.sort_direction));
 										$(formbuild).find("input#goal").val($.convertNumberFromBd(data.goal));
 										$(formbuild).find("input#goal_source").val(data.goal_source);
-										$(formbuild).find("select#goal_operator").val(data.goal_operator);
+										$(formbuild).find("select#goal_operator").val(String(data.goal_operator));
+										console.log(data.goal_operator);
 										$(formbuild).find("textarea#goal_explanation").val(data.goal_explanation);
 										$(formbuild).find("select#axis_id").val(data.axis_id);
 										$(formbuild).find("input#source").val(data.source);

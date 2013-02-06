@@ -324,6 +324,7 @@ $(document).ready(function() {
 
 	var sendLogin = function(){
 		args = [{name: "user.login.email",value: $("#form-login #usuario").val()},
+
 				{name: "user.login.password",value: $("#form-login #senha").val()}
 				];
 				
@@ -1751,7 +1752,6 @@ $(document).ready(function() {
 										];
 								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
 								$.ajax({
-
 									type: 'POST',
 									dataType: 'json',
 									url: api_path + '/api/city',
@@ -2663,8 +2663,8 @@ $(document).ready(function() {
 					variacoes_list = [];
 					variacoes_id_temp = 0;
 					
-					$("#dashboard-content .content input#variacoes_placeholder").after("<div id='variacoes-form'><div class='variacoes-list'><table><thead><tr><th>Nome</th><th></th><th></th><th></th></tr></thead><tbody></tbody></table></div><div class='variacoes-add'></div></div>");
-					$("#variacoes-form .variacoes-add").append("<input type='text' id='variacoes-input' placeholder=''><input type='button' value='adicionar' id='variacoes-button-add'>");
+					$("#dashboard-content .content input#variacoes_placeholder").after("<div id='variacoes-form'><div class='variacoes-list'><table><thead><tr><th>Nome</th><th></th><th></th><th></th><th></th></tr></thead><tbody></tbody></table></div><div class='variacoes-add'></div></div>");
+					$("#variacoes-form .variacoes-add").append("<input type='text' id='variacoes-input' placeholder=''><input type='button' value='adicionar' id='variacoes-button-add'><input type='button' style='display: none;' value='salvar' id='variacoes-button-edit'>");
 					$("#dashboard-content .content input#variacoes_placeholder").hide();
 					
 					function updateVariacoesTable(){
@@ -2676,7 +2676,7 @@ $(document).ready(function() {
 							});
 							$("#variacoes-form .variacoes-list table tbody").empty();
 							$.each(variacoes_list,function(index,item){
-								$("#variacoes-form .variacoes-list table tbody").append("<tr id='$$id' order='$$order' temp='$$temp' delete='$$delete'><td>$$name</td><td class='delete'><a href='#'>remover</a></td><td class='up'><a href='#'>subir</a></td><td class='down'><a href='#'>descer</a></td></tr>".render({
+								$("#variacoes-form .variacoes-list table tbody").append("<tr id='$$id' order='$$order' temp='$$temp' delete='$$delete'><td>$$name</td><td class='edit'><a href='#'>editar</a></td><td class='delete'><a href='#'>remover</a></td><td class='up'><a href='#'>subir</a></td><td class='down'><a href='#'>descer</a></td></tr>".render({
 										name: item.name,
 										id: item.id,
 										order: item.order,
@@ -2698,6 +2698,18 @@ $(document).ready(function() {
 							$("#variacoes-form .variacoes-list table td.down a").click(function(e){
 								e.preventDefault();
 								desceVariacao($(this).parent().parent());
+							});
+							$("#variacoes-form .variacoes-list table td.edit a").click(function(e){
+								var tr = $(this).parent().parent();
+								e.preventDefault();
+								$("#variacoes-input").val($(this).parent().prev("td").text());
+								$("#variacoes-input").focus();
+								$("#variacoes-button-add").hide();
+								$("#variacoes-button-edit").show();
+								$("#variacoes-button-edit").unbind();
+								$("#variacoes-button-edit").click(function(e){
+									updateVariacao(tr);
+								});
 							});
 							
 						}else{
@@ -2722,6 +2734,7 @@ $(document).ready(function() {
 								temp: true
 								});
 						variacoes_id_temp++;
+						$("#variacoes-input").val("");
 						updateVariacoesTable();
 					}
 					
@@ -2766,6 +2779,31 @@ $(document).ready(function() {
 						updateVariacoesTable();
 					}
 
+
+					function updateVariacao(item){
+						if (item.attr("temp") == "true"){
+							$.each(variacoes_list,function(index,value){
+								if (parseInt(variacoes_list[index].id) == parseInt(item.attr("id"))){
+									variacoes_list[index].name = $("#variacoes-input").val();
+								}
+							});
+						}else{
+							$.each(variacoes_list,function(index,item2){
+								if (item2.id == item.attr("id")){
+									variacoes_list[index].update = true;
+									variacoes_list[index].name = $("#variacoes-input").val();
+									updateFormula();
+								}
+							});
+							item.attr("update","true");
+						}
+						$("#variacoes-button-add").show();
+						$("#variacoes-button-edit").hide();
+						$("#variacoes-input").val("");
+						updateVariacoesTable();
+					}
+
+
 					updateVariacoesTable();
 					
 					$("#variacoes-button-add").click(function(){
@@ -2777,8 +2815,8 @@ $(document).ready(function() {
 					vvariacoes_list = [];
 					vvariacoes_id_temp = 0;
 					
-					$("#dashboard-content .content input#vvariacoes_placeholder").after("<div id='vvariacoes-form'><div class='vvariacoes-list'><table><thead><tr><th>Nome</th><th></th></tr></thead><tbody></tbody></table></div><div class='vvariacoes-add'></div></div>");
-					$("#vvariacoes-form .vvariacoes-add").append("<input type='text' id='vvariacoes-input' placeholder=''><input type='button' value='adicionar' id='vvariacoes-button-add'>");
+					$("#dashboard-content .content input#vvariacoes_placeholder").after("<div id='vvariacoes-form'><div class='vvariacoes-list'><table><thead><tr><th>Nome</th><th></th><th></th></tr></thead><tbody></tbody></table></div><div class='vvariacoes-add'></div></div>");
+					$("#vvariacoes-form .vvariacoes-add").append("<input type='text' id='vvariacoes-input' placeholder=''><input type='button' value='adicionar' id='vvariacoes-button-add'><input type='button' style='display: none;' value='salvar' id='vvariacoes-button-edit'>");
 					$("#dashboard-content .content input#vvariacoes_placeholder").hide();
 					
 					function updateVVariacoesTable(){
@@ -2790,7 +2828,7 @@ $(document).ready(function() {
 							});
 							$("#vvariacoes-form .vvariacoes-list table tbody").empty();
 							$.each(vvariacoes_list,function(index,item){
-								$("#vvariacoes-form .vvariacoes-list table tbody").append("<tr id='$$id' temp='$$temp' delete='$$delete'><td>$$name</td><td class='delete'><a href='#'>remover</a></td></tr>".render({
+								$("#vvariacoes-form .vvariacoes-list table tbody").append("<tr id='$$id' temp='$$temp' delete='$$delete'><td>$$name</td><td class='edit'><a href='#'>editar</a></td><<td class='delete'><a href='#'>remover</a></td></tr>".render({
 										name: item.name,
 										id: item.id,
 										temp: item.temp,
@@ -2803,6 +2841,18 @@ $(document).ready(function() {
 							$("#vvariacoes-form .vvariacoes-list table td.delete a").click(function(e){
 								e.preventDefault();
 								deleteVVariacao($(this).parent().parent());
+							});
+							$("#vvariacoes-form .vvariacoes-list table td.edit a").click(function(e){
+								var tr = $(this).parent().parent();
+								e.preventDefault();
+								$("#vvariacoes-input").val($(this).parent().prev("td").text());
+								$("#vvariacoes-input").focus();
+								$("#vvariacoes-button-add").hide();
+								$("#vvariacoes-button-edit").show();
+								$("#vvariacoes-button-edit").unbind();
+								$("#vvariacoes-button-edit").click(function(e){
+									updateVVariacao(tr);
+								});
 							});
 							
 						}else{
@@ -2821,6 +2871,7 @@ $(document).ready(function() {
 
 						$("#formula-editor .variables").append($("<div class='item'></div>").attr({"var_id":vvariacoes_id_temp,"type":"varied"}).html($("#vvariacoes-form .vvariacoes-add #vvariacoes-input").val()));
 						vvariacoes_id_temp++;
+						$("#vvariacoes-input").val("");
 						trataCliqueVariaveis();
 					}
 					
@@ -2849,6 +2900,34 @@ $(document).ready(function() {
 							});
 							item.attr("delete","true");
 						}
+						updateVVariacoesTable();
+					}
+
+					function updateVVariacao(item){
+						if (item.attr("temp") == "true"){
+							$.each(vvariacoes_list,function(index,value){
+								if (parseInt(vvariacoes_list[index].id) == parseInt(item.attr("id"))){
+									vvariacoes_list[index].name = $("#vvariacoes-input").val();
+									$("#formula-editor .variables .item[var_id='$$var_id'][type='varied']".render({var_id: item.attr("id")})).text($("#vvariacoes-input").val());
+									$("#formula-editor .editor-content .f-vvariable[var_id='$$var_id']".render({var_id: item.attr("id")})).text($("#vvariacoes-input").val());
+									updateFormula();
+								}
+							});
+						}else{
+							$.each(vvariacoes_list,function(index,item2){
+								if (item2.id == item.attr("id")){
+									vvariacoes_list[index].update = true;
+									vvariacoes_list[index].name = $("#vvariacoes-input").val();
+									$("#formula-editor .variables .item[var_id='$$var_id'][type='varied']".render({var_id: item.attr("id")})).text($("#vvariacoes-input").val());
+									$("#formula-editor .editor-content .f-vvariable[var_id='$$var_id']".render({var_id: item.attr("id")})).text($("#vvariacoes-input").val());
+									updateFormula();
+								}
+							});
+							item.attr("update","true");
+						}
+						$("#vvariacoes-button-add").show();
+						$("#vvariacoes-button-edit").hide();
+						$("#vvariacoes-input").val("");
 						updateVVariacoesTable();
 					}
 
@@ -3217,7 +3296,21 @@ $(document).ready(function() {
 														data: args
 													});
 												}else{
-													if ((item.delete) || item.delete == "true"){
+													if ((item.update) || item.update == "true"){
+														args = [{name: "api_key", value: $.cookie("key")},
+																{name: "indicator.variation.update.name", value: item.name}
+																];
+														$.ajax({
+															async: false,
+															type: 'POST',
+															dataType: 'json',
+															url: api_path + '/api/indicator/$$newid/variation/$$id'.render({
+																	newid: newId,
+																	id: item.id
+																}),
+															data: args
+														});
+													}else if ((item.delete) || item.delete == "true"){
 														$.ajax({
 															async: false,
 															type: 'DELETE',
@@ -3251,7 +3344,21 @@ $(document).ready(function() {
 														}
 													});
 												}else{
-													if ((item.delete) || item.delete == "true"){
+													if ((item.update) || item.update == "true"){
+														args = [{name: "api_key", value: $.cookie("key")},
+																{name: "indicator.variables_variation.update.name", value: item.name}
+																];
+														$.ajax({
+															async: false,
+															type: 'POST',
+															dataType: 'json',
+															url: api_path + '/api/indicator/$$newid/variables_variation/$$id'.render({
+																	newid: newId,
+																	id: item.id
+																}),
+															data: args
+														});
+													}else if ((item.delete) || item.delete == "true"){
 														$.ajax({
 															async: false,
 															type: 'DELETE',
@@ -3811,6 +3918,7 @@ $(document).ready(function() {
 													}),
 												data: args,
 												success: function(data, textStatus, jqXHR){
+
 													variation_id = data.id
 													$(formbuild).find("#new_variation_add").html("Adicionar");
 													$(formbuild).find("#new_variation_add").click(function(){

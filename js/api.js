@@ -1273,7 +1273,7 @@ $(document).ready(function() {
 					}
 				}
 				var_caption = $("#formula-editor .variables .item[var_id='"+var_id+"'][type='normal']").html();
-				formula_css += "<div class='f-variable' apelido='$$var_id'>$$caption</div>".render({var_id:var_id,caption:var_caption});
+				formula_css += "<div class='f-variable' var_id='$$var_id'>$$caption</div>".render({var_id:var_id,caption:var_caption});
 			}else if (formula[i] == "#"){
 				var var_id = "";
 				var var_caption = "";
@@ -1287,7 +1287,7 @@ $(document).ready(function() {
 					}
 				}
 				var_caption = $("#formula-editor .variables .item[var_id='"+var_id+"'][type='varied']").html();
-				formula_css += "<div class='f-vvariable' apelido='$$var_id'>$$caption</div>".render({var_id:var_id,caption:var_caption});
+				formula_css += "<div class='f-vvariable' var_id='$$var_id'>$$caption</div>".render({var_id:var_id,caption:var_caption});
 			}else{
 				var var_input = "";
 				for (j = i; j < formula.length; j++){
@@ -1751,6 +1751,7 @@ $(document).ready(function() {
 										];
 								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
 								$.ajax({
+
 									type: 'POST',
 									dataType: 'json',
 									url: api_path + '/api/city',
@@ -2829,6 +2830,8 @@ $(document).ready(function() {
 							$.each(vvariacoes_list,function(index,value){
 								if (parseInt(vvariacoes_list[index].id) == parseInt(item.attr("id"))){
 									$("#formula-editor .variables .item[var_id='$$var_id'][type='varied']".render({var_id: item.attr("id")})).remove();
+									$("#formula-editor .editor-content .f-vvariable[var_id='$$var_id']".render({var_id: item.attr("id")})).remove();
+									updateFormula();
 									selecionado = index;
 								}
 							});
@@ -2840,12 +2843,15 @@ $(document).ready(function() {
 								if (item2.id == item.attr("id")){
 									vvariacoes_list[index].delete = true;
 									$("#formula-editor .variables .item[var_id='$$var_id'][type='varied']".render({var_id: item.attr("id")})).remove();
+									$("#formula-editor .editor-content .f-vvariable[var_id='$$var_id']".render({var_id: item.attr("id")})).remove();
+									updateFormula();
 								}
 							});
 							item.attr("delete","true");
 						}
 						updateVVariacoesTable();
 					}
+
 
 					updateVVariacoesTable();
 					
@@ -2921,6 +2927,7 @@ $(document).ready(function() {
 									data: args,
 									success: function(data,status,jqXHR){
 										var newId = data.id;
+										var formula_update = $("#dashboard-content textarea#formula").val();
 										if ($("#dashboard-content .content select#indicator_type").val() == "varied" || $("#dashboard-content .content select#indicator_type").val() == "varied_dyn"){
 											
 											$.each(variacoes_list, function(index,item){
@@ -2952,11 +2959,27 @@ $(document).ready(function() {
 													url: api_path + '/api/indicator/$$newid/variables_variation'.render({
 															newid: newId
 														}),
-													data: args
+													data: args,
+													success: function(data,status,jqXHR){
+														formula_update = formula_update.replace("#"+item.id,"#"+data.id);
+													}
 												});
 											});
 										}
-
+										if (formula_update != $("#dashboard-content textarea#formula").val()){
+											args = [{name: "api_key", value: $.cookie("key")},
+													{name: "indicator.update.formula", value: formula_update}
+													];
+											$.ajax({
+												async: false,
+												type: 'POST',
+												dataType: 'json',
+												url: api_path + '/api/indicator/$$newid'.render({
+														newid: newId
+													}),
+												data: args
+											});
+										}
 										$("#aviso").setWarning({msg: "Cadastro efetuado com sucesso.".render({
 													codigo: jqXHR.status
 													})
@@ -3056,7 +3079,6 @@ $(document).ready(function() {
 										$(formbuild).find("input#goal").val($.convertNumberFromBd(data.goal));
 										$(formbuild).find("input#goal_source").val(data.goal_source);
 										$(formbuild).find("select#goal_operator").val(String(data.goal_operator));
-										console.log(data.goal_operator);
 										$(formbuild).find("textarea#goal_explanation").val(data.goal_explanation);
 										$(formbuild).find("select#axis_id").val(data.axis_id);
 										$(formbuild).find("input#source").val(data.source);
@@ -3175,6 +3197,7 @@ $(document).ready(function() {
 									data: args,
 									success: function(data, textStatus, jqXHR){
 										var newId = data.id;
+										var formula_update = $("#dashboard-content textarea#formula").val();
 										if ($("#dashboard-content .content select#indicator_type").val() == "varied" || $("#dashboard-content .content select#indicator_type").val() == "varied_dyn"){
 											
 											$.each(variacoes_list, function(index,item){
@@ -3208,7 +3231,7 @@ $(document).ready(function() {
 													}
 												}
 											});
-
+											
 											$.each(vvariacoes_list, function(index,item){
 												if ((item.temp) || item.temp == "true"){
 													args = [{name: "api_key", value: $.cookie("key")},
@@ -3222,7 +3245,10 @@ $(document).ready(function() {
 														url: api_path + '/api/indicator/$$newid/variables_variation'.render({
 																newid: newId
 															}),
-														data: args
+														data: args,
+														success: function(data){
+															formula_update = formula_update.replace("#"+item.id,"#"+data.id);
+														}
 													});
 												}else{
 													if ((item.delete) || item.delete == "true"){
@@ -3238,6 +3264,20 @@ $(document).ready(function() {
 														});
 													}
 												}
+											});
+										}
+										if (formula_update != $("#dashboard-content textarea#formula").val()){
+											args = [{name: "api_key", value: $.cookie("key")},
+													{name: "indicator.update.formula", value: formula_update}
+													];
+											$.ajax({
+												async: false,
+												type: 'POST',
+												dataType: 'json',
+												url: api_path + '/api/indicator/$$newid'.render({
+														newid: newId
+													}),
+												data: args
 											});
 										}
 										$("#aviso").setWarning({msg: "Cadastro editado com sucesso.".render({
@@ -3289,7 +3329,6 @@ $(document).ready(function() {
 														"axis":data.indicators[index].axis,
 														"period":'yearly',
 													 });
-													 console.log(data.indicators[index].axis);
 							});
 							
 							data_indicators.sort(function (a, b) {

@@ -1062,6 +1062,8 @@ table.history tbody tr.selected{
 
 .variacoes-list table tbody td.delete,
 .vvariacoes-list table tbody td.delete,
+.variacoes-list table tbody td.edit,
+.vvariacoes-list table tbody td.edit,
 .variacoes-list table tbody td.up,
 .vvariacoes-list table tbody td.up,
 .variacoes-list table tbody td.down,
@@ -1074,6 +1076,11 @@ table.history tbody tr.selected{
 .variacoes-list table tbody td.delete a,
 .vvariacoes-list table tbody td.delete a{
 	color: #900;
+}
+
+.variacoes-list table tbody td.edit a,
+.vvariacoes-list table tbody td.edit a{
+	color: #06C;
 }
 
 
@@ -1093,7 +1100,9 @@ table.history tbody tr.selected{
 }
 
 #variacoes-button-add,
-#vvariacoes-button-add{
+#vvariacoes-button-add,
+#variacoes-button-edit,
+#vvariacoes-button-edit{
 	background-color: #fff;
 	margin-left: 5px;
 	margin-top: -4px;

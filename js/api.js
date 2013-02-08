@@ -176,7 +176,7 @@ $(document).ready(function() {
 				  "BA":"Bahia",
 				  "CE":"Ceará",
 				  "DF":"Distrito Federal",
-				  "ES":"Espírito do Santo",
+				  "ES":"Espírito Santo",
 				  "GO":"Goiás",
 				  "MA":"Maranhão",
 				  "MG":"Minas Gerais",
@@ -1016,7 +1016,7 @@ $(document).ready(function() {
 						,")":")"
 						,"/":"÷"
 						,"*":"×"
-						,"CONCATENAR ":"[ ]"
+						,"CONCATENAR":""
 						};
 
 		var new_formula = formula;
@@ -1030,10 +1030,6 @@ $(document).ready(function() {
 			var re = new RegExp(pattern, "g");
 			new_formula = new_formula.replace(re,variables[index].name);
 		});
-		
-		$.each(operators_caption,function(index,value){
-			new_formula = new_formula.replace(index,"&nbsp;" + value + "&nbsp;");
-		});
 
 		if (vvariables){
 			vvariables.sort(function (a, b) {
@@ -1045,6 +1041,10 @@ $(document).ready(function() {
 				new_formula = new_formula.replace(re,vvariables[index].name);
 			});
 		}
+		
+		$.each(operators_caption,function(index,value){
+			new_formula = new_formula.replace(index,"&nbsp;" + value + "&nbsp;");
+		});
 		
 		return new_formula;
 	}

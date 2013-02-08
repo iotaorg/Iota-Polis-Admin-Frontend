@@ -1247,16 +1247,17 @@ $(document).ready(function() {
 	}
 
 	var convertFormulaToCss = function(){
-		var operators = ["+","-","(",")","/","*"];
+		var operators = ["+","-","(",")","/","*","¢"];
 		var operators_caption = {"+":"+"
 						,"-":"-"
 						,"(":"("
 						,")":")"
 						,"/":"÷"
 						,"*":"×"
-						,"CONCATENAR ":"[ ]"
+						,"¢":"[ ]"
 						};
 		var formula = $("textarea#formula").val();
+		formula = formula.replace("CONCATENAR","¢");
 		var formula_css = "";
 		for (i = 0; i < formula.length; i++){
 			if ($.inArray(formula[i],operators) >= 0){

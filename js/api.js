@@ -346,9 +346,15 @@ $(document).ready(function() {
 				}
 			},
 			error: function(data){
-				$("#aviso").setWarning({msg: "$$error".render({
-						error: $.trataErro($.parseJSON(data.responseText).error)
-					})});
+				if (data.responseText){
+					$("#aviso").setWarning({msg: "$$error".render({
+							error: $.trataErro($.parseJSON(data.responseText).error)
+						})});
+				}else{
+					$("#aviso").setWarning({msg: "Erro ao fazer login. ($$error)".render({
+							error: data.status
+						})});
+				}
 			}
 		});
 	};

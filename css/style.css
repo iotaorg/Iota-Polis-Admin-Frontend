@@ -329,6 +329,15 @@ a.button-add:hover{
 	-moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
 	-webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
 }
+.form input.itext300px{
+	font-size: 10pt;
+	width: 300px;
+	border: 1px solid #bbb;
+	padding: 5px;
+	box-shadow: inset 0 0 5px #e0e0e0;
+	-moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	-webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+}
 .form input.itextdata{
 	font-size: 10pt;
 	width: 120px;
@@ -1127,4 +1136,18 @@ span.variation-filter{
 select.variation-filter{
 	border: 1px solid #e0e0e0;
 	font-size: 9pt;
+}
+
+a#delete-source,
+a#add-source{
+	color: #099;
+	font-size: 9pt;
+	text-decoration: none;
+	padding: 2px 4px;
+	border: 1px solid #099;
+}
+a#delete-source:hover,
+a#add-source:hover{
+	color: #000;
+	border: 1px solid #666;
 }

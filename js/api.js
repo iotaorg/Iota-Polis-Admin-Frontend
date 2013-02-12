@@ -146,22 +146,9 @@ $(document).ready(function() {
 	var sort_directions = {"greater value":"MAIOR valor, melhor classificação",
 						  "lowest value":"MENOR valor, melhor classificação"
 						  };
-	var measurement_units = {"":"nenhuma",
-						  "un":"unidades",
-						  "mm":"milímetros",
-						  "cm":"centímetros",
-						  "m":"metros",
-						  "km":"quilômetros",
-						  "kg":"quilos",
-						  "gr":"gramas",
-						  "tn":"toneladas",
-						  "m²":"metro quadrado",
-						  "m³":"metro cúbico",
-						  "hab/m²":"habitantes por metro quadrado",
-						  "km²":"quilômetro quadrado",
-						  "hab/km²":"habitantes por quilômetro quadrado",
-						  "habitantes":"habitantes"
-						  };
+
+	var measurement_units = [];
+	var sources = [];
 
 	variacoes_list = [];
 	variacoes_id_temp = 0;
@@ -588,6 +575,7 @@ $(document).ready(function() {
 			class: classname,
 			label: label,
 			id: id
+
 		});
 		return new_button;
 	};
@@ -857,6 +845,131 @@ $(document).ready(function() {
 		
 	}
 
+	var setNewSource = function(objSelect,objText){
+		$(objText).hide();
+		$(objText).attr("placeholder","descrição da nova fonte");
+		$(objText).css("margin-top","5px");
+		$(objText).before("&nbsp;<a href='#' id='delete-source'>remover fonte</a><br />");
+		$(objText).after("&nbsp;<a href='#' id='add-source'>adicionar</a>");
+		$(objSelect).next("a#delete-source").hide();
+		$(objText).next("a#add-source").hide();
+		$(objSelect).next("a#delete-source").click(function(e){
+			e.preventDefault();
+			if ($(objSelect).find("option:selected").val() != ""){
+				deleteSource({
+								url: api_path + "/api/source/" + $(objSelect).find("option:selected").attr("source-id") + "?api_key=$$key".render({
+										key: $.cookie("key")
+								}),
+								element: $(objSelect),
+								resetElement: true
+							 });
+			}
+		});
+		$(objText).next("a#add-source").click(function(e){
+			e.preventDefault();
+			if ($(objText).val() == ""){
+				$("#aviso").setWarning({msg: "Informe uma descrição para a fonte."});
+				return;
+			}else if ($(objText).val() == "_new"){
+				$("#aviso").setWarning({msg: "Descrição para a fonte inválida."});
+				return;
+			}
+			var args_source = [{name: "api_key", value: $.cookie("key")},
+					{name: "source.create.name", value: $(objText).val()}
+					];
+			var new_id;
+			$.ajax({
+				async: false,
+				type: 'POST',
+				dataType: 'json',
+				url: api_path + '/api/source',
+				data: args_source,
+				success: function(data){
+					new_id = data.id;
+				}
+			});
+			loadSources();
+			$("select.source").each(function(i,item){
+				var _objSelect = $("select#"+$(item).attr("id"));
+				var _objText = $("input#"+$(item).attr("id") + "_new");
+				loadComboSources(sources,_objSelect,_objText);
+			})
+			$(objSelect).find("option[source-id='$$id']".render({
+					id: new_id
+				})).attr("selected","selected");
+			$(objText).hide();
+			$(objText).next("a#add-source").hide();
+			$(objSelect).next("a#delete-source").show();
+
+		});
+	}	
+					
+	var loadComboSources = function(arr,objSelect,objText){
+		var old_selected = $(objSelect).find("option:selected").val();
+		$(objSelect).empty();
+		$(objSelect).append($("<option></option>").val("").html("nenhuma"));
+		$(objSelect).append($("<option></option>").val("_new").html("- nova fonte"));
+		$.each(arr,function(index, item){
+			$(objSelect).append($("<option></option>").val(item.name).html(item.name).attr("source-id",item.id));
+		});
+		
+		$(objSelect).val(old_selected);
+
+		$(objSelect).change(function(e){
+			$(objSelect).next("a#delete-source").hide();
+			$(objText).next("a#add-source").hide();
+			$(objText).hide();
+			if ($(this).val() == "_new"){
+				$(objText).show();
+				$(objText).next("a#add-source").show();
+			}else if ($(this).val() != ""){
+				if (user_info.roles[0] == "admin"){
+					$(objSelect).next("a#delete-source").show();
+				}
+				$(objText).next("a#add-source").hide();
+			}
+		});
+	}
+
+	var deleteSource = function(params){
+		$.ajax({
+			async: false,
+			type: 'DELETE',
+			dataType: 'json',
+			url: params.url,
+			success: function(data,status,jqXHR){
+				switch(jqXHR.status){
+					case 204:
+						resetWarnings();
+						$("#aviso").setWarning({msg: "Fonte removida com sucesso."});
+						if (params.resetElement){
+							loadSources();
+							$("select.source").each(function(i,item){
+								var _objSelect = $("select#"+$(item).attr("id"));
+								var _objText = $("input#"+$(item).attr("id") + "_new");
+								loadComboSources(sources,_objSelect,_objText);
+							})
+							$(params.element).val("");
+						}
+						break;
+				}
+			},
+			error: function(data){
+				switch(data.status){
+					case 200:
+						break;	
+					default:
+						$("#aviso").setWarning({msg: "Erro: ($$codigo)".render({
+									codigo: data.status
+									})
+						});
+						break;	
+				}
+			}
+		});
+		
+	}
+
 	var deleteRegister = function(params){
 		$.confirm({
 			'title': 'Confirmação',
@@ -894,6 +1007,7 @@ $(document).ready(function() {
 										});
 										if (params.redirect == undefined || params.redirect == true){
 											location.hash = "#!/"+getUrlSub();
+
 										}
 										break;	
 								}
@@ -1009,6 +1123,70 @@ $(document).ready(function() {
 			}
 		});
 	}
+
+
+	var loadUnidades = function(){
+		measurement_units = [];
+		$.ajax({
+			async: false,
+			type: 'GET',
+			dataType: 'json',
+			url: api_path + '/api/measurement_unit?api_key=$$key'.render({
+							key: $.cookie("key")
+					}),
+			success: function(data, textStatus, jqXHR){
+				$.each(data.measurement_units, function(index,item){
+					measurement_units.push({"id":item.id,"name":item.name});
+				});
+				
+				measurement_units.sort(function (a, b) {
+					a = a.name,
+					b = b.name;
+				
+					return a.localeCompare(b);
+				});
+
+			},
+			error: function(data){
+				$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
+							codigo: $.parseJSON(data.responseText).error
+						})
+				});
+			}
+		});
+	}
+
+	var loadSources = function(){
+		sources = [];
+		$.ajax({
+			async: false,
+			type: 'GET',
+			dataType: 'json',
+			url: api_path + '/api/source?api_key=$$key'.render({
+							key: $.cookie("key")
+					}),
+			success: function(data, textStatus, jqXHR){
+				$.each(data.sources, function(index,item){
+					sources.push({"name":item.name, "id":item.id});
+				});
+				
+				sources.sort(function (a, b) {
+					a = a.name,
+					b = b.name;
+				
+					return a.localeCompare(b);
+				});
+
+			},
+			error: function(data){
+				$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
+							codigo: $.parseJSON(data.responseText).error
+						})
+				});
+			}
+		});
+	}
+
 
 	var buildLogin = function(){
 		resetDashboard();
@@ -1211,6 +1389,7 @@ $(document).ready(function() {
 		menu_label["dashboard"] = "Início";
 		menu_label["users"] = "Usuários";
 		menu_label["cities"] = "Cidades";
+		menu_label["units"] = "Unidades de Medida";
 		menu_label["variable"] = "Variáveis";
 		menu_label["myvariable"] = "Variáveis Básicas";
 		menu_label["myindicator"] = "Indicadores";
@@ -1220,7 +1399,7 @@ $(document).ready(function() {
 		menu_label["prefs"] = "Preferências";
 		menu_label["logout"] = "Sair";
 		
-		menu_access["admin"] = ["dashboard","prefs","users","cities","variable","indicator","logout"];
+		menu_access["admin"] = ["dashboard","prefs","users","cities","units","variable","indicator","logout"];
 		menu_access["user"] = ["dashboard","prefs","myvariable","myindicator","logout"];
 		
 		$.each(menu_access[user_info.role],function(index,value){
@@ -1386,7 +1565,7 @@ $(document).ready(function() {
 	})
 	
 	var buildContent = function(){
-		if ($.inArray(getUrlSub().toString(),["dashboard","users","cities","variable","myvariable","indicator","myindicator","tokens","reports","prefs"]) >= 0){
+		if ($.inArray(getUrlSub().toString(),["dashboard","users","cities","units","variable","myvariable","indicator","myindicator","tokens","reports","prefs"]) >= 0){
 			$.xhrPool.abortAll();
 			$("#dashboard #form-login").hide();
 			/*  ORGANIZATION  */
@@ -1520,13 +1699,13 @@ $(document).ready(function() {
 							}else if ($(this).parent().parent().find("#city_id option:selected").val() == "" && $(this).parent().parent().find("#user_role option:selected").val() == "user"){
 								$(".form-aviso").setWarning({msg: "Por favor informe a Cidade"});
 							}else{
-								args = [{name: "api_key", value: $.cookie("key"),},
+								args = [{name: "api_key", value: $.cookie("key")},
 										{name: "user.create.name", value: $(this).parent().parent().find("#name").val()},
-										{name: "user.create.email", value: $(this).parent().parent().find("#email").val(),},
-										{name: "user.create.password", value: $(this).parent().parent().find("#password").val(),},
-										{name: "user.create.password_confirm", value: $(this).parent().parent().find("#password").val(),},
-										{name: "user.create.role", value: $(this).parent().parent().find("#user_role option:selected").val(),},
-										{name: "user.create.city_id", value: $(this).parent().parent().find("#city_id option:selected").val(),}
+										{name: "user.create.email", value: $(this).parent().parent().find("#email").val()},
+										{name: "user.create.password", value: $(this).parent().parent().find("#password").val()},
+										{name: "user.create.password_confirm", value: $(this).parent().parent().find("#password").val()},
+										{name: "user.create.role", value: $(this).parent().parent().find("#user_role option:selected").val()},
+										{name: "user.create.city_id", value: $(this).parent().parent().find("#city_id option:selected").val()}
 										];
 								if ($(this).parent().parent().find("#prefeito").attr("checked")){
 									args.push({name: "user.create.prefeito", value: 1});
@@ -1627,11 +1806,11 @@ $(document).ready(function() {
 							}else if ($(this).parent().parent().find("#city_id option:selected").val() == "" && $(this).parent().parent().find("#user_role option:selected").val() == "user"){
 								$(".form-aviso").setWarning({msg: "Por favor informe a Cidade"});
 							}else{
-								args = [{name: "api_key", value: $.cookie("key"),},
+								args = [{name: "api_key", value: $.cookie("key")},
 										{name: "user.update.name", value: $(this).parent().parent().find("#name").val()},
-										{name: "user.update.email", value: $(this).parent().parent().find("#email").val(),},
-										{name: "user.update.role", value: $(this).parent().parent().find("#user_role option:selected").val(),},
-										{name: "user.update.city_id", value: $(this).parent().parent().find("#city_id option:selected").val(),}
+										{name: "user.update.email", value: $(this).parent().parent().find("#email").val()},
+										{name: "user.update.role", value: $(this).parent().parent().find("#user_role option:selected").val()},
+										{name: "user.update.city_id", value: $(this).parent().parent().find("#city_id option:selected").val()}
 										];
 								if ($(this).parent().parent().find("#prefeito").attr("checked")){
 									args.push({name: "user.update.prefeito", value: 1});
@@ -1643,8 +1822,8 @@ $(document).ready(function() {
 								}
 	
 								if ($(this).parent().parent().find("#password").val() != ""){
-									args.push({name: "user.update.password", value: $(this).parent().parent().find("#password").val(),},
-										{name: "user.update.password_confirm", value: $(this).parent().parent().find("#password").val(),});
+									args.push({name: "user.update.password", value: $(this).parent().parent().find("#password").val()},
+										{name: "user.update.password_confirm", value: $(this).parent().parent().find("#password").val()});
 								}
 								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
 								$.ajax({
@@ -1747,7 +1926,7 @@ $(document).ready(function() {
 							}else if ($(this).parent().parent().find("#uf option:selected").val() == ""){
 								$(".form-aviso").setWarning({msg: "Por favor informe o Estado"});
 							}else{
-								args = [{name: "api_key", value: $.cookie("key"),},
+								args = [{name: "api_key", value: $.cookie("key")},
 										{name: "city.create.name", value: $(this).parent().parent().find("#name").val()},
 										{name: "city.create.uf", value: $(this).parent().parent().find("#uf option:selected").val()},
 										{name: "city.create.telefone_prefeitura", value: $(this).parent().parent().find("#telefone_prefeitura").val()},
@@ -1824,7 +2003,7 @@ $(document).ready(function() {
 							}else if ($(this).parent().parent().find("#uf option:selected").val() == ""){
 								$(".form-aviso").setWarning({msg: "Por favor informe o Estado"});
 							}else{
-								args = [{name: "api_key", value: $.cookie("key"),},
+								args = [{name: "api_key", value: $.cookie("key")},
 										{name: "city.update.name", value: $(this).parent().parent().find("#name").val()},
 										{name: "city.update.uf", value: $(this).parent().parent().find("#uf option:selected").val()},
 										{name: "city.update.telefone_prefeitura", value: $(this).parent().parent().find("#telefone_prefeitura").val()},
@@ -1833,6 +2012,171 @@ $(document).ready(function() {
 										{name: "city.update.cep_prefeitura", value: $(this).parent().parent().find("#cep_prefeitura").val()},
 										{name: "city.update.email_prefeitura", value: $(this).parent().parent().find("#email_prefeitura").val()},
 										{name: "city.update.nome_responsavel_prefeitura", value: $(this).parent().parent().find("#nome_responsavel_prefeitura").val()}
+										];
+	
+								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
+								$.ajax({
+									type: 'POST',
+									dataType: 'json',
+									url: $.getUrlVar("url"),
+									data: args,
+									success: function(data, textStatus, jqXHR){
+										$("#aviso").setWarning({msg: "Cadastro editado com sucesso.".render({
+													codigo: jqXHR.status
+													})
+										});
+										location.hash = "#!/"+getUrlSub();
+										$("#dashboard-content .content .botao-form[ref='enviar']").show();
+									},
+									error: function(data){
+										$(".form-aviso").setWarning({msg: "Erro ao editar. ($$erro)".render({
+													erro: $.parseJSON(data.responseText).error
+													})
+										});
+										$("#dashboard-content .content .botao-form[ref='enviar']").show();
+									}
+								});
+							}
+						});
+
+					}
+					$("#dashboard-content .content .botao-form[ref='cancelar']").click(function(){
+						resetWarnings();
+						history.back();
+					});
+				}else if ($.getUrlVar("option") == "delete"){
+					deleteRegister({url:$.getUrlVar("url") + "?api_key=$$key".render({
+													key: $.cookie("key")
+											})});
+				}
+			}else if (getUrlSub() == "units"){
+				/*  UNIDADES DE MEDIDA  */
+				if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
+				
+					var userList = buildDataTable({
+							headers: ["Nome","Sigla","_"]
+							});
+
+					$("#dashboard-content .content").append(userList);
+					
+					$("#button-add").click(function(){
+						resetWarnings();
+						location.hash = "#!/" + getUrlSub() + "?option=add";
+					});
+
+					$("#results").dataTable( {
+						  "oLanguage": {
+										"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
+										},
+						  "bProcessing": true,
+						  "sAjaxSource": api_path + '/api/measurement_unit?api_key=$$key&content-type=application/json&columns=name,short_name,url,_,_'.render({
+								key: $.cookie("key")
+								}),
+						  "aoColumnDefs": [
+                        					{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 2 ] }
+                    					  ],
+						   "fnDrawCallback": function(){
+								DTdesenhaBotoes();
+							}
+					} );
+					
+				}else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit"){
+					
+					var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+					
+					var newform = [];
+					
+					newform.push({label: "Nome", input: ["text,name,itext"]});
+					newform.push({label: "Sigla", input: ["text,short_name,itext"]});
+
+					var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
+					$(formbuild).find("div .field:odd").addClass("odd");
+					$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+
+					$(formbuild).find("#name").qtip( $.extend(true, {}, qtip_input, {
+							content: "Nome da unidade de medida. Ex: Quilos"
+					}));
+					$(formbuild).find("#short_name").qtip( $.extend(true, {}, qtip_input, {
+							content: "Sigla da unidade de medida. Ex: Kg, cm, m2"
+					}));
+
+					if ($.getUrlVar("option") == "add"){
+						$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
+							resetWarnings();
+							if ($(this).parent().parent().find("#name").val() == ""){
+								$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
+							}else if ($(this).parent().parent().find("#short_name").val() == ""){
+								$(".form-aviso").setWarning({msg: "Por favor informe a Sigla"});
+							}else{
+								args = [{name: "api_key", value: $.cookie("key")},
+										{name: "measurement_unit.create.name", value: $(this).parent().parent().find("#name").val()},
+										{name: "measurement_unit.create.short_name", value: $(this).parent().parent().find("#short_name").val()}
+										];
+
+								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
+								$.ajax({
+									type: 'POST',
+									dataType: 'json',
+									url: api_path + '/api/measurement_unit',
+									data: args,
+									success: function(data,status,jqXHR){
+										$("#aviso").setWarning({msg: "Cadastro efetuado com sucesso.".render({
+													codigo: jqXHR.status
+													})
+										});
+										location.hash = "#!/"+getUrlSub();
+									},
+									error: function(data){
+										switch(data.status){
+											case 400:
+												$("#aviso").setWarning({msg: "Erro ao cadastrar. ($$codigo)".render({
+															codigo: $.parseJSON(data.responseText).error
+															})
+												});
+												break;	
+										}
+										$("#dashboard-content .content .botao-form[ref='enviar']").show();
+									}
+								});
+							}
+						});
+					}else if ($.getUrlVar("option") == "edit"){
+						$.ajax({
+							type: 'GET',
+							dataType: 'json',
+							url: $.getUrlVar("url") + "?api_key=$$key".render({
+										key: $.cookie("key")
+								}),
+							success: function(data,status,jqXHR){
+								switch(jqXHR.status){
+									case 200:
+										$(formbuild).find("input#name").val(data.name);
+										$(formbuild).find("input#short_name").val(data.short_name);
+										break;	
+								}
+							},
+							error: function(data){
+								switch(data.status){
+									case 400:
+										$(".form-aviso").setWarning({msg: "Erro: ($$codigo)".render({
+													codigo: $.parseJSON(data.responseText).error
+													})
+										});
+										break;	
+								}
+							}
+						});
+	
+						$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
+							resetWarnings();
+							if ($(this).parent().parent().find("#name").val() == ""){
+								$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
+							}else if ($(this).parent().parent().find("#short_name").val() == ""){
+								$(".form-aviso").setWarning({msg: "Por favor informe a Sigla"});
+							}else{
+								args = [{name: "api_key", value: $.cookie("key")},
+										{name: "measurement_unit.update.name", value: $(this).parent().parent().find("#name").val()},
+										{name: "measurement_unit.update.short_name", value: $(this).parent().parent().find("#short_name").val()}
 										];
 	
 								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
@@ -1944,12 +2288,14 @@ $(document).ready(function() {
 					newform.push({label: "Tipo", input: ["select,type,iselect"]});
 					newform.push({label: "Unidade de Medida", input: ["select,measurement_unit,iselect"]});
 					newform.push({label: "Período", input: ["select,period,iselect"]});
-					newform.push({label: "Fonte", input: ["text,source,itext"]});
+					newform.push({label: "Fonte", input: ["select,source,iselect source","text,source_new,itext300px"]});
 					newform.push({label: "Variável básica", input: ["checkbox,is_basic,icheckbox"]});
 
 					var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
 					$(formbuild).find("div .field:odd").addClass("odd");
 					$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+
+					setNewSource($("#dashboard-content .content select#source"),$("#dashboard-content .content input#source_new"));
 
 					$(formbuild).find("#name").qtip( $.extend(true, {}, qtip_input, {
 							content: "Nome da variável."
@@ -1970,10 +2316,17 @@ $(document).ready(function() {
 					$.each(variable_types,function(key, value){
 						$("#dashboard-content .content select#type").append($("<option></option>").val(key).html(value));
 					});
+					
+					loadUnidades();
 
-					$.each(measurement_units,function(key, value){
-						$("#dashboard-content .content select#measurement_unit").append($("<option></option>").val(key).html(value));
+					$("#dashboard-content .content select#measurement_unit").append($("<option></option>").val("").html("nenhuma"));
+					$.each(measurement_units,function(index, item){
+						$("#dashboard-content .content select#measurement_unit").append($("<option></option>").val(item.id).html(item.name));
 					});
+					
+					loadSources();
+					
+					loadComboSources(sources,$("#dashboard-content .content select#source"),$("#dashboard-content .content input#source_new"));
 
 					$.each(variable_periods,function(key, value){
 						$("#dashboard-content .content select#period").append($("<option></option>").val(key).html(value));
@@ -1987,15 +2340,17 @@ $(document).ready(function() {
 							}else if ($(this).parent().parent().find("#cognomen").val() == ""){
 								$(".form-aviso").setWarning({msg: "Por favor informe o Apelido"});
 							}else{
-								args = [{name: "api_key", value: $.cookie("key"),},
+
+								args = [{name: "api_key", value: $.cookie("key")},
 										{name: "variable.create.name", value: $(this).parent().parent().find("#name").val()},
-										{name: "variable.create.cognomen", value: $(this).parent().parent().find("#cognomen").val(),},
-										{name: "variable.create.explanation", value: $(this).parent().parent().find("#explanation").val(),},
-										{name: "variable.create.type", value: $(this).parent().parent().find("#type option:selected").val(),},
-										{name: "variable.create.measurement_unit", value: $(this).parent().parent().find("#measurement_unit option:selected").val(),},
-										{name: "variable.create.period", value: $(this).parent().parent().find("#period option:selected").val(),},
-										{name: "variable.create.source", value: $(this).parent().parent().find("#source").val(),}
+										{name: "variable.create.cognomen", value: $(this).parent().parent().find("#cognomen").val()},
+										{name: "variable.create.explanation", value: $(this).parent().parent().find("#explanation").val()},
+										{name: "variable.create.type", value: $(this).parent().parent().find("#type option:selected").val()},
+										{name: "variable.create.measurement_unit_id", value: $(this).parent().parent().find("#measurement_unit option:selected").val()},
+										{name: "variable.create.period", value: $(this).parent().parent().find("#period option:selected").val()}
 										];
+
+								args.push({name: "variable.create.source", value: $(this).parent().parent().find("#source option:selected").val()});
 
 								if ($(this).parent().parent().find("#is_basic").attr("checked")){
 									args.push({name: "variable.create.is_basic", value: 1});
@@ -2044,9 +2399,15 @@ $(document).ready(function() {
 										$(formbuild).find("input#cognomen").val(data.cognomen);
 										$(formbuild).find("textarea#explanation").val(data.explanation);
 										$(formbuild).find("select#type").val(data.type);
-										$(formbuild).find("select#measurement_unit").val(data.measurement_unit);
+										if (data.measurement_unit){
+											$(formbuild).find("select#measurement_unit").val(data.measurement_unit.id);
+										}
 										$(formbuild).find("select#period").val(data.period);
-										$(formbuild).find("input#source").val(data.source);
+										$(formbuild).find("select#source").val(data.source);
+										if ($(formbuild).find("select#source option:selected").val() != ""){
+											$("#dashboard-content .content a#delete-source").show();
+										}
+
 										if (data.is_basic == 1){
 											$(formbuild).find("input#is_basic").attr("checked",true);
 										}else{
@@ -2074,15 +2435,18 @@ $(document).ready(function() {
 							}else if ($(this).parent().parent().find("#cognomen").val() == ""){
 								$(".form-aviso").setWarning({msg: "Por favor informe o Apelido"});
 							}else{
-								args = [{name: "api_key", value: $.cookie("key"),},
+
+								args = [{name: "api_key", value: $.cookie("key")},
 										{name: "variable.update.name", value: $(this).parent().parent().find("#name").val()},
-										{name: "variable.update.cognomen", value: $(this).parent().parent().find("#cognomen").val(),},
-										{name: "variable.update.explanation", value: $(this).parent().parent().find("#explanation").val(),},
-										{name: "variable.update.type", value: $(this).parent().parent().find("#type option:selected").val(),},
-										{name: "variable.update.measurement_unit", value: $(this).parent().parent().find("#measurement_unit option:selected").val(),},
-										{name: "variable.update.period", value: $(this).parent().parent().find("#period option:selected").val(),},
-										{name: "variable.update.source", value: $(this).parent().parent().find("#source").val(),},
+										{name: "variable.update.cognomen", value: $(this).parent().parent().find("#cognomen").val()},
+										{name: "variable.update.explanation", value: $(this).parent().parent().find("#explanation").val()},
+										{name: "variable.update.type", value: $(this).parent().parent().find("#type option:selected").val()},
+										{name: "variable.update.measurement_unit_id", value: $(this).parent().parent().find("#measurement_unit option:selected").val()},
+										{name: "variable.update.period", value: $(this).parent().parent().find("#period option:selected").val()}
 										];
+
+								args.push({name: "variable.update.source", value: $(this).parent().parent().find("#source option:selected").val()});
+
 								if ($(this).parent().parent().find("#is_basic").attr("checked")){
 									args.push({name: "variable.update.is_basic", value: 1});
 								}else{
@@ -2307,7 +2671,7 @@ $(document).ready(function() {
 										}else if (data.period == "daily"){
 											data_formatada = $.convertDate($(this).parent().parent().find("#value_of_date").val()," ");
 										}
-										args = [{name: "api_key", value: $.cookie("key"),},
+										args = [{name: "api_key", value: $.cookie("key")},
 												{name: "variable.value." + api_method + ".value", value: $(this).parent().parent().find("#value").val()},
 												{name: "variable.value." + api_method + ".value_of_date", value: data_formatada},
 												{name: "variable.value." + api_method + ".variable_id", value: getIdFromUrl($.getUrlVar("url"))},
@@ -2475,10 +2839,10 @@ $(document).ready(function() {
 					newform.push({label: "Explicação", input: ["textarea,explanation,itext"]});
 					newform.push({label: "Direção de classificação", input: ["select,sort_direction,iselect"]});
 					newform.push({label: "Referência de Meta", input: ["select,goal_operator,iselect200px","text,goal,itext200px"]});
-					newform.push({label: "Fonte (Ref. de Meta)", input: ["text,goal_source,itext"]});
+					newform.push({label: "Fonte (Ref. de Meta)", input: ["select,goal_source,iselect source","text,goal_source_new,itext300px"]});
 					newform.push({label: "Explicação (Ref. de Meta)", input: ["textarea,goal_explanation,itext"]});
 					newform.push({label: "Eixo", input: ["select,axis_id,iselect"]});
-					newform.push({label: "Fonte", input: ["text,source,itext"]});
+					newform.push({label: "Fonte", input: ["select,source,iselect source","text,source_new,itext300px"]});
 					newform.push({label: "Tags", input: ["text,tags,itext"]});
 					newform.push({label: "Observações", input: ["textarea,observations,itext"]});
 
@@ -2486,6 +2850,9 @@ $(document).ready(function() {
 					$(formbuild).find("div .field:odd").addClass("odd");
 					$(formbuild).find(".form").width(890);
 					$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+
+					setNewSource($("#dashboard-content .content select#goal_source"),$("#dashboard-content .content input#goal_source_new"));
+					setNewSource($("#dashboard-content .content select#source"),$("#dashboard-content .content input#source_new"));
 
 					$(formbuild).find("#name").qtip( $.extend(true, {}, qtip_input, {
 							content: "Nome do Indicador"
@@ -2502,6 +2869,11 @@ $(document).ready(function() {
 					$(formbuild).find("#tags").qtip( $.extend(true, {}, qtip_input, {
 							content: "Tags separadas por vírgula"
 					}));
+
+					loadSources();
+					
+					loadComboSources(sources,$("#dashboard-content .content select#goal_source"),$("#dashboard-content .content input#goal_source_new"));
+					loadComboSources(sources,$("#dashboard-content .content select#source"),$("#dashboard-content .content input#source_new"));
 					
 					$.ajax({
 						async: false,
@@ -2973,7 +3345,7 @@ $(document).ready(function() {
 							}else if ($(this).parent().parent().find("#formula").val() == ""){
 								$(".form-aviso").setWarning({msg: "Por favor informe a Fórmula"});
 							}else{
-								args = [{name: "api_key", value: $.cookie("key"),},
+								args = [{name: "api_key", value: $.cookie("key")},
 										{name: "indicator.create.name", value: $(this).parent().parent().find("#name").val()},
 										{name: "indicator.create.indicator_roles", value: $(this).parent().parent().find("#indicator_role").val()},
 										{name: "indicator.create.indicator_type", value: $(this).parent().parent().find("#indicator_type").val().replace("_dyn","")},
@@ -2981,11 +3353,11 @@ $(document).ready(function() {
 										{name: "indicator.create.explanation", value: $(this).parent().parent().find("#explanation").val()},
 										{name: "indicator.create.sort_direction", value: $(this).parent().parent().find("#sort_direction option:selected").val()},
 										{name: "indicator.create.goal", value: $.convertNumberToBd($(this).parent().parent().find("#goal").val())},
-										{name: "indicator.create.goal_source", value: $(this).parent().parent().find("#goal_source").val()},
+										{name: "indicator.create.goal_source", value: $(this).parent().parent().find("#goal_source option:selected").val()},
 										{name: "indicator.create.goal_operator", value: $(this).parent().parent().find("#goal_operator option:selected").val()},
 										{name: "indicator.create.goal_explanation", value: $(this).parent().parent().find("#goal_explanation").val()},
 										{name: "indicator.create.axis_id", value: $(this).parent().parent().find("#axis_id option:selected").val()},
-										{name: "indicator.create.source", value: $(this).parent().parent().find("#source").val()},
+										{name: "indicator.create.source", value: $(this).parent().parent().find("#source option:selected").val()},
 										{name: "indicator.create.tags", value: $(this).parent().parent().find("#tags").val()},
 										{name: "indicator.create.observations", value: $(this).parent().parent().find("#observations").val()}
 										];
@@ -3163,11 +3535,11 @@ $(document).ready(function() {
 										$(formbuild).find("textarea#explanation").val(data.explanation);
 										$(formbuild).find("select#sort_direction").val(String(data.sort_direction));
 										$(formbuild).find("input#goal").val($.convertNumberFromBd(data.goal));
-										$(formbuild).find("input#goal_source").val(data.goal_source);
+										$(formbuild).find("select#goal_source").val(data.goal_source);
 										$(formbuild).find("select#goal_operator").val(String(data.goal_operator));
 										$(formbuild).find("textarea#goal_explanation").val(data.goal_explanation);
 										$(formbuild).find("select#axis_id").val(data.axis_id);
-										$(formbuild).find("input#source").val(data.source);
+										$(formbuild).find("select#source").val(data.source);
 										$(formbuild).find("input#tags").val(data.tags);
 										$(formbuild).find("textarea#observations").val(data.observations);
 										if ($("#formula-editor .variables .item").length > 0) convertFormulaToCss();
@@ -3239,7 +3611,7 @@ $(document).ready(function() {
 							}else if ($(this).parent().parent().find("#formula").val() == ""){
 								$(".form-aviso").setWarning({msg: "Por favor informe a Fórmula"});
 							}else{
-								args = [{name: "api_key", value: $.cookie("key"),},
+								args = [{name: "api_key", value: $.cookie("key")},
 										{name: "indicator.update.name", value: $(this).parent().parent().find("#name").val()},
 										{name: "indicator.update.indicator_roles", value: $(this).parent().parent().find("#indicator_role").val()},
 										{name: "indicator.update.indicator_type", value: $(this).parent().parent().find("#indicator_type").val().replace("_dyn","")},
@@ -3841,11 +4213,11 @@ $(document).ready(function() {
 										var data_vvariables;
 										var data_variations;
 										var newform = [];
-										$.each(data_variables, function(index,value){
-											newform.push({label: "<b>"+data_variables[index].name+"</b>", input: ["text,var_$$id,itext".render({id:data_variables[index].id})]});
-											newform.push({label: "Descrição", input: ["textlabel,textlabel_explanation_$$id,ilabel".render({id:data_variables[index].id})]});
-											newform.push({label: "Fonte:", input: ["text,source_$$id,itext".render({id:data_variables[index].id})]});
-											newform.push({label: "Observações:", input: ["text,observations_$$id,itext".render({id:data_variables[index].id})]});
+										$.each(data_variables, function(index,item){
+											newform.push({label: "<b>"+item.name+"</b>", input: ["text,var_$$id,itext".render({id:item.id})]});
+											newform.push({label: "Descrição", input: ["textlabel,textlabel_explanation_$$id,ilabel".render({id:item.id})]});
+											newform.push({label: "Fonte", input: ["select,source_$$id,iselect source".render({id:item.id}),"text,source_$$id_new,itext300px".render({id:item.id})]});
+											newform.push({label: "Observações", input: ["text,observations_$$id,itext".render({id:item.id})]});
 											newform.push({type: "div"});
 										});
 	
@@ -3902,6 +4274,16 @@ $(document).ready(function() {
 										$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 										$(formbuild).find("#new_variation_add").html("Adicionar");
 
+										$.each(data_variables, function(index,item){
+											setNewSource($("#dashboard-content .content select#source_"+item.id),$("#dashboard-content .content input#source_" + item.id + "_new"));
+										});
+					
+										loadSources();
+										
+										$.each(data_variables, function(index,item){
+											loadComboSources(sources,$("#dashboard-content .content select#source_"+item.id),$("#dashboard-content .content input#source_" + item.id + "_new"));
+										});
+
 										$(formbuild).find("#new_variation_add").click(function(){
 											$(this).html("Aguarde...");
 											$(this).unbind();
@@ -3911,7 +4293,7 @@ $(document).ready(function() {
 										function addNewVariation(){
 											var variation_id;
 											
-											args = [{name: "api_key", value: $.cookie("key"),},
+											args = [{name: "api_key", value: $.cookie("key")},
 													{name: "indicator.variation.create.name", value: $(formbuild).find("div.field.nova_variacao .input input").val()},
 													{name: "indicator.variation.create.order", value: ($(formbuild).find(".div_variacoes").length+1)}
 													];
@@ -4077,21 +4459,21 @@ $(document).ready(function() {
 															}
 		
 															if (!$("#dashboard-content .content input#no_data").attr("checked")){
-																args = [{name: "api_key", value: $.cookie("key"),},
+																args = [{name: "api_key", value: $.cookie("key")},
 																		{name: "variable.value.put.value", value: $("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val()},
 																		{name: "variable.value.put.source", value: $("#dashboard-content .content .filter_result").find("#source_"+data_variables[cont_sent].id).val()},
 																		{name: "variable.value.put.observations", value: $("#dashboard-content .content .filter_result").find("#observations_"+data_variables[cont_sent].id).val()},
 																		{name: "variable.value.put.value_of_date", value: data_formatada}
 																		];
 															}else if ($("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val() == ""){
-																args = [{name: "api_key", value: $.cookie("key"),},
+																args = [{name: "api_key", value: $.cookie("key")},
 																		{name: "variable.value.put.value", value: ""},
 																		{name: "variable.value.put.source", value: ""},
 																		{name: "variable.value.put.observations", value: $("#dashboard-content .content .filter_result").find("#observations_"+data_variables[cont_sent].id).val()},
 																		{name: "variable.value.put.value_of_date", value: data_formatada}
 																		];
 															}else{
-																args = [{name: "api_key", value: $.cookie("key"),},
+																args = [{name: "api_key", value: $.cookie("key")},
 																		{name: "variable.value.put.value", value: $("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val()},
 																		{name: "variable.value.put.source", value: $("#dashboard-content .content .filter_result").find("#source_"+data_variables[cont_sent].id).val()},
 																		{name: "variable.value.put.observations", value: $("#dashboard-content .content .filter_result").find("#observations_"+data_variables[cont_sent].id).val()},
@@ -4143,7 +4525,7 @@ $(document).ready(function() {
 																		ajax_id = "";
 																	} 
 				
-																	args = [{name: "api_key", value: $.cookie("key"),},
+																	args = [{name: "api_key", value: $.cookie("key")},
 																			{name: "indicator.variation_value." + ajax_option + ".value", value: $("#dashboard-content .content .filter_result").find("#v_"+item_variation.id + "_var_"+item_variables.id).val()},
 																			{name: "indicator.variation_value." + ajax_option + ".value_of_date", value: data_formatada},
 																			{name: "indicator.variation_value." + ajax_option + ".indicator_variation_id", value: item_variation.id}
@@ -4183,14 +4565,14 @@ $(document).ready(function() {
 														}
 
 														if ($("#dashboard-content .content input#no_data").attr("checked")){
-															args = [{name: "api_key", value: $.cookie("key"),},
+															args = [{name: "api_key", value: $.cookie("key")},
 																	{name: "user.indicator.create.justification_of_missing_field", value: $("#dashboard-content .content .filter_result").find("#justification_of_missing_field").val()},
 																	{name: "user.indicator.create.valid_from", value: data_formatada},
 																	{name: "user.indicator.create.indicator_id", value: getIdFromUrl($.getUrlVar("url"))}
 																	];
 															send_justification_meta = true;
 														}else if ($("#dashboard-content .content .filter_result").find("#goal").val() != ""){
-															args = [{name: "api_key", value: $.cookie("key"),},
+															args = [{name: "api_key", value: $.cookie("key")},
 																	{name: "user.indicator.create.goal", value: $("#dashboard-content .content .filter_result").find("#goal").val()},
 																	{name: "user.indicator.create.valid_from", value: data_formatada},
 																	{name: "user.indicator.create.indicator_id", value: getIdFromUrl($.getUrlVar("url"))}
@@ -4355,7 +4737,7 @@ $(document).ready(function() {
 						
 						var sendForm = function(){
 							
-							args = [{name: "api_key", value: $.cookie("key"),},
+							args = [{name: "api_key", value: $.cookie("key")},
 									{name: "user.update.name", value: $(".form").find("#name").val()},
 									{name: "user.update.email", value: $(".form").find("#email").val()},
 									{name: "user.update.endereco", value: $(".form").find("#endereco").val()},
@@ -4372,8 +4754,8 @@ $(document).ready(function() {
 		
 
 							if ($(this).parent().parent().find("#password").val() != ""){
-								args.push({name: "user.update.password", value: $(".form").find("#password").val(),},
-									{name: "user.update.password_confirm", value: $(".form").find("#password").val(),});
+								args.push({name: "user.update.password", value: $(".form").find("#password").val()},
+									{name: "user.update.password_confirm", value: $(".form").find("#password").val()});
 							}
 							$.ajax({
 								type: 'POST',

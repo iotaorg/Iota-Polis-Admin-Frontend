@@ -5,7 +5,7 @@ var titleBarContent = {
 								},
 					"dashboard":{
 								"title": "Interface administrativa",
-								"tip": "Bem vindo à interface administrativa do Programa Cidades Sustentáveis!"
+								"tip": ""
 								},
 					"users":{
 							"title": "Usuários",

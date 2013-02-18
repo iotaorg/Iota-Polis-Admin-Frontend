@@ -11,6 +11,26 @@ if (!String.prototype.render) {
 	};
 }
 
+var accentMap = {
+	"á": "a",
+	"ã": "a",
+	"à": "a",
+	"é": "e",
+	"ê": "e",
+	"í": "i",
+	"ó": "o",
+	"õ": "o",
+	"ú": "u",
+	"ç": "c"
+};
+var normalize = function( term ) {
+	var ret = "";
+	for ( var i = 0; i < term.length; i++ ) {
+		ret += accentMap[ term.charAt(i) ] || term.charAt(i);
+	}
+	return ret.toLowerCase();
+};
+
 $.extend({
 	getUrlVars: function(){
 		var vars = [], hash;
@@ -575,7 +595,6 @@ $(document).ready(function() {
 			class: classname,
 			label: label,
 			id: id
-
 		});
 		return new_button;
 	};
@@ -1007,7 +1026,6 @@ $(document).ready(function() {
 										});
 										if (params.redirect == undefined || params.redirect == true){
 											location.hash = "#!/"+getUrlSub();
-
 										}
 										break;	
 								}
@@ -1393,6 +1411,7 @@ $(document).ready(function() {
 		menu_label["variable"] = "Variáveis";
 		menu_label["myvariable"] = "Variáveis Básicas";
 		menu_label["myindicator"] = "Indicadores";
+		menu_label["mygroup"] = "Grupos de Indicadores";
 		menu_label["indicator"] = "Indicadores";
 		menu_label["tokens"] = "Tokens";
 		menu_label["reports"] = "Relatórios";
@@ -1400,7 +1419,7 @@ $(document).ready(function() {
 		menu_label["logout"] = "Sair";
 		
 		menu_access["admin"] = ["dashboard","prefs","users","cities","units","variable","indicator","logout"];
-		menu_access["user"] = ["dashboard","prefs","myvariable","myindicator","logout"];
+		menu_access["user"] = ["dashboard","prefs","myvariable","myindicator","mygroup","logout"];
 		
 		$.each(menu_access[user_info.role],function(index,value){
 			var menu_class = (getUrlSub() == value) ? "selected" : "";
@@ -1565,7 +1584,7 @@ $(document).ready(function() {
 	})
 	
 	var buildContent = function(){
-		if ($.inArray(getUrlSub().toString(),["dashboard","users","cities","units","variable","myvariable","indicator","myindicator","tokens","reports","prefs"]) >= 0){
+		if ($.inArray(getUrlSub().toString(),["dashboard","users","cities","units","variable","myvariable","indicator","myindicator","mygroup","tokens","reports","prefs"]) >= 0){
 			$.xhrPool.abortAll();
 			$("#dashboard #form-login").hide();
 			/*  ORGANIZATION  */
@@ -4644,6 +4663,347 @@ $(document).ready(function() {
 							});
 						}
 					});
+				}
+			}else if (getUrlSub() == "mygroup"){
+				/*  GRUPOS DE INDICADORES  */
+				if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
+				
+					var userList = buildDataTable({
+							headers: ["Nome","_"]
+							});
+
+					$("#dashboard-content .content").append(userList);
+					
+					$("#button-add").click(function(){
+						resetWarnings();
+						location.hash = "#!/" + getUrlSub() + "?option=add";
+					});
+
+					$("#results").dataTable( {
+						  "oLanguage": {
+										"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
+										},
+						  "bProcessing": true,
+						  "sAjaxSource": api_path + '/api/user_indicator_axis?api_key=$$key&content-type=application/json&columns=name,url,_,_'.render({
+								key: $.cookie("key")
+								}),
+						  "aoColumnDefs": [
+                        					{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 1 ] }
+                    					  ],
+						   "fnDrawCallback": function(){
+								DTdesenhaBotoes();
+							}
+					} );
+					
+				}else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit"){
+					
+					var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+					
+					var newform = [];
+					
+					newform.push({label: "Nome", input: ["text,name,itext"]});
+					newform.push({label: "Indicadores", input: ["textarea,indicators,itext"]});
+
+					var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
+					$(formbuild).find("div .field:odd").addClass("odd");
+					$(formbuild).find(".form").width(890);
+					$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+
+					$("#dashboard-content .content textarea#indicators").hide(); 
+					$("#dashboard-content .content textarea#indicators").after("<div id='group-editor'><div class='group-selected'><div class='indicator-list-selected'></div><div class='button'></div></div><div class='group-select'><div class='indicator-search'></div><div class='indicator-list'></div><div class='button'></div></div></div>");
+
+					$("#dashboard-content .content #group-editor .indicator-search").append("<input id='indicator-search' placeholder='pesquisar'>");
+					$("#dashboard-content .content #group-editor .group-select .button").append("<a href='#' id='indicator-add'>adicionar</a>");
+					$("#dashboard-content .content #group-editor .group-selected .button").append("<a href='#' id='indicator-remove'>remover</a>");
+					$("#group-editor .indicator-list-selected").append($("<div class='item no-items'></div>").html("nenhum indicador selecionado"));
+
+					//carrega indicadores
+					$.ajax({
+						async: false,
+						type: 'GET',
+						dataType: 'json',
+						url: api_path + '/api/indicator?api_key=$$key'.render({
+										key: $.cookie("key")
+								}),
+						success: function(data, textStatus, jqXHR){
+							// ordena indicadores pelo nome
+							data.indicators.sort(function (a, b) {
+								a = a.name,
+								b = b.name;
+							
+								return a.localeCompare(b);
+							});
+							
+							$.each(data.indicators, function(index,item){
+								$("#group-editor .indicator-list").append($("<div class='item'></div>").attr({"indicator-id":item.id}).html(item.name));
+							});
+						},
+						error: function(data){
+							$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
+										codigo: $.parseJSON(data.responseText).error
+									})
+							});
+						}
+					});
+
+					$("#group-editor #indicator-search").keyup(function(){
+						if ($(this).val() != ""){
+							$("#group-editor .indicator-list :not(.remove, .no-items)").hide();
+							var termo = $(this).val();
+							var matches = $('#group-editor .indicator-list  :not(.remove, .no-items)').filter(function() {
+								var match = normalize(termo);
+								
+								var pattern = match;
+								var re = new RegExp(pattern,'g');
+							
+								return re.test( normalize($(this).text()) );
+							});
+							$(matches).fadeIn();
+						}
+					});
+
+					$("#group-editor .indicator-list .item").live('click',function(e){
+						if ($(this).hasClass("no-items")){
+							return;
+						}
+						$(this).toggleClass("selected");
+						if ($("#group-editor .indicator-list .selected").length > 0){
+							$("#group-editor #indicator-add").addClass("active");
+						}else{
+							$("#group-editor #indicator-add").removeClass("active");
+						}
+					});
+					$("#group-editor #indicator-add").live('click',function(e){
+						e.preventDefault();
+						if ($(this).hasClass("active")){
+							addIndicatorList();
+						}
+					});
+
+					$("#group-editor #indicator-remove").live('click',function(e){
+						e.preventDefault();
+						if ($(this).hasClass("active")){
+							removeIndicatorList();
+						}
+					});
+					
+					function addIndicatorList(){
+						$("#group-editor .indicator-list .selected").each(function(index,item){
+							$("#group-editor .indicator-list-selected").append($("<div class='item'></div>").attr({"indicator-id":$(item).attr("indicator-id")}).html($(item).text()));
+							$(item).removeClass("selected");
+							$(item).addClass("remove");
+						});
+						$("#group-editor .indicator-list-selected .no-items").remove();
+						$("#group-editor #indicator-add").removeClass("active");
+
+						if ($("#group-editor .indicator-list :not(.remove)").length <= 0){
+							$("#group-editor .indicator-list").append($("<div class='item no-items'></div>").html("nenhum indicador selecionado"));
+						}
+
+						$("#group-editor .indicator-list-selected .item").unbind();
+						$("#group-editor .indicator-list-selected .item").click(function(e){
+							if ($(this).hasClass("no-items")){
+								return;
+							}
+							$(this).toggleClass("selected");
+							if ($("#group-editor .indicator-list-selected .selected").length > 0){
+								$("#group-editor #indicator-remove").addClass("active");
+							}else{
+								$("#group-editor #indicator-remove").removeClass("active");
+							}
+						});
+					}
+
+					function removeIndicatorList(){
+						$("#group-editor .indicator-list-selected .selected").each(function(index,item){
+							$("#group-editor .indicator-list .item[indicator-id='$$id']".render({id: $(item).attr("indicator-id")})).removeClass("remove");
+							$(item).remove();
+						});
+						if ($("#group-editor .indicator-list-selected .item").length <= 0){
+							$("#group-editor .indicator-list-selected").append($("<div class='item no-items'></div>").html("nenhum indicador selecionado"));
+						}
+						$("#group-editor #indicator-remove").removeClass("active");
+						$("#group-editor .indicator-list .no-items").remove();
+					}
+					
+					function getSelectedIndicators(){
+						var selectedIndicators = [];
+						$("#group-editor .indicator-list-selected .item").each(function(index,item){
+							if (!$(item).hasClass("no-items")){
+								selectedIndicators.push($(item).attr("indicator-id"));
+							}
+						});
+						return selectedIndicators;
+					}
+
+
+					if ($.getUrlVar("option") == "add"){
+						$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
+							resetWarnings();
+							if ($(this).parent().parent().find("#name").val() == ""){
+								$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
+							}else if (getSelectedIndicators().length <= 0){
+								$(".form-aviso").setWarning({msg: "Por favor informe pelo menos um Indicador"});
+							}else{
+								args = [{name: "api_key", value: $.cookie("key")},
+										{name: "user_indicator_axis.create.name", value: $(this).parent().parent().find("#name").val()}
+										];
+
+								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
+								var newId;
+								$.ajax({
+									type: 'POST',
+									dataType: 'json',
+									url: api_path + '/api/user_indicator_axis',
+									data: args,
+									success: function(data,status,jqXHR){
+										newId = data.id;
+										var selected = getSelectedIndicators();
+										$.each(selected, function(index,value){
+											args = [{name: "api_key", value: $.cookie("key")},
+													{name: "user_indicator_axis_item.create.indicator_id", value: value},
+													{name: "user_indicator_axis_item.create.position", value: index}
+													];
+											$.ajax({
+												async: false,
+												type: 'POST',
+												dataType: 'json',
+												url: api_path + '/api/user_indicator_axis/$$id/item'.render({id: newId}),
+												data: args
+											});
+										});
+										$("#aviso").setWarning({msg: "Cadastro efetuado com sucesso."});
+										location.hash = "#!/"+getUrlSub();
+									},
+									error: function(data){
+										switch(data.status){
+											case 400:
+												$("#aviso").setWarning({msg: "Erro ao cadastrar. ($$codigo)".render({
+															codigo: $.parseJSON(data.responseText).error
+															})
+												});
+												break;	
+										}
+										$("#dashboard-content .content .botao-form[ref='enviar']").show();
+									}
+								});
+							}
+						});
+					}else if ($.getUrlVar("option") == "edit"){
+						$.ajax({
+							async: false,
+							type: 'GET',
+							dataType: 'json',
+							url: $.getUrlVar("url") + "?api_key=$$key".render({
+										key: $.cookie("key")
+								}),
+							success: function(data,status,jqXHR){
+								switch(jqXHR.status){
+									case 200:
+										$(formbuild).find("input#name").val(data.name);
+										if (data.items.length > 0){
+											var selectedIndicators = [];
+											$.each(data.items, function(index,item){
+												selectedIndicators.push(item.indicator_id);
+												$("#group-editor .indicator-list .item[indicator-id='$$id']".render({
+														id: item.indicator_id
+													})).attr("item-id",item.id);
+												$("#group-editor .indicator-list .item[indicator-id='$$id']".render({
+														id: item.indicator_id
+													})).addClass("selected");
+											});
+											addIndicatorList();
+											$("#dashboard-content .content textarea#indicators").val(selectedIndicators.join(","));
+										}
+										break;	
+								}
+							},
+							error: function(data){
+								switch(data.status){
+									case 400:
+										$(".form-aviso").setWarning({msg: "Erro: ($$codigo)".render({
+													codigo: $.parseJSON(data.responseText).error
+													})
+										});
+										break;	
+								}
+							}
+						});
+	
+						$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
+							resetWarnings();
+							if ($(this).parent().parent().find("#name").val() == ""){
+								$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
+							}else if (getSelectedIndicators().length <= 0){
+								$(".form-aviso").setWarning({msg: "Por favor informe pelo menos um Indicador"});
+							}else{
+								args = [{name: "api_key", value: $.cookie("key")},
+										{name: "user_indicator_axis.update.name", value: $(this).parent().parent().find("#name").val()}
+										];
+	
+								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
+								$.ajax({
+									type: 'POST',
+									dataType: 'json',
+									url: $.getUrlVar("url"),
+									data: args,
+									success: function(data, textStatus, jqXHR){
+										newId = data.id;
+										var selected = getSelectedIndicators();
+										$.each(selected, function(index,value){
+											if (!findInArray($("#dashboard-content .content textarea#indicators").val().split(","),value)){
+												args = [{name: "api_key", value: $.cookie("key")},
+														{name: "user_indicator_axis_item.create.indicator_id", value: value},
+														{name: "user_indicator_axis_item.create.position", value: index}
+														];
+												$.ajax({
+													async: false,
+													type: 'POST',
+													dataType: 'json',
+													url: api_path + '/api/user_indicator_axis/$$id/item'.render({id: newId}),
+													data: args
+												});
+											}
+										});
+										var old_selected = $("#dashboard-content .content textarea#indicators").val().split(",");
+										$.each(old_selected, function(index,value){
+											if (!findInArray(selected,value)){
+												$.ajax({
+													async: false,
+													type: 'DELETE',
+													dataType: 'json',
+													url: api_path + '/api/user_indicator_axis/$$id/item/$$item_id'.render({
+															id: newId,
+															item_id: $("#group-editor .indicator-list .item[indicator-id='" + value + "']").attr("item-id")
+															}),
+													data: args
+												});
+											}
+										});
+										$("#aviso").setWarning({msg: "Cadastro editado com sucesso."});
+										location.hash = "#!/"+getUrlSub();
+										$("#dashboard-content .content .botao-form[ref='enviar']").show();
+									},
+									error: function(data){
+										$(".form-aviso").setWarning({msg: "Erro ao editar. ($$erro)".render({
+													erro: $.parseJSON(data.responseText).error
+													})
+										});
+										$("#dashboard-content .content .botao-form[ref='enviar']").show();
+									}
+								});
+							}
+						});
+
+					}
+					$("#dashboard-content .content .botao-form[ref='cancelar']").click(function(){
+						resetWarnings();
+						history.back();
+					});
+				}else if ($.getUrlVar("option") == "delete"){
+					deleteRegister({url:$.getUrlVar("url") + "?api_key=$$key".render({
+													key: $.cookie("key")
+											})});
 				}
 			}else if (getUrlSub() == "prefs"){
 	

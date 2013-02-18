@@ -31,6 +31,9 @@ var titleBarContent = {
 					"myindicator,edit":{
 							"title": "Indicadores",
 							"tip": ""},
+					"mygroup":{
+							"title": "Grupo de Indicadores",
+							"tip": ""},
 					"tokens":{
 							"title": "Tokens",
 							"tip": ""},

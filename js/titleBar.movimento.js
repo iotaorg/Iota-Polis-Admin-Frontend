@@ -5,7 +5,7 @@ var titleBarContent = {
 								},
 					"dashboard":{
 								"title": "Interface administrativa",
-								"tip": "Orientações básicas:<br /><br />No primeiro acesso é preciso mudar a senha no item &quot;Preferências&quot; e preencher os dados do movimento. É muito importante cadastrar uma pessoa responsável pelas informações que serão inseridas no sistema.<br />No item &quot;Variáveis básicas&quot; você fará o cadastro de dados básicos do seu município. Parte destas informações será usada para compor a página principal de cada movimento.<br /><br />No item &quot;Indicadores&quot; você fará a navegação por temas/eixos e preencherá os dados."
+								"tip": "Orientações básicas:<br /><br />No primeiro acesso é preciso mudar a senha no item &quot;Preferências&quot; e preencher os dados do movimento. É muito importante cadastrar uma pessoa responsável pelas informações que serão inseridas no sistema.<br /><br />No item &quot;Variáveis básicas&quot; você fará o cadastro de dados básicos do seu município. Parte destas informações será usada para compor a página principal de cada movimento.<br /><br />No item &quot;Indicadores&quot; você fará a navegação por temas/eixos e preencherá os dados."
 								},
 					"users":{
 							"title": "Usuários",
@@ -31,6 +31,9 @@ var titleBarContent = {
 					"myindicator,edit":{
 							"title": "Indicadores",
 							"tip": "Aparecerá na tela o cálculo (fórmula) que será feito com os dados que forem preenchidos, ou seja, o cálculo que será feito para compor aquele indicador e a periodicidade que você deverá atualiza-lo.<br /><br />Escolha o ano a que o dado se refere (exemplo: 2012) e clique em cadastrar.<br /><br />No cadastro você preencherá os dados necessários para compor o indicador: valor da variável, a fonte de onde vem o dado (Exemplo: Secretaria Municipal de Saúde), observações técnicas sobre o dado e uma meta estabelecida pelo seu município para o indicador.<br /><br />Após preencher os dados, clique em enviar.<br /><br />Essas informações aparecerão e na página dos indicadores do seu município. Se você por algum motivo não tem os dados necessários, clique em &quot;Não possuo os dados&quot;.<br /><br />Após o cadastro aparecerá para você uma tabela com os dados inseridos no sistema e o valor calculado do indicador. Você sempre preencherá dados do ano anterior ao vigente, portanto Você não poderá editar os dados. Caso necessite fazer a edição, preencha o formulário de fale conosco solicitando."},
+					"mygroup":{
+							"title": "Grupo de Indicadores",
+							"tip": ""},
 					"tokens":{
 							"title": "Tokens",
 							"tip": ""},

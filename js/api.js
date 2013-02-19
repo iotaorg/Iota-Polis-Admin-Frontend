@@ -474,7 +474,8 @@ $(document).ready(function() {
 				var url = $(this).html();
 				$(this).html( "<a href='$$hash?option=edit&url=$$url' class='icone edit' title='Adicionar Valor' alt='editar'>adicionar valor</a>".render({
 						hash: "#!/"+getUrlSub(),
-						url: "http://rnsp.aware.com.br/api/variable/" + url
+						url: api_path + "/api/variable/" + url
+//						url: "http://rnsp.aware.com.br/api/variable/" + url
 				}));
 			}
 		});
@@ -3501,7 +3502,8 @@ $(document).ready(function() {
 									name: data_indicators[i].name,
 									formula: formula,
 									hash: "#!/"+getUrlSub(),
-									url: "http://rnsp.aware.com.br/api/indicator/" + data_indicators[i].id,
+									url: api_path + "/api/indicator/" + data_indicators[i].id,
+//									url: "http://rnsp.aware.com.br/api/indicator/" + data_indicators[i].id,
 									indicator_id: data_indicators[i].id,
 									period: data_indicators[i].period,
 									id: data_indicators[i].id

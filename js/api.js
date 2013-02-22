@@ -11,6 +11,12 @@ if (!String.prototype.render) {
 	};
 }
 
+if (!String.prototype.trim) {
+	String.prototype.trim=function(){
+		return this.replace(/^\s+|\s+$/g, '');
+	};
+}
+
 var accentMap = {
 	"á": "a",
 	"ã": "a",
@@ -1231,7 +1237,7 @@ $(document).ready(function() {
 		$.each(variables,function(index,value){
 			var pattern = "\\$"+variables[index].id;
 			var re = new RegExp(pattern, "g");
-			new_formula = new_formula.replace(re,variables[index].name);
+			new_formula = new_formula.replace(re,variables[index].name + " ");
 		});
 
 		if (vvariables){
@@ -1246,10 +1252,10 @@ $(document).ready(function() {
 		}
 		
 		$.each(operators_caption,function(index,value){
-			new_formula = new_formula.replace(index,"&nbsp;" + value + "&nbsp;");
+			new_formula = new_formula.replace(index," " + value + " ");
 		});
 		
-		return new_formula;
+		return new_formula.trim();
 	}
 	
 	var getVariablesFromFormula = function(formula){
@@ -1409,8 +1415,10 @@ $(document).ready(function() {
 		menu_label["users"] = "Usuários";
 		menu_label["cities"] = "Cidades";
 		menu_label["units"] = "Unidades de Medida";
+		menu_label["axis"] = "Eixos";
 		menu_label["variable"] = "Variáveis";
 		menu_label["myvariable"] = "Variáveis Básicas";
+		menu_label["myvariableedit"] = "Variáveis Básicas";
 		menu_label["myindicator"] = "Indicadores";
 		menu_label["mygroup"] = "Grupos de Indicadores";
 		menu_label["indicator"] = "Indicadores";
@@ -1419,7 +1427,7 @@ $(document).ready(function() {
 		menu_label["prefs"] = "Preferências";
 		menu_label["logout"] = "Sair";
 		
-		menu_access["admin"] = ["dashboard","prefs","users","cities","units","variable","indicator","logout"];
+		menu_access["admin"] = ["dashboard","prefs","users","cities","units","variable","axis","indicator","logout"];
 		menu_access["user"] = ["dashboard","prefs","myvariable","myindicator","mygroup","logout"];
 		
 		$.each(menu_access[user_info.role],function(index,value){
@@ -1585,7 +1593,7 @@ $(document).ready(function() {
 	})
 	
 	var buildContent = function(){
-		if ($.inArray(getUrlSub().toString(),["dashboard","users","cities","units","variable","myvariable","indicator","myindicator","mygroup","tokens","reports","prefs"]) >= 0){
+		if ($.inArray(getUrlSub().toString(),["dashboard","users","cities","units","variable","myvariable","myvariableedit","axis","indicator","myindicator","mygroup","tokens","reports","prefs"]) >= 0){
 			$.xhrPool.abortAll();
 			$("#dashboard #form-login").hide();
 			/*  ORGANIZATION  */
@@ -2763,6 +2771,279 @@ $(document).ready(function() {
 							}
 						}
 					});
+				}
+			}else if (getUrlSub() == "myvariableedit"){
+				/*  VARIABLE  */
+				if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
+				
+					var variableList = buildDataTable({
+							headers: ["Nome","Data","Valor","_"]
+							},null,false);
+
+					$("#dashboard-content .content").append(variableList);
+					
+					$("#button-add").click(function(){
+						resetWarnings();
+						location.hash = "#!/" + getUrlSub() + "?option=add";
+					});
+
+					$.ajax({
+						type: 'GET',
+						dataType: 'json',
+						url: api_path + '/api/user/$$userid/variable?api_key=$$key&is_basic=1'.render({
+								key: $.cookie("key"),
+								userid: $.cookie("user.id")
+								}),
+						success: function(data, textStatus, jqXHR){
+							$.each(data.variables, function(index,item){
+								if (item.values.length > 0){
+									$.each(item.values, function (index2,valor){
+										var data_formatada;
+										if (item.period == "yearly"){
+											data_formatada = $.format.date(valor.value_of_date,"yyyy");
+										}else if (item.period == "daily"){
+											data_formatada = $.convertDate(valor.value_of_date," ");
+										}
+
+										$("#dashboard-content .content #results tbody").append($("<tr><td>$$nome</td><td data='$$date_of_value'>$$data</td><td>$$valor</td><td>$$url</td></tr>".render({nome: item.name,
+										data: data_formatada,
+										date_of_value: valor.value_of_date,
+										valor: valor.value,
+										url: valor.url})));
+									});
+								}
+							});
+
+							$("#results").dataTable( {
+								  "oLanguage": {
+												"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
+												},
+								  "aoColumnDefs": [
+													{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "10px", "aTargets": [ 3 ] },
+													{ "bSearchable": false, "bSortable": false, "sClass": "input", "aTargets": [ 2 ] },
+													{ "bSearchable": false, "bSortable": false, "sClass": "data center", "aTargets": [ 1 ] },
+													{ "sClass": "center", "aTargets": [ 2 ] },
+												  ],
+								   "fnDrawCallback": function(){
+										$("#results td.botoes").each( function(){
+											if ($(this).find("a").length <= 0){
+												var url = $(this).html();
+												$(this).html( "<a href='#' url='$$url' class='icone edit save' title='Salvar Valor' alt='editar'>Salvar valor</a>".render({
+														url: url
+												}));
+											}
+										});
+										$("#results td.input").each( function(){
+											if ($(this).find("input").length <= 0){
+												if ($(this).find("a").length <= 0){
+													$(this).html( "<input type='text' class='input' width='10' value='$$valor'>".render({
+															valor: $(this).html()
+													}));
+												}
+											}
+										});
+									}
+							} );
+							
+							$("#results td.botoes a.save").live('click',function(e){
+								e.preventDefault();
+								var valor = $(this).parent().parent().find("td.input input.input").val();
+								var url = $(this).attr("url");
+								var data = $(this).parent().parent().find("td.data").attr("data");
+
+								args = [{name: "api_key", value: $.cookie("key")},
+										{name: "variable.value.update.value", value: valor},
+										{name: "variable.value.update.value_of_date", value: data}
+										];
+
+								$.ajax({
+									async: false,
+									type: 'POST',
+									dataType: 'json',
+									url: url,
+									data: args,
+									success: function(data,status,jqXHR){
+										$("#aviso").setWarning({msg: "Registro atualizado com sucesso.".render({
+													codigo: jqXHR.status
+													})
+										});
+									},
+									error: function(data){
+										switch(data.status){
+											case 400:
+												$("#aviso").setWarning({msg: "Erro ao atualizar. ($$codigo)".render({
+															codigo: $.parseJSON(data.responseText).error
+															})
+												});
+												break;	
+										}
+									}
+								});
+
+							});
+							
+						},
+						error: function(data){
+							$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
+										codigo: $.parseJSON(data.responseText).error
+									})
+							});
+						}
+					});
+				}
+			}else if (getUrlSub() == "axis"){
+				/*  EIXOS  */
+				if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
+				
+					var axisList = buildDataTable({
+							headers: ["Nome","_"]
+							});
+
+					$("#dashboard-content .content").append(axisList);
+					
+					$("#button-add").click(function(){
+						resetWarnings();
+						location.hash = "#!/" + getUrlSub() + "?option=add";
+					});
+
+					$("#results").dataTable( {
+						  "oLanguage": {
+										"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
+										},
+						  "bProcessing": true,
+						  "sAjaxSource": api_path + '/api/axis?api_key=$$key&content-type=application/json&columns=name,url,_,_'.render({
+								key: $.cookie("key")
+								}),
+						  "aoColumnDefs": [
+                        					{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 1 ] }
+                    					  ],
+						   "fnDrawCallback": function(){
+								DTdesenhaBotoes();
+							}
+					} );
+					
+				}else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit"){
+					
+					var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+					
+					var newform = [];
+					
+					newform.push({label: "Nome", input: ["text,name,itext"]});
+
+					var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
+					$(formbuild).find("div .field:odd").addClass("odd");
+					$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+
+					$(formbuild).find("#name").qtip( $.extend(true, {}, qtip_input, {
+							content: "Nome do eixo. Ex: Ação Local para Saúde, Bens Naturais Comuns"
+					}));
+
+					if ($.getUrlVar("option") == "add"){
+						$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
+							resetWarnings();
+							if ($(this).parent().parent().find("#name").val() == ""){
+								$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
+							}else{
+								args = [{name: "api_key", value: $.cookie("key")},
+										{name: "axis.create.name", value: $(this).parent().parent().find("#name").val()}
+										];
+
+								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
+								$.ajax({
+									type: 'POST',
+									dataType: 'json',
+									url: api_path + '/api/axis',
+									data: args,
+									success: function(data,status,jqXHR){
+										$("#aviso").setWarning({msg: "Cadastro efetuado com sucesso.".render({
+													codigo: jqXHR.status
+													})
+										});
+										location.hash = "#!/"+getUrlSub();
+									},
+									error: function(data){
+										switch(data.status){
+											case 400:
+												$("#aviso").setWarning({msg: "Erro ao cadastrar. ($$codigo)".render({
+															codigo: $.parseJSON(data.responseText).error
+															})
+												});
+												break;	
+										}
+										$("#dashboard-content .content .botao-form[ref='enviar']").show();
+									}
+								});
+							}
+						});
+					}else if ($.getUrlVar("option") == "edit"){
+						$.ajax({
+							type: 'GET',
+							dataType: 'json',
+							url: $.getUrlVar("url") + "?api_key=$$key".render({
+										key: $.cookie("key")
+								}),
+							success: function(data,status,jqXHR){
+								switch(jqXHR.status){
+									case 200:
+										$(formbuild).find("input#name").val(data.name);
+										break;	
+								}
+							},
+							error: function(data){
+								switch(data.status){
+									case 400:
+										$(".form-aviso").setWarning({msg: "Erro: ($$codigo)".render({
+													codigo: $.parseJSON(data.responseText).error
+													})
+										});
+										break;	
+								}
+							}
+						});
+	
+						$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
+							resetWarnings();
+							if ($(this).parent().parent().find("#name").val() == ""){
+								$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
+							}else{
+								args = [{name: "api_key", value: $.cookie("key")},
+										{name: "axis.update.name", value: $(this).parent().parent().find("#name").val()}
+										];
+	
+								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
+								$.ajax({
+									type: 'POST',
+									dataType: 'json',
+									url: $.getUrlVar("url"),
+									data: args,
+									success: function(data, textStatus, jqXHR){
+										$("#aviso").setWarning({msg: "Cadastro editado com sucesso.".render({
+													codigo: jqXHR.status
+													})
+										});
+										location.hash = "#!/"+getUrlSub();
+										$("#dashboard-content .content .botao-form[ref='enviar']").show();
+									},
+									error: function(data){
+										$(".form-aviso").setWarning({msg: "Erro ao editar. ($$erro)".render({
+													erro: $.parseJSON(data.responseText).error
+													})
+										});
+										$("#dashboard-content .content .botao-form[ref='enviar']").show();
+									}
+								});
+							}
+						});
+
+					}
+					$("#dashboard-content .content .botao-form[ref='cancelar']").click(function(){
+						resetWarnings();
+						history.back();
+					});
+				}else if ($.getUrlVar("option") == "delete"){
+					deleteRegister({url:$.getUrlVar("url") + "?api_key=$$key".render({
+													key: $.cookie("key")
+											})});
 				}
 			}else if (getUrlSub() == "indicator"){
 				/*  INDICATOR  */

@@ -28,11 +28,11 @@ a{
 	margin: auto;
 	padding-top: 10px;
 	text-align: left;
-	width: 900px;
+	width: 1000px;
 }
 
 #top .content .sociais{
-	width: 900px;
+	width: 1000px;
 	position: absolute;
 	text-align: right;
 	margin-top: 2px;
@@ -107,7 +107,7 @@ a{
 #menu .content{
 	margin: 0 auto;
 	text-align: left;
-	width: 900px;
+	width: 1000px;
 }
 
 #menu ul{
@@ -142,7 +142,7 @@ a{
 #content .content{
 	margin: auto;
 	text-align: left;
-	width: 900px;
+	width: 1000px;
 	padding-bottom: 10px;
 }
 
@@ -699,7 +699,7 @@ a#help-formula:hover{
 #footer .content{
 	margin: auto;
 	text-align: left;
-	width: 900px;
+	width: 1000px;
 	clear: both;
 	font-size: 10pt;
 }
@@ -1233,7 +1233,6 @@ a#indicator-remove.active:hover{
 .variable-filter{
 	border: 1px solid #e0e0e0;
 	margin: auto;
-	width: 700px;
 	text-align: center;
 	clear: both;
 	margin-bottom: 30px;
@@ -1242,7 +1241,8 @@ a#indicator-remove.active:hover{
 
 .variable-filter .variable,
 .variable-filter .data,
-.variable-filter .botao{
+.variable-filter .botao,
+.variable-filter .user{
 	float: left;
 	margin-right: 10px;
 }
@@ -1250,6 +1250,40 @@ a#indicator-remove.active:hover{
 	clear: right;
 }
 
+.variable-filter .user select{
+	width: 120px;
+	border: 1px solid #e0e0e0;
+	padding: 2px;
+}
 .variable-filter .variable select{
 	width: 200px;
+	border: 1px solid #e0e0e0;
+	padding: 2px;
+}
+.variable-filter .data input{
+	border: 1px solid #e0e0e0;
+	padding: 2px 4px;
+	width: 100px;
+	text-align: center;
+}
+.variable-filter .botao input{
+	background: url("../images/bg_botao.gif") repeat-x top center;
+	border: 1px solid #e0e0e0;
+	padding: 2px 4px;
+	background-color: #20c1c1;
+	color: #fff;
+}
+.variable-filter .botao input:hover{
+	cursor: hand;
+	cursor: pointer;
+	background: url("../images/bg_botao.gif") repeat-x bottom center;
+}
+.variable-filter .botao input[disabled='disabled']{
+	background: #ccc;
+	border: 1px solid #e0e0e0;
+	padding: 2px 4px;
+	color: #999;
+}
+.variable-filter .botao input[disabled='disabled']:hover{
+	cursor: default;
 }

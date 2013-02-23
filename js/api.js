@@ -1427,8 +1427,8 @@ $(document).ready(function() {
 		menu_label["prefs"] = "Preferências";
 		menu_label["logout"] = "Sair";
 		
-		menu_access["admin"] = ["dashboard","prefs","users","cities","units","variable","axis","indicator","logout"];
-		menu_access["user"] = ["dashboard","prefs","myvariable","myvariableedit","myindicator","mygroup","logout"];
+		menu_access["admin"] = ["prefs","users","cities","units","variable","myvariableedit","axis","indicator","logout"];
+		menu_access["user"] = ["prefs","myvariable","myvariableedit","myindicator","mygroup","logout"];
 		
 		$.each(menu_access[user_info.role],function(index,value){
 			var menu_class = (getUrlSub() == value) ? "selected" : "";
@@ -2775,37 +2775,70 @@ $(document).ready(function() {
 			}else if (getUrlSub() == "myvariableedit"){
 				/*  VARIABLE  */
 				if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
-				
-					$("#dashboard-content .content").append("<div class='variable-filter'></div><div class='clear'></div>");
-					$("#dashboard-content .content .variable-filter").append("<div class='variable'>Variável: <select id='variable_id'></select></div>");
-					$("#dashboard-content .content #variable_id").append($("<option value=''>Todas</option>"));
 
-					$.ajax({
-						async: false,
-						type: 'GET',
-						dataType: 'json',
-						url: api_path + '/api/user/$$userid/variable?api_key=$$key'.render({
-								key: $.cookie("key"),
-								userid: $.cookie("user.id")
-								}),
-						success: function(data, textStatus, jqXHR){
-							data.variables.sort(function (a, b) {
-								a = a.name,
-								b = b.name;
-							
-								return a.localeCompare(b);
-							});
-							$.each(data.variables, function(index,item){
-								$("#dashboard-content .content #variable_id").append($("<option value='$$id'>$$nome</option>".render({
-									id: item.variable_id,
-									nome: item.name
-								})));
-							});
-						}
-					});
+					$("#dashboard-content .content").append("<div class='variable-filter'><div class='form-pesquisa'></div></div><div class='clear'></div>");
+					if (user_info.roles[0] == "admin"){
+						$("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='user'>Usuário: <select id='user-id'></select></div>");
+						$("#dashboard-content .content #user-id").append($("<option value=''>Selecione...</option>"));
+	
+						$.ajax({
+							async: false,
+							type: 'GET',
+							dataType: 'json',
+							url: api_path + '/api/user/?api_key=$$key'.render({
+									key: $.cookie("key")
+									}),
+							success: function(data, textStatus, jqXHR){
+								data.users.sort(function (a, b) {
+									a = a.name,
+									b = b.name;
+								
+									return a.localeCompare(b);
+								});
+								$.each(data.users, function(index,item){
+									if (item.city){
+										$("#dashboard-content .content #user-id").append($("<option value='$$id'>$$nome</option>".render({
+											id: getIdFromUrl(item.url),
+											nome: item.name
+										})));
+									}
+								});
+							}
+						});
+					}
+					
+					$("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='variable'>Variável: <select id='variable_id'></select></div>");
+					
+					function carregaVariaveisEdit(){
+						$("#dashboard-content .content #variable_id option").remove();
+						$("#dashboard-content .content #variable_id").append($("<option value=''>Todas</option>"));
+						$.ajax({
+							async: false,
+							type: 'GET',
+							dataType: 'json',
+							url: api_path + '/api/user/$$userid/variable?api_key=$$key'.render({
+									key: $.cookie("key"),
+									userid: (user_info.roles[0] == "admin") ? $("#dashboard-content .content #user-id option:selected").val() : $.cookie("user.id")
+									}),
+							success: function(data, textStatus, jqXHR){
+								data.variables.sort(function (a, b) {
+									a = a.name,
+									b = b.name;
+								
+									return a.localeCompare(b);
+								});
+								$.each(data.variables, function(index,item){
+									$("#dashboard-content .content #variable_id").append($("<option value='$$id'>$$nome</option>".render({
+										id: item.variable_id,
+										nome: item.name
+									})));
+								});
+							}
+						});
+					}
 
-					$("#dashboard-content .content .variable-filter").append("<div class='data'>de <input id='data_ini'> até <input id='data_fim'></div>");
-					$("#dashboard-content .content .variable-filter").append("<div class='botao'><input type='button' id='botao-pesquisar' value='Pesquisar'></div><div class='clear'></div>");
+					$("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='data'>de <input id='data_ini'> até <input id='data_fim'></div>");
+					$("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='botao'><input type='button' id='botao-pesquisar' value='Pesquisar'></div><div class='clear'></div>");
 					
 					$("#dashboard-content .content .variable-filter #botao-pesquisar").click(function(){
 						carregaTabelaVariaveisEdit();
@@ -2831,11 +2864,25 @@ $(document).ready(function() {
 																					});
 
 					var now = new Date();
-					now.setDate(now.getDate() - 365);
+					now.setDate(now.getDate() - (10*365));
 					$("#dashboard-content .content .variable-filter input#data_ini").datepicker("setDate", now);
 					$("#dashboard-content .content .variable-filter input#data_fim").datepicker("setDate", new Date());
 
 					$("#dashboard-content .content").append("<div class='resultado'></div>");
+					
+					if (user_info.roles[0] != "admin"){
+						carregaVariaveisEdit();	
+					}else{
+						$("#dashboard-content .content .variable-filter #botao-pesquisar").attr("disabled","disabled");
+						$("#dashboard-content .content .variable-filter #user-id").change(function(){
+							if ($(this).find("option:selected").val() != ""){
+								carregaVariaveisEdit();
+								$("#dashboard-content .content .variable-filter #botao-pesquisar").attr("disabled",false);
+							}else{
+								$("#dashboard-content .content .variable-filter #botao-pesquisar").attr("disabled","disabled");
+							}
+						});
+					}
 					
 					function carregaTabelaVariaveisEdit(){
 						
@@ -2860,7 +2907,7 @@ $(document).ready(function() {
 							dataType: 'json',
 							url: api_path + '/api/user/$$userid/variable?api_key=$$key&valid_from_begin=$$data_ini&valid_from_end=$$data_fim$$variavel'.render({
 									key: $.cookie("key"),
-									userid: $.cookie("user.id"),
+									userid: (user_info.roles[0] == "admin") ? $("#dashboard-content .content #user-id option:selected").val() : $.cookie("user.id"),
 									data_ini: data_ini[2] + "-" + data_ini[1] + "-" + data_ini[0],
 									data_fim: data_fim[2] + "-" + data_fim[1] + "-" + data_fim[0],
 									variavel: variavel_id
@@ -2963,7 +3010,6 @@ $(document).ready(function() {
 							}
 						});
 					}
-					carregaTabelaVariaveisEdit();
 				}
 			}else if (getUrlSub() == "axis"){
 				/*  EIXOS  */

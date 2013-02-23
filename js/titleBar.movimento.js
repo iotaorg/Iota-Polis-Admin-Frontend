@@ -22,6 +22,9 @@ var titleBarContent = {
 					"myvariable":{
 							"title": "Variáveis Básicas",
 							"tip": "As variáveis básicas são usadas na página principal de apresentação do movimento e na composição de indicadores. Para adicionar um novo valor, clique na figura do lápis.<br /><br />A partir daí será apresentado o nome da variável, um campo em branco para você informar o valor, a periodicidade com a qual você terá que preencher a variável, a data que você escolherá para aquele dado e uma descrição do que é a variável.<br /><br />Após preencher o valor da variável e o ano a que ela corresponde, clique em &quot;Adicionar&quot;.<br /><br />Após os dados serem preenchidos, será apresentado um quadro de série histórica."},
+					"myvariableedit":{
+							"title": "Editar Valores",
+							"tip": ""},
 					"indicator":{
 							"title": "Indicadores",
 							"tip": "Veja os indicadores já cadastrados. Utilize o botão 'Adicionar' para criar um novo indicador."},

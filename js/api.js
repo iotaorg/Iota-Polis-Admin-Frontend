@@ -1418,7 +1418,7 @@ $(document).ready(function() {
 		menu_label["axis"] = "Eixos";
 		menu_label["variable"] = "Variáveis";
 		menu_label["myvariable"] = "Variáveis Básicas";
-		menu_label["myvariableedit"] = "Variáveis Básicas";
+		menu_label["myvariableedit"] = "Editar Valores";
 		menu_label["myindicator"] = "Indicadores";
 		menu_label["mygroup"] = "Grupos de Indicadores";
 		menu_label["indicator"] = "Indicadores";
@@ -1428,7 +1428,7 @@ $(document).ready(function() {
 		menu_label["logout"] = "Sair";
 		
 		menu_access["admin"] = ["dashboard","prefs","users","cities","units","variable","axis","indicator","logout"];
-		menu_access["user"] = ["dashboard","prefs","myvariable","myindicator","mygroup","logout"];
+		menu_access["user"] = ["dashboard","prefs","myvariable","myvariableedit","myindicator","mygroup","logout"];
 		
 		$.each(menu_access[user_info.role],function(index,value){
 			var menu_class = (getUrlSub() == value) ? "selected" : "";
@@ -2776,120 +2776,194 @@ $(document).ready(function() {
 				/*  VARIABLE  */
 				if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
 				
-					var variableList = buildDataTable({
-							headers: ["Nome","Data","Valor","_"]
-							},null,false);
-
-					$("#dashboard-content .content").append(variableList);
-					
-					$("#button-add").click(function(){
-						resetWarnings();
-						location.hash = "#!/" + getUrlSub() + "?option=add";
-					});
+					$("#dashboard-content .content").append("<div class='variable-filter'></div><div class='clear'></div>");
+					$("#dashboard-content .content .variable-filter").append("<div class='variable'>Variável: <select id='variable_id'></select></div>");
+					$("#dashboard-content .content #variable_id").append($("<option value=''>Todas</option>"));
 
 					$.ajax({
+						async: false,
 						type: 'GET',
 						dataType: 'json',
-						url: api_path + '/api/user/$$userid/variable?api_key=$$key&is_basic=1'.render({
+						url: api_path + '/api/user/$$userid/variable?api_key=$$key'.render({
 								key: $.cookie("key"),
 								userid: $.cookie("user.id")
 								}),
 						success: function(data, textStatus, jqXHR){
+							data.variables.sort(function (a, b) {
+								a = a.name,
+								b = b.name;
+							
+								return a.localeCompare(b);
+							});
 							$.each(data.variables, function(index,item){
-								if (item.values.length > 0){
-									$.each(item.values, function (index2,valor){
-										var data_formatada;
-										if (item.period == "yearly"){
-											data_formatada = $.format.date(valor.value_of_date,"yyyy");
-										}else if (item.period == "daily"){
-											data_formatada = $.convertDate(valor.value_of_date," ");
-										}
-
-										$("#dashboard-content .content #results tbody").append($("<tr><td>$$nome</td><td data='$$date_of_value'>$$data</td><td>$$valor</td><td>$$url</td></tr>".render({nome: item.name,
-										data: data_formatada,
-										date_of_value: valor.value_of_date,
-										valor: valor.value,
-										url: valor.url})));
-									});
-								}
-							});
-
-							$("#results").dataTable( {
-								  "oLanguage": {
-												"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-												},
-								  "aoColumnDefs": [
-													{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "10px", "aTargets": [ 3 ] },
-													{ "bSearchable": false, "bSortable": false, "sClass": "input", "aTargets": [ 2 ] },
-													{ "bSearchable": false, "bSortable": false, "sClass": "data center", "aTargets": [ 1 ] },
-													{ "sClass": "center", "aTargets": [ 2 ] },
-												  ],
-								   "fnDrawCallback": function(){
-										$("#results td.botoes").each( function(){
-											if ($(this).find("a").length <= 0){
-												var url = $(this).html();
-												$(this).html( "<a href='#' url='$$url' class='icone edit save' title='Salvar Valor' alt='editar'>Salvar valor</a>".render({
-														url: url
-												}));
-											}
-										});
-										$("#results td.input").each( function(){
-											if ($(this).find("input").length <= 0){
-												if ($(this).find("a").length <= 0){
-													$(this).html( "<input type='text' class='input' width='10' value='$$valor'>".render({
-															valor: $(this).html()
-													}));
-												}
-											}
-										});
-									}
-							} );
-							
-							$("#results td.botoes a.save").live('click',function(e){
-								e.preventDefault();
-								var valor = $(this).parent().parent().find("td.input input.input").val();
-								var url = $(this).attr("url");
-								var data = $(this).parent().parent().find("td.data").attr("data");
-
-								args = [{name: "api_key", value: $.cookie("key")},
-										{name: "variable.value.update.value", value: valor},
-										{name: "variable.value.update.value_of_date", value: data}
-										];
-
-								$.ajax({
-									async: false,
-									type: 'POST',
-									dataType: 'json',
-									url: url,
-									data: args,
-									success: function(data,status,jqXHR){
-										$("#aviso").setWarning({msg: "Registro atualizado com sucesso.".render({
-													codigo: jqXHR.status
-													})
-										});
-									},
-									error: function(data){
-										switch(data.status){
-											case 400:
-												$("#aviso").setWarning({msg: "Erro ao atualizar. ($$codigo)".render({
-															codigo: $.parseJSON(data.responseText).error
-															})
-												});
-												break;	
-										}
-									}
-								});
-
-							});
-							
-						},
-						error: function(data){
-							$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
-										codigo: $.parseJSON(data.responseText).error
-									})
+								$("#dashboard-content .content #variable_id").append($("<option value='$$id'>$$nome</option>".render({
+									id: item.variable_id,
+									nome: item.name
+								})));
 							});
 						}
 					});
+
+					$("#dashboard-content .content .variable-filter").append("<div class='data'>de <input id='data_ini'> até <input id='data_fim'></div>");
+					$("#dashboard-content .content .variable-filter").append("<div class='botao'><input type='button' id='botao-pesquisar' value='Pesquisar'></div><div class='clear'></div>");
+					
+					$("#dashboard-content .content .variable-filter #botao-pesquisar").click(function(){
+						carregaTabelaVariaveisEdit();
+					});
+
+					$("#dashboard-content .content .variable-filter input#data_ini").datepicker({
+																					dateFormat: 'dd/mm/yy',
+																					defaultDate: "-30",
+																					changeYear: true,
+																					changeMonth: true,
+																					onSelect: function( selectedDate ){
+																						$("#data_fim").datepicker("option","minDate", $( this ).datepicker("getDate") );
+																					}
+																					});
+
+					$("#dashboard-content .content .variable-filter input#data_fim").datepicker({
+																					dateFormat: 'dd/mm/yy',
+																					defaultDate: "0",
+																					maxDate: "0",
+																					minDate: "0",
+																					changeYear: true,
+																					changeMonth: true
+																					});
+
+					var now = new Date();
+					now.setDate(now.getDate() - 365);
+					$("#dashboard-content .content .variable-filter input#data_ini").datepicker("setDate", now);
+					$("#dashboard-content .content .variable-filter input#data_fim").datepicker("setDate", new Date());
+
+					$("#dashboard-content .content").append("<div class='resultado'></div>");
+					
+					function carregaTabelaVariaveisEdit(){
+						
+						$("#dashboard-content .content .resultado").empty();
+				
+						var variableList = buildDataTable({
+								headers: ["Nome","Data","Valor","_"]
+								},null,false);
+	
+						$("#dashboard-content .content .resultado").append(variableList);
+						
+						var data_ini = $("#dashboard-content .content .variable-filter input#data_ini").val().split("/");
+						var data_fim = $("#dashboard-content .content .variable-filter input#data_fim").val().split("/");
+						
+						var variavel_id = "";
+						if ($("#dashboard-content .content .variable-filter .variable #variable_id option:selected").val() != ""){
+							variavel_id = "&variable_id=" + $("#dashboard-content .content .variable-filter .variable #variable_id option:selected").val();
+						}
+	
+						$.ajax({
+							type: 'GET',
+							dataType: 'json',
+							url: api_path + '/api/user/$$userid/variable?api_key=$$key&valid_from_begin=$$data_ini&valid_from_end=$$data_fim$$variavel'.render({
+									key: $.cookie("key"),
+									userid: $.cookie("user.id"),
+									data_ini: data_ini[2] + "-" + data_ini[1] + "-" + data_ini[0],
+									data_fim: data_fim[2] + "-" + data_fim[1] + "-" + data_fim[0],
+									variavel: variavel_id
+									}),
+							success: function(data, textStatus, jqXHR){
+								$.each(data.variables, function(index,item){
+									if (item.values.length > 0){
+										$.each(item.values, function (index2,valor){
+											var data_formatada;
+											if (item.period == "yearly"){
+												data_formatada = $.format.date(valor.value_of_date,"yyyy");
+											}else if (item.period == "daily"){
+												data_formatada = $.convertDate(valor.value_of_date," ");
+											}
+	
+											$("#dashboard-content .content #results tbody").append($("<tr><td>$$nome</td><td data='$$date_of_value'>$$data</td><td>$$valor</td><td>$$url</td></tr>".render({nome: item.name,
+											data: data_formatada,
+											date_of_value: valor.value_of_date,
+											valor: valor.value,
+											url: valor.url})));
+										});
+									}
+								});
+	
+								$("#results").dataTable( {
+									  "oLanguage": {
+													"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
+													},
+									  "aoColumnDefs": [
+														{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "10px", "aTargets": [ 3 ] },
+														{ "bSearchable": false, "bSortable": false, "sClass": "input", "aTargets": [ 2 ] },
+														{ "bSearchable": false, "bSortable": false, "sClass": "data center", "aTargets": [ 1 ] },
+														{ "sClass": "center", "aTargets": [ 2 ] },
+													  ],
+									   "aaSorting": [[ 0 , "asc" ],[ 1 , "desc" ]],
+									   "fnDrawCallback": function(){
+											$("#results td.botoes").each( function(){
+												if ($(this).find("a").length <= 0){
+													var url = $(this).html();
+													$(this).html( "<a href='#' url='$$url' class='icone edit save' title='Salvar Valor' alt='editar'>Salvar valor</a>".render({
+															url: url
+													}));
+												}
+											});
+											$("#results td.input").each( function(){
+												if ($(this).find("input").length <= 0){
+													if ($(this).find("a").length <= 0){
+														$(this).html( "<input type='text' class='input' width='10' value='$$valor'>".render({
+																valor: $(this).html()
+														}));
+													}
+												}
+											});
+										}
+								} );
+								
+								$("#results td.botoes a.save").live('click',function(e){
+									e.preventDefault();
+									var valor = $(this).parent().parent().find("td.input input.input").val();
+									var url = $(this).attr("url");
+									var data = $(this).parent().parent().find("td.data").attr("data");
+	
+									args = [{name: "api_key", value: $.cookie("key")},
+											{name: "variable.value.update.value", value: valor},
+											{name: "variable.value.update.value_of_date", value: data}
+											];
+	
+									$.ajax({
+										async: false,
+										type: 'POST',
+										dataType: 'json',
+										url: url,
+										data: args,
+										success: function(data,status,jqXHR){
+											$("#aviso").setWarning({msg: "Registro atualizado com sucesso.".render({
+														codigo: jqXHR.status
+														})
+											});
+										},
+										error: function(data){
+											switch(data.status){
+												case 400:
+													$("#aviso").setWarning({msg: "Erro ao atualizar. ($$codigo)".render({
+																codigo: $.parseJSON(data.responseText).error
+																})
+													});
+													break;	
+											}
+										}
+									});
+	
+								});
+								
+							},
+							error: function(data){
+								$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
+											codigo: $.parseJSON(data.responseText).error
+										})
+								});
+							}
+						});
+					}
+					carregaTabelaVariaveisEdit();
 				}
 			}else if (getUrlSub() == "axis"){
 				/*  EIXOS  */

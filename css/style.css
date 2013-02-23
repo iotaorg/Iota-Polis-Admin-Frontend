@@ -1229,3 +1229,27 @@ a#indicator-remove.active:hover{
 	-moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
 	-webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
 }
+
+.variable-filter{
+	border: 1px solid #e0e0e0;
+	margin: auto;
+	width: 700px;
+	text-align: center;
+	clear: both;
+	margin-bottom: 30px;
+	padding: 10px;
+}
+
+.variable-filter .variable,
+.variable-filter .data,
+.variable-filter .botao{
+	float: left;
+	margin-right: 10px;
+}
+.variable-filter .botao{
+	clear: right;
+}
+
+.variable-filter .variable select{
+	width: 200px;
+}

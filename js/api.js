@@ -5165,7 +5165,7 @@ $(document).ready(function() {
 						}
 					});
 
-					$("#group-editor .indicator-list .item").live('click',function(e){
+					$("#group-editor .indicator-list .item").click(function(e){
 						if ($(this).hasClass("no-items")){
 							return;
 						}

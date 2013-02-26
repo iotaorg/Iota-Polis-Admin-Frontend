@@ -29,6 +29,7 @@ var accentMap = {
 	"ú": "u",
 	"ç": "c"
 };
+
 var normalize = function( term ) {
 	var ret = "";
 	for ( var i = 0; i < term.length; i++ ) {

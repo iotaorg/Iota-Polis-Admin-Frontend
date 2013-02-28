@@ -1429,7 +1429,11 @@ $(document).ready(function() {
 		menu_label["logout"] = "Sair";
 		
 		menu_access["admin"] = ["prefs","users","cities","units","variable","myvariableedit","axis","indicator","logout"];
-		menu_access["user"] = ["prefs","myvariable","myvariableedit","myindicator","mygroup","logout"];
+		if (findInArray(user_info.roles,"_movimento")){
+			menu_access["user"] = ["prefs","myvariable","myvariableedit","myindicator","mygroup","logout"];
+		}else{
+			menu_access["user"] = ["prefs","myvariable","myvariableedit","myindicator","logout"];
+		}
 		
 		$.each(menu_access[user_info.role],function(index,value){
 			var menu_class = (getUrlSub() == value) ? "selected" : "";

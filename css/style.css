@@ -28,11 +28,11 @@ a{
 	margin: auto;
 	padding-top: 10px;
 	text-align: left;
-	width: 900px;
+	width: 1000px;
 }
 
 #top .content .sociais{
-	width: 900px;
+	width: 1000px;
 	position: absolute;
 	text-align: right;
 	margin-top: 2px;
@@ -107,7 +107,7 @@ a{
 #menu .content{
 	margin: 0 auto;
 	text-align: left;
-	width: 900px;
+	width: 1000px;
 }
 
 #menu ul{
@@ -117,7 +117,7 @@ a{
 #menu ul li{
 	float: left;
 	padding: 5px 0 2px 0;
-	margin: 0 20px;
+	margin: 0 18px;
 	font-size: 11pt;
 	font-weight: bolder;
 	color: #fff;
@@ -142,7 +142,7 @@ a{
 #content .content{
 	margin: auto;
 	text-align: left;
-	width: 900px;
+	width: 1000px;
 	padding-bottom: 10px;
 }
 
@@ -323,6 +323,15 @@ a.button-add:hover{
 .form input.itext200px{
 	font-size: 10pt;
 	width: 200px;
+	border: 1px solid #bbb;
+	padding: 5px;
+	box-shadow: inset 0 0 5px #e0e0e0;
+	-moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	-webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+}
+.form input.itext300px{
+	font-size: 10pt;
+	width: 300px;
 	border: 1px solid #bbb;
 	padding: 5px;
 	box-shadow: inset 0 0 5px #e0e0e0;
@@ -690,7 +699,7 @@ a#help-formula:hover{
 #footer .content{
 	margin: auto;
 	text-align: left;
-	width: 900px;
+	width: 1000px;
 	clear: both;
 	font-size: 10pt;
 }
@@ -1127,4 +1136,154 @@ span.variation-filter{
 select.variation-filter{
 	border: 1px solid #e0e0e0;
 	font-size: 9pt;
+}
+
+a#delete-source,
+a#add-source{
+	color: #099;
+	font-size: 9pt;
+	text-decoration: none;
+	padding: 2px 4px;
+	border: 1px solid #099;
+}
+a#delete-source:hover,
+a#add-source:hover{
+	color: #000;
+	border: 1px solid #666;
+}
+
+#group-editor .group-selected{
+	width: 400px;
+	float: left;	
+}
+#group-editor .indicator-list-selected{
+	border: 1px solid #e0e0e0;
+	background-color: #fff;
+}
+#group-editor .group-select{
+	background-color: #fff;
+	border: 1px solid #e0e0e0;
+	padding: 2px;
+	width: 255px;
+	margin-left: 5px;
+	float: left;	
+}
+#group-editor .indicator-list{
+	border: 1px solid #e0e0e0;
+}
+
+#group-editor .button{
+	padding: 10px;
+}
+
+#group-editor .indicator-list .item,
+#group-editor .indicator-list-selected .item{
+	padding: 5px;
+	border-bottom: 1px solid #e0e0e0;
+	cursor: hand;
+	cursor: pointer;
+}
+
+#group-editor .indicator-list .selected,
+#group-editor .indicator-list-selected .selected{
+	background-color: #FFC;
+}
+#group-editor .indicator-list .remove{
+	display: none;
+}
+#group-editor .indicator-list .no-items,
+#group-editor .indicator-list-selected .no-items{
+	font-size: 9pt;
+	text-align: center;
+}
+
+a#indicator-add,
+a#indicator-remove{
+	background: #ffffff;
+	padding: 2px 5px;
+	font-size: 10pt;
+	color: #ccc;
+	border: 1px solid #ccc;
+}
+a#indicator-add.active,
+a#indicator-remove.active{
+	color: #419f91;
+	border: 1px solid #d3eeea;
+}
+a#indicator-add.active:hover,
+a#indicator-remove.active:hover{
+	background: #f5f5f5;
+	color: #000000;
+	border: 1px solid #4e867c;
+}
+
+#group-editor .indicator-search{
+	width: 255px;
+	height: 25px;
+}
+#group-editor .indicator-search input{
+	padding: 2px 3px;
+	border: 1px solid #bbb;
+	width: 100%;
+	box-shadow: inset 0 0 5px #e0e0e0;
+	-moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	-webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+}
+
+.variable-filter{
+	border: 1px solid #e0e0e0;
+	margin: auto;
+	text-align: center;
+	clear: both;
+	margin-bottom: 30px;
+	padding: 10px;
+}
+
+.variable-filter .variable,
+.variable-filter .data,
+.variable-filter .botao,
+.variable-filter .user{
+	float: left;
+	margin-right: 10px;
+}
+.variable-filter .botao{
+	clear: right;
+}
+
+.variable-filter .user select{
+	width: 120px;
+	border: 1px solid #e0e0e0;
+	padding: 2px;
+}
+.variable-filter .variable select{
+	width: 200px;
+	border: 1px solid #e0e0e0;
+	padding: 2px;
+}
+.variable-filter .data input{
+	border: 1px solid #e0e0e0;
+	padding: 2px 4px;
+	width: 100px;
+	text-align: center;
+}
+.variable-filter .botao input{
+	background: url("../images/bg_botao.gif") repeat-x top center;
+	border: 1px solid #e0e0e0;
+	padding: 2px 4px;
+	background-color: #20c1c1;
+	color: #fff;
+}
+.variable-filter .botao input:hover{
+	cursor: hand;
+	cursor: pointer;
+	background: url("../images/bg_botao.gif") repeat-x bottom center;
+}
+.variable-filter .botao input[disabled='disabled']{
+	background: #ccc;
+	border: 1px solid #e0e0e0;
+	padding: 2px 4px;
+	color: #999;
+}
+.variable-filter .botao input[disabled='disabled']:hover{
+	cursor: default;
 }

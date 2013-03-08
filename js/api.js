@@ -4268,6 +4268,7 @@ $(document).ready(function() {
 
 							var data_vvariables = [];
 							$.ajax({
+								async: false,
 								type: 'GET',
 								dataType: 'json',
 								url: api_path + '/api/indicator/variable?api_key=$$key'.render({

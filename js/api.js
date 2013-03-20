@@ -56,7 +56,7 @@ $.extend({
 		var date_tmp = date.split(splitter);
 		var date = date_tmp[0];
 		var time = date_tmp[1];
-		
+
 		var date_split = date.split("-");
 
 		return date_split[2] + "/" + date_split[1] + "/" + date_split[0];
@@ -65,7 +65,7 @@ $.extend({
 		var date_tmp = date.split(splitter);
 		var date = date_tmp[0];
 		var time = date_tmp[1];
-		
+
 		var date_split = date.split("-");
 
 		return date_split[2] + "/" + date_split[1] + "/" + date_split[0] + " " + time;
@@ -74,7 +74,7 @@ $.extend({
 		var date_tmp = date.split(splitter);
 		var date = date_tmp[0];
 		var time = date_tmp[1];
-		
+
 		var date_split = date.split("/");
 
 		return date_split[2] + "/" + date_split[1] + "/" + date_split[0];
@@ -107,13 +107,13 @@ $.extend({
 		switch(erro){
 			case "Login invalid(1)":
 					return "Login Inválido";
-					break;	
+					break;
 			case "Login invalid(2)":
 					return "Login Inválido";
-					break;	
+					break;
 			default:
 					return erro;
-					break;	
+					break;
 		}
 	}
 });
@@ -126,7 +126,7 @@ $.xhrPool.abortAll = function() {
     $.xhrPool.length = 0
 };
 
-$.ajaxSetup({	
+$.ajaxSetup({
     beforeSend: function(jqXHR) {
         $.xhrPool.push(jqXHR);
     },
@@ -214,7 +214,7 @@ $(document).ready(function() {
 				  "TO":"Tocantins"
 						  };
 	var cidades_prefeitos = [];
-	
+
 	var click_editor = false;
 
 	var qtip_input = {
@@ -229,7 +229,7 @@ $(document).ready(function() {
 			 width: 2,
 			 radius: 4
 		  },
-		  padding: 5, 
+		  padding: 5,
 		  textAlign: 'left',
 		  tip: true, // Give it a speech bubble tip with automatic corner detection
 		  name: 'cream' // Style it according to the preset 'cream' style
@@ -255,7 +255,7 @@ $(document).ready(function() {
 			 width: 2,
 			 radius: 4
 		  },
-		  padding: 5, 
+		  padding: 5,
 		  textAlign: 'left',
 		  tip: true, // Give it a speech bubble tip with automatic corner detection
 		  name: 'cream' // Style it according to the preset 'cream' style
@@ -293,7 +293,7 @@ $(document).ready(function() {
 	};
 	$.fn.clearWarning = function(){
 		$(this).hide();
-		$(this).html("");	
+		$(this).html("");
 	};
 
 	var findCidadePrefeito = function(city_id){
@@ -315,7 +315,7 @@ $(document).ready(function() {
 		}
 		return retorno;
 	}
-	
+
 	var resetDashboard = function(){
 		$("#aviso").setWarning({msg: ""});
 		$("#top .top-right .logo").empty();
@@ -329,7 +329,7 @@ $(document).ready(function() {
 		$("#aviso").empty();
 		$(".form-aviso").empty();
 	};
-	
+
 	$("#form-login form").submit(function(e){
 		e.preventDefault();
 		resetWarnings();
@@ -341,7 +341,7 @@ $(document).ready(function() {
 
 				{name: "user.login.password",value: $("#form-login #senha").val()}
 				];
-				
+
 		$.ajax({
 			type: 'POST',
 			dataType: 'json',
@@ -356,7 +356,7 @@ $(document).ready(function() {
 						$.cookie("key",data.api_key,{ expires: 1, path: "/" });
 						$("#dashboard #form-login").hide();
 						location.hash = "!/dashboard";
-						break;	
+						break;
 				}
 			},
 			error: function(data){
@@ -374,15 +374,15 @@ $(document).ready(function() {
 	};
 
 	/*monta titleBar*/
-					  
+
 	var setTitleBar = function(){
 		var pagina = getUrlSub();
 		var option = $.getUrlVar("option");
-		
+
 		if (pagina == ""){
-			pagina = "login";	
+			pagina = "login";
 		}
-		
+
 		$("#header-title .title").empty();;
 		$("#header-title .description").empty();
 		if(titleBarContent[pagina+","+option]){
@@ -426,7 +426,7 @@ $(document).ready(function() {
 		newlist += "</thead>";
 
 		newlist += "<tbody>";
-		
+
 		$.each(data,function(index,value){
 			newlist += "<tr>";
 			for (var key in fields){
@@ -475,7 +475,7 @@ $(document).ready(function() {
 		return newlist;
 
 	};
-	
+
 	var DTdesenhaBotoes = function(){
 		$("#results td.botoes").each( function(){
 			if ($(this).find("a").length <= 0){
@@ -500,7 +500,7 @@ $(document).ready(function() {
 			}
 		});
 	}
-	
+
 	var buildForm = function(form_args,title){
 		var newform = "<div class='form'>";
 		if (title){
@@ -528,7 +528,7 @@ $(document).ready(function() {
 				var newinput;
 				newform += "<div class='input'>";
 				for (j = 0; j < form_args[i].input.length; j++){
-					var input_args = form_args[i].input[j].split(","); 
+					var input_args = form_args[i].input[j].split(",");
 					switch(input_args[0]){
 						case "text":
 						case "password":
@@ -623,9 +623,9 @@ $(document).ready(function() {
 						data_variables.push({"id":data.variables[index].variable_id,"name":data.variables[index].name,"period":data.variables[index].period,"values":data.variables[index].values});
 					}
 				});
-				
+
 				//mostra historico
-				
+
 				var history_table = "<div class='title'>Série Histórica</div><div class='historic-content'>";
 				history_table += "<table class='history'><thead><tr><th>Período</th><th>Valor</th><th></th></tr></thead><tbody>";
 				$.each(data_variables[0].values, function(index,value){
@@ -645,7 +645,7 @@ $(document).ready(function() {
 				}
 				history_table += "</table>";
 				history_table += "</div>";
-				
+
 				$("#dashboard-content .content div.historico").empty();
 				$("#dashboard-content .content div.historico").append(history_table);
 				$("#dashboard-content .content div.historic table").width($("#dashboard-content .content").find(".form").width());
@@ -653,9 +653,9 @@ $(document).ready(function() {
 					$(this).parent().find(".historic-content").toggle();
 				});
 				$("table.history a.edit").click(function(){
-					
+
 					// carrega Historico para editar
-					
+
 					$("table.history tbody tr").removeClass("selected");
 					$(this).parent().parent().addClass("selected");
 					var value_selected = $(this);
@@ -700,7 +700,8 @@ $(document).ready(function() {
 	}
 
 	var buildIndicatorHistory = function (args){
-		
+
+        var vvariations = [];
 		$.ajax({
 			type: 'GET',
 			dataType: 'json',
@@ -712,18 +713,18 @@ $(document).ready(function() {
 				if (data.header && data.rows != undefined){
 					var history_table = "";
 					history_table += "<table class='history'><thead><tr><th>Período</th>";
-					
+
 					var headers = [];//corrige ordem do header
 					$.each(data.header,function(titulo, index){
 						headers[index] = titulo;
 					});
+                    vvariations = [];
 
 					$.each(headers, function(index,value){
 						history_table += "<th class='variavel'>$$variavel</th>".render({variavel:value});
 					});
 					history_table += "#theader_valor";
 					history_table += "</tr></thead><tbody>";
-					var vvariations = [];
 					var rows = 0;
 					$.each(data.rows, function(index,value){
 						history_table += "<tr row-id='$$row'><td class='periodo'>$$periodo</td>".render({periodo: $.convertDateToPeriod(data.rows[index].valid_from,args.period), row: rows});
@@ -807,7 +808,7 @@ $(document).ready(function() {
 
 				if (vvariations.length > 0){
 					$(args.target).find("table .formula_valor[variation-index!=0]").hide();
-					
+
 					$("select.variation-filter").change(function(){
 						var obj = $(this);
 						$(obj).parent().next("table").find(".formula_valor").fadeOut("fast",function(){
@@ -826,13 +827,13 @@ $(document).ready(function() {
 								'class'	: '',
 								'action': function(){
 									var row = $("table.history tbody tr[row-id='$$row_id']".render({row_id: $(link_delete).attr("row-id")}));
-									
+
 									var tds = $(row).find("td[variable-id]");
-									
+
 									var total_values = tds.length;
-									
+
 									var total_values_enviados = 0;
-									
+
 									$(tds).each(function(index,element){
 										$.ajax({
 											type: 'DELETE',
@@ -856,7 +857,7 @@ $(document).ready(function() {
 											}
 										});
 									});
-									
+
 								}
 							},
 							'Não'	: {
@@ -869,7 +870,7 @@ $(document).ready(function() {
 				});
 			}
 		});
-		
+
 	}
 
 	var setNewSource = function(objSelect,objText){
@@ -929,8 +930,8 @@ $(document).ready(function() {
 			$(objSelect).next("a#delete-source").show();
 
 		});
-	}	
-					
+	}
+
 	var loadComboSources = function(arr,objSelect,objText){
 		var old_selected = $(objSelect).find("option:selected").val();
 		$(objSelect).empty();
@@ -939,7 +940,7 @@ $(document).ready(function() {
 		$.each(arr,function(index, item){
 			$(objSelect).append($("<option></option>").val(item.name).html(item.name).attr("source-id",item.id));
 		});
-		
+
 		$(objSelect).val(old_selected);
 
 		$(objSelect).change(function(e){
@@ -984,17 +985,17 @@ $(document).ready(function() {
 			error: function(data){
 				switch(data.status){
 					case 200:
-						break;	
+						break;
 					default:
 						$("#aviso").setWarning({msg: "Erro: ($$codigo)".render({
 									codigo: data.status
 									})
 						});
-						break;	
+						break;
 				}
 			}
 		});
-		
+
 	}
 
 	var deleteRegister = function(params){
@@ -1026,7 +1027,7 @@ $(document).ready(function() {
 							error: function(data){
 								switch(data.status){
 									case 200:
-										break;	
+										break;
 									default:
 										$("#aviso").setWarning({msg: "Erro: ($$codigo)".render({
 													codigo: data.status
@@ -1035,7 +1036,7 @@ $(document).ready(function() {
 										if (params.redirect == undefined || params.redirect == true){
 											location.hash = "#!/"+getUrlSub();
 										}
-										break;	
+										break;
 								}
 							}
 						});
@@ -1076,7 +1077,7 @@ $(document).ready(function() {
 		}
 		return url_sub;
 	};
-	
+
 	var getIdFromUrl = function(url){
 		if (url == undefined) return undefined;
 		var split_url = url.split("/");
@@ -1086,10 +1087,10 @@ $(document).ready(function() {
 			return null;
 		}
 	}
- 
+
 	$.confirm = function(params){
 		if($("#dialog-overlay").length > 0){
-			return false;	
+			return false;
 		}
 
 		var buttonHTML = '';
@@ -1099,7 +1100,7 @@ $(document).ready(function() {
 				obj.action = function(){};
 			}
 		});
-		
+
 		var confirmWindow = "<div id='dialog-overlay'>";
 		confirmWindow += "<div id='dialog-box'>";
 		confirmWindow += "<div id='dialog-content'>";
@@ -1107,9 +1108,9 @@ $(document).ready(function() {
 		confirmWindow += "<div id='dialog-message'>$$message</div>".render({message: params.message});
 		confirmWindow += "<div id='dialog-buttons'>$$buttons</div>".render({buttons: buttonHTML});
 		confirmWindow += "</div></div></div>";
-		
+
 		$(confirmWindow).hide().appendTo("body").fadeIn();
-		
+
 		var buttons = $('#dialog-box .button-default'), i = 0;
 
 		$.each(params.buttons,function(name,obj){
@@ -1118,7 +1119,7 @@ $(document).ready(function() {
 				$.confirm.hide();
 				return false;
 			});
-		});		
+		});
 	};
 	$.confirm.hide = function(){
 		$('#dialog-overlay').fadeOut(function(){
@@ -1139,7 +1140,7 @@ $(document).ready(function() {
 				$.each(data.citys, function(index,value){
 					cidades_prefeitos.push({"id":data.citys[index].id,"prefeito_id":data.citys[index].prefeito_id, "movimento_id":data.citys[index].movimento_id});
 				});
-				
+
 			},
 			error: function(data){
 				$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
@@ -1164,11 +1165,11 @@ $(document).ready(function() {
 				$.each(data.measurement_units, function(index,item){
 					measurement_units.push({"id":item.id,"name":item.name});
 				});
-				
+
 				measurement_units.sort(function (a, b) {
 					a = a.name,
 					b = b.name;
-				
+
 					return a.localeCompare(b);
 				});
 
@@ -1195,11 +1196,11 @@ $(document).ready(function() {
 				$.each(data.sources, function(index,item){
 					sources.push({"name":item.name, "id":item.id});
 				});
-				
+
 				sources.sort(function (a, b) {
 					a = a.name,
 					b = b.name;
-				
+
 					return a.localeCompare(b);
 				});
 
@@ -1218,7 +1219,7 @@ $(document).ready(function() {
 		resetDashboard();
 		$("#dashboard #form-login").show();
 	}
-	
+
 	var formataFormula = function(formula,variables,vvariables){
 		var operators_caption = {"+":"+"
 						,"-":"-"
@@ -1251,14 +1252,14 @@ $(document).ready(function() {
 				new_formula = new_formula.replace(re,vvariables[index].name);
 			});
 		}
-		
+
 		$.each(operators_caption,function(index,value){
 			new_formula = new_formula.replace(index," " + value + " ");
 		});
-		
+
 		return new_formula.trim();
 	}
-	
+
 	var getVariablesFromFormula = function(formula){
 		var indicator_variables = formula.replace(/[^0-9.\$]/g," ").match(/\s\$[^\s]*|^\$[^\s]*/gi);
 		for (i = 0; i < indicator_variables.length; i++){
@@ -1288,7 +1289,7 @@ $(document).ready(function() {
 			e.stopPropagation();
 		});
 	}
-	
+
 	var buildUserInterface = function(){
 		if ($.cookie("key") != null && $.cookie("key") != ""){
 			$.ajax({
@@ -1302,7 +1303,7 @@ $(document).ready(function() {
 					switch(jqXHR.status){
 						case 200:
 							user_info = data;
-							
+
 							user_info.role = "";
 							if (user_info.roles.length == 1){
 								user_info.role = user_info.roles[0];
@@ -1313,9 +1314,9 @@ $(document).ready(function() {
 									user_info.role = user_info.roles[1];
 								}
 							}
-							
+
 							if (user_info.role != ""){
-								
+
 								var info_content = "Usuário: " + user_info.name;
 								if($("#user-info").length == 0){
 									$("#top .top-right .info").append("<div id='user-info'>" + info_content + "</div>");
@@ -1334,7 +1335,7 @@ $(document).ready(function() {
 								buildMenu();
 								setTitleBar();
 								buildContent();
-								break;	
+								break;
 							}else{
 								$.confirm({
 									'title': 'Aviso',
@@ -1345,7 +1346,7 @@ $(document).ready(function() {
 											'action': function(){
 												resetCookies();
 												resetDashboard();
-												location.hash = "";				
+												location.hash = "";
 											}
 										}
 									}
@@ -1360,7 +1361,7 @@ $(document).ready(function() {
 										codigo: $.parseJSON(data.responseText).error
 										})
 							});
-							break;	
+							break;
 						case 403:
 							$.confirm({
 								'title': 'Aviso',
@@ -1371,12 +1372,12 @@ $(document).ready(function() {
 										'action': function(){
 											resetCookies()
 											resetDashboard();
-											location.hash = "";				
+											location.hash = "";
 										}
 									}
 								}
 							});
-							break;	
+							break;
 						case 500:
 							$.confirm({
 								'title': 'Aviso',
@@ -1387,12 +1388,12 @@ $(document).ready(function() {
 										'action': function(){
 											resetCookies()
 											resetDashboard();
-											location.hash = "";				
+											location.hash = "";
 										}
 									}
 								}
 							});
-							break;	
+							break;
 					}
 				}
 			});
@@ -1411,7 +1412,7 @@ $(document).ready(function() {
 
 		var menu_label = [];
 		var menu_access = [];
-			
+
 		menu_label["dashboard"] = "Início";
 		menu_label["users"] = "Usuários";
 		menu_label["cities"] = "Cidades";
@@ -1427,14 +1428,14 @@ $(document).ready(function() {
 		menu_label["reports"] = "Relatórios";
 		menu_label["prefs"] = "Preferências";
 		menu_label["logout"] = "Sair";
-		
+
 		menu_access["admin"] = ["prefs","users","cities","units","variable","myvariableedit","axis","indicator","logout"];
 		if (findInArray(user_info.roles,"_movimento")){
 			menu_access["user"] = ["prefs","myvariable","myvariableedit","myindicator","mygroup","logout"];
 		}else{
 			menu_access["user"] = ["prefs","myvariable","myvariableedit","myindicator","logout"];
 		}
-		
+
 		$.each(menu_access[user_info.role],function(index,value){
 			var menu_class = (getUrlSub() == value) ? "selected" : "";
 			$("#menu").find("ul").append("<li class='$$class' ref='$$url_sub'>$$menu</li>".render({
@@ -1447,7 +1448,7 @@ $(document).ready(function() {
 			resetWarnings();
 		});
 	};
-	
+
 	var updateFormula = function(){
 		var formula = "";
 		$("#formula-editor .editor-content div").each(function(index,element){
@@ -1577,9 +1578,9 @@ $(document).ready(function() {
 						$("#dashboard-content .content input#prefeito").attr("checked",false);
 						$("#dashboard-content .content input#prefeito").attr("disabled",false);
 					}
-					
+
 				});
-				
+
 			},
 			error: function(data){
 				$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
@@ -1589,14 +1590,14 @@ $(document).ready(function() {
 			}
 		});
 	}
-	
+
 	/*MONTA TELAS*/
-	
+
 	$(window).hashchange( function(){
 		$("#dashboard-content .content").empty();
 		buildUserInterface();
 	})
-	
+
 	var buildContent = function(){
 		if ($.inArray(getUrlSub().toString(),["dashboard","users","cities","units","variable","myvariable","myvariableedit","axis","indicator","myindicator","mygroup","tokens","reports","prefs"]) >= 0){
 			$.xhrPool.abortAll();
@@ -1605,15 +1606,15 @@ $(document).ready(function() {
 			if (getUrlSub() == "dashboard"){
 
 				if (!findInArray(user_info.roles,"_prefeitura") && !findInArray(user_info.roles,"_movimento")){
-					
+
 					var logList = buildDataTable({
 							headers: ["Usuário","Mensagem","Data"]
 							},null,false);
-	
+
 					$("#dashboard-content .content").append(logList);
 
 					var url_log = api_path + '/api/log?api_key=' + $.cookie("key");
-					
+
 					$.ajax({
 						type: 'GET',
 						dataType: 'json',
@@ -1626,7 +1627,7 @@ $(document).ready(function() {
 								data: $.convertDateTime(data.logs[index].date,"T")
 								})));
 							});
-	
+
 							$("#results").dataTable( {
 								  "oLanguage": {
 												"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
@@ -1639,19 +1640,19 @@ $(document).ready(function() {
 							} );
 						}
 					});
-					
+
 				}
 			}else if (getUrlSub() == "users"){
 				/*  USER  */
 				loadCidades();
 				if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
-				
+
 					var userList = buildDataTable({
 							headers: ["Nome","Email","_"]
 							});
 
 					$("#dashboard-content .content").append(userList)
-					
+
 					$("#button-add").click(function(){
 						resetWarnings();
 						location.hash = "#!/" + getUrlSub() + "?option=add";
@@ -1672,13 +1673,13 @@ $(document).ready(function() {
 								DTdesenhaBotoes();
 							}
 					} );
-					
+
 				}else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit"){
-					
+
 					var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
-					
+
 					var newform = [];
-					
+
 					newform.push({label: "Nome", input: ["text,name,itext"]});
 					newform.push({label: "Email", input: ["text,email,itext"]});
 					newform.push({label: "Senha", input: ["password,password,itext"]});
@@ -1716,7 +1717,7 @@ $(document).ready(function() {
 					$("#dashboard-content .content input#prefeito").attr("disabled",true);
 
 					$("#dashboard-content .content select#city_id").append($("<option></option>").val("").html("Selecione..."));
-					
+
 					if ($.getUrlVar("option") == "add"){
 						carregaComboCidades();
 						$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
@@ -1769,7 +1770,7 @@ $(document).ready(function() {
 															codigo: $.parseJSON(data.responseText).error
 															})
 												});
-												break;	
+												break;
 										}
 										$("#dashboard-content .content .botao-form[ref='enviar']").show();
 									}
@@ -1813,7 +1814,7 @@ $(document).ready(function() {
 												$(formbuild).find("input#prefeito").attr("disabled",false);
 											}
 										}
-										break;	
+										break;
 								}
 							},
 							error: function(data){
@@ -1823,11 +1824,11 @@ $(document).ready(function() {
 													codigo: $.parseJSON(data.responseText).error
 													})
 										});
-										break;	
+										break;
 								}
 							}
 						});
-	
+
 						$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
 							resetWarnings();
 							if ($(this).parent().parent().find("#name").val() == ""){
@@ -1853,7 +1854,7 @@ $(document).ready(function() {
 										args.push({name: "user.update.movimento", value: 1});
 									}
 								}
-	
+
 								if ($(this).parent().parent().find("#password").val() != ""){
 									args.push({name: "user.update.password", value: $(this).parent().parent().find("#password").val()},
 										{name: "user.update.password_confirm", value: $(this).parent().parent().find("#password").val()});
@@ -1895,13 +1896,13 @@ $(document).ready(function() {
 			}else if (getUrlSub() == "cities"){
 				/*  CIDADES  */
 				if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
-				
+
 					var userList = buildDataTable({
 							headers: ["Nome","Estado","_"]
 							});
 
 					$("#dashboard-content .content").append(userList);
-					
+
 					$("#button-add").click(function(){
 						resetWarnings();
 						location.hash = "#!/" + getUrlSub() + "?option=add";
@@ -1922,13 +1923,13 @@ $(document).ready(function() {
 								DTdesenhaBotoes();
 							}
 					} );
-					
+
 				}else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit"){
-					
+
 					var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
-					
+
 					var newform = [];
-					
+
 					newform.push({label: "Nome", input: ["text,name,itext"]});
 					newform.push({label: "Estado", input: ["select,uf,iselect"]});
 					newform.push({type: "subtitle", title: "Dados da Prefeitura"});
@@ -1989,7 +1990,7 @@ $(document).ready(function() {
 															codigo: $.parseJSON(data.responseText).error
 															})
 												});
-												break;	
+												break;
 										}
 										$("#dashboard-content .content .botao-form[ref='enviar']").show();
 									}
@@ -2014,7 +2015,7 @@ $(document).ready(function() {
 										$(formbuild).find("input#cep_prefeitura").val(data.cep_prefeitura);
 										$(formbuild).find("input#email_prefeitura").val(data.email_prefeitura);
 										$(formbuild).find("input#nome_responsavel_prefeitura").val(data.nome_responsavel_prefeitura);
-										break;	
+										break;
 								}
 							},
 							error: function(data){
@@ -2024,11 +2025,11 @@ $(document).ready(function() {
 													codigo: $.parseJSON(data.responseText).error
 													})
 										});
-										break;	
+										break;
 								}
 							}
 						});
-	
+
 						$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
 							resetWarnings();
 							if ($(this).parent().parent().find("#name").val() == ""){
@@ -2046,7 +2047,7 @@ $(document).ready(function() {
 										{name: "city.update.email_prefeitura", value: $(this).parent().parent().find("#email_prefeitura").val()},
 										{name: "city.update.nome_responsavel_prefeitura", value: $(this).parent().parent().find("#nome_responsavel_prefeitura").val()}
 										];
-	
+
 								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
 								$.ajax({
 									type: 'POST',
@@ -2085,13 +2086,13 @@ $(document).ready(function() {
 			}else if (getUrlSub() == "units"){
 				/*  UNIDADES DE MEDIDA  */
 				if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
-				
+
 					var userList = buildDataTable({
 							headers: ["Nome","Sigla","_"]
 							});
 
 					$("#dashboard-content .content").append(userList);
-					
+
 					$("#button-add").click(function(){
 						resetWarnings();
 						location.hash = "#!/" + getUrlSub() + "?option=add";
@@ -2112,13 +2113,13 @@ $(document).ready(function() {
 								DTdesenhaBotoes();
 							}
 					} );
-					
+
 				}else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit"){
-					
+
 					var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
-					
+
 					var newform = [];
-					
+
 					newform.push({label: "Nome", input: ["text,name,itext"]});
 					newform.push({label: "Sigla", input: ["text,short_name,itext"]});
 
@@ -2166,7 +2167,7 @@ $(document).ready(function() {
 															codigo: $.parseJSON(data.responseText).error
 															})
 												});
-												break;	
+												break;
 										}
 										$("#dashboard-content .content .botao-form[ref='enviar']").show();
 									}
@@ -2185,7 +2186,7 @@ $(document).ready(function() {
 									case 200:
 										$(formbuild).find("input#name").val(data.name);
 										$(formbuild).find("input#short_name").val(data.short_name);
-										break;	
+										break;
 								}
 							},
 							error: function(data){
@@ -2195,11 +2196,11 @@ $(document).ready(function() {
 													codigo: $.parseJSON(data.responseText).error
 													})
 										});
-										break;	
+										break;
 								}
 							}
 						});
-	
+
 						$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
 							resetWarnings();
 							if ($(this).parent().parent().find("#name").val() == ""){
@@ -2211,7 +2212,7 @@ $(document).ready(function() {
 										{name: "measurement_unit.update.name", value: $(this).parent().parent().find("#name").val()},
 										{name: "measurement_unit.update.short_name", value: $(this).parent().parent().find("#short_name").val()}
 										];
-	
+
 								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
 								$.ajax({
 									type: 'POST',
@@ -2250,13 +2251,13 @@ $(document).ready(function() {
 			}else if (getUrlSub() == "variable"){
 				/*  VARIABLE  */
 				if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
-				
+
 					var variableList = buildDataTable({
 							headers: ["Nome","Apelido","Tipo","Data Criação","Básica","_"]
 							});
 
 					$("#dashboard-content .content").append(variableList);
-					
+
 					$("#button-add").click(function(){
 						resetWarnings();
 						location.hash = "#!/" + getUrlSub() + "?option=add";
@@ -2308,13 +2309,13 @@ $(document).ready(function() {
 
 							}
 					} );
-					
+
 				}else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit"){
-					
+
 					var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
-					
+
 					var newform = [];
-					
+
 					newform.push({label: "Nome", input: ["text,name,itext"]});
 					newform.push({label: "Apelido", input: ["text,cognomen,itext"]});
 					newform.push({label: "Explicação", input: ["textarea,explanation,itext"]});
@@ -2349,22 +2350,22 @@ $(document).ready(function() {
 					$.each(variable_types,function(key, value){
 						$("#dashboard-content .content select#type").append($("<option></option>").val(key).html(value));
 					});
-					
+
 					loadUnidades();
 
 					$("#dashboard-content .content select#measurement_unit").append($("<option></option>").val("").html("nenhuma"));
 					$.each(measurement_units,function(index, item){
 						$("#dashboard-content .content select#measurement_unit").append($("<option></option>").val(item.id).html(item.name));
 					});
-					
+
 					loadSources();
-					
+
 					loadComboSources(sources,$("#dashboard-content .content select#source"),$("#dashboard-content .content input#source_new"));
 
 					$.each(variable_periods,function(key, value){
 						$("#dashboard-content .content select#period").append($("<option></option>").val(key).html(value));
 					});
-					
+
 					if ($.getUrlVar("option") == "add"){
 						$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
 							resetWarnings();
@@ -2411,7 +2412,7 @@ $(document).ready(function() {
 															codigo: $.parseJSON(data.responseText).error
 															})
 												});
-												break;	
+												break;
 										}
 										$("#dashboard-content .content .botao-form[ref='enviar']").show();
 									}
@@ -2446,7 +2447,7 @@ $(document).ready(function() {
 										}else{
 											$(formbuild).find("input#is_basic").attr("checked",false);
 										}
-										break;	
+										break;
 								}
 							},
 							error: function(data){
@@ -2456,11 +2457,11 @@ $(document).ready(function() {
 													codigo: $.parseJSON(data.responseText).error
 													})
 										});
-										break;	
+										break;
 								}
 							}
 						});
-	
+
 						$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
 							resetWarnings();
 							if ($(this).parent().parent().find("#name").val() == ""){
@@ -2485,7 +2486,7 @@ $(document).ready(function() {
 								}else{
 									args.push({name: "variable.update.is_basic", value: 0});
 								}
-	
+
 								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
 								$.ajax({
 									type: 'POST',
@@ -2524,13 +2525,13 @@ $(document).ready(function() {
 			}else if (getUrlSub() == "myvariable"){
 				/*  VARIABLE  */
 				if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
-				
+
 					var variableList = buildDataTable({
 							headers: ["Nome","_"]
 							},null,false);
 
 					$("#dashboard-content .content").append(variableList);
-					
+
 					$("#button-add").click(function(){
 						resetWarnings();
 						location.hash = "#!/" + getUrlSub() + "?option=add";
@@ -2569,11 +2570,11 @@ $(document).ready(function() {
 							});
 						}
 					});
-					
+
 				}else if ($.getUrlVar("option") == "edit"){
-					
+
 					var txtOption = "Adicionar Valor";
-					
+
 					$.ajax({
 						type: 'GET',
 						dataType: 'json',
@@ -2582,9 +2583,9 @@ $(document).ready(function() {
 							}),
 						success: function(data,status,jqXHR){
 							if (jqXHR.status == 200){
-			
+
 								var newform = [];
-								
+
 								newform.push({label: "Variável", input: ["textlabel,textlabel_variable,ilabel"]});
 								newform.push({label: "Valor", input: ["text,value,itext"]});
 
@@ -2597,7 +2598,7 @@ $(document).ready(function() {
 									newform.push({label: "Data", input: ["text,value_of_date,itext"]});
 								}
 								newform.push({label: "Descrição", input: ["textlabel,textlabel_explanation,ilabel"]});
-			
+
 								var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
 
 								if (data.period == "yearly"){
@@ -2636,7 +2637,7 @@ $(document).ready(function() {
 													}));
 											});
 											$("#dashboard-content .content select#value_of_date option:last").attr("selected","selected");
-											
+
 											$("#dashboard-content .content select#value_of_date_year").change(function(){
 												$("#dashboard-content .content select#value_of_date option").remove();
 												$("#dashboard-content .content select#value_of_date").hide();
@@ -2676,14 +2677,14 @@ $(document).ready(function() {
 								$(formbuild).find("div .field:odd").addClass("odd");
 								$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 								$("#dashboard-content .content div.historic table").width($("#dashboard-content .content").find(".form").width());
-			
+
 								$(formbuild).find("div#textlabel_variable").html(data.name);
 								$(formbuild).find("div#textlabel_explanation").html(data.explanation);
 								$(formbuild).find("div#textlabel_period").html(variable_periods[data.period]);
 
-			
+
 								$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
-									
+
 									if ($(this).html() == "Adicionar"){
 										var ajax_type = "POST";
 										var api_method = "create";
@@ -2693,7 +2694,7 @@ $(document).ready(function() {
 										var api_method = "update";
 										var ajax_url = $.getUrlVar("url") + "/value/" + $("table.history tbody tr.selected").attr("value-id");
 									}
-									
+
 									resetWarnings();
 									if ($(this).parent().parent().find("#value").val() == ""){
 										$(".form-aviso").setWarning({msg: "Por favor informe o Valor"});
@@ -2709,7 +2710,7 @@ $(document).ready(function() {
 												{name: "variable.value." + api_method + ".value_of_date", value: data_formatada},
 												{name: "variable.value." + api_method + ".variable_id", value: getIdFromUrl($.getUrlVar("url"))},
 												];
-			
+
 										$("#dashboard-content .content .botao-form[ref='enviar']").hide();
 										$.ajax({
 											type: ajax_type,
@@ -2760,9 +2761,9 @@ $(document).ready(function() {
 									}
 								});
 							}
-							
+
 							$("#dashboard-content .content").append("<div class='historico'></div>");
-							
+
 							buildVariableHistory();
 						},
 						error: function(data){
@@ -2772,7 +2773,7 @@ $(document).ready(function() {
 												codigo: $.parseJSON(data.responseText).error
 												})
 									});
-									break;	
+									break;
 							}
 						}
 					});
@@ -2785,7 +2786,7 @@ $(document).ready(function() {
 					if (user_info.roles[0] == "admin"){
 						$("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='user'>Usuário: <select id='user-id'></select></div>");
 						$("#dashboard-content .content #user-id").append($("<option value=''>Selecione...</option>"));
-	
+
 						$.ajax({
 							async: false,
 							type: 'GET',
@@ -2797,7 +2798,7 @@ $(document).ready(function() {
 								data.users.sort(function (a, b) {
 									a = a.name,
 									b = b.name;
-								
+
 									return a.localeCompare(b);
 								});
 								$.each(data.users, function(index,item){
@@ -2811,9 +2812,9 @@ $(document).ready(function() {
 							}
 						});
 					}
-					
+
 					$("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='variable'>Variável: <select id='variable_id'></select></div>");
-					
+
 					function carregaVariaveisEdit(){
 						$("#dashboard-content .content #variable_id option").remove();
 						$("#dashboard-content .content #variable_id").append($("<option value=''>Todas</option>"));
@@ -2829,7 +2830,7 @@ $(document).ready(function() {
 								data.variables.sort(function (a, b) {
 									a = a.name,
 									b = b.name;
-								
+
 									return a.localeCompare(b);
 								});
 								$.each(data.variables, function(index,item){
@@ -2844,7 +2845,7 @@ $(document).ready(function() {
 
 					$("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='data'>de <input id='data_ini'> até <input id='data_fim'></div>");
 					$("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='botao'><input type='button' id='botao-pesquisar' value='Pesquisar'></div><div class='clear'></div>");
-					
+
 					$("#dashboard-content .content .variable-filter #botao-pesquisar").click(function(){
 						carregaTabelaVariaveisEdit();
 					});
@@ -2874,9 +2875,9 @@ $(document).ready(function() {
 					$("#dashboard-content .content .variable-filter input#data_fim").datepicker("setDate", new Date());
 
 					$("#dashboard-content .content").append("<div class='resultado'></div>");
-					
+
 					if (user_info.roles[0] != "admin"){
-						carregaVariaveisEdit();	
+						carregaVariaveisEdit();
 					}else{
 						$("#dashboard-content .content .variable-filter #botao-pesquisar").attr("disabled","disabled");
 						$("#dashboard-content .content .variable-filter #user-id").change(function(){
@@ -2888,25 +2889,25 @@ $(document).ready(function() {
 							}
 						});
 					}
-					
+
 					function carregaTabelaVariaveisEdit(){
-						
+
 						$("#dashboard-content .content .resultado").empty();
-				
+
 						var variableList = buildDataTable({
 								headers: ["Nome","Data","Valor","_"]
 								},null,false);
-	
+
 						$("#dashboard-content .content .resultado").append(variableList);
-						
+
 						var data_ini = $("#dashboard-content .content .variable-filter input#data_ini").val().split("/");
 						var data_fim = $("#dashboard-content .content .variable-filter input#data_fim").val().split("/");
-						
+
 						var variavel_id = "";
 						if ($("#dashboard-content .content .variable-filter .variable #variable_id option:selected").val() != ""){
 							variavel_id = "&variable_id=" + $("#dashboard-content .content .variable-filter .variable #variable_id option:selected").val();
 						}
-	
+
 						$.ajax({
 							type: 'GET',
 							dataType: 'json',
@@ -2927,7 +2928,7 @@ $(document).ready(function() {
 											}else if (item.period == "daily"){
 												data_formatada = $.convertDate(valor.value_of_date," ");
 											}
-	
+
 											$("#dashboard-content .content #results tbody").append($("<tr><td>$$nome</td><td data='$$date_of_value'>$$data</td><td>$$valor</td><td>$$url</td></tr>".render({nome: item.name,
 											data: data_formatada,
 											date_of_value: valor.value_of_date,
@@ -2936,7 +2937,7 @@ $(document).ready(function() {
 										});
 									}
 								});
-	
+
 								$("#results").dataTable( {
 									  "oLanguage": {
 													"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
@@ -2968,18 +2969,18 @@ $(document).ready(function() {
 											});
 										}
 								} );
-								
+
 								$("#results td.botoes a.save").live('click',function(e){
 									e.preventDefault();
 									var valor = $(this).parent().parent().find("td.input input.input").val();
 									var url = $(this).attr("url");
 									var data = $(this).parent().parent().find("td.data").attr("data");
-	
+
 									args = [{name: "api_key", value: $.cookie("key")},
 											{name: "variable.value.update.value", value: valor},
 											{name: "variable.value.update.value_of_date", value: data}
 											];
-	
+
 									$.ajax({
 										async: false,
 										type: 'POST',
@@ -2999,13 +3000,13 @@ $(document).ready(function() {
 																codigo: $.parseJSON(data.responseText).error
 																})
 													});
-													break;	
+													break;
 											}
 										}
 									});
-	
+
 								});
-								
+
 							},
 							error: function(data){
 								$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
@@ -3019,13 +3020,13 @@ $(document).ready(function() {
 			}else if (getUrlSub() == "axis"){
 				/*  EIXOS  */
 				if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
-				
+
 					var axisList = buildDataTable({
 							headers: ["Nome","_"]
 							});
 
 					$("#dashboard-content .content").append(axisList);
-					
+
 					$("#button-add").click(function(){
 						resetWarnings();
 						location.hash = "#!/" + getUrlSub() + "?option=add";
@@ -3046,13 +3047,13 @@ $(document).ready(function() {
 								DTdesenhaBotoes();
 							}
 					} );
-					
+
 				}else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit"){
-					
+
 					var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
-					
+
 					var newform = [];
-					
+
 					newform.push({label: "Nome", input: ["text,name,itext"]});
 
 					var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
@@ -3093,7 +3094,7 @@ $(document).ready(function() {
 															codigo: $.parseJSON(data.responseText).error
 															})
 												});
-												break;	
+												break;
 										}
 										$("#dashboard-content .content .botao-form[ref='enviar']").show();
 									}
@@ -3111,7 +3112,7 @@ $(document).ready(function() {
 								switch(jqXHR.status){
 									case 200:
 										$(formbuild).find("input#name").val(data.name);
-										break;	
+										break;
 								}
 							},
 							error: function(data){
@@ -3121,11 +3122,11 @@ $(document).ready(function() {
 													codigo: $.parseJSON(data.responseText).error
 													})
 										});
-										break;	
+										break;
 								}
 							}
 						});
-	
+
 						$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
 							resetWarnings();
 							if ($(this).parent().parent().find("#name").val() == ""){
@@ -3134,7 +3135,7 @@ $(document).ready(function() {
 								args = [{name: "api_key", value: $.cookie("key")},
 										{name: "axis.update.name", value: $(this).parent().parent().find("#name").val()}
 										];
-	
+
 								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
 								$.ajax({
 									type: 'POST',
@@ -3173,13 +3174,13 @@ $(document).ready(function() {
 			}else if (getUrlSub() == "indicator"){
 				/*  INDICATOR  */
 				if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
-				
+
 					var indicatorList = buildDataTable({
 							headers: ["Nome","Formula","Data Criação","_"]
 							});
 
 					$("#dashboard-content .content").append(indicatorList);
-					
+
 					$("#button-add").click(function(){
 						resetWarnings();
 						location.hash = "#!/" + getUrlSub() + "?option=add";
@@ -3200,7 +3201,7 @@ $(document).ready(function() {
 								data_variables.push({"id":data.variables[index].id,"name":data.variables[index].name});
 							});
 						}
-						
+
 					});
 
 					var data_vvariables = [];
@@ -3218,7 +3219,7 @@ $(document).ready(function() {
 								data_vvariables.push({"id":data.variables[index].id,"name":data.variables[index].name});
 							});
 						}
-						
+
 					});
 
 					$("#results").dataTable( {
@@ -3247,13 +3248,13 @@ $(document).ready(function() {
 								DTdesenhaBotoes();
 							}
 					});
-					
+
 				}else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit"){
-					
+
 					var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
-					
+
 					var newform = [];
-					
+
 					newform.push({label: "Nome", input: ["text,name,itext"]});
 					newform.push({label: "Disponível para", input: ["select,indicator_role,iselect"]});
 					newform.push({label: "Tipo", input: ["select,indicator_type,iselect"]});
@@ -3297,10 +3298,10 @@ $(document).ready(function() {
 					}));
 
 					loadSources();
-					
+
 					loadComboSources(sources,$("#dashboard-content .content select#goal_source"),$("#dashboard-content .content input#goal_source_new"));
 					loadComboSources(sources,$("#dashboard-content .content select#source"),$("#dashboard-content .content input#source_new"));
-					
+
 					$.ajax({
 						async: false,
 						type: 'GET',
@@ -3312,13 +3313,13 @@ $(document).ready(function() {
 							data.axis.sort(function (a, b) {
 								a = a.name,
 								b = b.name;
-							
+
 								return a.localeCompare(b);
 							});
 							$.each(data.axis, function(index,item){
 								$("#dashboard-content .content select#axis_id").append($("<option></option>").val(item.id).html(item.name));
 							});
-							
+
 						},
 						error: function(data){
 							$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
@@ -3384,7 +3385,7 @@ $(document).ready(function() {
 							$(e.target).toggleClass("selected");
 						}
 					});
-					
+
 					$("#formula-editor .button").click(function(e){
 						if ($(this).parent().find(".variables .selected").length > 0){
 							if ($(this).parent().find(".variables .selected").attr("type") == "normal"){
@@ -3445,10 +3446,10 @@ $(document).ready(function() {
 							data.variables.sort(function (a, b) {
 								a = a.name,
 								b = b.name;
-							
+
 								return a.localeCompare(b);
 							});
-							
+
 							$.each(data.variables, function(index,value){
 								$("#formula-editor .variables").append($("<div class='item'></div>").attr({"var_id":data.variables[index].id,"period":data.variables[index].period,"type":"normal"}).html(data.variables[index].name));
 							});
@@ -3464,14 +3465,14 @@ $(document).ready(function() {
 					});
 
 					//Variações
-					
+
 					variacoes_list = [];
 					variacoes_id_temp = 0;
-					
+
 					$("#dashboard-content .content input#variacoes_placeholder").after("<div id='variacoes-form'><div class='variacoes-list'><table><thead><tr><th>Nome</th><th></th><th></th><th></th><th></th></tr></thead><tbody></tbody></table></div><div class='variacoes-add'></div></div>");
 					$("#variacoes-form .variacoes-add").append("<input type='text' id='variacoes-input' placeholder=''><input type='button' value='adicionar' id='variacoes-button-add'><input type='button' style='display: none;' value='salvar' id='variacoes-button-edit'>");
 					$("#dashboard-content .content input#variacoes_placeholder").hide();
-					
+
 					function updateVariacoesTable(){
 						if (variacoes_list.length > 0){
 							variacoes_list.sort(function (a, b) {
@@ -3516,13 +3517,13 @@ $(document).ready(function() {
 									updateVariacao(tr);
 								});
 							});
-							
+
 						}else{
 							$("#variacoes-form .variacoes-list table tbody").empty();
 							$("#variacoes-form .variacoes-list table tbody").append("<tr><td colspan='4' align='center'>Nenhuma faixa adicionada</td></tr>");
 						}
 					}
-					
+
 					function reSortVariacao(){
 						var order = 0;
 						$.each(variacoes_list,function(index,item){
@@ -3542,7 +3543,7 @@ $(document).ready(function() {
 						$("#variacoes-input").val("");
 						updateVariacoesTable();
 					}
-					
+
 					function deleteVariacao(item){
 						if (item.attr("temp") == "true"){
 							variacoes_list.splice(item.attr("order"),1);
@@ -3610,20 +3611,20 @@ $(document).ready(function() {
 
 
 					updateVariacoesTable();
-					
+
 					$("#variacoes-button-add").click(function(){
 						addVariacao();
 					});
-							
+
 					//Variáveis da Variação
-					
+
 					vvariacoes_list = [];
 					vvariacoes_id_temp = 0;
-					
+
 					$("#dashboard-content .content input#vvariacoes_placeholder").after("<div id='vvariacoes-form'><div class='vvariacoes-list'><table><thead><tr><th>Nome</th><th></th><th></th></tr></thead><tbody></tbody></table></div><div class='vvariacoes-add'></div></div>");
 					$("#vvariacoes-form .vvariacoes-add").append("<input type='text' id='vvariacoes-input' placeholder=''><input type='button' value='adicionar' id='vvariacoes-button-add'><input type='button' style='display: none;' value='salvar' id='vvariacoes-button-edit'>");
 					$("#dashboard-content .content input#vvariacoes_placeholder").hide();
-					
+
 					function updateVVariacoesTable(){
 						if (vvariacoes_list.length > 0){
 							vvariacoes_list.sort(function (a, b) {
@@ -3659,13 +3660,13 @@ $(document).ready(function() {
 									updateVVariacao(tr);
 								});
 							});
-							
+
 						}else{
 							$("#vvariacoes-form .vvariacoes-list table tbody").empty();
 							$("#vvariacoes-form .vvariacoes-list table tbody").append("<tr><td colspan='4' align='center'>Nenhuma variável adicionada</td></tr>");
 						}
 					}
-					
+
 					function addVVariacao(){
 						vvariacoes_list.push({
 								name: $("#vvariacoes-form .vvariacoes-add #vvariacoes-input").val(),
@@ -3679,7 +3680,7 @@ $(document).ready(function() {
 						$("#vvariacoes-input").val("");
 						trataCliqueVariaveis();
 					}
-					
+
 					function deleteVVariacao(item){
 						if (item.attr("temp") == "true"){
 							var selecionado;
@@ -3738,12 +3739,12 @@ $(document).ready(function() {
 
 
 					updateVVariacoesTable();
-					
+
 					$("#variety_name").parent().parent().hide();
 					$("#variacoes_placeholder").parent().parent().hide();
 					$("#vvariacoes_placeholder").parent().parent().hide();
 					$("#all_variations_variables_are_required").parent().parent().hide();
-					
+
 					$("#indicator_type").change(function(){
 						if ($("#indicator_type").val() == "normal"){
 							$("#variety_name").parent().parent().hide();
@@ -3758,11 +3759,11 @@ $(document).ready(function() {
 							$("#all_variations_variables_are_required").parent().parent().show();
 						}
 					});
-					
+
 					$("#vvariacoes-button-add").click(function(){
 						addVVariacao();
 					});
-					
+
 					if ($.getUrlVar("option") == "add"){
 						$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
 							resetWarnings();
@@ -3801,7 +3802,7 @@ $(document).ready(function() {
 										args.push({name: "indicator.create.dynamic_variations", value: 1});
 									}
 								}
-										
+
 								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
 								$.ajax({
 									async: false,
@@ -3813,13 +3814,13 @@ $(document).ready(function() {
 										var newId = data.id;
 										var formula_update = $("#dashboard-content textarea#formula").val();
 										if ($("#dashboard-content .content select#indicator_type").val() == "varied" || $("#dashboard-content .content select#indicator_type").val() == "varied_dyn"){
-											
+
 											$.each(variacoes_list, function(index,item){
 												args = [{name: "api_key", value: $.cookie("key")},
 														{name: "indicator.variation.create.name", value: item.name},
 														{name: "indicator.variation.create.order", value: item.order}
 														];
-														
+
 												$.ajax({
 													async: false,
 													type: 'POST',
@@ -3835,7 +3836,7 @@ $(document).ready(function() {
 												args = [{name: "api_key", value: $.cookie("key")},
 														{name: "indicator.variables_variation.create.name", value: item.name}
 														];
-														
+
 												$.ajax({
 													async: false,
 													type: 'POST',
@@ -3877,7 +3878,7 @@ $(document).ready(function() {
 															codigo: $.parseJSON(data.responseText).error
 															})
 												});
-												break;	
+												break;
 										}
 										$("#dashboard-content .content .botao-form[ref='enviar']").show();
 									}
@@ -3981,7 +3982,7 @@ $(document).ready(function() {
 												$(formbuild).find("input#all_variations_variables_are_required").attr("checked","");
 											}
 											$(formbuild).find("input#variety_name").val($.convertNumberFromBd(data.variety_name));
-											
+
 											//carrega variaveis
 											$.ajax({
 												async: false,
@@ -3996,10 +3997,10 @@ $(document).ready(function() {
 													data.variables_variations.sort(function (a, b) {
 														a = a.name,
 														b = b.name;
-													
+
 														return a.localeCompare(b);
 													});
-													
+
 													$.each(data.variables_variations, function(index,item){
 														$("#formula-editor .variables").append($("<div class='item'></div>").attr({"var_id":item.id,"period":"","type":"varied"}).html(item.name));
 													});
@@ -4015,7 +4016,7 @@ $(document).ready(function() {
 											});
 										}
 
-										break;	
+										break;
 								}
 							},
 							error: function(data){
@@ -4025,11 +4026,11 @@ $(document).ready(function() {
 													codigo: $.parseJSON(data.responseText).error
 													})
 										});
-										break;	
+										break;
 								}
 							}
 						});
-	
+
 						$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
 							resetWarnings();
 							if ($(this).parent().parent().find("#name").val() == ""){
@@ -4072,7 +4073,7 @@ $(document).ready(function() {
 									args.push({name: "indicator.update.variety_name", value: ''});
 									args.push({name: "indicator.update.summarization_method", value: ''});
 								}
-	
+
 								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
 								$.ajax({
 									type: 'POST',
@@ -4083,14 +4084,14 @@ $(document).ready(function() {
 										var newId = data.id;
 										var formula_update = $("#dashboard-content textarea#formula").val();
 										if ($("#dashboard-content .content select#indicator_type").val() == "varied" || $("#dashboard-content .content select#indicator_type").val() == "varied_dyn"){
-											
+
 											$.each(variacoes_list, function(index,item){
 												if ((item.temp) || item.temp == "true"){
 													args = [{name: "api_key", value: $.cookie("key")},
 															{name: "indicator.variation.create.name", value: item.name},
 															{name: "indicator.variation.create.order", value: item.order}
 															];
-															
+
 													$.ajax({
 														async: false,
 														type: 'POST',
@@ -4129,13 +4130,13 @@ $(document).ready(function() {
 													}
 												}
 											});
-											
+
 											$.each(vvariacoes_list, function(index,item){
 												if ((item.temp) || item.temp == "true"){
 													args = [{name: "api_key", value: $.cookie("key")},
 															{name: "indicator.variables_variation.create.name", value: item.name}
 															];
-															
+
 													$.ajax({
 														async: false,
 														type: 'POST',
@@ -4242,11 +4243,11 @@ $(document).ready(function() {
 														"period":'yearly',
 													 });
 							});
-							
+
 							data_indicators.sort(function (a, b) {
 								a = a.axis.name,
 								b = b.axis.name;
-							
+
 								return a.localeCompare(b);
 							});
 
@@ -4281,7 +4282,7 @@ $(document).ready(function() {
 									});
 								}
 							});
-									
+
 							var axis_ant = "";
 							var indicators_table = "";
 							var indicators_legend = "";
@@ -4293,7 +4294,7 @@ $(document).ready(function() {
 							indicators_legend += "</div></div><div class='clear'></div>";
 
 							indicators_table = "<div class='indicadores_list'>";
-							
+
 							for (i = 0; i < data_indicators.length; i++){
 								if (data_indicators[i].axis_id != axis_ant){
 									if (i > 0){
@@ -4315,7 +4316,7 @@ $(document).ready(function() {
 									});
 								indicators_table += "<div class='clear'></div>";
 							}
-							
+
 							indicators_table += "<div><div class='clear'>";
 
 							$("#dashboard-content .content").append(indicators_legend + indicators_table);
@@ -4333,12 +4334,12 @@ $(document).ready(function() {
 									success: function(data, textStatus, jqXHR){
 										if (data.rows){
 											var history_table = "<table class='history'><thead><tr><th>Período</th>";
-											
+
 											var headers = [];//corrige ordem do header
 											$.each(data.header,function(titulo, index){
 												headers[index] = titulo;
 											});
-											
+
 											$.each(headers, function(index,value){
 												history_table += "<th class='variavel'>$$variavel</th>".render({variavel:value});
 											});
@@ -4395,7 +4396,7 @@ $(document).ready(function() {
 										}else{
 											var history_table = "<table class='history'><thead><tr><th>nenhum registro encontrado</th></tr></thead></table>";
 										}
-										
+
 										var variation_filter = "";
 										if (vvariations.length > 0){
 											variation_filter += "<div class='variation-filter'><span class='variation-filter'>Faixa: </span><select class='variation-filter'>";
@@ -4407,13 +4408,13 @@ $(document).ready(function() {
 											});
 											variation_filter += "</select></div>";
 										}
-										
+
 										$(target).find(".historico-popup").html(variation_filter + history_table);
 										$(target).find(".historico-popup").toggle();
 
 										if (vvariations.length > 0){
 											$(target).find(".historico-popup table .formula_valor[variation-index!=0]").hide();
-											
+
 											$("select.variation-filter").change(function(){
 												var obj = $(this);
 												$(obj).parent().next("table").find(".formula_valor").fadeOut("fast",function(){
@@ -4421,14 +4422,14 @@ $(document).ready(function() {
 												});
 											});
 										}
-										
+
 									},
 									error: function(data){
-										
+
 									}
 								});
 							});
-							
+
 							$("div.indicadores_list .eixos .title").click(function(){
 								$(this).parent().find(".variable").toggle();
 							});
@@ -4476,9 +4477,9 @@ $(document).ready(function() {
 								id: getIdFromUrl($.getUrlVar("url"))
 								}),
 						success: function(data, textStatus, jqXHR){
-							
+
 							$("#dashboard-content .content").append("<div class='filter_indicator'></div><div class='clear'><br /></div><div class='filter_result'></div><div class='historico'></div>");
-		
+
 							var data_indicator = data;
 
 							//mostra historico
@@ -4487,7 +4488,7 @@ $(document).ready(function() {
 												   "target":$("#dashboard-content .content div.historico")
 												   });
 
-										
+
 							var newform = [];
 							newform.push({label: "Fórmula", input: ["textlabel,textlabel_formula,ilabel"]});
 							newform.push({label: "Período", input: ["textlabel,textlabel_periodo,ilabel"]});
@@ -4500,7 +4501,7 @@ $(document).ready(function() {
 							}else{
 								newform.push({label: "Data", input: ["select,date_filter,iselect"]});
 							}
-				
+
 							var formbuild = $("#dashboard-content .content .filter_indicator").append(buildForm(newform,"Informe o Período"));
 							$(formbuild).find("div .field:odd").addClass("odd");
 							$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
@@ -4539,7 +4540,7 @@ $(document).ready(function() {
 							$("#dashboard-content .content .filter_indicator #textlabel_formula").html(formataFormula(data_indicator.formula,data_variables,data_vvariables));
 
 							$("#dashboard-content .content .filter_indicator #textlabel_periodo").html(variable_periods[data_indicator.period]);
-							
+
 							$("#dashboard-content .content .filter_indicator .botao-form[ref='enviar']").html("Cadastrar");
 
 							$("#dashboard-content .content .filter_indicator .botao-form[ref='cancelar']").html("Voltar");
@@ -4547,7 +4548,7 @@ $(document).ready(function() {
 								resetWarnings();
 								location.hash = "#!/myindicator";
 							});
-		
+
 							if (data_indicator.period == "yearly"){
 								$.ajax({
 									type: 'GET',
@@ -4582,7 +4583,7 @@ $(document).ready(function() {
 												}));
 										});
 										$("#dashboard-content .content .filter_indicator select#date_filter option:last").attr("selected","selected");
-										
+
 										$("#dashboard-content .content .filter_indicator select#date_filter_year").change(function(){
 											$("#dashboard-content .content .filter_result").empty();
 											$("#dashboard-content .content .filter_indicator select#date_filter option").remove();
@@ -4619,15 +4620,15 @@ $(document).ready(function() {
 																									});
 								});
 							}
-							
+
 							$("#dashboard-content .content .filter_indicator #date_filter").change( function(){
 								 $("#dashboard-content .content .filter_result").empty();
 							});
-							
+
 							$("#dashboard-content .content .filter_indicator .botao-form[ref='enviar']").click(function(){
-			 
+
 								 $("#dashboard-content .content .filter_result").empty();
-								
+
 								$.ajax({
 									type: 'GET',
 									dataType: 'json',
@@ -4648,7 +4649,7 @@ $(document).ready(function() {
 											newform.push({label: "Observações", input: ["text,observations_$$id,itext".render({id:item.id})]});
 											newform.push({type: "div"});
 										});
-	
+
 										$.ajax({
 											async: false,
 											type: 'GET',
@@ -4686,17 +4687,17 @@ $(document).ready(function() {
 												});
 											}
 										});
-										
+
 										if (data_indicator.dynamic_variations == "1"){
 											newform.push({label: "Nova Faixa", input: ["text,new_variation,itext"],  class: "nova_variacao"});
 											newform.push({label: "", input: ["button,new_variation_add,botao-form"]});
 											newform.push({type: "div"});
 										}
-										
+
 										newform.push({label: "Meta", input: ["text,goal,itext"]});
 										newform.push({label: "", input: ["checkbox,no_data,icheckbox"]});
 										newform.push({label: "Justificativa", input: ["text,justification_of_missing_field,itext"]});
-							
+
 										var formbuild = $("#dashboard-content .content .filter_result").append(buildForm(newform,data_indicator.name));
 										$(formbuild).find("div .field:odd").addClass("odd");
 										$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
@@ -4705,9 +4706,9 @@ $(document).ready(function() {
 										$.each(data_variables, function(index,item){
 											setNewSource($("#dashboard-content .content select#source_"+item.id),$("#dashboard-content .content input#source_" + item.id + "_new"));
 										});
-					
+
 										loadSources();
-										
+
 										$.each(data_variables, function(index,item){
 											loadComboSources(sources,$("#dashboard-content .content select#source_"+item.id),$("#dashboard-content .content input#source_" + item.id + "_new"));
 										});
@@ -4717,15 +4718,15 @@ $(document).ready(function() {
 											$(this).unbind();
 											addNewVariation();
 										});
-										
+
 										function addNewVariation(){
 											var variation_id;
-											
+
 											args = [{name: "api_key", value: $.cookie("key")},
 													{name: "indicator.variation.create.name", value: $(formbuild).find("div.field.nova_variacao .input input").val()},
 													{name: "indicator.variation.create.order", value: ($(formbuild).find(".div_variacoes").length+1)}
 													];
-				
+
 											$.ajax({
 												async: false,
 												type: "POST",
@@ -4755,9 +4756,9 @@ $(document).ready(function() {
 														});
 													});
 													newformVariation += '<div class="div div_variacoes"></div>';
-													
+
 													$(formbuild).find("div.field.nova_variacao").before(newformVariation);
-													
+
 													$(formbuild).find("div.field.nova_variacao .input input").val("");
 
 												},
@@ -4774,9 +4775,9 @@ $(document).ready(function() {
 													});
 												}
 											});
-											
+
 										}
-										
+
 										$("#dashboard-content .content .filter_result input#no_data").after("Não possuo os dados.");
 										$("#dashboard-content .content .filter_result .field:last").hide();
 										$("#dashboard-content .content .filter_result input#no_data").click(function(){
@@ -4788,7 +4789,7 @@ $(document).ready(function() {
 												$("#dashboard-content .content .filter_result input#goal").show();
 											}
 										});
-	
+
 										$.each(data_variables, function(index,value){
 											$("#dashboard-content .content .filter_result div#textlabel_explanation_$$id".render({id:data_variables[index].id})).html(data_variables[index].explanation)
 											if (data_variables[index].value != null && data_variables[index].value != undefined && data_variables[index].value != ""){
@@ -4808,7 +4809,7 @@ $(document).ready(function() {
 												$("#dashboard-content .content .filter_result #goal").attr("disabled",false);
 											}
 										});
-	
+
 										$.each(data_variations, function(index_variation,item_variation){
 											$("#dashboard-content .content .filter_result div#textlabel_variation_$$id".render({id:item_variation.id})).html(item_variation.name)
 											$.each(data_vvariables, function(index_vvariables,item_vvariables){
@@ -4836,10 +4837,10 @@ $(document).ready(function() {
 												});
 											});
 										});
-									
+
 										$("#dashboard-content .content .filter_result .botao-form[ref='enviar']").click(function(){
 											resetWarnings();
-											
+
 											$.each(data_variables, function(index,value){
 												var data_formatada = "";
 												if (data_indicator.period == "yearly" || data_indicator.period == "monthly"){
@@ -4848,7 +4849,7 @@ $(document).ready(function() {
 													data_formatada = $(this).parent().parent().find("#date_filter").val();
 												}
 											});
-											
+
 											var informou_valores = true;
 											var informou_fontes = true;
 											$.each(data_variables, function(index,value){
@@ -4859,7 +4860,7 @@ $(document).ready(function() {
 													informou_fontes = false;
 												}
 											});
-	
+
 											if (!informou_valores && !$("#dashboard-content .content .filter_result input#no_data").attr("checked")){
 												$(".filter_result .form-aviso").setWarning({msg: "Por favor informe os valores"});
 											}else if (!informou_fontes && !$("#dashboard-content .content .filter_result input#no_data").attr("checked")){
@@ -4868,11 +4869,11 @@ $(document).ready(function() {
 												$(".filter_result .form-aviso").setWarning({msg: "Por favor informe a justificativa"});
 											}else{
 												$("#dashboard-content .content .filter_result .botao-form[ref='enviar']").hide();
-												
+
 												var cont_total = data_variables.length;
 												var cont_sent = 0;
 												var cont_returned = 0;
-												
+
 												var to_indicator = setInterval(function(){
 													if (cont_sent < cont_total){
 														if ($("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).attr("disabled") == "disabled"){
@@ -4885,7 +4886,7 @@ $(document).ready(function() {
 															}else if (data_indicator.period == "daily"){
 																data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter").val();
 															}
-		
+
 															if (!$("#dashboard-content .content input#no_data").attr("checked")){
 																args = [{name: "api_key", value: $.cookie("key")},
 																		{name: "variable.value.put.value", value: $("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val()},
@@ -4908,7 +4909,7 @@ $(document).ready(function() {
 																		{name: "variable.value.put.value_of_date", value: data_formatada}
 																		];
 															}
-								
+
 															$.ajax({
 																type: 'PUT',
 																dataType: 'json',
@@ -4930,7 +4931,7 @@ $(document).ready(function() {
 													}
 													if (cont_returned >= cont_total){
 														clearInterval(to_indicator);
-														
+
 														if (data_vvariables.length > 0){
 															$.each(data_variations,function(index_variation,item_variation){
 																$.each(data_vvariables,function(index_variables,item_variables){
@@ -4940,7 +4941,7 @@ $(document).ready(function() {
 																	}else if (data_indicator.period == "daily"){
 																		data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter").val();
 																	}
-																	
+
 																	var ajax_method;
 																	var ajax_id;
 																	if ($("#dashboard-content .content .filter_result").find("#v_"+item_variation.id + "_var_"+item_variables.id).attr("update") != undefined){
@@ -4951,14 +4952,14 @@ $(document).ready(function() {
 																		ajax_method = "POST";
 																		ajax_option = "create";
 																		ajax_id = "";
-																	} 
-				
+																	}
+
 																	args = [{name: "api_key", value: $.cookie("key")},
 																			{name: "indicator.variation_value." + ajax_option + ".value", value: $("#dashboard-content .content .filter_result").find("#v_"+item_variation.id + "_var_"+item_variables.id).val()},
 																			{name: "indicator.variation_value." + ajax_option + ".value_of_date", value: data_formatada},
 																			{name: "indicator.variation_value." + ajax_option + ".indicator_variation_id", value: item_variation.id}
 																			];
-										
+
 																	$.ajax({
 																		async: false,
 																		type: ajax_method,
@@ -4982,7 +4983,7 @@ $(document).ready(function() {
 																});
 															});
 														}
-														
+
 														var send_justification_meta = false;
 
 														var data_formatada = "";
@@ -5038,7 +5039,7 @@ $(document).ready(function() {
 																}
 															});
 														}else{
-	
+
 															$("#aviso").setWarning({msg: "Cadastro editado com sucesso.".render({
 																		codigo: jqXHR.status
 																		})
@@ -5053,14 +5054,14 @@ $(document).ready(function() {
 														}
 													}
 												},500);
-	
+
 											}
 										});
 										$("#dashboard-content .content .botao-form[ref='cancelar']").click(function(){
 											resetWarnings();
 											$("#dashboard-content .content .filter_result").empty();
 										});
-	
+
 									},
 									error: function(data){
 										$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
@@ -5076,13 +5077,13 @@ $(document).ready(function() {
 			}else if (getUrlSub() == "mygroup"){
 				/*  GRUPOS DE INDICADORES  */
 				if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
-				
+
 					var userList = buildDataTable({
 							headers: ["Nome","_"]
 							});
 
 					$("#dashboard-content .content").append(userList);
-					
+
 					$("#button-add").click(function(){
 						resetWarnings();
 						location.hash = "#!/" + getUrlSub() + "?option=add";
@@ -5103,13 +5104,13 @@ $(document).ready(function() {
 								DTdesenhaBotoes();
 							}
 					} );
-					
+
 				}else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit"){
-					
+
 					var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
-					
+
 					var newform = [];
-					
+
 					newform.push({label: "Nome", input: ["text,name,itext"]});
 					newform.push({label: "Indicadores", input: ["textarea,indicators,itext"]});
 
@@ -5118,7 +5119,7 @@ $(document).ready(function() {
 					$(formbuild).find(".form").width(890);
 					$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 
-					$("#dashboard-content .content textarea#indicators").hide(); 
+					$("#dashboard-content .content textarea#indicators").hide();
 					$("#dashboard-content .content textarea#indicators").after("<div id='group-editor'><div class='group-selected'><div class='indicator-list-selected'></div><div class='button'></div></div><div class='group-select'><div class='indicator-search'></div><div class='indicator-list'></div><div class='button'></div></div></div>");
 
 					$("#dashboard-content .content #group-editor .indicator-search").append("<input id='indicator-search' placeholder='pesquisar'>");
@@ -5139,10 +5140,10 @@ $(document).ready(function() {
 							data.indicators.sort(function (a, b) {
 								a = a.name,
 								b = b.name;
-							
+
 								return a.localeCompare(b);
 							});
-							
+
 							$.each(data.indicators, function(index,item){
 								$("#group-editor .indicator-list").append($("<div class='item'></div>").attr({"indicator-id":item.id}).html(item.name));
 							});
@@ -5161,10 +5162,10 @@ $(document).ready(function() {
 							var termo = $(this).val();
 							var matches = $('#group-editor .indicator-list  :not(.remove, .no-items)').filter(function() {
 								var match = normalize(termo);
-								
+
 								var pattern = match;
 								var re = new RegExp(pattern,'g');
-							
+
 								return re.test( normalize($(this).text()) );
 							});
 							$(matches).fadeIn();
@@ -5195,7 +5196,7 @@ $(document).ready(function() {
 							removeIndicatorList();
 						}
 					});
-					
+
 					function addIndicatorList(){
 						$("#group-editor .indicator-list .selected").each(function(index,item){
 							$("#group-editor .indicator-list-selected").append($("<div class='item'></div>").attr({"indicator-id":$(item).attr("indicator-id")}).html($(item).text()));
@@ -5234,7 +5235,7 @@ $(document).ready(function() {
 						$("#group-editor #indicator-remove").removeClass("active");
 						$("#group-editor .indicator-list .no-items").remove();
 					}
-					
+
 					function getSelectedIndicators(){
 						var selectedIndicators = [];
 						$("#group-editor .indicator-list-selected .item").each(function(index,item){
@@ -5291,7 +5292,7 @@ $(document).ready(function() {
 															codigo: $.parseJSON(data.responseText).error
 															})
 												});
-												break;	
+												break;
 										}
 										$("#dashboard-content .content .botao-form[ref='enviar']").show();
 									}
@@ -5324,7 +5325,7 @@ $(document).ready(function() {
 											addIndicatorList();
 											$("#dashboard-content .content textarea#indicators").val(selectedIndicators.join(","));
 										}
-										break;	
+										break;
 								}
 							},
 							error: function(data){
@@ -5334,11 +5335,11 @@ $(document).ready(function() {
 													codigo: $.parseJSON(data.responseText).error
 													})
 										});
-										break;	
+										break;
 								}
 							}
 						});
-	
+
 						$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
 							resetWarnings();
 							if ($(this).parent().parent().find("#name").val() == ""){
@@ -5349,7 +5350,7 @@ $(document).ready(function() {
 								args = [{name: "api_key", value: $.cookie("key")},
 										{name: "user_indicator_axis.update.name", value: $(this).parent().parent().find("#name").val()}
 										];
-	
+
 								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
 								$.ajax({
 									type: 'POST',
@@ -5415,9 +5416,9 @@ $(document).ready(function() {
 											})});
 				}
 			}else if (getUrlSub() == "prefs"){
-	
+
 				var newform = [];
-				
+
 				newform.push({label: "Nome", input: ["text,name,itext"]});
 				newform.push({label: "Email", input: ["text,email,itext"]});
 				newform.push({label: "Senha", input: ["password,password,itext"]});
@@ -5445,11 +5446,11 @@ $(document).ready(function() {
 					newform.push({label: "Logo(imagem)<br /><font size='1'>(altura máx: 80 pixels)</font>", input: ["file,logo_movimento,itext"]});
 					newform.push({label: "Imagem do<br />perfil da cidade<br /><font size='1'>(630x135 pixels)</font>", input: ["file,imagem_cidade,itext"]});
 				}
-	
+
 				var formbuild = $("#dashboard-content .content").append(buildForm(newform,"Preferências"));
 				$(formbuild).find("div .field:odd").addClass("odd");
 				$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
-	
+
 				$.ajax({
 					type: 'GET',
 					dataType: 'json',
@@ -5473,7 +5474,7 @@ $(document).ready(function() {
 								$(formbuild).find("input#telefone_contato").val(data.telefone_contato);
 								$(formbuild).find("input#nome_responsavel_cadastro").val(data.nome_responsavel_cadastro);
 
-								break;	
+								break;
 						}
 					},
 					error: function(data){
@@ -5483,18 +5484,18 @@ $(document).ready(function() {
 											codigo: $.parseJSON(data.responseText).error
 											})
 								});
-								break;	
+								break;
 						}
 					}
 				});
-	
+
 				$("#dashboard-content .content .botao-form[ref='enviar']").html("Salvar");
-	
+
 				$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
 					if ($(this).attr("is-disabled") == 1) return false;
-					
+
 					var clickedButton = $(this);
-					
+
 					resetWarnings();
 					if ($(this).parent().parent().find("#name").val() == ""){
 						$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
@@ -5503,9 +5504,9 @@ $(document).ready(function() {
 					}else if ($(this).parent().parent().find("#password_confirm").val() != $(this).parent().parent().find("#password").val()){
 						$(".form-aviso").setWarning({msg: "Confirmação de senha inválida"});
 					}else{
-						
+
 						var sendForm = function(){
-							
+
 							args = [{name: "api_key", value: $.cookie("key")},
 									{name: "user.update.name", value: $(".form").find("#name").val()},
 									{name: "user.update.email", value: $(".form").find("#email").val()},
@@ -5520,7 +5521,7 @@ $(document).ready(function() {
 									{name: "user.update.nome_responsavel_cadastro", value: $(".form").find("#nome_responsavel_cadastro").val()},
 									{name: "user.update.city_summary", value: $(".form").find("#city_summary").val()}
 									];
-		
+
 
 							if ($(this).parent().parent().find("#password").val() != ""){
 								args.push({name: "user.update.password", value: $(".form").find("#password").val()},
@@ -5553,14 +5554,14 @@ $(document).ready(function() {
 								}
 							});
 						}
-						
+
 						var original_id = "";
-						
+
 						var sendFiles = function(){
 							if (cont_files_sent < files_sent.length){
 								var file = files_sent[cont_files_sent];
 								var form = $("#formFileUpload_"+file);
-								
+
 								original_id = $('#arquivo_'+file).attr("original-id");
 
 								$('#arquivo_'+file).attr({
@@ -5584,9 +5585,9 @@ $(document).ready(function() {
 														name: original_id,
 														id: original_id
 													 });
-						
+
 								$("#iframe_"+file).load( function(){
-									
+
 									var erro = 0;
 									if ($(this).contents()){
 										if 	($(this).contents()[0].body){
@@ -5596,15 +5597,15 @@ $(document).ready(function() {
 												retorno = retorno.replace("</pre></body>","");
 												retorno = $.parseJSON(retorno);
 											}else{
-												erro = 1;	
+												erro = 1;
 											}
 										}else{
-											erro = 1;	
+											erro = 1;
 										}
 									}else{
-										erro = 1;	
+										erro = 1;
 									}
-									
+
 									if (erro == 0){
 										if (!retorno.error){
 											if (cont_files_sent < files_sent.length){
@@ -5633,9 +5634,9 @@ $(document).ready(function() {
 								sendForm()
 							}
 						}
-						
+
 						var files = ["programa_metas","carta_compromisso","logo_movimento","imagem_cidade"];
-						
+
 						var files_sent = [];
 						for (i = 0; i < files.length; i++){
 							if ($(".form #arquivo_"+files[i]).val() != undefined){
@@ -5644,12 +5645,12 @@ $(document).ready(function() {
 								}
 							}
 						}
-						
+
 						var cont_files_sent = 0;
 
 						$(clickedButton).html("Salvando...");
 						$(clickedButton).attr("is-disabled",1);
-						
+
 						$(clickedButton).html("Enviando Arquivos...");
 						sendFiles();
 					}

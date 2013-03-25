@@ -103,6 +103,9 @@ $.extend({
 		}
 		return new_number;
 	},
+	isInt: function(number){
+		return number % 1 === 0;
+	},
 	trataErro: function(erro){
 		switch(erro){
 			case "Login invalid(1)":
@@ -4851,18 +4854,44 @@ $(document).ready(function() {
 											});
 
 											var informou_valores = true;
+											var informou_valores_validos = true;
+											var informou_vvalores_validos = true;
 											var informou_fontes = true;
 											$.each(data_variables, function(index,value){
 												if ($("#dashboard-content .content .filter_result").find("#var_"+data_variables[index].id).val() == ""){
 													informou_valores = false;
+												}
+												var valor = $("#dashboard-content .content .filter_result").find("#var_"+data_variables[index].id).val();
+												valor = $.convertNumberToBd(valor);
+												if (isNaN(valor)){
+													informou_valores_validos = false;
 												}
 												if ($("#dashboard-content .content .filter_result").find("#var_"+data_variables[index].id).val() != "" && $("#dashboard-content .content .filter_result").find("#source_"+data_variables[index].id).val() == ""){
 													informou_fontes = false;
 												}
 											});
 
+											if (data_vvariables.length > 0){
+												$.each(data_variations,function(index_variation,item_variation){
+													$.each(data_vvariables,function(index_variables,item_variables){
+														var valor = $("#dashboard-content .content .filter_result").find("#v_"+item_variation.id + "_var_"+item_variables.id).val();
+														valor = $.convertNumberToBd(valor);
+														if (isNaN(valor) && valor != ""){
+															informou_valores_validos = false;
+														}
+														if (!$.isInt(valor) && valor != ""){
+															informou_vvalores_validos = false;
+														}
+													});
+												});
+											}
+
 											if (!informou_valores && !$("#dashboard-content .content .filter_result input#no_data").attr("checked")){
 												$(".filter_result .form-aviso").setWarning({msg: "Por favor informe os valores"});
+											}else if (!informou_valores_validos && !$("#dashboard-content .content .filter_result input#no_data").attr("checked")){
+												$(".filter_result .form-aviso").setWarning({msg: "Os valores devem ser apenas numéricos"});
+											}else if (!informou_vvalores_validos && !$("#dashboard-content .content .filter_result input#no_data").attr("checked")){
+												$(".filter_result .form-aviso").setWarning({msg: "Os valores devem ser apenas números inteiros"});
 											}else if (!informou_fontes && !$("#dashboard-content .content .filter_result input#no_data").attr("checked")){
 												$(".filter_result .form-aviso").setWarning({msg: "Por favor informe a fonte dos valores"});
 											}else if ($("#dashboard-content .content .filter_result input#no_data").attr("checked") && $("#dashboard-content .content").find("#justification_of_missing_field").val() == ""){
@@ -4889,7 +4918,7 @@ $(document).ready(function() {
 
 															if (!$("#dashboard-content .content input#no_data").attr("checked")){
 																args = [{name: "api_key", value: $.cookie("key")},
-																		{name: "variable.value.put.value", value: $("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val()},
+																		{name: "variable.value.put.value", value: $.convertNumberToBd($("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val())},
 																		{name: "variable.value.put.source", value: $("#dashboard-content .content .filter_result").find("#source_"+data_variables[cont_sent].id).val()},
 																		{name: "variable.value.put.observations", value: $("#dashboard-content .content .filter_result").find("#observations_"+data_variables[cont_sent].id).val()},
 																		{name: "variable.value.put.value_of_date", value: data_formatada}
@@ -4903,7 +4932,7 @@ $(document).ready(function() {
 																		];
 															}else{
 																args = [{name: "api_key", value: $.cookie("key")},
-																		{name: "variable.value.put.value", value: $("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val()},
+																		{name: "variable.value.put.value", value: $.convertNumberToBd($("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val())},
 																		{name: "variable.value.put.source", value: $("#dashboard-content .content .filter_result").find("#source_"+data_variables[cont_sent].id).val()},
 																		{name: "variable.value.put.observations", value: $("#dashboard-content .content .filter_result").find("#observations_"+data_variables[cont_sent].id).val()},
 																		{name: "variable.value.put.value_of_date", value: data_formatada}
@@ -4955,7 +4984,7 @@ $(document).ready(function() {
 																	}
 
 																	args = [{name: "api_key", value: $.cookie("key")},
-																			{name: "indicator.variation_value." + ajax_option + ".value", value: $("#dashboard-content .content .filter_result").find("#v_"+item_variation.id + "_var_"+item_variables.id).val()},
+																			{name: "indicator.variation_value." + ajax_option + ".value", value: $.convertNumberToBd($("#dashboard-content .content .filter_result").find("#v_"+item_variation.id + "_var_"+item_variables.id).val())},
 																			{name: "indicator.variation_value." + ajax_option + ".value_of_date", value: data_formatada},
 																			{name: "indicator.variation_value." + ajax_option + ".indicator_variation_id", value: item_variation.id}
 																			];

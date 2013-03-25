@@ -1287,3 +1287,7 @@ a#indicator-remove.active:hover{
 .variable-filter .botao input[disabled='disabled']:hover{
 	cursor: default;
 }
+
+select.iselect{
+	max-width: 400px;	
+}

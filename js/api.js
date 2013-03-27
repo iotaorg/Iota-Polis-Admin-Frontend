@@ -1,5 +1,5 @@
 var api_path = "";
-//var api_path = "http://rnsp.aware.com.br";
+//var api_path = "http://www.redesocialdecidades.org.br";
 
 if (!String.prototype.render) {
 	String.prototype.render = function(args) {
@@ -722,6 +722,7 @@ $(document).ready(function() {
 						headers[index] = titulo;
 					});
                     vvariations = [];
+					var seta_vvariacoes = true;
 
 					$.each(headers, function(index,value){
 						history_table += "<th class='variavel'>$$variavel</th>".render({variavel:value});
@@ -764,11 +765,14 @@ $(document).ready(function() {
 											index: index
 										});
 								}
-								vvariations.push({
-										name: item.name,
-										index: index
-									});
+								if (seta_vvariacoes){
+									vvariations.push({
+											name: item.name,
+											index: index
+										});
+								}
 							});
+							seta_vvariacoes = false;
 						}else{
 							history_table = history_table.replace("#theader_valor","<th class='formula_valor'>Valor da Fórmula</th><th></th>");
 							if (data.rows[index].formula_value != "-"){
@@ -1129,6 +1133,29 @@ $(document).ready(function() {
 			$(this).remove();
 		});
 	}
+
+
+	$.loading = function(params){
+		if($("#dialog-overlay").length > 0){
+			return false;
+		}
+
+		var loadingWindow = "<div id='dialog-overlay'>";
+		loadingWindow += "<div id='dialog-box'>";
+		loadingWindow += "<div id='dialog-content'>";
+		loadingWindow += "<div id='dialog-title'>Aguarde...</div>";
+		loadingWindow += "<div id='dialog-message'><div class='img-loading'></div></div>";
+		loadingWindow += "</div></div></div>";
+
+		$(loadingWindow).hide().appendTo("body").fadeIn("fast");
+
+	};
+	$.loading.hide = function(){
+		$('#dialog-overlay').fadeOut(function(){
+			$(this).remove();
+		});
+	}
+
 
 	var loadCidades = function(){
 		cidades_prefeitos = [];
@@ -4629,6 +4656,7 @@ $(document).ready(function() {
 							});
 
 							$("#dashboard-content .content .filter_indicator .botao-form[ref='enviar']").click(function(){
+								$.loading();
 
 								 $("#dashboard-content .content .filter_result").empty();
 
@@ -4797,13 +4825,8 @@ $(document).ready(function() {
 											$("#dashboard-content .content .filter_result div#textlabel_explanation_$$id".render({id:data_variables[index].id})).html(data_variables[index].explanation)
 											if (data_variables[index].value != null && data_variables[index].value != undefined && data_variables[index].value != ""){
 												$("#dashboard-content .content .filter_result #var_$$id".render({id:data_variables[index].id})).val(data_variables[index].value);
-//												$("#dashboard-content .content .filter_result #var_$$id".render({id:data_variables[index].id})).attr("disabled","disabled");
 												$("#dashboard-content .content .filter_result #source_$$id".render({id:data_variables[index].id})).val(data_variables[index].source);
-//												$("#dashboard-content .content .filter_result #source_$$id".render({id:data_variables[index].id})).attr("disabled","disabled");
 												$("#dashboard-content .content .filter_result #observations_$$id".render({id:data_variables[index].id})).val(data_variables[index].observations);
-//												$("#dashboard-content .content .filter_result #observations_$$id".render({id:data_variables[index].id})).attr("disabled","disabled");
-//												$("#dashboard-content .content .filter_result #goal").attr("disabled","disabled");
-//												$("#dashboard-content .content .filter_result input#no_data").attr("disabled","disabled");
 											}else{
 												$("#dashboard-content .content .filter_result #var_$$id".render({id:data_variables[index].id})).attr("disabled",false);
 												$("#dashboard-content .content .filter_result #source_$$id".render({id:data_variables[index].id})).attr("disabled",false);
@@ -4815,29 +4838,34 @@ $(document).ready(function() {
 
 										$.each(data_variations, function(index_variation,item_variation){
 											$("#dashboard-content .content .filter_result div#textlabel_variation_$$id".render({id:item_variation.id})).html(item_variation.name)
-											$.each(data_vvariables, function(index_vvariables,item_vvariables){
-												$.ajax({
-													async: false,
-													type: 'GET',
-													dataType: 'json',
-													url: api_path + '/api/indicator/$$indicator_id/variables_variation/$$id/values?valid_from=$$period&api_key=$$key'.render({
-															key: $.cookie("key"),
-															indicator_id: getIdFromUrl($.getUrlVar("url")),
-															id: item_vvariables.id,
-															period: $("#dashboard-content .content .filter_indicator select#date_filter option:selected").val()
-															}),
-													success: function(data, textStatus, jqXHR){
-														$.each(data.values,function(index_value,item_value){
-															var obj = "#dashboard-content .content .filter_result #v_$$var_id_var_$$id".render({
-																	id: item_vvariables.id,
-																	var_id: item_value.indicator_variation_id
-																});
-															$(obj).val(item_value.value);
-															$(obj).attr("update","true");
-															$(obj).attr("item-id",item_value.id);
-														});
-													}
-												});
+										});
+										
+										$.each(data_vvariables, function(index_vvariables,item_vvariables){
+											$.ajax({
+												async: false,
+												type: 'GET',
+												dataType: 'json',
+												url: api_path + '/api/indicator/$$indicator_id/variables_variation/$$id/values?valid_from=$$period&api_key=$$key'.render({
+														key: $.cookie("key"),
+														indicator_id: getIdFromUrl($.getUrlVar("url")),
+														id: item_vvariables.id,
+														period: $("#dashboard-content .content .filter_indicator select#date_filter option:selected").val()
+														}),
+												success: function(data, textStatus, jqXHR){
+													$.loading.hide();
+													$.each(data.values,function(index_value,item_value){
+														var obj = "#dashboard-content .content .filter_result #v_$$var_id_var_$$id".render({
+																id: item_vvariables.id,
+																var_id: item_value.indicator_variation_id
+															});
+														$(obj).val(item_value.value);
+														$(obj).attr("update","true");
+														$(obj).attr("item-id",item_value.id);
+													});
+												},
+												error: function(data){
+													$.loading.hide();
+												}
 											});
 										});
 

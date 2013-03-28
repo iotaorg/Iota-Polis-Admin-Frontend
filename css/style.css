@@ -863,6 +863,9 @@ div.indicadores_legend .item .color.no-data{
 	background-color: #FFD9DA;
 	color: #790003;
 }
+div.indicadores_legend .item .color.some-data{
+	background-color: #FFFFFF;
+}
 div.indicadores_legend .item .color.last-period{
 	background-color: #FFFFDF;
 	color: #3E2800;
@@ -909,6 +912,9 @@ div.indicadores_list .eixos .variable{
 
 div.indicadores_list .eixos .variable.no-data{
 	background-color: #FFD9DA;
+}
+div.indicadores_list .eixos .variable.some-data{
+	background-color: #FFFFFF;
 }
 div.indicadores_list .eixos .variable.last-period{
 	background-color: #FFED6C;

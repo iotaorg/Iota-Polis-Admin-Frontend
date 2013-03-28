@@ -4319,6 +4319,7 @@ $(document).ready(function() {
 
 							indicators_legend = "<div class='indicadores_legend'><div class='fillContent'>";
 							indicators_legend += "<div class='item'><div class='color no-data'></div><div class='label'>Nenhum dado preenchido</div><div class='clear'></div></div>";
+							indicators_legend += "<div class='item'><div class='color some-data'></div><div class='label'>Parcialmente preenchido</div><div class='clear'></div></div>";
 							indicators_legend += "<div class='item'><div class='color last-period'></div><div class='label'>Preenchido (exceto ano anterior ao vigente)</div><div class='clear'></div></div>";
 							indicators_legend += "<div class='item'><div class='color full'></div><div class='label'>Totalmente preenchido</div><div class='clear'></div></div>";
 							indicators_legend += "</div></div><div class='clear'></div>";
@@ -4475,12 +4476,14 @@ $(document).ready(function() {
 									var dataStatus = data.status;
 									$.each(dataStatus, function(index,value){
 										var statusClass = "";
-										if (dataStatus[index].ultimo_periodo == 0 &&  dataStatus[index].outros_periodos == 0){
+										if (dataStatus[index].without_data == 1){
 											statusClass = "no-data";
-										}else if (dataStatus[index].ultimo_periodo == 0 &&  dataStatus[index].outros_periodos == 1){
+										}else if (dataStatus[index].completed_except_last == 1){
 											statusClass = "last-period";
-										}else if (dataStatus[index].ultimo_periodo == 1 &&  dataStatus[index].outros_periodos == 1){
+										}else if (dataStatus[index].completed == 1){
 											statusClass = "full";
+										}else if (dataStatus[index].without_data == 0 && dataStatus[index].completed == 0 && dataStatus[index].completed_except_last == 0){
+											statusClass = "some-data";
 										}
 										$(".indicadores_list .variable[indicator-id='$$indicator_id']".render({
 													indicator_id: data.status[index].id

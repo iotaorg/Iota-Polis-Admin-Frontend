@@ -4868,7 +4868,7 @@ $(document).ready(function() {
 												}
 											});
 										});
-
+										$.loading.hide();
 										$("#dashboard-content .content .filter_result .botao-form[ref='enviar']").click(function(){
 											resetWarnings();
 

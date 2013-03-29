@@ -1,5 +1,5 @@
 var api_path = "";
-//var api_path = "http://www.redesocialdecidades.org.br";
+//var api_path = "http://rnsp.aware.com.br";
 
 if (!String.prototype.render) {
 	String.prototype.render = function(args) {
@@ -143,9 +143,14 @@ $.ajaxSetup({
 
 $(document).ready(function() {
 
+	var menu_label = [];
+	var menu_access = [];
+
+
 	var user_info;
 	//lista roles
-	var roles = {"admin":"Administrador Geral",
+	var roles = {"superadmin":"Super Administrador",
+				 "admin":"Administrador Geral",
 				 "user":"Prefeitura/Movimento da Rede",
 				 "app":"Aplicativos"
 				}
@@ -1440,25 +1445,30 @@ $(document).ready(function() {
 		var menu = "<div id='menu'><ul class='menu'></ul></div>";
 		$("#dashboard-content #user-info").after(menu);
 
-		var menu_label = [];
-		var menu_access = [];
+		menu_label = [];
+		menu_access = [];
 
-		menu_label["dashboard"] = "Início";
-		menu_label["users"] = "Usuários";
-		menu_label["cities"] = "Cidades";
-		menu_label["units"] = "Unidades de Medida";
+		menu_label["admins"] = "Administradores";
 		menu_label["axis"] = "Eixos";
-		menu_label["variable"] = "Variáveis";
+		menu_label["cities"] = "Cidades";
+		menu_label["countries"] = "Países";
+		menu_label["dashboard"] = "Início";
+		menu_label["indicator"] = "Indicadores";
+		menu_label["logout"] = "Sair";
+		menu_label["mygroup"] = "Grupos de Indicadores";
+		menu_label["myindicator"] = "Indicadores";
 		menu_label["myvariable"] = "Variáveis Básicas";
 		menu_label["myvariableedit"] = "Editar Valores";
-		menu_label["myindicator"] = "Indicadores";
-		menu_label["mygroup"] = "Grupos de Indicadores";
-		menu_label["indicator"] = "Indicadores";
-		menu_label["tokens"] = "Tokens";
-		menu_label["reports"] = "Relatórios";
+		menu_label["networks"] = "Redes";
 		menu_label["prefs"] = "Preferências";
-		menu_label["logout"] = "Sair";
+		menu_label["reports"] = "Relatórios";
+		menu_label["states"] = "Estados";
+		menu_label["tokens"] = "Tokens";
+		menu_label["units"] = "Unidades de Medida";
+		menu_label["users"] = "Usuários";
+		menu_label["variable"] = "Variáveis";
 
+		menu_access["superadmin"] = ["prefs","countries","states","cities","networks","admins","indicator","units","axis","logout"];
 		menu_access["admin"] = ["prefs","users","cities","units","variable","myvariableedit","axis","indicator","logout"];
 		if (findInArray(user_info.roles,"_movimento")){
 			menu_access["user"] = ["prefs","myvariable","myvariableedit","myindicator","mygroup","logout"];
@@ -1629,7 +1639,7 @@ $(document).ready(function() {
 	})
 
 	var buildContent = function(){
-		if ($.inArray(getUrlSub().toString(),["dashboard","users","cities","units","variable","myvariable","myvariableedit","axis","indicator","myindicator","mygroup","tokens","reports","prefs"]) >= 0){
+		if ($.inArray(getUrlSub().toString(),menu_access[user_info.role]) >= 0){
 			$.xhrPool.abortAll();
 			$("#dashboard #form-login").hide();
 			/*  ORGANIZATION  */
@@ -1750,64 +1760,9 @@ $(document).ready(function() {
 
 					if ($.getUrlVar("option") == "add"){
 						carregaComboCidades();
-						$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
-							resetWarnings();
-							if ($(this).parent().parent().find("#name").val() == ""){
-								$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
-							}else if ($(this).parent().parent().find("#email").val() == ""){
-								$(".form-aviso").setWarning({msg: "Por favor informe o Email"});
-							}else if ($(this).parent().parent().find("#password").val() == ""){
-								$(".form-aviso").setWarning({msg: "Por favor informe a Senha"});
-							}else if ($(this).parent().parent().find("#password_confirm").val() == "" || $(this).parent().parent().find("#password_confirm").val() != $(this).parent().parent().find("#password").val()){
-								$(".form-aviso").setWarning({msg: "Confirmação de senha inválida"});
-							}else if ($(this).parent().parent().find("#city_id option:selected").val() == "" && $(this).parent().parent().find("#user_role option:selected").val() == "user"){
-								$(".form-aviso").setWarning({msg: "Por favor informe a Cidade"});
-							}else{
-								args = [{name: "api_key", value: $.cookie("key")},
-										{name: "user.create.name", value: $(this).parent().parent().find("#name").val()},
-										{name: "user.create.email", value: $(this).parent().parent().find("#email").val()},
-										{name: "user.create.password", value: $(this).parent().parent().find("#password").val()},
-										{name: "user.create.password_confirm", value: $(this).parent().parent().find("#password").val()},
-										{name: "user.create.role", value: $(this).parent().parent().find("#user_role option:selected").val()},
-										{name: "user.create.city_id", value: $(this).parent().parent().find("#city_id option:selected").val()}
-										];
-								if ($(this).parent().parent().find("#prefeito").attr("checked")){
-									args.push({name: "user.create.prefeito", value: 1});
-									args.push({name: "user.create.movimento", value: 0});
-								}else{
-									args.push({name: "user.create.prefeito", value: 0});
-									if ($(this).parent().parent().find("#user_role option:selected").val() == "user"){
-										args.push({name: "user.create.movimento", value: 1});
-									}
-								}
-								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
-								$.ajax({
-									type: 'POST',
-									dataType: 'json',
-									url: api_path + '/api/user',
-									data: args,
-									success: function(data,status,jqXHR){
-										$("#aviso").setWarning({msg: "Cadastro efetuado com sucesso.".render({
-													codigo: jqXHR.status
-													})
-										});
-										location.hash = "#!/"+getUrlSub();
-									},
-									error: function(data){
-										switch(data.status){
-											case 400:
-												$("#aviso").setWarning({msg: "Erro ao cadastrar. ($$codigo)".render({
-															codigo: $.parseJSON(data.responseText).error
-															})
-												});
-												break;
-										}
-										$("#dashboard-content .content .botao-form[ref='enviar']").show();
-									}
-								});
-							}
-						});
-					}else if ($.getUrlVar("option") == "edit"){
+					}
+
+					if ($.getUrlVar("option") == "edit"){
 						$.ajax({
 							type: 'GET',
 							dataType: 'json',
@@ -1858,62 +1813,84 @@ $(document).ready(function() {
 								}
 							}
 						});
-
-						$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
-							resetWarnings();
-							if ($(this).parent().parent().find("#name").val() == ""){
-								$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
-							}else if ($(this).parent().parent().find("#email").val() == ""){
-								$(".form-aviso").setWarning({msg: "Por favor informe o Email"});
-							}else if ($(this).parent().parent().find("#password_confirm").val() != $(this).parent().parent().find("#password").val()){
-								$(".form-aviso").setWarning({msg: "Confirmação de senha inválida"});
-							}else if ($(this).parent().parent().find("#city_id option:selected").val() == "" && $(this).parent().parent().find("#user_role option:selected").val() == "user"){
-								$(".form-aviso").setWarning({msg: "Por favor informe a Cidade"});
-							}else{
-								args = [{name: "api_key", value: $.cookie("key")},
-										{name: "user.update.name", value: $(this).parent().parent().find("#name").val()},
-										{name: "user.update.email", value: $(this).parent().parent().find("#email").val()},
-										{name: "user.update.role", value: $(this).parent().parent().find("#user_role option:selected").val()},
-										{name: "user.update.city_id", value: $(this).parent().parent().find("#city_id option:selected").val()}
-										];
-								if ($(this).parent().parent().find("#prefeito").attr("checked")){
-									args.push({name: "user.update.prefeito", value: 1});
-								}else{
-									args.push({name: "user.update.prefeito", value: 0});
-									if ($(this).parent().parent().find("#user_role option:selected").val() == "user"){
-										args.push({name: "user.update.movimento", value: 1});
-									}
-								}
-
-								if ($(this).parent().parent().find("#password").val() != ""){
-									args.push({name: "user.update.password", value: $(this).parent().parent().find("#password").val()},
-										{name: "user.update.password_confirm", value: $(this).parent().parent().find("#password").val()});
-								}
-								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
-								$.ajax({
-									type: 'POST',
-									dataType: 'json',
-									url: $.getUrlVar("url"),
-									data: args,
-									success: function(data, textStatus, jqXHR){
-										$("#aviso").setWarning({msg: "Cadastro editado com sucesso.".render({
-													codigo: jqXHR.status
-													})
-										});
-										location.hash = "#!/"+getUrlSub();
-										$("#dashboard-content .content .botao-form[ref='enviar']").show();
-									},
-									error: function(data){
-										$(".form-aviso").setWarning({msg: "Erro ao editar. ($$erro)".render({
-													erro: $.parseJSON(data.responseText).error
-													})
-										});
-										$("#dashboard-content .content .botao-form[ref='enviar']").show();
-									}
-								});
-							}
-						});
 					}
+
+					$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
+						resetWarnings();
+						if ($(this).parent().parent().find("#name").val() == ""){
+							$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
+						}else if ($(this).parent().parent().find("#email").val() == ""){
+							$(".form-aviso").setWarning({msg: "Por favor informe o Email"});
+						}else if ($(this).parent().parent().find("#password").val() == "" && $.getUrlVar("option") != "edit"){
+							$(".form-aviso").setWarning({msg: "Por favor informe a Senha"});
+						}else if ($(this).parent().parent().find("#password_confirm").val() != "" && $(this).parent().parent().find("#password_confirm").val() != $(this).parent().parent().find("#password").val()){
+							$(".form-aviso").setWarning({msg: "Confirmação de senha inválida"});
+						}else if ($(this).parent().parent().find("#city_id option:selected").val() == "" && $(this).parent().parent().find("#user_role option:selected").val() == "user"){
+							$(".form-aviso").setWarning({msg: "Por favor informe a Cidade"});
+						}else{
+
+							if ($.getUrlVar("option") == "add"){
+								var action = "create";
+								var method = "POST";
+								var url_action = api_path + "/api/user";
+							}else{
+								var action = "update";
+								var method = "POST";
+								var url_action = $.getUrlVar("url");
+							}
+
+							args = [{name: "api_key", value: $.cookie("key")},
+									{name: "user." + action + ".name", value: $(this).parent().parent().find("#name").val()},
+									{name: "user." + action + ".email", value: $(this).parent().parent().find("#email").val()},
+									{name: "user." + action + ".role", value: $(this).parent().parent().find("#user_role option:selected").val()},
+									{name: "user." + action + ".city_id", value: $(this).parent().parent().find("#city_id option:selected").val()}
+									];
+									
+							if ($(this).parent().parent().find("#prefeito").attr("checked")){
+								args.push({name: "user." + action + ".prefeito", value: 1});
+								args.push({name: "user." + action + ".movimento", value: 0});
+							}else{
+								args.push({name: "user." + action + ".prefeito", value: 0});
+								if ($(this).parent().parent().find("#user_role option:selected").val() == "user"){
+									args.push({name: "user." + action + ".movimento", value: 1});
+								}
+							}
+
+							if ($(this).parent().parent().find("#password").val() != ""){
+								args.push(
+									{name: "user." + action + ".password", value: $(this).parent().parent().find("#password").val()},
+									{name: "user." + action + ".password_confirm", value: $(this).parent().parent().find("#password").val()}
+								);
+							}
+
+							$("#dashboard-content .content .botao-form[ref='enviar']").hide();
+							$.ajax({
+								type: method,
+								dataType: 'json',
+								url: url_action,
+								data: args,
+								success: function(data,status,jqXHR){
+									$("#aviso").setWarning({msg: "Operação efetuada com sucesso.".render({
+												codigo: jqXHR.status
+												})
+									});
+									location.hash = "#!/"+getUrlSub();
+								},
+								error: function(data){
+									switch(data.status){
+										case 400:
+											$("#aviso").setWarning({msg: "Erro ao $$operacao. ($$codigo)".render({
+														operacao: txtOption,
+														codigo: $.parseJSON(data.responseText).error
+														})
+											});
+											break;
+									}
+									$("#dashboard-content .content .botao-form[ref='enviar']").show();
+								}
+							});
+						}
+					});
 					$("#dashboard-content .content .botao-form[ref='cancelar']").click(function(){
 						resetWarnings();
 						history.back();
@@ -1960,8 +1937,10 @@ $(document).ready(function() {
 
 					var newform = [];
 
+					newform.push({label: "País", input: ["select,country_id,iselect"]});
+					newform.push({label: "Estado", input: ["select,state_id,iselect"]});
 					newform.push({label: "Nome", input: ["text,name,itext"]});
-					newform.push({label: "Estado", input: ["select,uf,iselect"]});
+					newform.push({label: "Url", input: ["text,name_url,itext"]});
 					newform.push({type: "subtitle", title: "Dados da Prefeitura"});
 					newform.push({label: "Telefone", input: ["text,telefone_prefeitura,itext"]});
 					newform.push({label: "Endereço", input: ["text,endereco_prefeitura,itext"]});
@@ -1978,56 +1957,59 @@ $(document).ready(function() {
 							content: "Importante: Nome da Cidade."
 					}));
 
-					$.each(estados,function(key, value){
-						$("#dashboard-content .content select#uf").append($("<option></option>").val(key).html(value));
+					$("#dashboard-content .content select#state_id").append($("<option></option>").val("").html("Selecione um País..."));
+
+					$("#dashboard-content .content select#country_id").append($("<option></option>").val("").html("Selecione..."));
+					$.ajax({
+						async: false,
+						type: 'GET',
+						dataType: 'json',
+						url: api_path + "/api/country?api_key=$$key".render({
+									key: $.cookie("key")
+							}),
+						success: function(data,status,jqXHR){
+							data.countries.sort(function (a, b) {
+								a = String(a.name),
+								b = String(b.name);
+								return a.localeCompare(b);
+							});
+							$.each(data.countries,function(index, item){
+								$("#dashboard-content .content select#country_id").append($("<option></option>").val(item.id).html(item.name));
+							});
+							$("#dashboard-content .content select#country_id").change(function(e){
+								carregaEstados();
+							});
+						}
 					});
 
-					if ($.getUrlVar("option") == "add"){
-						$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
-							resetWarnings();
-							if ($(this).parent().parent().find("#name").val() == ""){
-								$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
-							}else if ($(this).parent().parent().find("#uf option:selected").val() == ""){
-								$(".form-aviso").setWarning({msg: "Por favor informe o Estado"});
-							}else{
-								args = [{name: "api_key", value: $.cookie("key")},
-										{name: "city.create.name", value: $(this).parent().parent().find("#name").val()},
-										{name: "city.create.uf", value: $(this).parent().parent().find("#uf option:selected").val()},
-										{name: "city.create.telefone_prefeitura", value: $(this).parent().parent().find("#telefone_prefeitura").val()},
-										{name: "city.create.endereco_prefeitura", value: $(this).parent().parent().find("#endereco_prefeitura").val()},
-										{name: "city.create.bairro_prefeitura", value: $(this).parent().parent().find("#bairro_prefeitura").val()},
-										{name: "city.create.cep_prefeitura", value: $(this).parent().parent().find("#cep_prefeitura").val()},
-										{name: "city.create.email_prefeitura", value: $(this).parent().parent().find("#email_prefeitura").val()},
-										{name: "city.create.nome_responsavel_prefeitura", value: $(this).parent().parent().find("#nome_responsavel_prefeitura").val()}
-										];
-								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
-								$.ajax({
-									type: 'POST',
-									dataType: 'json',
-									url: api_path + '/api/city',
-									data: args,
-									success: function(data,status,jqXHR){
-										$("#aviso").setWarning({msg: "Cadastro efetuado com sucesso.".render({
-													codigo: jqXHR.status
-													})
-										});
-										location.hash = "#!/"+getUrlSub();
-									},
-									error: function(data){
-										switch(data.status){
-											case 400:
-												$("#aviso").setWarning({msg: "Erro ao cadastrar. ($$codigo)".render({
-															codigo: $.parseJSON(data.responseText).error
-															})
-												});
-												break;
-										}
-										$("#dashboard-content .content .botao-form[ref='enviar']").show();
+					function carregaEstados(){
+						$.loading();
+						$("#dashboard-content .content select#state_id").empty();
+						$("#dashboard-content .content select#state_id").append($("<option></option>").val("").html("Selecione..."));
+						$.ajax({
+							async: false,
+							type: 'GET',
+							dataType: 'json',
+							url: api_path + "/api/state?api_key=$$key".render({
+										key: $.cookie("key")
+								}),
+							success: function(data,status,jqXHR){
+								data.states.sort(function (a, b) {
+									a = String(a.uf),
+									b = String(b.uf);
+									return a.localeCompare(b);
+								});
+								$.each(data.states,function(index, item){
+									if (item.country_id == $("#dashboard-content .content select#country_id option:selected").val()){
+										$("#dashboard-content .content select#state_id").append($("<option></option>").val(item.id).html(item.uf));
 									}
 								});
 							}
 						});
-					}else if ($.getUrlVar("option") == "edit"){
+						$.loading.hide();
+					}
+
+					if ($.getUrlVar("option") == "edit"){
 						$.ajax({
 							type: 'GET',
 							dataType: 'json',
@@ -2038,7 +2020,9 @@ $(document).ready(function() {
 								switch(jqXHR.status){
 									case 200:
 										$(formbuild).find("input#name").val(data.name);
-										$(formbuild).find("select#uf").val(data.uf);
+										$(formbuild).find("select#country_id").val(data.country_id);
+										carregaEstados();
+										$(formbuild).find("select#state_id").val(data.state_id);
 										$(formbuild).find("input#telefone_prefeitura").val(data.telefone_prefeitura);
 										$(formbuild).find("input#endereco_prefeitura").val(data.endereco_prefeitura);
 										$(formbuild).find("input#bairro_prefeitura").val(data.bairro_prefeitura);
@@ -2059,51 +2043,523 @@ $(document).ready(function() {
 								}
 							}
 						});
+					}
 
-						$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
-							resetWarnings();
-							if ($(this).parent().parent().find("#name").val() == ""){
-								$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
-							}else if ($(this).parent().parent().find("#uf option:selected").val() == ""){
-								$(".form-aviso").setWarning({msg: "Por favor informe o Estado"});
+					$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
+						resetWarnings();
+						if ($(this).parent().parent().find("#name").val() == ""){
+							$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
+						}else if ($(this).parent().parent().find("#state_id option:selected").val() == ""){
+							$(".form-aviso").setWarning({msg: "Por favor informe o Estado"});
+						}else{
+
+							if ($.getUrlVar("option") == "add"){
+								var action = "create";
+								var method = "POST";
+								var url_action = api_path + "/api/city";
 							}else{
-								args = [{name: "api_key", value: $.cookie("key")},
-										{name: "city.update.name", value: $(this).parent().parent().find("#name").val()},
-										{name: "city.update.uf", value: $(this).parent().parent().find("#uf option:selected").val()},
-										{name: "city.update.telefone_prefeitura", value: $(this).parent().parent().find("#telefone_prefeitura").val()},
-										{name: "city.update.endereco_prefeitura", value: $(this).parent().parent().find("#endereco_prefeitura").val()},
-										{name: "city.update.bairro_prefeitura", value: $(this).parent().parent().find("#bairro_prefeitura").val()},
-										{name: "city.update.cep_prefeitura", value: $(this).parent().parent().find("#cep_prefeitura").val()},
-										{name: "city.update.email_prefeitura", value: $(this).parent().parent().find("#email_prefeitura").val()},
-										{name: "city.update.nome_responsavel_prefeitura", value: $(this).parent().parent().find("#nome_responsavel_prefeitura").val()}
-										];
+								var action = "update";
+								var method = "POST";
+								var url_action = $.getUrlVar("url");
+							}
 
-								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
-								$.ajax({
-									type: 'POST',
-									dataType: 'json',
-									url: $.getUrlVar("url"),
-									data: args,
-									success: function(data, textStatus, jqXHR){
-										$("#aviso").setWarning({msg: "Cadastro editado com sucesso.".render({
-													codigo: jqXHR.status
-													})
-										});
-										location.hash = "#!/"+getUrlSub();
-										$("#dashboard-content .content .botao-form[ref='enviar']").show();
-									},
-									error: function(data){
-										$(".form-aviso").setWarning({msg: "Erro ao editar. ($$erro)".render({
-													erro: $.parseJSON(data.responseText).error
-													})
-										});
-										$("#dashboard-content .content .botao-form[ref='enviar']").show();
+							args = [{name: "api_key", value: $.cookie("key")},
+									{name: "city." + action + ".name", value: $(this).parent().parent().find("#name").val()},
+									{name: "city." + action + ".state_id", value: $(this).parent().parent().find("#state_id option:selected").val()},
+									{name: "city." + action + ".telefone_prefeitura", value: $(this).parent().parent().find("#telefone_prefeitura").val()},
+									{name: "city." + action + ".endereco_prefeitura", value: $(this).parent().parent().find("#endereco_prefeitura").val()},
+									{name: "city." + action + ".bairro_prefeitura", value: $(this).parent().parent().find("#bairro_prefeitura").val()},
+									{name: "city." + action + ".cep_prefeitura", value: $(this).parent().parent().find("#cep_prefeitura").val()},
+									{name: "city." + action + ".email_prefeitura", value: $(this).parent().parent().find("#email_prefeitura").val()},
+									{name: "city." + action + ".nome_responsavel_prefeitura", value: $(this).parent().parent().find("#nome_responsavel_prefeitura").val()}
+									];
+							$("#dashboard-content .content .botao-form[ref='enviar']").hide();
+							$.ajax({
+								type: method,
+								dataType: 'json',
+								url: url_action,
+								data: args,
+								success: function(data,status,jqXHR){
+									$("#aviso").setWarning({msg: "Operação efetuada com sucesso.".render({
+												codigo: jqXHR.status
+												})
+									});
+									location.hash = "#!/"+getUrlSub();
+								},
+								error: function(data){
+									switch(data.status){
+										case 400:
+											$("#aviso").setWarning({msg: "Erro ao $$operacao. ($$codigo)".render({
+														operacao: txtOption,
+														codigo: $.parseJSON(data.responseText).error
+														})
+											});
+											break;
 									}
-								});
+									$("#dashboard-content .content .botao-form[ref='enviar']").show();
+								}
+							});
+						}
+					});
+					$("#dashboard-content .content .botao-form[ref='cancelar']").click(function(){
+						resetWarnings();
+						history.back();
+					});
+				}else if ($.getUrlVar("option") == "delete"){
+					deleteRegister({url:$.getUrlVar("url") + "?api_key=$$key".render({
+													key: $.cookie("key")
+											})});
+				}
+			}else if (getUrlSub() == "states"){
+				/*  Estados  */
+				if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
+
+					var userList = buildDataTable({
+							headers: ["Nome","UF", "País","_"]
+							});
+
+					$("#dashboard-content .content").append(userList);
+
+					$("#button-add").click(function(){
+						resetWarnings();
+						location.hash = "#!/" + getUrlSub() + "?option=add";
+					});
+
+					$("#results").dataTable( {
+						  "oLanguage": {
+										"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
+										},
+						  "bProcessing": true,
+						  "sAjaxSource": api_path + '/api/state?api_key=$$key&content-type=application/json&columns=name,uf,country_id,url,_,_'.render({
+								key: $.cookie("key")
+								}),
+						  "aoColumnDefs": [
+                        					{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 3 ] }
+                    					  ],
+						   "fnDrawCallback": function(){
+								DTdesenhaBotoes();
+							}
+					} );
+
+				}else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit"){
+
+					var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+
+					var newform = [];
+
+					newform.push({label: "País", input: ["select,country_id,iselect"]});
+					newform.push({label: "Nome", input: ["text,name,itext"]});
+					newform.push({label: "UF", input: ["text,uf,itext"]});
+					newform.push({label: "Url", input: ["text,name_url,itext"]});
+
+					var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
+					$(formbuild).find("div .field:odd").addClass("odd");
+					$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+
+					$(formbuild).find("#name").qtip( $.extend(true, {}, qtip_input, {
+							content: "Importante: Nome do Estado."
+					}));
+
+					$("#dashboard-content .content select#country_id").append($("<option></option>").val("").html("Selecione..."));
+					$.ajax({
+						async: false,
+						type: 'GET',
+						dataType: 'json',
+						url: api_path + "/api/country?api_key=$$key".render({
+									key: $.cookie("key")
+							}),
+						success: function(data,status,jqXHR){
+							data.countries.sort(function (a, b) {
+								a = String(a.name),
+								b = String(b.name);
+								return a.localeCompare(b);
+							});
+							$.each(data.countries,function(index, item){
+								$("#dashboard-content .content select#country_id").append($("<option></option>").val(item.id).html(item.name));
+							});
+						}
+					});
+
+					if ($.getUrlVar("option") == "edit"){
+						$.ajax({
+							type: 'GET',
+							dataType: 'json',
+							url: $.getUrlVar("url") + "?api_key=$$key".render({
+										key: $.cookie("key")
+								}),
+							success: function(data,status,jqXHR){
+								switch(jqXHR.status){
+									case 200:
+										$(formbuild).find("select#country_id").val(data.country_id);
+										$(formbuild).find("input#name").val(data.name);
+										$(formbuild).find("input#name_url").val(data.name_url);
+										$(formbuild).find("input#uf").val(data.uf);
+										break;
+								}
+							},
+							error: function(data){
+								switch(data.status){
+									case 400:
+										$(".form-aviso").setWarning({msg: "Erro: ($$codigo)".render({
+													codigo: $.parseJSON(data.responseText).error
+													})
+										});
+										break;
+								}
 							}
 						});
-
 					}
+
+					$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
+						resetWarnings();
+						if ($(this).parent().parent().find("#country_id option:selected").val() == ""){
+							$(".form-aviso").setWarning({msg: "Por favor informe o País"});
+						}else if ($(this).parent().parent().find("#name").val() == ""){
+							$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
+						}else if ($(this).parent().parent().find("#uf").val() == ""){
+							$(".form-aviso").setWarning({msg: "Por favor informe a sigla (UF)"});
+						}else{
+
+							if ($.getUrlVar("option") == "add"){
+								var action = "create";
+								var method = "POST";
+								var url_action = api_path + "/api/state";
+							}else{
+								var action = "update";
+								var method = "POST";
+								var url_action = $.getUrlVar("url");
+							}
+
+							args = [{name: "api_key", value: $.cookie("key")},
+									{name: "state." + action + ".name", value: $(this).parent().parent().find("#name").val()},
+									{name: "state." + action + ".uf", value: $(this).parent().parent().find("#uf").val()},
+									{name: "state." + action + ".name_url", value: $(this).parent().parent().find("#name_url").val()},
+									{name: "state." + action + ".country_id", value: $(this).parent().parent().find("#country_id option:selected").val()}
+									];
+							$("#dashboard-content .content .botao-form[ref='enviar']").hide();
+							$.ajax({
+								type: method,
+								dataType: 'json',
+								url: url_action,
+								data: args,
+								success: function(data,status,jqXHR){
+									$("#aviso").setWarning({msg: "Operação efetuada com sucesso.".render({
+												codigo: jqXHR.status
+												})
+									});
+									location.hash = "#!/"+getUrlSub();
+								},
+								error: function(data){
+									switch(data.status){
+										case 400:
+											$("#aviso").setWarning({msg: "Erro ao $$operacao. ($$codigo)".render({
+														operacao: txtOption,
+														codigo: $.parseJSON(data.responseText).error
+														})
+											});
+											break;
+									}
+									$("#dashboard-content .content .botao-form[ref='enviar']").show();
+								}
+							});
+						}
+					});
+					$("#dashboard-content .content .botao-form[ref='cancelar']").click(function(){
+						resetWarnings();
+						history.back();
+					});
+				}else if ($.getUrlVar("option") == "delete"){
+					deleteRegister({url:$.getUrlVar("url") + "?api_key=$$key".render({
+													key: $.cookie("key")
+											})});
+				}
+			}else if (getUrlSub() == "countries"){
+				/*  Países  */
+				if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
+
+					var userList = buildDataTable({
+							headers: ["Nome","Url","_"]
+							});
+
+					$("#dashboard-content .content").append(userList);
+
+					$("#button-add").click(function(){
+						resetWarnings();
+						location.hash = "#!/" + getUrlSub() + "?option=add";
+					});
+
+					$("#results").dataTable( {
+						  "oLanguage": {
+										"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
+										},
+						  "bProcessing": true,
+						  "sAjaxSource": api_path + '/api/country?api_key=$$key&content-type=application/json&columns=name,name_url,url,_,_'.render({
+								key: $.cookie("key")
+								}),
+						  "aoColumnDefs": [
+                        					{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 2 ] }
+                    					  ],
+						   "fnDrawCallback": function(){
+								DTdesenhaBotoes();
+							}
+					} );
+
+				}else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit"){
+
+					var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+
+					var newform = [];
+
+					newform.push({label: "Nome", input: ["text,name,itext"]});
+					newform.push({label: "Url", input: ["text,name_url,itext"]});
+
+					var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
+					$(formbuild).find("div .field:odd").addClass("odd");
+					$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+
+					$(formbuild).find("#name").qtip( $.extend(true, {}, qtip_input, {
+							content: "Nome do País."
+					}));
+
+					if ($.getUrlVar("option") == "edit"){
+						$.ajax({
+							type: 'GET',
+							dataType: 'json',
+							url: $.getUrlVar("url") + "?api_key=$$key".render({
+										key: $.cookie("key")
+								}),
+							success: function(data,status,jqXHR){
+								switch(jqXHR.status){
+									case 200:
+										$(formbuild).find("input#name").val(data.name);
+										$(formbuild).find("input#name_url").val(data.name_url);
+										break;
+								}
+							},
+							error: function(data){
+								switch(data.status){
+									case 400:
+										$(".form-aviso").setWarning({msg: "Erro: ($$codigo)".render({
+													codigo: $.parseJSON(data.responseText).error
+													})
+										});
+										break;
+								}
+							}
+						});
+					}
+
+					$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
+						resetWarnings();
+						if ($(this).parent().parent().find("#name").val() == ""){
+							$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
+						}else{
+
+							if ($.getUrlVar("option") == "add"){
+								var action = "create";
+								var method = "POST";
+								var url_action = api_path + "/api/country";
+							}else{
+								var action = "update";
+								var method = "POST";
+								var url_action = $.getUrlVar("url");
+							}
+
+							args = [{name: "api_key", value: $.cookie("key")},
+									{name: "country." + action + ".name", value: $(this).parent().parent().find("#name").val()},
+									{name: "country." + action + ".name_url", value: $(this).parent().parent().find("#name_url").val()},
+									];
+							$("#dashboard-content .content .botao-form[ref='enviar']").hide();
+							$.ajax({
+								type: method,
+								dataType: 'json',
+								url: url_action,
+								data: args,
+								success: function(data,status,jqXHR){
+									$("#aviso").setWarning({msg: "Operação efetuada com sucesso.".render({
+												codigo: jqXHR.status
+												})
+									});
+									location.hash = "#!/"+getUrlSub();
+								},
+								error: function(data){
+									switch(data.status){
+										case 400:
+											$("#aviso").setWarning({msg: "Erro ao $$operacao. ($$codigo)".render({
+														operacao: txtOption,
+														codigo: $.parseJSON(data.responseText).error
+														})
+											});
+											break;
+									}
+									$("#dashboard-content .content .botao-form[ref='enviar']").show();
+								}
+							});
+						}
+					});
+					$("#dashboard-content .content .botao-form[ref='cancelar']").click(function(){
+						resetWarnings();
+						history.back();
+					});
+				}else if ($.getUrlVar("option") == "delete"){
+					deleteRegister({url:$.getUrlVar("url") + "?api_key=$$key".render({
+													key: $.cookie("key")
+											})});
+				}
+			}else if (getUrlSub() == "networks"){
+				/*  Estados  */
+				if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
+
+					var userList = buildDataTable({
+							headers: ["Nome","Url","_"]
+							});
+
+					$("#dashboard-content .content").append(userList);
+
+					$("#button-add").click(function(){
+						resetWarnings();
+						location.hash = "#!/" + getUrlSub() + "?option=add";
+					});
+
+					$("#results").dataTable( {
+						  "oLanguage": {
+										"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
+										},
+						  "bProcessing": true,
+						  "sAjaxSource": api_path + '/api/network?api_key=$$key&content-type=application/json&columns=name,name_url,url,_,_'.render({
+								key: $.cookie("key")
+								}),
+						  "aoColumnDefs": [
+                        					{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 2 ] }
+                    					  ],
+						   "fnDrawCallback": function(){
+								DTdesenhaBotoes();
+							}
+					} );
+
+				}else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit"){
+
+					var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+
+					var newform = [];
+
+					newform.push({label: "Instituição", input: ["select,institute_id,iselect"]});
+					newform.push({label: "Domínio", input: ["text,domain_name,itext"]});
+					newform.push({label: "Nome da Rede", input: ["text,name,itext"]});
+					newform.push({label: "Url", input: ["text,name_url,itext"]});
+
+					var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
+					$(formbuild).find("div .field:odd").addClass("odd");
+					$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+
+					$(formbuild).find("#name").qtip( $.extend(true, {}, qtip_input, {
+							content: "Importante: Nome da Rede."
+					}));
+
+					$("#dashboard-content .content select#institute_id").append($("<option></option>").val("").html("Selecione..."));
+					$.ajax({
+						async: false,
+						type: 'GET',
+						dataType: 'json',
+						url: api_path + "/api/institute?api_key=$$key".render({
+									key: $.cookie("key")
+							}),
+						success: function(data,status,jqXHR){
+							data.institutes.sort(function (a, b) {
+								a = String(a.name),
+								b = String(b.name);
+								return a.localeCompare(b);
+							});
+							$.each(data.institutes,function(index, item){
+								$("#dashboard-content .content select#institute_id").append($("<option></option>").val(item.id).html(item.name));
+							});
+						}
+					});
+
+					if ($.getUrlVar("option") == "edit"){
+						$.ajax({
+							type: 'GET',
+							dataType: 'json',
+							url: $.getUrlVar("url") + "?api_key=$$key".render({
+										key: $.cookie("key")
+								}),
+							success: function(data,status,jqXHR){
+								switch(jqXHR.status){
+									case 200:
+										$(formbuild).find("select#institute_id").val(data.country_id);
+										$(formbuild).find("input#domain_name").val(data.domain_name);
+										$(formbuild).find("input#name").val(data.name);
+										$(formbuild).find("input#name_url").val(data.name_url);
+										break;
+								}
+							},
+							error: function(data){
+								switch(data.status){
+									case 400:
+										$(".form-aviso").setWarning({msg: "Erro: ($$codigo)".render({
+													codigo: $.parseJSON(data.responseText).error
+													})
+										});
+										break;
+								}
+							}
+						});
+					}
+
+					$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
+						resetWarnings();
+						if ($(this).parent().parent().find("#institute_id option:selected").val() == ""){
+							$(".form-aviso").setWarning({msg: "Por favor informe a Instituição"});
+						}else if ($(this).parent().parent().find("#domain_name").val() == ""){
+							$(".form-aviso").setWarning({msg: "Por favor informe o Domínio"});
+						}else if ($(this).parent().parent().find("#name").val() == ""){
+							$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
+						}else{
+
+							if ($.getUrlVar("option") == "add"){
+								var action = "create";
+								var method = "POST";
+								var url_action = api_path + "/api/state";
+							}else{
+								var action = "update";
+								var method = "POST";
+								var url_action = $.getUrlVar("url");
+							}
+
+							args = [{name: "api_key", value: $.cookie("key")},
+									{name: "state." + action + ".domain_name", value: $(this).parent().parent().find("#domain_name").val()},
+									{name: "state." + action + ".name", value: $(this).parent().parent().find("#name").val()},
+									{name: "state." + action + ".name_url", value: $(this).parent().parent().find("#name_url").val()},
+									{name: "state." + action + ".institute_id", value: $(this).parent().parent().find("#institute_id option:selected").val()}
+									];
+							$("#dashboard-content .content .botao-form[ref='enviar']").hide();
+							$.ajax({
+								type: method,
+								dataType: 'json',
+								url: url_action,
+								data: args,
+								success: function(data,status,jqXHR){
+									$("#aviso").setWarning({msg: "Operação efetuada com sucesso.".render({
+												codigo: jqXHR.status
+												})
+									});
+									location.hash = "#!/"+getUrlSub();
+								},
+								error: function(data){
+									switch(data.status){
+										case 400:
+											$("#aviso").setWarning({msg: "Erro ao $$operacao. ($$codigo)".render({
+														operacao: txtOption,
+														codigo: $.parseJSON(data.responseText).error
+														})
+											});
+											break;
+									}
+									$("#dashboard-content .content .botao-form[ref='enviar']").show();
+								}
+							});
+						}
+					});
 					$("#dashboard-content .content .botao-form[ref='cancelar']").click(function(){
 						resetWarnings();
 						history.back();
@@ -5717,31 +6173,31 @@ $(document).ready(function() {
 					resetWarnings();
 					location.hash = "#!/dashboard";
 				});
-			}
-		}else if (getUrlSub() == "logout"){
-			if ($.cookie("key")){
-				var url_logout = api_path + '/api/logout?api_key=$$key'.render({
-									key: $.cookie("key")
-							});
-				resetCookies();
-				$.ajax({
-					type: 'GET',
-					dataType: 'json',
-					url: url_logout,
-					success: function(data, textStatus, jqXHR){
-						switch(jqXHR.status){
-							case 200:
-								resetWarnings();
-								resetDashboard();
-								location.hash = "";
-								break;
+			}else if (getUrlSub() == "logout"){
+				if ($.cookie("key")){
+					var url_logout = api_path + '/api/logout?api_key=$$key'.render({
+										key: $.cookie("key")
+								});
+					resetCookies();
+					$.ajax({
+						type: 'GET',
+						dataType: 'json',
+						url: url_logout,
+						success: function(data, textStatus, jqXHR){
+							switch(jqXHR.status){
+								case 200:
+									resetWarnings();
+									resetDashboard();
+									location.hash = "";
+									break;
+							}
 						}
-					}
-				});
-			}else{
-				resetWarnings();
-				resetDashboard();
-				location.hash = "";
+					});
+				}else{
+					resetWarnings();
+					resetDashboard();
+					location.hash = "";
+				}
 			}
 		}else if(getUrlSub() == ""){
 			if ($.cookie("key") == null || $.cookie("key") == ""){

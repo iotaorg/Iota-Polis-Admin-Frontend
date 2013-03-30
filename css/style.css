@@ -123,6 +123,17 @@ a{
 	color: #fff;
 	border-bottom: 3px solid #20c1c1;
 }
+#menu ul.submenu{
+	margin-top: 5px;
+	display: none;
+	position: absolute;
+	background-color: #20c1c1;
+}
+#menu ul.submenu li{
+	clear: both;
+	padding: 5px 0 2px 0;
+}
+
 #menu ul li.selected{
 	border-bottom: 3px solid #fff;
 }

@@ -144,7 +144,9 @@ $.ajaxSetup({
 $(document).ready(function() {
 
 	var menu_label = [];
+	var submenu_label = [];
 	var menu_access = [];
+	var submenu_access = [];
 
 
 	var user_info;
@@ -289,6 +291,7 @@ $(document).ready(function() {
 		$.cookie("user.id",null,{path: "/", expires: -5});
 		$.cookie("key",null,{path: "/", expires: -5});
 		$.cookie("user.id",null,{expires: -5});
+		$.cookie("network.id",null,{expires: -5});
 		$.cookie("key",null,{expires: -5});
 	}
 
@@ -329,8 +332,8 @@ $(document).ready(function() {
 		$("#top .top-right .logo").empty();
 		$("#top .top-right .logo").addClass("empty");
 		$("#user-info").remove();
-		$("#menu ul li").remove();
-		$("#menu ul").append("<li class='selected'>Entrar</li>");
+		$("#menu ul.menu li").remove();
+		$("#menu ul.menu").append("<li class='selected'>Entrar</li>");
 		setTitleBar();
 	};
 	var resetWarnings = function(){
@@ -361,6 +364,7 @@ $(document).ready(function() {
 						resetWarnings();
 						$.cookie("user.login",data.login,{ expires: 1, path: "/" });
 						$.cookie("user.id",data.id,{ expires: 1, path: "/" });
+						$.cookie("network.id",data.network_id,{ expires: 1, path: "/" });
 						$.cookie("key",data.api_key,{ expires: 1, path: "/" });
 						$("#dashboard #form-login").hide();
 						location.hash = "!/dashboard";
@@ -1441,17 +1445,16 @@ $(document).ready(function() {
 	var buildMenu = function(){
 		if($("#menu ul li").length > 0){
 			$("#menu ul li").remove();
+			$("#menu ul").addClass("menu");
 		}
-		var menu = "<div id='menu'><ul class='menu'></ul></div>";
-		$("#dashboard-content #user-info").after(menu);
+		$("#dashboard-content #top").after(menu);
 
 		menu_label = [];
+		submenu_label = [];
 		menu_access = [];
 
 		menu_label["admins"] = "Administradores";
 		menu_label["axis"] = "Eixos";
-		menu_label["cities"] = "Cidades";
-		menu_label["countries"] = "Países";
 		menu_label["dashboard"] = "Início";
 		menu_label["indicator"] = "Indicadores";
 		menu_label["logout"] = "Sair";
@@ -1460,32 +1463,85 @@ $(document).ready(function() {
 		menu_label["myvariable"] = "Variáveis Básicas";
 		menu_label["myvariableedit"] = "Editar Valores";
 		menu_label["networks"] = "Redes";
+		menu_label["parameters"] = "Parâmetros";
 		menu_label["prefs"] = "Preferências";
 		menu_label["reports"] = "Relatórios";
-		menu_label["states"] = "Estados";
 		menu_label["tokens"] = "Tokens";
-		menu_label["units"] = "Unidades de Medida";
 		menu_label["users"] = "Usuários";
 		menu_label["variable"] = "Variáveis";
 
-		menu_access["superadmin"] = ["prefs","countries","states","cities","networks","admins","indicator","units","axis","logout"];
-		menu_access["admin"] = ["prefs","users","cities","units","variable","myvariableedit","axis","indicator","logout"];
+		submenu_label["parameters"] = [];
+		submenu_label["parameters"].push({"countries" : "Países"});
+		submenu_label["parameters"].push({"states" : "Estados"});
+		submenu_label["parameters"].push({"cities" : "Cidades"});
+		submenu_label["parameters"].push({"units" : "Unidades de Medida"});
+
+
+		menu_access["superadmin"] = ["prefs","parameters","networks","admins","indicator","axis","logout"];
+		submenu_access["superadmin"] = ["countries","states","cities","units"];
+		menu_access["admin"] = ["prefs","users","parameters","variable","myvariableedit","axis","indicator","logout"];
+		submenu_access["admin"] = ["countries","states","cities","units"];
 		if (findInArray(user_info.roles,"_movimento")){
 			menu_access["user"] = ["prefs","myvariable","myvariableedit","myindicator","mygroup","logout"];
 		}else{
 			menu_access["user"] = ["prefs","myvariable","myvariableedit","myindicator","logout"];
 		}
 
+		var menu_item = "";
 		$.each(menu_access[user_info.role],function(index,value){
 			var menu_class = (getUrlSub() == value) ? "selected" : "";
-			$("#menu").find("ul").append("<li class='$$class' ref='$$url_sub'>$$menu</li>".render({
-				menu: "<a href='#!/" + value + "'>" + menu_label[value] + "</a>",
+			var a_class = "";
+			
+			if (submenu_label[value]){
+				a_class = "submenu";
+				var submenu_item = "<ul class='submenu'>";
+				$.each(submenu_label[value],function(index,item){
+					$.each(item,function(url_sub,text){
+						submenu_item += "<li class='submenu $$class' ref='$$url_sub'>$$menu</li>".render({
+							menu: "<a href='#!/" + url_sub + "'>" + text + "</a>",
+							url_sub: url_sub,
+							class: menu_class
+						});
+					});
+				});
+				submenu_item += "</ul>";
+			}else{
+				var submenu_item = "";
+			}
+
+			menu_item += "<li class='$$class' ref='$$url_sub'>$$menu$$submenu</li>".render({
+				menu: "<a href='#!/" + value + "' class='" + a_class + "'>" + menu_label[value] + "</a>",
 				url_sub: value,
-				class: menu_class
-			}));
+				class: menu_class,
+				submenu: submenu_item
+			});
 		});
-		$("#menu li a").click(function(){
+		$("#menu ul.menu").append(menu_item);
+		$("#menu ul.menu li a").click(function(e){
+			if ($(this).hasClass("submenu")){
+				e.preventDefault();	
+			}
 			resetWarnings();
+		});
+		var tSubmenu;
+		$("#menu ul.menu li a.submenu").hover(function(){
+			$(this).parent().find("ul").show();
+		},function(){
+			var obj = $(this);
+			tSubmenu = setTimeout(function(){
+				$(obj).next("ul.submenu").hide();
+			},500);
+			
+		});
+		$("#menu ul.submenu").hover(function(){
+			if (typeof(tSubmenu) != "undefined") clearInterval(tSubmenu);	
+		},function(){
+			var obj = $(this);
+			tSubmenu = setTimeout(function(){
+				$(obj).hide();
+				if (typeof(tSubmenu) != "undefined") clearInterval(tSubmenu);	
+			},500);
+			
 		});
 	};
 
@@ -1631,6 +1687,46 @@ $(document).ready(function() {
 		});
 	}
 
+	var carregaComboCidadesUsers = function(args){
+		$.ajax({
+			async: false,
+			type: 'GET',
+			dataType: 'json',
+			url: api_path + '/api/city?api_key=$$key'.render({
+							key: $.cookie("key")
+					}),
+			success: function(data, textStatus, jqXHR){
+				data.cities.sort(function (a, b) {
+					a = String(a.name),
+					b = String(b.name);
+					return a.localeCompare(b);
+				});
+				var valid = true;
+				$.each(data.cities, function(index,item){
+					valid = true;
+					if (args.option == "edit" && item.id == getIdFromUrl(args.city)){
+						valid = true;
+					}else{
+						$.each(item.current_users, function(user_index,user_item){
+							if (findInArray(user_item.user.roles,"user") && user_item.user.network_id == $.cookie("network.id")){
+								valid = false;
+							}
+						});
+					}
+					if (valid){
+						$("#dashboard-content .content select#city_id").append($("<option></option>").val(item.id).html(item.name + " (" + item.uf + ")"));
+					}
+				});
+			},
+			error: function(data){
+				$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
+							codigo: $.parseJSON(data.responseText).error
+						})
+				});
+			}
+		});
+	}
+
 	/*MONTA TELAS*/
 
 	$(window).hashchange( function(){
@@ -1639,7 +1735,7 @@ $(document).ready(function() {
 	})
 
 	var buildContent = function(){
-		if ($.inArray(getUrlSub().toString(),menu_access[user_info.role]) >= 0){
+		if ($.inArray(getUrlSub().toString(),menu_access[user_info.role]) >= 0 || $.inArray(getUrlSub().toString(),submenu_access[user_info.role]) >= 0){
 			$.xhrPool.abortAll();
 			$("#dashboard #form-login").hide();
 			/*  ORGANIZATION  */
@@ -1682,6 +1778,233 @@ $(document).ready(function() {
 					});
 
 				}
+			}else if (getUrlSub() == "admins"){
+				/*  Administradores  */
+				loadCidades();
+				if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
+
+					var userList = buildDataTable({
+							headers: ["Nome","Email","_"]
+							});
+
+					$("#dashboard-content .content").append(userList)
+
+					$("#button-add").click(function(){
+						resetWarnings();
+						location.hash = "#!/" + getUrlSub() + "?option=add";
+					});
+
+					$("#results").dataTable( {
+						  "oLanguage": {
+										"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
+										},
+						  "bProcessing": true,
+						  "sAjaxSource": api_path + '/api/user?role=admin&api_key=$$key&content-type=application/json&columns=name,email,url,_,_'.render({
+								key: $.cookie("key")
+								}),
+						  "aoColumnDefs": [
+                        					{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 2 ] }
+                    					  ],
+						   "fnDrawCallback": function(){
+								DTdesenhaBotoes();
+							}
+					} );
+
+				}else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit"){
+
+					var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+
+					var newform = [];
+
+					newform.push({label: "Rede", input: ["select,network_id,iselect"]});
+					newform.push({label: "Cidade", input: ["select,city_id,iselect"]});
+					newform.push({label: "Nome", input: ["text,name,itext"]});
+					newform.push({label: "Email", input: ["text,email,itext"]});
+					newform.push({label: "Senha", input: ["password,password,itext"]});
+					newform.push({label: "Confirmar Senha", input: ["password,password_confirm,itext"]});
+
+					var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
+					$(formbuild).find("div .field:odd").addClass("odd");
+					$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+
+					$(formbuild).find("#name").qtip( $.extend(true, {}, qtip_input, {
+							content: "Importante: Nome do usuário."
+					}));
+					$(formbuild).find("#email").qtip( $.extend(true, {}, qtip_input, {
+							content: "Importante: o Email será usado como login."
+					}));
+					$(formbuild).find("#password").qtip( $.extend(true, {}, qtip_input, {
+							content: "Utilize letras e números e pelo menos 8 caracteres."
+					}));
+
+					$("#dashboard-content .content select#network_id").append($("<option></option>").val("").html("Selecione..."));
+					$.ajax({
+						async: false,
+						type: 'GET',
+						dataType: 'json',
+						url: api_path + "/api/network?api_key=$$key".render({
+									key: $.cookie("key")
+							}),
+						success: function(data,status,jqXHR){
+							data.network.sort(function (a, b) {
+								a = String(a.name),
+								b = String(b.name);
+								return a.localeCompare(b);
+							});
+							$.each(data.network,function(index, item){
+								$("#dashboard-content .content select#network_id").append($("<option></option>").val(item.id).html(item.name));
+							});
+						}
+					});
+
+					$("#dashboard-content .content select#city_id").append($("<option></option>").val("").html("Nenhuma"));
+					$.ajax({
+						async: false,
+						type: 'GET',
+						dataType: 'json',
+						url: api_path + "/api/city?api_key=$$key".render({
+									key: $.cookie("key")
+							}),
+						success: function(data,status,jqXHR){
+							data.cities.sort(function (a, b) {
+								a = String(a.name),
+								b = String(b.name);
+								return a.localeCompare(b);
+							});
+							$.each(data.cities,function(index, item){
+								$("#dashboard-content .content select#city_id").append($("<option></option>").val(item.id).html(item.name));
+							});
+						}
+					});
+
+					if ($.getUrlVar("option") == "edit"){
+						$.ajax({
+							type: 'GET',
+							dataType: 'json',
+							url: $.getUrlVar("url") + "?api_key=$$key".render({
+										key: $.cookie("key")
+								}),
+							success: function(data,status,jqXHR){
+								switch(jqXHR.status){
+									case 200:
+										$(formbuild).find("input#name").val(data.name);
+										$(formbuild).find("input#email").val(data.email);
+										$(formbuild).find("select#network_id").val(data.network.id);
+										carregaComboCidades({"option":"edit", "city": data.city_id});
+										break;
+								}
+							},
+							error: function(data){
+								switch(data.status){
+									case 400:
+										$(".form-aviso").setWarning({msg: "Erro: ($$codigo)".render({
+													codigo: $.parseJSON(data.responseText).error
+													})
+										});
+										break;
+								}
+							}
+						});
+					}
+
+					$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
+						resetWarnings();
+						if ($(this).parent().parent().find("#network_id option:selected").val() == ""){
+							$(".form-aviso").setWarning({msg: "Por favor informe a Rede"});
+						}else if ($(this).parent().parent().find("#name").val() == ""){
+							$(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
+						}else if ($(this).parent().parent().find("#email").val() == ""){
+							$(".form-aviso").setWarning({msg: "Por favor informe o Email"});
+						}else if ($(this).parent().parent().find("#password").val() == "" && $.getUrlVar("option") != "edit"){
+							$(".form-aviso").setWarning({msg: "Por favor informe a Senha"});
+						}else if ($(this).parent().parent().find("#password_confirm").val() != "" && $(this).parent().parent().find("#password_confirm").val() != $(this).parent().parent().find("#password").val()){
+							$(".form-aviso").setWarning({msg: "Confirmação de senha inválida"});
+						}else{
+
+							if ($.getUrlVar("option") == "add"){
+								var action = "create";
+								var method = "POST";
+								var url_action = api_path + "/api/user";
+							}else{
+								var action = "update";
+								var method = "POST";
+								var url_action = $.getUrlVar("url");
+							}
+
+							args = [{name: "api_key", value: $.cookie("key")},
+									{name: "user." + action + ".name", value: $(this).parent().parent().find("#name").val()},
+									{name: "user." + action + ".email", value: $(this).parent().parent().find("#email").val()},
+									{name: "user." + action + ".role", value: "admin"},
+									{name: "user." + action + ".network_id", value: $(this).parent().parent().find("#network_id option:selected").val()},
+									{name: "user." + action + ".city_id", value: $(this).parent().parent().find("#city_id option:selected").val()}
+									];
+									
+							if ($(this).parent().parent().find("#password").val() != ""){
+								args.push(
+									{name: "user." + action + ".password", value: $(this).parent().parent().find("#password").val()},
+									{name: "user." + action + ".password_confirm", value: $(this).parent().parent().find("#password").val()}
+								);
+							}
+
+							$("#dashboard-content .content .botao-form[ref='enviar']").hide();
+							$.ajax({
+								type: method,
+								dataType: 'json',
+								url: url_action,
+								data: args,
+								success: function(data,status,jqXHR){
+									$("#aviso").setWarning({msg: "Operação efetuada com sucesso.".render({
+												codigo: jqXHR.status
+												})
+									});
+									location.hash = "#!/"+getUrlSub();
+								},
+								error: function(data){
+									switch(data.status){
+										case 400:
+											$("#aviso").setWarning({msg: "Erro ao $$operacao. ($$codigo)".render({
+														operacao: txtOption,
+														codigo: $.parseJSON(data.responseText).error
+														})
+											});
+											break;
+									}
+									$("#dashboard-content .content .botao-form[ref='enviar']").show();
+								}
+							});
+						}
+					});
+					$("#dashboard-content .content .botao-form[ref='cancelar']").click(function(){
+						resetWarnings();
+						history.back();
+					});
+				}else if ($.getUrlVar("option") == "delete"){
+					args = [{name: "api_key", value: $.cookie("key")},
+							{name: "user.update.network_id", value: null}
+							];
+					$.ajax({
+						type: 'POST',
+						dataType: 'json',
+						url: $.getUrlVar("url"),
+						data: args,
+						success: function(data,status,jqXHR){
+							deleteRegister({url:$.getUrlVar("url") + "?api_key=$$key".render({
+															key: $.cookie("key")
+													})});
+						},
+						error: function(data){
+							switch(data.status){
+								case 400:
+									$("#aviso").setWarning({msg: "Erro ao apagar. ($$codigo)".render({
+												codigo: $.parseJSON(data.responseText).error
+												})
+									});
+									break;
+							}
+							$("#dashboard-content .content .botao-form[ref='enviar']").show();
+						}
+					});
+				}
 			}else if (getUrlSub() == "users"){
 				/*  USER  */
 				loadCidades();
@@ -1703,8 +2026,9 @@ $(document).ready(function() {
 										"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
 										},
 						  "bProcessing": true,
-						  "sAjaxSource": api_path + '/api/user?api_key=$$key&content-type=application/json&columns=name,email,url,_,_'.render({
-								key: $.cookie("key")
+						  "sAjaxSource": api_path + '/api/user?role=user&&network_id=$$network_id&api_key=$$key&content-type=application/json&columns=name,email,url,_,_'.render({
+								key: $.cookie("key"),
+								network_id: $.cookie("network.id")
 								}),
 						  "aoColumnDefs": [
                         					{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 2 ] }
@@ -1724,9 +2048,7 @@ $(document).ready(function() {
 					newform.push({label: "Email", input: ["text,email,itext"]});
 					newform.push({label: "Senha", input: ["password,password,itext"]});
 					newform.push({label: "Confirmar Senha", input: ["password,password_confirm,itext"]});
-					newform.push({label: "Nível", input: ["select,user_role,iselect"]});
-					newform.push({label: "Cidade", input: ["select,city_id,iselect"], "class": "prefeitura"});
-					newform.push({label: "Prefeitura?", input: ["checkbox,prefeito,icheckbox"], "class": "prefeitura"});
+					newform.push({label: "Cidade", input: ["select,city_id,iselect"]});
 
 					var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
 					$(formbuild).find("div .field:odd").addClass("odd");
@@ -1738,28 +2060,14 @@ $(document).ready(function() {
 					$(formbuild).find("#email").qtip( $.extend(true, {}, qtip_input, {
 							content: "Importante: o Email será usado como login."
 					}));
-					$(formbuild).find("#name").qtip( $.extend(true, {}, qtip_input, {
+					$(formbuild).find("#password").qtip( $.extend(true, {}, qtip_input, {
 							content: "Utilize letras e números e pelo menos 8 caracteres."
 					}));
 
-					$.each(roles,function(key, value){
-						$("#dashboard-content .content select#user_role").append($("<option></option>").val(key).html(value));
-					});
-
-					$("#dashboard-content .content select#user_role").change(function(){
-						if ($(this).find("option:selected").val() == "user"){
-							$(formbuild).find("div.prefeitura").show();
-						}else{
-							$(formbuild).find("div.prefeitura").hide();
-						}
-					});
-
-					$("#dashboard-content .content input#prefeito").attr("disabled",true);
-
 					$("#dashboard-content .content select#city_id").append($("<option></option>").val("").html("Selecione..."));
-
+					
 					if ($.getUrlVar("option") == "add"){
-						carregaComboCidades();
+						carregaComboCidadesUsers({"option":$.getUrlVar("option")});
 					}
 
 					if ($.getUrlVar("option") == "edit"){
@@ -1774,31 +2082,8 @@ $(document).ready(function() {
 									case 200:
 										$(formbuild).find("input#name").val(data.name);
 										$(formbuild).find("input#email").val(data.email);
-										if ($.cookie("organization.id") == null){
-											if (data.organization != undefined){
-												$(formbuild).find("select#organization_id").val(getIdFromUrl(data.organization));
-											}
-										}
-										if (!findInArray(["admin","user","app"],data.roles[0])){
-											var role_temp = data.roles[0];
-											data.roles[0] = data.roles[1];
-											data.roles[1] = role_temp;
-										}
-										$(formbuild).find("select#user_role").val(data.roles[0]);
-										if (data.roles[0] == "user"){
-											$(formbuild).find("div.prefeitura").show();
-										}else{
-											$(formbuild).find("div.prefeitura").hide();
-										}
-										carregaComboCidades({"option":"edit", "city": data.city});
-										if (data.city != undefined){
-											if (findCidadePrefeito(getIdFromUrl(data.city)) == getIdFromUrl($.getUrlVar("url"))){
-												$(formbuild).find("input#prefeito").attr("disabled",false);
-												$(formbuild).find("input#prefeito").attr("checked",true);
-											}else{
-												$(formbuild).find("input#prefeito").attr("disabled",false);
-											}
-										}
+										carregaComboCidadesUsers({"option":$.getUrlVar("option"), city: data.city});
+										$(formbuild).find("select#city_id").val(getIdFromUrl(data.city));
 										break;
 								}
 							},
@@ -1825,7 +2110,7 @@ $(document).ready(function() {
 							$(".form-aviso").setWarning({msg: "Por favor informe a Senha"});
 						}else if ($(this).parent().parent().find("#password_confirm").val() != "" && $(this).parent().parent().find("#password_confirm").val() != $(this).parent().parent().find("#password").val()){
 							$(".form-aviso").setWarning({msg: "Confirmação de senha inválida"});
-						}else if ($(this).parent().parent().find("#city_id option:selected").val() == "" && $(this).parent().parent().find("#user_role option:selected").val() == "user"){
+						}else if ($(this).parent().parent().find("#city_id option:selected").val() == ""){
 							$(".form-aviso").setWarning({msg: "Por favor informe a Cidade"});
 						}else{
 
@@ -1842,20 +2127,10 @@ $(document).ready(function() {
 							args = [{name: "api_key", value: $.cookie("key")},
 									{name: "user." + action + ".name", value: $(this).parent().parent().find("#name").val()},
 									{name: "user." + action + ".email", value: $(this).parent().parent().find("#email").val()},
-									{name: "user." + action + ".role", value: $(this).parent().parent().find("#user_role option:selected").val()},
+									{name: "user." + action + ".role", value: "user"},
 									{name: "user." + action + ".city_id", value: $(this).parent().parent().find("#city_id option:selected").val()}
 									];
 									
-							if ($(this).parent().parent().find("#prefeito").attr("checked")){
-								args.push({name: "user." + action + ".prefeito", value: 1});
-								args.push({name: "user." + action + ".movimento", value: 0});
-							}else{
-								args.push({name: "user." + action + ".prefeito", value: 0});
-								if ($(this).parent().parent().find("#user_role option:selected").val() == "user"){
-									args.push({name: "user." + action + ".movimento", value: 1});
-								}
-							}
-
 							if ($(this).parent().parent().find("#password").val() != ""){
 								args.push(
 									{name: "user." + action + ".password", value: $(this).parent().parent().find("#password").val()},
@@ -2465,12 +2740,12 @@ $(document).ready(function() {
 									key: $.cookie("key")
 							}),
 						success: function(data,status,jqXHR){
-							data.institutes.sort(function (a, b) {
+							data.institute.sort(function (a, b) {
 								a = String(a.name),
 								b = String(b.name);
 								return a.localeCompare(b);
 							});
-							$.each(data.institutes,function(index, item){
+							$.each(data.institute,function(index, item){
 								$("#dashboard-content .content select#institute_id").append($("<option></option>").val(item.id).html(item.name));
 							});
 						}
@@ -2486,7 +2761,7 @@ $(document).ready(function() {
 							success: function(data,status,jqXHR){
 								switch(jqXHR.status){
 									case 200:
-										$(formbuild).find("select#institute_id").val(data.country_id);
+										$(formbuild).find("select#institute_id").val(data.institute_id);
 										$(formbuild).find("input#domain_name").val(data.domain_name);
 										$(formbuild).find("input#name").val(data.name);
 										$(formbuild).find("input#name_url").val(data.name_url);

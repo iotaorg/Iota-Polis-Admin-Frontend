@@ -1041,6 +1041,46 @@ $(document).ready(function() {
 
 	}
 
+	var deleteUnit = function(params){
+		$.ajax({
+			async: false,
+			type: 'DELETE',
+			dataType: 'json',
+			url: params.url,
+			success: function(data,status,jqXHR){
+				switch(jqXHR.status){
+					case 204:
+						resetWarnings();
+						$("#aviso").setWarning({msg: "Unidade de medida removida com sucesso."});
+						if (params.resetElement){
+							loadUnits();
+							$("select.unit").each(function(i,item){
+								var _objSelect = $("select#"+$(item).attr("id"));
+								var _objText = $("input#"+$(item).attr("id") + "_new");
+								var _objSg = $("input#"+$(item).attr("id") + "_sg_new");
+								loadComboUnits(measurement_units,_objSelect,_objText,_objSg);
+							})
+							$(params.element).val("");
+						}
+						break;
+				}
+			},
+			error: function(data){
+				switch(data.status){
+					case 200:
+						break;
+					default:
+						$("#aviso").setWarning({msg: "Erro: ($$codigo)".render({
+									codigo: data.status
+									})
+						});
+						break;
+				}
+			}
+		});
+
+	}
+
 	var deleteRegister = function(params){
 		$.confirm({
 			'title': 'Confirmação',
@@ -1218,7 +1258,7 @@ $(document).ready(function() {
 	}
 
 
-	var loadUnidades = function(){
+	var loadUnits = function(){
 		measurement_units = [];
 		$.ajax({
 			async: false,
@@ -1246,6 +1286,108 @@ $(document).ready(function() {
 						})
 				});
 			}
+		});
+	}
+
+	var loadComboUnits = function(arr,objSelect,objText,objSg){
+		var old_selected = $(objSelect).find("option:selected").val();
+		$(objSelect).empty();
+		$(objSelect).append($("<option></option>").val("").html("nenhuma"));
+		$(objSelect).append($("<option></option>").val("_new").html("- nova unidade de medida"));
+		$.each(arr,function(index, item){
+			$(objSelect).append($("<option></option>").val(item.name).html(item.name).attr("unit-id",item.id));
+		});
+
+		$(objSelect).val(old_selected);
+
+		$(objSelect).change(function(e){
+			$(objSelect).next("a#delete-unit").hide();
+			$(objSg).next("a#add-unit").hide();
+			$(objText).hide();
+			$(objSg).hide();
+			if ($(this).val() == "_new"){
+				$(objText).show();
+				$(objSg).show();
+				$(objSg).next("a#add-unit").show();
+			}else if ($(this).val() != ""){
+				if (user_info.roles[0] == "admin"){
+					$(objSelect).next("a#delete-unit").show();
+				}
+				$(objSg).next("a#add-unit").hide();
+			}
+		});
+	}
+
+	var setNewUnit = function(objSelect,objText,objSg){
+		$(objText).hide();
+		$(objText).attr("placeholder","descrição da nova unidade de medida");
+		$(objText).css("margin-top","5px");
+		$(objSg).hide();
+		$(objSg).attr("placeholder","sigla");
+		$(objSg).css("margin-top","5px");
+		if (!findInArray(user_info.roles,"user")){
+			$(objText).before("&nbsp;<a href='#' id='delete-unit'>remover</a><br />");
+		}
+		$(objSg).after("&nbsp;<a href='#' id='add-unit'>adicionar</a>");
+		$(objSelect).next("a#delete-unit").hide();
+		$(objSg).next("a#add-unit").hide();
+		$(objSelect).next("a#delete-unit").click(function(e){
+			e.preventDefault();
+			if ($(objSelect).find("option:selected").val() != ""){
+				deleteUnit({
+								url: api_path + "/api/measurement_unit/" + $(objSelect).find("option:selected").attr("unit-id") + "?api_key=$$key".render({
+										key: $.cookie("key")
+								}),
+								element: $(objSelect),
+								resetElement: true
+							 });
+			}
+		});
+		$(objSg).next("a#add-unit").click(function(e){
+			e.preventDefault();
+			if ($(objText).val() == ""){
+				$("#aviso").setWarning({msg: "Informe uma descrição para a unidade de medida."});
+				return;
+			}else if ($(objText).val() == "_new"){
+				$("#aviso").setWarning({msg: "Descrição para a unidade de medida inválida."});
+				return;
+			}else if ($(objSg).val() == ""){
+				$("#aviso").setWarning({msg: "Informe uma sigla para a unidade de medida."});
+				return;
+			}else if ($(objSg).val() == "_new"){
+				$("#aviso").setWarning({msg: "Sigla para a unidade de medida inválida."});
+				return;
+			}
+			var args_unit = [{name: "api_key", value: $.cookie("key")},
+					{name: "measurement_unit.create.name", value: $(objText).val()},
+					{name: "measurement_unit.create.short_name", value: $(objSg).val()}
+					];
+			var new_id;
+			$.ajax({
+				async: false,
+				type: 'POST',
+				dataType: 'json',
+				url: api_path + '/api/measurement_unit',
+				data: args_unit,
+				success: function(data){
+					new_id = data.id;
+				}
+			});
+			loadUnits();
+			$("select.unit").each(function(i,item){
+				var _objSelect = $("select#"+$(item).attr("id"));
+				var _objText = $("input#"+$(item).attr("id") + "_new");
+				var _objSg = $("input#"+$(item).attr("id") + "_sg_new");
+				loadComboUnits(measurement_units,_objSelect,_objText);
+			})
+			$(objSelect).find("option[unit-id='$$id']".render({
+					id: new_id
+				})).attr("selected","selected");
+			$(objText).hide();
+			$(objSg).hide();
+			$(objSg).next("a#add-unit").hide();
+			$(objSelect).next("a#delete-unit").show();
+
 		});
 	}
 
@@ -3108,7 +3250,7 @@ $(document).ready(function() {
 					newform.push({label: "Apelido", input: ["text,cognomen,itext"]});
 					newform.push({label: "Explicação", input: ["textarea,explanation,itext"]});
 					newform.push({label: "Tipo", input: ["select,type,iselect"]});
-					newform.push({label: "Unidade de Medida", input: ["select,measurement_unit,iselect"]});
+					newform.push({label: "Unidade de Medida", input: ["select,measurement_unit,iselect unit","text,unit_new,itext250px","text,unit_sg_new,itext50px"]});
 					newform.push({label: "Período", input: ["select,period,iselect"]});
 					newform.push({label: "Fonte", input: ["select,source,iselect source","text,source_new,itext300px"]});
 					newform.push({label: "Variável básica", input: ["checkbox,is_basic,icheckbox"]});
@@ -3118,6 +3260,7 @@ $(document).ready(function() {
 					$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 
 					setNewSource($("#dashboard-content .content select#source"),$("#dashboard-content .content input#source_new"));
+					setNewUnit($("#dashboard-content .content select#measurement_unit"),$("#dashboard-content .content input#unit_new"),$("#dashboard-content .content input#unit_sg_new"));
 
 					$(formbuild).find("#name").qtip( $.extend(true, {}, qtip_input, {
 							content: "Nome da variável."
@@ -3139,12 +3282,9 @@ $(document).ready(function() {
 						$("#dashboard-content .content select#type").append($("<option></option>").val(key).html(value));
 					});
 
-					loadUnidades();
+					loadUnits();
 
-					$("#dashboard-content .content select#measurement_unit").append($("<option></option>").val("").html("nenhuma"));
-					$.each(measurement_units,function(index, item){
-						$("#dashboard-content .content select#measurement_unit").append($("<option></option>").val(item.id).html(item.name));
-					});
+					loadComboUnits(measurement_units,$("#dashboard-content .content select#measurement_unit"),$("#dashboard-content .content input#unit_new"),$("#dashboard-content .content input#unit_sg_new"));
 
 					loadSources();
 

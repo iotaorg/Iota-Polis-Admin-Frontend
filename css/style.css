@@ -337,6 +337,33 @@ a.button-add:hover{
 	-moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
 	-webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
 }
+.form input.itext50px{
+	font-size: 10pt;
+	width: 50px;
+	border: 1px solid #bbb;
+	padding: 5px;
+	box-shadow: inset 0 0 5px #e0e0e0;
+	-moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	-webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+}
+.form input.itext80px{
+	font-size: 10pt;
+	width: 80px;
+	border: 1px solid #bbb;
+	padding: 5px;
+	box-shadow: inset 0 0 5px #e0e0e0;
+	-moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	-webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+}
+.form input.itext250px{
+	font-size: 10pt;
+	width: 250px;
+	border: 1px solid #bbb;
+	padding: 5px;
+	box-shadow: inset 0 0 5px #e0e0e0;
+	-moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	-webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+}
 .form input.itext200px{
 	font-size: 10pt;
 	width: 200px;
@@ -1156,7 +1183,9 @@ select.variation-filter{
 }
 
 a#delete-source,
-a#add-source{
+a#add-source,
+a#add-unit,
+a#delete-unit{
 	color: #099;
 	font-size: 9pt;
 	text-decoration: none;
@@ -1164,7 +1193,9 @@ a#add-source{
 	border: 1px solid #099;
 }
 a#delete-source:hover,
-a#add-source:hover{
+a#add-source:hover,
+a#add-unit:hover,
+a#delete-unit:hover{
 	color: #000;
 	border: 1px solid #666;
 }

@@ -320,6 +320,12 @@ a.button-add:hover{
 	word-wrap: break-word;
 	width: 76%;
 }
+.form .input_label{
+	float: left;
+	text-align: left;
+	clear: right;
+	padding-top: 4px;;
+}
 
 .form input.itext,
 .form textarea.itext{

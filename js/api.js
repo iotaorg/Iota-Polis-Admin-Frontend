@@ -528,6 +528,25 @@ $(document).ready(function() {
 				}
 			}else if (form_args[i].type == "subtitle"){
 				newform += "<div class='subtitle'>$$title</div>".render({title: form_args[i].title});
+			}else if (form_args[i].type == "inverted"){
+				if (form_args[i].class == undefined) form_args[i].class = "";
+				newform += "<div class='field $$class'>".render({class: form_args[i].class});
+				var newinput;
+				newform += "<div class='label'>";
+				for (j = 0; j < form_args[i].input.length; j++){
+					var input_args = form_args[i].input[j].split(",");
+					newinput = buildInput(input_args);
+					newform += newinput;
+				}
+				newform += "</div>";
+				if (form_args[i].label != ""){
+					var separator = ":";
+				}else{
+					var separator = "";
+				}
+				newform += "<div class='input_label'>$$label</div>".render({label: form_args[i].label});
+				newform += "<div class='clear'></div>";
+				newform += "</div>";
 			}else{
 				if (form_args[i].class == undefined) form_args[i].class = "";
 				newform += "<div class='field $$class'>".render({class: form_args[i].class});
@@ -541,58 +560,7 @@ $(document).ready(function() {
 				newform += "<div class='input'>";
 				for (j = 0; j < form_args[i].input.length; j++){
 					var input_args = form_args[i].input[j].split(",");
-					switch(input_args[0]){
-						case "text":
-						case "password":
-							newinput = "<input type='$$type' name='$$id' id='$$id' class='$$class'>".render({
-									type: input_args[0],
-									id: input_args[1],
-									class: input_args[2]
-									})
-							break;
-						case "select":
-							newinput = "<select name='$$id' id='$$id' class='$$class'></select>".render({
-									id: input_args[1],
-									class: input_args[2]
-									})
-							break;
-						case "radio":
-							newinput = "<input type='radio' name='$$id' id='$$id' class='$$class' />".render({
-									id: input_args[1],
-									class: input_args[2]
-									})
-							break;
-						case "checkbox":
-							newinput = "<input type='checkbox' name='$$id' id='$$id' class='$$class' />".render({
-									id: input_args[1],
-									class: input_args[2]
-									})
-							break;
-						case "textarea":
-							newinput = "<textarea name='$$id' id='$$id' class='$$class'></textarea>".render({
-									id: input_args[1],
-									class: input_args[2]
-									})
-							break;
-						case "textlabel":
-							newinput = "<div class='$$class' id='$$id'></div>".render({
-									id: input_args[1],
-									class: input_args[2]
-									})
-							break;
-						case "file":
-							newinput = "<form id='formFileUpload_$$id'><div class='file'><input type='file' name='arquivo_$$id' id='arquivo_$$id' original-id='arquivo_$$id' class='$$class'></div></form><iframe id='iframe_$$id' name='iframe_$$id' frameborder='0'></iframe>".render({
-									id: input_args[1],
-									class: input_args[2]
-									})
-							break;
-						case "button":
-							newinput = "<a href='javascript: void(0);' id='$$id' class='$$class'></a>".render({
-									id: input_args[1],
-									class: input_args[2]
-									})
-							break;
-					}
+					newinput = buildInput(input_args);
 					newform += newinput;
 				}
 				newform += "</div>";
@@ -609,6 +577,63 @@ $(document).ready(function() {
 
 		return newform;
 	};
+	
+	var buildInput = function(input_args){
+		switch(input_args[0]){
+			case "text":
+			case "password":
+				newinput = "<input type='$$type' name='$$id' id='$$id' class='$$class'>".render({
+						type: input_args[0],
+						id: input_args[1],
+						class: input_args[2]
+						})
+				break;
+			case "select":
+				newinput = "<select name='$$id' id='$$id' class='$$class'></select>".render({
+						id: input_args[1],
+						class: input_args[2]
+						})
+				break;
+			case "radio":
+				newinput = "<input type='radio' name='$$id' id='$$id' class='$$class' />".render({
+						id: input_args[1],
+						class: input_args[2]
+						})
+				break;
+			case "checkbox":
+				newinput = "<input type='checkbox' name='$$id' id='$$id' class='$$class' />".render({
+						id: input_args[1],
+						class: input_args[2]
+						})
+				break;
+			case "textarea":
+				newinput = "<textarea name='$$id' id='$$id' class='$$class'></textarea>".render({
+						id: input_args[1],
+						class: input_args[2]
+						})
+				break;
+			case "textlabel":
+				newinput = "<div class='$$class' id='$$id'></div>".render({
+						id: input_args[1],
+						class: input_args[2]
+						})
+				break;
+			case "file":
+				newinput = "<form id='formFileUpload_$$id'><div class='file'><input type='file' name='arquivo_$$id' id='arquivo_$$id' original-id='arquivo_$$id' class='$$class'></div></form><iframe id='iframe_$$id' name='iframe_$$id' frameborder='0'></iframe>".render({
+						id: input_args[1],
+						class: input_args[2]
+						})
+				break;
+			case "button":
+				newinput = "<a href='javascript: void(0);' id='$$id' class='$$class'></a>".render({
+						id: input_args[1],
+						class: input_args[2]
+						})
+				break;
+		}
+		return newinput;
+		
+	}
 
 	var buildButton = function(label,classname,id){
 		var new_button = "<a href='javascript: void(0);' class='$$class' id='$$id'>$$label</a>".render({
@@ -893,7 +918,9 @@ $(document).ready(function() {
 		$(objText).hide();
 		$(objText).attr("placeholder","descrição da nova fonte");
 		$(objText).css("margin-top","5px");
-		$(objText).before("&nbsp;<a href='#' id='delete-source'>remover fonte</a><br />");
+		if (!findInArray(user_info.roles,"user")){
+			$(objText).before("&nbsp;<a href='#' id='delete-source'>remover fonte</a><br />");
+		}
 		$(objText).after("&nbsp;<a href='#' id='add-source'>adicionar</a>");
 		$(objSelect).next("a#delete-source").hide();
 		$(objText).next("a#add-source").hide();
@@ -2026,7 +2053,7 @@ $(document).ready(function() {
 										"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
 										},
 						  "bProcessing": true,
-						  "sAjaxSource": api_path + '/api/user?role=user&&network_id=$$network_id&api_key=$$key&content-type=application/json&columns=name,email,url,_,_'.render({
+						  "sAjaxSource": api_path + '/api/user?role=user&network_id=$$network_id&api_key=$$key&content-type=application/json&columns=name,email,url,_,_'.render({
 								key: $.cookie("key"),
 								network_id: $.cookie("network.id")
 								}),
@@ -3552,8 +3579,9 @@ $(document).ready(function() {
 							async: false,
 							type: 'GET',
 							dataType: 'json',
-							url: api_path + '/api/user/?api_key=$$key'.render({
-									key: $.cookie("key")
+							url: api_path + '/api/user?role=user&network_id=$$network_id&api_key=$$key'.render({
+									key: $.cookie("key"),
+									network_id: $.cookie("network.id")
 									}),
 							success: function(data, textStatus, jqXHR){
 								data.users.sort(function (a, b) {
@@ -6235,9 +6263,40 @@ $(document).ready(function() {
 					newform.push({label: "Imagem do<br />perfil da cidade<br /><font size='1'>(630x135 pixels)</font>", input: ["file,imagem_cidade,itext"]});
 				}
 
+				if (findInArray(user_info.roles,"superadmin")){
+					var data_institute;
+					$.ajax({
+						async: false,
+						type: 'GET',
+						dataType: 'json',
+						url: api_path + '/api/institute?api_key=$$key'.render({
+									key: $.cookie("key")
+							}),
+						success: function(data,status,jqXHR){
+							data_institute = data;
+							$.each(data.institute, function(index,item){
+								newform.push({type: "subtitle", title: "Instituição: " + item.name, class: "institute"});
+								newform.push({type: "inverted", label: "Usuários podem editar valores", input: ["checkbox,users_can_edit_value_inst_" + item.id + ",checkbox"]});
+								newform.push({type: "inverted", label: "Usuários podem editar grupos", input: ["checkbox,users_can_edit_groups_inst_" + item.id + ",checkbox"]});
+								newform.push({type: "inverted", label: "Usuários podem customizar CSS", input: ["checkbox,users_can_use_custom_css_inst_" + item.id + ",checkbox"]});
+								newform.push({type: "inverted", label: "Usuários podem criar páginas custmizadas", input: ["checkbox,can_use_custom_pages_inst_" + item.id + ",checkbox"]});
+							});
+						}
+					});
+				}
+
 				var formbuild = $("#dashboard-content .content").append(buildForm(newform,"Preferências"));
 				$(formbuild).find("div .field:odd").addClass("odd");
 				$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+
+				if (findInArray(user_info.roles,"superadmin")){
+					$.each(data_institute.institute, function(index,item){
+						if (item.users_can_edit_value == 1) $("input#users_can_edit_value_inst_" + item.id).attr("checked",true);
+						if (item.users_can_edit_groups == 1) $("input#users_can_edit_groups_inst_" + item.id).attr("checked",true);
+						if (item.users_can_use_custom_css == 1) $("input#users_can_use_custom_css_inst_" + item.id).attr("checked",true);
+						if (item.can_use_custom_pages == 1) $("input#can_use_custom_pages_inst_" + item.id).attr("checked",true);
+					});
+				}
 
 				$.ajax({
 					type: 'GET',
@@ -6324,6 +6383,28 @@ $(document).ready(function() {
 									}),
 								data: args,
 								success: function(data, textStatus, jqXHR){
+
+									if (findInArray(user_info.roles,"superadmin")){
+										$.each(data_institute.institute, function(index,item){
+											args = [{name: "api_key", value: $.cookie("key")},
+													{name: "institute.update.users_can_edit_value", value: ($("input#users_can_edit_value_inst_" + item.id).attr("checked") ? 1 : 0)},
+													{name: "institute.update.users_can_edit_groups", value: ($("input#users_can_edit_groups_inst_" + item.id).attr("checked") ? 1 : 0)},
+													{name: "institute.update.users_can_use_custom_css", value: ($("input#users_can_use_custom_css_inst_" + item.id).attr("checked") ? 1 : 0)},
+													{name: "institute.update.users_can_use_custom_pages", value: ($("input#can_use_custom_pages_inst_" + item.id).attr("checked") ? 1 : 0)}
+													];
+											$.ajax({
+												async: false,
+												type: 'POST',
+												dataType: 'json',
+												url: api_path + '/api/institute?api_key=$$key'.render({
+													userid: $.cookie("user.id"),
+													key: $.cookie("key")
+													}),
+												data: args
+											});
+										});
+									}
+
 									$(clickedButton).html("Salvar");
 									$(clickedButton).attr("is-disabled",0);
 									$("#aviso").setWarning({msg: "Preferências salvas.".render({

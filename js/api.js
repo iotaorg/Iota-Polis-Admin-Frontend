@@ -180,6 +180,7 @@ $(document).ready(function() {
 	
 		menu_label["admins"] = "Administradores";
 		menu_label["axis"] = "Eixos";
+		menu_label["customize"] = "Customização";
 		menu_label["dashboard"] = "Início";
 		menu_label["indicator"] = "Indicadores";
 		menu_label["logout"] = "Sair";
@@ -200,16 +201,45 @@ $(document).ready(function() {
 		submenu_label["parameters"].push({"states" : "Estados"});
 		submenu_label["parameters"].push({"cities" : "Cidades"});
 		submenu_label["parameters"].push({"units" : "Unidades de Medida"});
+
+		submenu_label["customize"] = [];
+		submenu_label["customize"].push({"menus" : "Menus"});
+		submenu_label["customize"].push({"pages" : "Páginas"});
+		submenu_label["customize"].push({"css" : "CSS"});
 	
 	
 		menu_access["superadmin"] = ["prefs","parameters","networks","admins","indicator","axis","logout"];
 		submenu_access["superadmin"] = ["countries","states","cities","units"];
 		menu_access["admin"] = ["prefs","users","parameters","variable","myvariableedit","axis","indicator","logout"];
 		submenu_access["admin"] = ["countries","states","cities","units"];
-		if (findInArray(user_info.roles,"_movimento")){
-			menu_access["user"] = ["prefs","myvariable","myvariableedit","myindicator","mygroup","logout"];
-		}else{
-			menu_access["user"] = ["prefs","myvariable","myvariableedit","myindicator","logout"];
+		submenu_access["user"] = [];
+		if (findInArray(user_info.roles,"user")){
+			menu_access["user"] = ["prefs","myvariable"];
+			if(user_info.institute.users_can_edit_value == 1){
+				menu_access["user"].push("myvariableedit");	
+			}
+			menu_access["user"].push("myindicator");
+			if(user_info.institute.users_can_edit_groups == 1){
+				menu_access["user"].push("mygroup");	
+			}
+			if(user_info.institute.users_can_edit_groups == 1){
+				menu_access["user"].push("mygroup");	
+			}
+			if(user_info.institute.can_use_custom_pages == 1){
+				if (!findInArray(menu_access["user"],"customize")){
+					menu_access["user"].push("customize");	
+				}
+				submenu_access["user"].push("pages");	
+				submenu_access["user"].push("menus");	
+			}
+			if(user_info.institute.can_use_custom_css == 1){
+				if (!findInArray(menu_access["user"],"customize")){
+					menu_access["user"].push("customize");	
+				}
+				submenu_access["user"].push("css");	
+			}
+			
+			menu_access["user"].push("logout");
 		}
 	
 		var menu_item = "";
@@ -3641,7 +3671,6 @@ $(document).ready(function() {
 									$.each(group.items, function(index_item,item){
 										for (i = 0; i < data_indicators.length; i++){
 											if (data_indicators[i].id == item.indicator_id){
-												console.log(data_indicators[i].network_configs);
 												var formula = formataFormula(data_indicators[i].formula,data_variables,data_vvariables);
 												indicators_table += "<div class='variable' indicator-id='$$indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$id' period='$$period'>detalhes</a><a href='$$hash?option=edit&url=$$url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
 													name: data_indicators[i].name,
@@ -4847,6 +4876,412 @@ $(document).ready(function() {
 													key: $.cookie("key")
 											})});
 				}
+			}else if (getUrlSub() == "css"){
+				/*  CSS  */
+				if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
+
+					$("#dashboard-content .content").append("<div class='upload_css'></div>");
+					var newform = [];
+					newform.push({label: "Arquivo CSS", input: ["file,arquivo,itext"]});
+					var formbuild = $("#dashboard-content .content .upload_css").append(buildForm(newform,"Customizar CSS"));
+					$(formbuild).find("div .field:odd").addClass("odd");
+					$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+					$("#dashboard-content .content .upload_css .botao-form[ref='cancelar']").hide()
+					
+					$("#dashboard-content .content .upload_css .botao-form[ref='enviar']").click(function(){
+	
+						var clickedButton = $(this);
+
+						var file = "arquivo";
+						var form = $("#formFileUpload_"+file);
+	
+						original_id = $('#arquivo_'+file).attr("original-id");
+	
+						$('#arquivo_'+file).attr({
+												name: "arquivo",
+												id: "arquivo"
+											 });
+	
+						form.attr("action", api_path + '/api/user/$$user_id/arquivo/custom.css?api_key=$$key&content-type=application/json'.render({
+								key: $.cookie("key"),
+								user_id: $.cookie("user.id")
+								}));
+						form.attr("method", "post");
+						form.attr("enctype", "multipart/form-data");
+						form.attr("encoding", "multipart/form-data");
+						form.attr("target", "iframe_"+file);
+						form.attr("file", $('#arquivo').val());
+						form.submit();
+						$('#arquivo').attr({
+												name: original_id,
+												id: original_id
+											 });
+	
+						$("#iframe_"+file).load( function(){
+	
+							var erro = 0;
+							if ($(this).contents()){
+								if 	($(this).contents()[0].body){
+									if 	($(this).contents()[0].body.outerHTML){
+										var retorno = $(this).contents()[0].body.outerHTML;
+										retorno = retorno.replace("<body><pre>","");
+										retorno = retorno.replace("</pre></body>","");
+										retorno = $.parseJSON(retorno);
+									}else{
+										erro = 1;
+									}
+								}else{
+									erro = 1;
+								}
+							}else{
+								erro = 1;
+							}
+	
+							if (erro == 0){
+								if (!retorno.error){
+									$(".upload_css .form-aviso").setWarning({msg: "Arquivo enviado com sucesso"});
+									$(clickedButton).html("Enviar");
+									$(clickedButton).attr("is-disabled",0);
+								}else{
+									$(".upload_css .form-aviso").setWarning({msg: "Erro ao enviar arquivo (" + retorno.error + ")"});
+									$(clickedButton).html("Enviar");
+									$(clickedButton).attr("is-disabled",0);
+									return;
+								}
+							}else{
+								console.log("Erro ao enviar arquivo");
+								$(".value_via_file .form-aviso").setWarning({msg: "Erro ao enviar arquivo"});
+								$(clickedButton).html("Enviar");
+								$(clickedButton).attr("is-disabled",0);
+								return;
+							}
+						});
+					});
+				}
+			}else if (getUrlSub() == "menus"){
+				/*  Menus  */
+				if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
+
+					var userList = buildDataTable({
+							headers: ["Título","Pai","Posição","_"]
+							});
+
+					$("#dashboard-content .content").append(userList);
+
+					$("#button-add").click(function(){
+						resetWarnings();
+						location.hash = "#!/" + getUrlSub() + "?option=add";
+					});
+
+					$("#results").dataTable( {
+						  "oLanguage": {
+										"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
+										},
+						  "bProcessing": true,
+						  "sAjaxSource": api_path + '/api/menu?api_key=$$key&content-type=application/json&columns=title,menu_id,position,url,_,_'.render({
+								key: $.cookie("key")
+								}),
+						  "aoColumnDefs": [
+                        					{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 3 ] }
+                    					  ],
+						  "aaSorting": [[1,'asc'],[2,'asc']],
+						   "fnDrawCallback": function(){
+								DTdesenhaBotoes();
+							}
+					} );
+
+				}else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit"){
+
+					var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+
+					var newform = [];
+
+					newform.push({label: "Menu Pai", input: ["select,menu_id,iselect"]});
+					newform.push({label: "Título", input: ["text,title,itext"]});
+					newform.push({label: "Posição", input: ["select,position,iselect"]});
+					newform.push({label: "Página", input: ["select,pagina_id,iselect"]});
+
+					var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
+					$(formbuild).find("div .field:odd").addClass("odd");
+					$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+
+					$(formbuild).find("#title").qtip( $.extend(true, {}, qtip_input, {
+							content: "Título do Menu."
+					}));
+
+					$("#dashboard-content .content select#menu_id").append($("<option></option>").val("").html("Nenhum"));
+					$.ajax({
+						async: false,
+						type: 'GET',
+						dataType: 'json',
+						url: api_path + "/api/menu?api_key=$$key".render({
+									key: $.cookie("key")
+							}),
+						success: function(data,status,jqXHR){
+							data.title.sort(function (a, b) {
+								a = String(a.title),
+								b = String(b.title);
+								return a.localeCompare(b);
+							});
+							$.each(data.menu,function(index, item){
+								if (!data.menu_id){
+									$("#dashboard-content .content select#menu_id").append($("<option></option>").val(item.id).html(item.title));
+								}
+							});
+						}
+					});
+
+					for (i = 0; i <= 10; i++){
+						$("#dashboard-content .content select#position").append($("<option></option>").val(i).html(i));
+					}
+
+					$("#dashboard-content .content select#page_id").append($("<option></option>").val("").html("Nenhuma"));
+					$.ajax({
+						async: false,
+						type: 'GET',
+						dataType: 'json',
+						url: api_path + "/api/page?api_key=$$key".render({
+									key: $.cookie("key")
+							}),
+						success: function(data,status,jqXHR){
+							data.title.sort(function (a, b) {
+								a = String(a.title),
+								b = String(b.title);
+								return a.localeCompare(b);
+							});
+							$.each(data.menu,function(index, item){
+								if (!data.menu_id){
+									$("#dashboard-content .content select#page_id").append($("<option></option>").val(item.id).html(item.title + " url: " + item.title_url));
+								}
+							});
+						}
+					});
+
+					if ($.getUrlVar("option") == "edit"){
+						$.ajax({
+							type: 'GET',
+							dataType: 'json',
+							url: $.getUrlVar("url") + "?api_key=$$key".render({
+										key: $.cookie("key")
+								}),
+							success: function(data,status,jqXHR){
+								switch(jqXHR.status){
+									case 200:
+										$(formbuild).find("select#menu_id").val(data.menu_id);
+										$(formbuild).find("input#title").val(data.title);
+										$(formbuild).find("select#position").val(data.position);
+										$(formbuild).find("select#page_id").val(data.page_id);
+										break;
+								}
+							},
+							error: function(data){
+								switch(data.status){
+									case 400:
+										$(".form-aviso").setWarning({msg: "Erro: ($$codigo)".render({
+													codigo: $.parseJSON(data.responseText).error
+													})
+										});
+										break;
+								}
+							}
+						});
+					}
+
+					$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
+						resetWarnings();
+						if ($(this).parent().parent().find("#institute_id option:selected").val() == ""){
+							$(".form-aviso").setWarning({msg: "Por favor informe o Título"});
+						}else{
+
+							if ($.getUrlVar("option") == "add"){
+								var action = "create";
+								var method = "POST";
+								var url_action = api_path + "/api/menu";
+							}else{
+								var action = "update";
+								var method = "POST";
+								var url_action = $.getUrlVar("url");
+							}
+
+							args = [{name: "api_key", value: $.cookie("key")},
+									{name: "menu." + action + ".menu_id", value: $(this).parent().parent().find("#menu_id option:selected").val()},
+									{name: "menu." + action + ".title", value: $(this).parent().parent().find("#title").val()},
+									{name: "menu." + action + ".position", value: $(this).parent().parent().find("#position option:selected").val()},
+									{name: "menu." + action + ".page_id", value: $(this).parent().parent().find("#page_id option:selected").val()}
+									];
+							$("#dashboard-content .content .botao-form[ref='enviar']").hide();
+							$.ajax({
+								type: method,
+								dataType: 'json',
+								url: url_action,
+								data: args,
+								success: function(data,status,jqXHR){
+									$("#aviso").setWarning({msg: "Operação efetuada com sucesso.".render({
+												codigo: jqXHR.status
+												})
+									});
+									location.hash = "#!/"+getUrlSub();
+								},
+								error: function(data){
+									switch(data.status){
+										case 400:
+											$("#aviso").setWarning({msg: "Erro ao $$operacao. ($$codigo)".render({
+														operacao: txtOption,
+														codigo: $.parseJSON(data.responseText).error
+														})
+											});
+											break;
+									}
+									$("#dashboard-content .content .botao-form[ref='enviar']").show();
+								}
+							});
+						}
+					});
+					$("#dashboard-content .content .botao-form[ref='cancelar']").click(function(){
+						resetWarnings();
+						history.back();
+					});
+				}else if ($.getUrlVar("option") == "delete"){
+					deleteRegister({url:$.getUrlVar("url") + "?api_key=$$key".render({
+													key: $.cookie("key")
+											})});
+				}
+			}else if (getUrlSub() == "pages"){
+				/*  Páginas  */
+				if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
+
+					var userList = buildDataTable({
+							headers: ["Título","Url","_"]
+							});
+
+					$("#dashboard-content .content").append(userList);
+
+					$("#button-add").click(function(){
+						resetWarnings();
+						location.hash = "#!/" + getUrlSub() + "?option=add";
+					});
+
+					$("#results").dataTable( {
+						  "oLanguage": {
+										"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
+										},
+						  "bProcessing": true,
+						  "sAjaxSource": api_path + '/api/menu?api_key=$$key&content-type=application/json&columns=title,title_url,url,_,_'.render({
+								key: $.cookie("key")
+								}),
+						  "aoColumnDefs": [
+                        					{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 2 ] }
+                    					  ],
+						   "fnDrawCallback": function(){
+								DTdesenhaBotoes();
+							}
+					} );
+
+				}else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit"){
+
+					var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+
+					var newform = [];
+
+					newform.push({label: "Título", input: ["text,title,itext"]});
+					newform.push({label: "Url", input: ["text,title_url,itext"]});
+					newform.push({label: "Conteúdo", input: ["textarea,content,itext_content"]});
+
+					var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
+					$(formbuild).find("div .field:odd").addClass("odd");
+					$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+
+					$(formbuild).find("#title").qtip( $.extend(true, {}, qtip_input, {
+							content: "Título da Página."
+					}));
+
+					if ($.getUrlVar("option") == "edit"){
+						$.ajax({
+							type: 'GET',
+							dataType: 'json',
+							url: $.getUrlVar("url") + "?api_key=$$key".render({
+										key: $.cookie("key")
+								}),
+							success: function(data,status,jqXHR){
+								switch(jqXHR.status){
+									case 200:
+										$(formbuild).find("input#title").val(data.title);
+										$(formbuild).find("input#title_url").val(data.title_url);
+										$(formbuild).find("textarea#content").val(data.content);
+										break;
+								}
+							},
+							error: function(data){
+								switch(data.status){
+									case 400:
+										$(".form-aviso").setWarning({msg: "Erro: ($$codigo)".render({
+													codigo: $.parseJSON(data.responseText).error
+													})
+										});
+										break;
+								}
+							}
+						});
+					}
+
+					$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
+						resetWarnings();
+						if ($(this).parent().parent().find("#institute_id option:selected").val() == ""){
+							$(".form-aviso").setWarning({msg: "Por favor informe o Título"});
+						}else{
+
+							if ($.getUrlVar("option") == "add"){
+								var action = "create";
+								var method = "POST";
+								var url_action = api_path + "/api/page";
+							}else{
+								var action = "update";
+								var method = "POST";
+								var url_action = $.getUrlVar("url");
+							}
+
+							args = [{name: "api_key", value: $.cookie("key")},
+									{name: "page." + action + ".title", value: $(this).parent().parent().find("#title").val()},
+									{name: "page." + action + ".title_url", value: $(this).parent().parent().find("#title_url").val()},
+									{name: "page." + action + ".content", value: $(this).parent().parent().find("#content").val()}
+									];
+							$("#dashboard-content .content .botao-form[ref='enviar']").hide();
+							$.ajax({
+								type: method,
+								dataType: 'json',
+								url: url_action,
+								data: args,
+								success: function(data,status,jqXHR){
+									$("#aviso").setWarning({msg: "Operação efetuada com sucesso.".render({
+												codigo: jqXHR.status
+												})
+									});
+									location.hash = "#!/"+getUrlSub();
+								},
+								error: function(data){
+									switch(data.status){
+										case 400:
+											$("#aviso").setWarning({msg: "Erro ao $$operacao. ($$codigo)".render({
+														operacao: txtOption,
+														codigo: $.parseJSON(data.responseText).error
+														})
+											});
+											break;
+									}
+									$("#dashboard-content .content .botao-form[ref='enviar']").show();
+								}
+							});
+						}
+					});
+					$("#dashboard-content .content .botao-form[ref='cancelar']").click(function(){
+						resetWarnings();
+						history.back();
+					});
+				}else if ($.getUrlVar("option") == "delete"){
+					deleteRegister({url:$.getUrlVar("url") + "?api_key=$$key".render({
+													key: $.cookie("key")
+											})});
+				}
 			}else if (getUrlSub() == "prefs"){
 
 				var newform = [];
@@ -4936,6 +5371,14 @@ $(document).ready(function() {
 								$(formbuild).find("input#email_contato").val(data.email_contato);
 								$(formbuild).find("input#telefone_contato").val(data.telefone_contato);
 								$(formbuild).find("input#nome_responsavel_cadastro").val(data.nome_responsavel_cadastro);
+								if (findInArray(user_info.roles,"_movimento")){
+									if (data.files.logo_movimento){
+										$("input#arquivo_logo_movimento").after("<br /><img src='" + data.files.logo_movimento + "' border='0' height='60' class='logo_preview'>");
+									}
+									if (data.files.imagem_cidade){
+										$("input#arquivo_imagem_cidade").after("<br /><img src='" + data.files.imagem_cidade + "' border='0' class='imagem_preview'>");
+									}
+								}
 
 								break;
 						}

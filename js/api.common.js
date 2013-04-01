@@ -337,50 +337,6 @@ var resetWarnings = function(){
 	$(".form-aviso").empty();
 };
 
-$("#form-login form").submit(function(e){
-	e.preventDefault();
-	resetWarnings();
-	sendLogin();
-});
-
-var sendLogin = function(){
-	args = [{name: "user.login.email",value: $("#form-login #usuario").val()},
-
-			{name: "user.login.password",value: $("#form-login #senha").val()}
-			];
-
-	$.ajax({
-		type: 'POST',
-		dataType: 'json',
-		url: api_path + '/api/login',
-		data: args,
-		success: function(data,status,jqXHR){
-			switch(jqXHR.status){
-				case 200:
-					resetWarnings();
-					$.cookie("user.login",data.login,{ expires: 1, path: "/" });
-					$.cookie("user.id",data.id,{ expires: 1, path: "/" });
-					$.cookie("network.id",data.network_id,{ expires: 1, path: "/" });
-					$.cookie("key",data.api_key,{ expires: 1, path: "/" });
-					$("#dashboard #form-login").hide();
-					location.hash = "!/dashboard";
-					break;
-			}
-		},
-		error: function(data){
-			if (data.responseText){
-				$("#aviso").setWarning({msg: "$$error".render({
-						error: $.trataErro($.parseJSON(data.responseText).error)
-					})});
-			}else{
-				$("#aviso").setWarning({msg: "Erro ao fazer login. ($$error)".render({
-						error: data.status
-					})});
-			}
-		}
-	});
-};
-
 /*monta titleBar*/
 
 var setTitleBar = function(){
@@ -1212,7 +1168,11 @@ $.loading = function(params){
 		return false;
 	}
 
-	if (params.title == undefined) params.title = "Carregando...";
+	if (params){
+			if (params.title == undefined) params.title = "Carregando...";
+	}else{
+		 params = {title: "Carregando..."};
+	}
 	var loadingWindow = "<div id='dialog-overlay'>";
 	loadingWindow += "<div id='dialog-box'>";
 	loadingWindow += "<div id='dialog-content'>";

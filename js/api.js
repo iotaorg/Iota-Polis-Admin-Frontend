@@ -10,6 +10,50 @@ $(document).ready(function() {
 		buildUserInterface();
 	})
 
+	$("#form-login form").submit(function(e){
+		e.preventDefault();
+		resetWarnings();
+		sendLogin();
+	});
+	
+	var sendLogin = function(){
+		args = [{name: "user.login.email",value: $("#form-login #usuario").val()},
+	
+				{name: "user.login.password",value: $("#form-login #senha").val()}
+				];
+	
+		$.ajax({
+			type: 'POST',
+			dataType: 'json',
+			url: api_path + '/api/login',
+			data: args,
+			success: function(data,status,jqXHR){
+				switch(jqXHR.status){
+					case 200:
+						resetWarnings();
+						$.cookie("user.login",data.login,{ expires: 1, path: "/" });
+						$.cookie("user.id",data.id,{ expires: 1, path: "/" });
+						$.cookie("network.id",data.network_id,{ expires: 1, path: "/" });
+						$.cookie("key",data.api_key,{ expires: 1, path: "/" });
+						$("#dashboard #form-login").hide();
+						location.hash = "!/dashboard";
+						break;
+				}
+			},
+			error: function(data){
+				if (data.responseText){
+					$("#aviso").setWarning({msg: "$$error".render({
+							error: $.trataErro($.parseJSON(data.responseText).error)
+						})});
+				}else{
+					$("#aviso").setWarning({msg: "Erro ao fazer login. ($$error)".render({
+							error: data.status
+						})});
+				}
+			}
+		});
+	};
+
 	var buildUserInterface = function(){
 		if ($.cookie("key") != null && $.cookie("key") != ""){
 			$.ajax({
@@ -1972,9 +2016,7 @@ $(document).ready(function() {
 					if (user_info.roles[0] == "admin"){
 						$("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='user'>Usuário: <select id='user-id'></select></div>");
 						$("#dashboard-content .content #user-id").append($("<option value=''>Selecione...</option>"));
-
 						$.ajax({
-							async: false,
 							type: 'GET',
 							dataType: 'json',
 							url: api_path + '/api/user?role=user&network_id=$$network_id&api_key=$$key'.render({
@@ -2005,8 +2047,8 @@ $(document).ready(function() {
 					function carregaVariaveisEdit(){
 						$("#dashboard-content .content #variable_id option").remove();
 						$("#dashboard-content .content #variable_id").append($("<option value=''>Todas</option>"));
+						$.loading();
 						$.ajax({
-							async: false,
 							type: 'GET',
 							dataType: 'json',
 							url: api_path + '/api/user/$$userid/variable?api_key=$$key'.render({
@@ -2026,6 +2068,7 @@ $(document).ready(function() {
 										nome: item.name
 									})));
 								});
+								$.loading.hide();
 							}
 						});
 					}
@@ -2062,6 +2105,83 @@ $(document).ready(function() {
 					$("#dashboard-content .content .variable-filter input#data_fim").datepicker("setDate", new Date());
 
 					$("#dashboard-content .content").append("<div class='resultado'></div>");
+	
+					$("#dashboard-content .content").append("<div class='value_via_file'></div>");
+					var newform = [];
+					newform.push({label: "Arquivo (XLSX, XLS ou CSV)", input: ["file,arquivo,itext"]});
+					var formbuild = $("#dashboard-content .content .value_via_file").append(buildForm(newform,"Importar valores"));
+					$(formbuild).find("div .field:odd").addClass("odd");
+					$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+					$("#dashboard-content .content .value_via_file .botao-form[ref='cancelar']").hide()
+					
+					$("#dashboard-content .content .value_via_file .botao-form[ref='enviar']").click(function(){
+	
+						var clickedButton = $(this);
+
+						var file = "arquivo";
+						var form = $("#formFileUpload_"+file);
+	
+						original_id = $('#arquivo_'+file).attr("original-id");
+	
+						$('#arquivo_'+file).attr({
+												name: "arquivo",
+												id: "arquivo"
+											 });
+	
+						form.attr("action", api_path + '/api/variable/value_via_file?api_key=$$key&content-type=application/json'.render({
+								key: $.cookie("key")
+								}));
+						form.attr("method", "post");
+						form.attr("enctype", "multipart/form-data");
+						form.attr("encoding", "multipart/form-data");
+						form.attr("target", "iframe_"+file);
+						form.attr("file", $('#arquivo').val());
+						form.submit();
+						$('#arquivo').attr({
+												name: original_id,
+												id: original_id
+											 });
+	
+						$("#iframe_"+file).load( function(){
+	
+							var erro = 0;
+							if ($(this).contents()){
+								if 	($(this).contents()[0].body){
+									if 	($(this).contents()[0].body.outerHTML){
+										var retorno = $(this).contents()[0].body.outerHTML;
+										retorno = retorno.replace("<body><pre>","");
+										retorno = retorno.replace("</pre></body>","");
+										retorno = $.parseJSON(retorno);
+									}else{
+										erro = 1;
+									}
+								}else{
+									erro = 1;
+								}
+							}else{
+								erro = 1;
+							}
+	
+							if (erro == 0){
+								if (!retorno.error){
+									$(".value_via_file .form-aviso").setWarning({msg: "Arquivo enviado com sucesso"});
+									$(clickedButton).html("Enviar");
+									$(clickedButton).attr("is-disabled",0);
+								}else{
+									$(".value_via_file .form-aviso").setWarning({msg: "Erro ao enviar arquivo " + file + " (" + retorno.error + ")"});
+									$(clickedButton).html("Enviar");
+									$(clickedButton).attr("is-disabled",0);
+									return;
+								}
+							}else{
+								console.log("Erro ao enviar arquivo " + file);
+								$(".value_via_file .form-aviso").setWarning({msg: "Erro ao enviar arquivo " + file});
+								$(clickedButton).html("Enviar");
+								$(clickedButton).attr("is-disabled",0);
+								return;
+							}
+						});
+					});
 
 					if (user_info.roles[0] != "admin"){
 						carregaVariaveisEdit();
@@ -3442,6 +3562,7 @@ $(document).ready(function() {
 														"formula":data.indicators[index].formula,
 														"axis_id":data.indicators[index].axis_id,
 														"axis":data.indicators[index].axis,
+														"network_configs":data.indicators[index].network_configs,
 														"period":'yearly',
 													 });
 							});
@@ -3451,6 +3572,20 @@ $(document).ready(function() {
 								b = b.axis.name;
 
 								return a.localeCompare(b);
+							});
+
+							var data_groups = [];
+							$.ajax({
+								async: false,
+								type: 'GET',
+								dataType: 'json',
+								url: api_path + '/api/user_indicator_axis?api_key=$$key'.render({
+										key: $.cookie("key"),
+										userid: $.cookie("user.id")
+										}),
+								success: function(data, textStatus, jqXHR){
+									data_groups = data.user_indicator_axis;
+								}
 							});
 
 							var data_variables = [];
@@ -3497,26 +3632,56 @@ $(document).ready(function() {
 
 							indicators_table = "<div class='indicadores_list'>";
 
-							for (i = 0; i < data_indicators.length; i++){
-								if (data_indicators[i].axis_id != axis_ant){
-									if (i > 0){
-										indicators_table += "</div>";
-									}
-									indicators_table += "<div class='eixos'><div class='title'>$$axis</div><div class='clear'></div>".render({axis: data_indicators[i].axis.name});
-									axis_ant = data_indicators[i].axis_id;
-								}
-								var formula = formataFormula(data_indicators[i].formula,data_variables,data_vvariables);
-								indicators_table += "<div class='variable' indicator-id='$$indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$id' period='$$period'>detalhes</a><a href='$$hash?option=edit&url=$$url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
-									name: data_indicators[i].name,
-									formula: formula,
-									hash: "#!/"+getUrlSub(),
-									url: api_path + "/api/indicator/" + data_indicators[i].id,
-//									url: "http://rnsp.aware.com.br/api/indicator/" + data_indicators[i].id,
-									indicator_id: data_indicators[i].id,
-									period: data_indicators[i].period,
-									id: data_indicators[i].id
+							//carrega grupos
+							var indicators_in_groups = [];
+							if (data_groups && data_groups.length > 0){
+								$.each(data_groups, function(index_group,group){
+									indicators_table += "<div class='eixos'><div class='title'>$$axis</div><div class='clear'></div>".render({axis: group.name});
+									
+									$.each(group.items, function(index_item,item){
+										for (i = 0; i < data_indicators.length; i++){
+											if (data_indicators[i].id == item.indicator_id){
+												console.log(data_indicators[i].network_configs);
+												var formula = formataFormula(data_indicators[i].formula,data_variables,data_vvariables);
+												indicators_table += "<div class='variable' indicator-id='$$indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$id' period='$$period'>detalhes</a><a href='$$hash?option=edit&url=$$url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
+													name: data_indicators[i].name,
+													formula: formula,
+													hash: "#!/"+getUrlSub(),
+													url: api_path + "/api/indicator/" + data_indicators[i].id,
+													indicator_id: data_indicators[i].id,
+													period: data_indicators[i].period,
+													id: data_indicators[i].id
+													});
+												indicators_table += "<div class='clear'></div>";
+												indicators_in_groups.push(data_indicators[i].id);
+											}
+										}
 									});
-								indicators_table += "<div class='clear'></div>";
+									indicators_table += "</div>";
+								});
+							}
+
+							for (i = 0; i < data_indicators.length; i++){
+								if (!findInArray(indicators_in_groups,data_indicators[i].id)){
+									if (data_indicators[i].axis_id != axis_ant){
+										if (i > 0){
+											indicators_table += "</div>";
+										}
+										indicators_table += "<div class='eixos'><div class='title'>$$axis</div><div class='clear'></div>".render({axis: data_indicators[i].axis.name});
+										axis_ant = data_indicators[i].axis_id;
+									}
+									var formula = formataFormula(data_indicators[i].formula,data_variables,data_vvariables);
+									indicators_table += "<div class='variable' indicator-id='$$indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$id' period='$$period'>detalhes</a><a href='$$hash?option=edit&url=$$url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
+										name: data_indicators[i].name,
+										formula: formula,
+										hash: "#!/"+getUrlSub(),
+										url: api_path + "/api/indicator/" + data_indicators[i].id,
+										indicator_id: data_indicators[i].id,
+										period: data_indicators[i].period,
+										id: data_indicators[i].id
+										});
+									indicators_table += "<div class='clear'></div>";
+								}
 							}
 
 							indicators_table += "<div><div class='clear'>";
@@ -3625,9 +3790,6 @@ $(document).ready(function() {
 											});
 										}
 
-									},
-									error: function(data){
-
 									}
 								});
 							});
@@ -3680,10 +3842,90 @@ $(document).ready(function() {
 								}),
 						success: function(data, textStatus, jqXHR){
 
-							$("#dashboard-content .content").append("<div class='filter_indicator'></div><div class='clear'><br /></div><div class='filter_result'></div><div class='historico'></div>");
+							$("#dashboard-content .content").append("<div class='filter_indicator'></div><div class='clear'><br /></div><div class='filter_result'></div><div class='clear'><br /></div><div class='tech_info'></div><div class='clear'><br /></div><div class='historico'></div>");
 
 							var data_indicator = data;
+							
+							//mostra informação técnica
+							var newform = [];
+							newform.push({label: "Informação Técnica", input: ["textarea,technical_information,itext"]});
 
+							var formbuild = $("#dashboard-content .content .tech_info").append(buildForm(newform,"Observações do Indicador"));
+							$(formbuild).find("div .field:odd").addClass("odd");
+							$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+
+							$("#dashboard-content .content .tech_info .botao-form[ref='enviar']").html("Salvar");
+							$("#dashboard-content .content .tech_info .botao-form[ref='cancelar']").hide();
+
+							$.ajax({
+								type: 'GET',
+								dataType: 'json',
+								url: api_path + '/api/user/$$user_id/indicator_config?indicator_id=$$id&api_key=$$key'.render({
+										key: $.cookie("key"),
+										user_id: $.cookie("user.id"),
+										id: getIdFromUrl($.getUrlVar("url"))
+										}),
+								success: function(data, textStatus, jqXHR){
+									tech_info_id = data.id;
+									$(".tech_info #technical_information").val(data.technical_information);
+								},
+								error: function(data){
+									if (data.status == 404){
+										tech_info_id = null;
+									}
+								}
+							});
+
+
+							$("#dashboard-content .content .tech_info .botao-form[ref='enviar']").click(function(){
+								if ($(".tech_info #technical_information").val() == ""){
+									$(".tech_info .form-aviso").setWarning({msg: "Por favor informe a informação a ser salva.".render({
+												codigo: jqXHR.status
+												})
+									});
+								}else{
+									$.loading();
+									if (tech_info_id){
+										args = [{name: "api_key", value: $.cookie("key")},
+												{name: "user.indicator_config.update.technical_information", value: $(".tech_info #technical_information").val()}
+												];
+										url_action = api_path + "/api/user/$$user_id/indicator_config/$$id".render({
+												user_id: $.cookie("user.id"),
+												id: tech_info_id
+											});
+									}else{
+										args = [{name: "api_key", value: $.cookie("key")},
+												{name: "user.indicator_config.create.technical_information", value: $(".tech_info #technical_information").val()},
+												{name: "user.indicator_config.create.indicator_id", value: getIdFromUrl($.getUrlVar("url"))}
+												];
+										url_action = api_path + "/api/user/$$user_id/indicator_config".render({
+												user_id: $.cookie("user.id")
+											});
+									}
+	
+									$.ajax({
+										type: "POST",
+										dataType: 'json',
+										url: url_action,
+										data: args,
+										success: function(data, textStatus, jqXHR){
+											$(".tech_info .form-aviso").setWarning({msg: "Informação salva com sucesso.".render({
+														codigo: jqXHR.status
+														})
+											});
+											$.loading.hide();
+										},
+										error: function(data){
+											$(".tech_info .form-aviso").setWarning({msg: "Erro ao salvar. ($$erro)".render({
+														erro: $.parseJSON(data.responseText).error
+														})
+											});
+											$.loading.hide();
+										}
+									});
+								}
+
+							});
 							//mostra historico
 							buildIndicatorHistory({"id":getIdFromUrl($.getUrlVar("url")),
 												   "period":data_indicator.period,
@@ -4528,7 +4770,7 @@ $(document).ready(function() {
 							if ($.getUrlVar("option") == "add"){
 								var action = "create";
 								var method = "POST";
-								var url_action = api_path + '/api/user_indicator_axis/$$id/item'.render({id: newId});
+								var url_action = api_path + '/api/user_indicator_axis';
 							}else{
 								var action = "update";
 								var method = "POST";
@@ -4770,8 +5012,9 @@ $(document).ready(function() {
 												async: false,
 												type: 'POST',
 												dataType: 'json',
-												url: api_path + '/api/institute?api_key=$$key'.render({
+												url: api_path + '/api/institute/$$institute_id?api_key=$$key'.render({
 													userid: $.cookie("user.id"),
+													institute_id: item.id,
 													key: $.cookie("key")
 													}),
 												data: args

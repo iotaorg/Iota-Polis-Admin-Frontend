@@ -833,9 +833,21 @@ a#help-formula:hover{
 	float: right;
 	clear: right;
 }
-
+#footer .content .right .text{
+	font-size: 9pt;
+	float: left;
+}
+#footer .content .right .logo{
+	float: left;
+}
+#footer .content .right p{
+	width: 600px;
+	text-align: right;
+	margin: 0;
+	padding: 0;
+}
 #footer .content .right img{
-	margin-bottom: -4px;
+	margin-left: 10px;
 }
 
 #aware .content{

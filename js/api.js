@@ -1,5 +1,5 @@
 var api_path = "";
-var api_path = "http://rnsp.aware.com.br";
+//var api_path = "http://rnsp.aware.com.br";
 
 $(document).ready(function() {
 
@@ -219,9 +219,6 @@ $(document).ready(function() {
 				menu_access["user"].push("myvariableedit");	
 			}
 			menu_access["user"].push("myindicator");
-			if(user_info.institute.users_can_edit_groups == 1){
-				menu_access["user"].push("mygroup");	
-			}
 			if(user_info.institute.users_can_edit_groups == 1){
 				menu_access["user"].push("mygroup");	
 			}
@@ -3666,20 +3663,27 @@ $(document).ready(function() {
 							var indicators_in_groups = [];
 							if (data_groups && data_groups.length > 0){
 								$.each(data_groups, function(index_group,group){
-									indicators_table += "<div class='eixos'><div class='title'>$$axis</div><div class='clear'></div>".render({axis: group.name});
+									indicators_table += "<div class='eixos collapse'><div class='title'>$$axis</div><div class='clear'></div>".render({axis: group.name});
 									
 									$.each(group.items, function(index_item,item){
 										for (i = 0; i < data_indicators.length; i++){
 											if (data_indicators[i].id == item.indicator_id){
 												var formula = formataFormula(data_indicators[i].formula,data_variables,data_vvariables);
-												indicators_table += "<div class='variable' indicator-id='$$indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$id' period='$$period'>detalhes</a><a href='$$hash?option=edit&url=$$url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
+												var tr_class = "folded";	
+												$.each(data_indicators[i].network_configs, function(index_config,item_config){
+													if (item_config.network_id == $.cookie("network.id") && item_config.unfolded_in_home == 1){
+														tr_class = "unfolded";
+													}
+												});
+												indicators_table += "<div class='variable $$tr_class' indicator-id='$$indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$id' period='$$period'>detalhes</a><a href='$$hash?option=edit&url=$$url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
 													name: data_indicators[i].name,
 													formula: formula,
 													hash: "#!/"+getUrlSub(),
 													url: api_path + "/api/indicator/" + data_indicators[i].id,
 													indicator_id: data_indicators[i].id,
 													period: data_indicators[i].period,
-													id: data_indicators[i].id
+													id: data_indicators[i].id,
+													tr_class: tr_class
 													});
 												indicators_table += "<div class='clear'></div>";
 												indicators_in_groups.push(data_indicators[i].id);
@@ -3696,18 +3700,25 @@ $(document).ready(function() {
 										if (i > 0){
 											indicators_table += "</div>";
 										}
-										indicators_table += "<div class='eixos'><div class='title'>$$axis</div><div class='clear'></div>".render({axis: data_indicators[i].axis.name});
+										indicators_table += "<div class='eixos collapse'><div class='title'>$$axis</div><div class='clear'></div>".render({axis: data_indicators[i].axis.name});
 										axis_ant = data_indicators[i].axis_id;
 									}
 									var formula = formataFormula(data_indicators[i].formula,data_variables,data_vvariables);
-									indicators_table += "<div class='variable' indicator-id='$$indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$id' period='$$period'>detalhes</a><a href='$$hash?option=edit&url=$$url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
+									var tr_class = "folded";	
+									$.each(data_indicators[i].network_configs, function(index_config,item_config){
+										if (item_config.network_id == $.cookie("network.id") && item_config.unfolded_in_home == 1){
+											tr_class = "unfolded";
+										}
+									});
+									indicators_table += "<div class='variable $$tr_class' indicator-id='$$indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$id' period='$$period'>detalhes</a><a href='$$hash?option=edit&url=$$url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
 										name: data_indicators[i].name,
 										formula: formula,
 										hash: "#!/"+getUrlSub(),
 										url: api_path + "/api/indicator/" + data_indicators[i].id,
 										indicator_id: data_indicators[i].id,
 										period: data_indicators[i].period,
-										id: data_indicators[i].id
+										id: data_indicators[i].id,
+										tr_class: tr_class
 										});
 									indicators_table += "<div class='clear'></div>";
 								}
@@ -3824,7 +3835,8 @@ $(document).ready(function() {
 							});
 
 							$("div.indicadores_list .eixos .title").click(function(){
-								$(this).parent().find(".variable").toggle();
+								$(this).parent().toggleClass("collapse");
+//								$(this).parent().find(".variable").toggle();
 							});
 
 							$.ajax({

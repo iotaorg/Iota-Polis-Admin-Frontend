@@ -940,6 +940,14 @@ div.indicadores_list .eixos{
 	margin-bottom: 5px;
 }
 
+div.indicadores_list .eixos .variable{
+	display: block;
+}
+
+div.indicadores_list .eixos.collapse .variable{
+	display: none;
+}
+
 div.indicadores_list .eixos .title{
 	background-color: #f5f5f5;
 	color: #444;
@@ -955,11 +963,15 @@ div.indicadores_list .eixos .title:hover{
 }
 
 div.indicadores_list .eixos .variable{
-	display: none;
 	clear: both;
 	padding: 5px 10px;
 	border-bottom: 1px solid #f0f0f0;
 }
+
+div.indicadores_list .eixos .variable.unfolded{
+	display: block;
+}
+
 
 div.indicadores_list .eixos .variable.no-data{
 	background-color: #FFD9DA;

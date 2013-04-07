@@ -210,8 +210,22 @@ $(document).ready(function() {
 	
 		menu_access["superadmin"] = ["prefs","parameters","networks","admins","indicator","axis","logout"];
 		submenu_access["superadmin"] = ["countries","states","cities","units"];
-		menu_access["admin"] = ["prefs","users","parameters","variable","myvariableedit","axis","indicator","logout"];
+		menu_access["admin"] = ["prefs","users","parameters","variable","myvariableedit","axis","indicator"];
 		submenu_access["admin"] = ["countries","states","cities","units"];
+		if(user_info.institute.can_use_custom_pages == 1){
+			if (!findInArray(menu_access["user"],"customize")){
+				menu_access["admin"].push("customize");	
+			}
+			submenu_access["admin"].push("pages");	
+			submenu_access["admin"].push("menus");	
+		}
+		if(user_info.institute.can_use_custom_css == 1){
+			if (!findInArray(menu_access["admin"],"customize")){
+				menu_access["admin"].push("customize");	
+			}
+			submenu_access["admin"].push("css");	
+		}
+		menu_access["admin"].push("logout");
 		submenu_access["user"] = [];
 		if (findInArray(user_info.roles,"user")){
 			menu_access["user"] = ["prefs","myvariable"];
@@ -221,19 +235,6 @@ $(document).ready(function() {
 			menu_access["user"].push("myindicator");
 			if(user_info.institute.users_can_edit_groups == 1){
 				menu_access["user"].push("mygroup");	
-			}
-			if(user_info.institute.can_use_custom_pages == 1){
-				if (!findInArray(menu_access["user"],"customize")){
-					menu_access["user"].push("customize");	
-				}
-				submenu_access["user"].push("pages");	
-				submenu_access["user"].push("menus");	
-			}
-			if(user_info.institute.can_use_custom_css == 1){
-				if (!findInArray(menu_access["user"],"customize")){
-					menu_access["user"].push("customize");	
-				}
-				submenu_access["user"].push("css");	
 			}
 			
 			menu_access["user"].push("logout");

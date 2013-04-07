@@ -212,18 +212,20 @@ $(document).ready(function() {
 		submenu_access["superadmin"] = ["countries","states","cities","units"];
 		menu_access["admin"] = ["prefs","users","parameters","variable","myvariableedit","axis","indicator"];
 		submenu_access["admin"] = ["countries","states","cities","units"];
-		if(user_info.institute.can_use_custom_pages == 1){
-			if (!findInArray(menu_access["user"],"customize")){
-				menu_access["admin"].push("customize");	
+		if (user_info.institute){
+			if(user_info.institute.can_use_custom_pages == 1){
+				if (!findInArray(menu_access["admin"],"customize")){
+					menu_access["admin"].push("customize");	
+				}
+				submenu_access["admin"].push("pages");	
+				submenu_access["admin"].push("menus");	
 			}
-			submenu_access["admin"].push("pages");	
-			submenu_access["admin"].push("menus");	
-		}
-		if(user_info.institute.can_use_custom_css == 1){
-			if (!findInArray(menu_access["admin"],"customize")){
-				menu_access["admin"].push("customize");	
+			if(user_info.institute.can_use_custom_css == 1){
+				if (!findInArray(menu_access["admin"],"customize")){
+					menu_access["admin"].push("customize");	
+				}
+				submenu_access["admin"].push("css");	
 			}
-			submenu_access["admin"].push("css");	
 		}
 		menu_access["admin"].push("logout");
 		submenu_access["user"] = [];
@@ -5337,6 +5339,11 @@ $(document).ready(function() {
 									key: $.cookie("key")
 							}),
 						success: function(data,status,jqXHR){
+							data.institute.sort(function (a, b) {
+								a = String(a.name),
+								b = String(b.name);
+								return a.localeCompare(b);
+							});
 							data_institute = data;
 							$.each(data.institute, function(index,item){
 								newform.push({type: "subtitle", title: "Instituição: " + item.name, class: "institute"});

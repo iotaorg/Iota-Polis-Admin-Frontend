@@ -5341,7 +5341,7 @@ $(document).ready(function() {
 								newform.push({type: "subtitle", title: "Instituição: " + item.name, class: "institute"});
 								newform.push({type: "inverted", label: "Usuários podem editar valores", input: ["checkbox,users_can_edit_value_inst_" + item.id + ",checkbox"]});
 								newform.push({type: "inverted", label: "Usuários podem editar grupos", input: ["checkbox,users_can_edit_groups_inst_" + item.id + ",checkbox"]});
-								newform.push({type: "inverted", label: "Usuários podem customizar CSS", input: ["checkbox,users_can_use_custom_css_inst_" + item.id + ",checkbox"]});
+								newform.push({type: "inverted", label: "Usuários podem customizar CSS", input: ["checkbox,can_use_custom_css_inst_" + item.id + ",checkbox"]});
 								newform.push({type: "inverted", label: "Usuários podem criar páginas custmizadas", input: ["checkbox,can_use_custom_pages_inst_" + item.id + ",checkbox"]});
 							});
 						}
@@ -5356,7 +5356,7 @@ $(document).ready(function() {
 					$.each(data_institute.institute, function(index,item){
 						if (item.users_can_edit_value == 1) $("input#users_can_edit_value_inst_" + item.id).attr("checked",true);
 						if (item.users_can_edit_groups == 1) $("input#users_can_edit_groups_inst_" + item.id).attr("checked",true);
-						if (item.users_can_use_custom_css == 1) $("input#users_can_use_custom_css_inst_" + item.id).attr("checked",true);
+						if (item.can_use_custom_css == 1) $("input#can_use_custom_css_inst_" + item.id).attr("checked",true);
 						if (item.can_use_custom_pages == 1) $("input#can_use_custom_pages_inst_" + item.id).attr("checked",true);
 					});
 				}
@@ -5460,8 +5460,8 @@ $(document).ready(function() {
 											args = [{name: "api_key", value: $.cookie("key")},
 													{name: "institute.update.users_can_edit_value", value: ($("input#users_can_edit_value_inst_" + item.id).attr("checked") ? 1 : 0)},
 													{name: "institute.update.users_can_edit_groups", value: ($("input#users_can_edit_groups_inst_" + item.id).attr("checked") ? 1 : 0)},
-													{name: "institute.update.users_can_use_custom_css", value: ($("input#users_can_use_custom_css_inst_" + item.id).attr("checked") ? 1 : 0)},
-													{name: "institute.update.users_can_use_custom_pages", value: ($("input#can_use_custom_pages_inst_" + item.id).attr("checked") ? 1 : 0)}
+													{name: "institute.update.can_use_custom_css", value: ($("input#can_use_custom_css_inst_" + item.id).attr("checked") ? 1 : 0)},
+													{name: "institute.update.can_use_custom_pages", value: ($("input#can_use_custom_pages_inst_" + item.id).attr("checked") ? 1 : 0)}
 													];
 											$.ajax({
 												async: false,

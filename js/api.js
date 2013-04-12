@@ -791,7 +791,7 @@ $(document).ready(function() {
 					});
 					history_table += "</tbody></table>";
 				}else{
-					var history_table = "<div class='title' title='mostrar/esconder Histórico'>Série Histórica</div><div class='historic-content'><table class='history'><thead><tr><th>nenhum registro encontrado</th></tr></thead></table></div>";
+					var history_table = "<table class='history'><thead><tr><th>nenhum registro encontrado</th></tr></thead></table>";
 				}
 
 				var variation_filter = "";
@@ -4677,7 +4677,11 @@ $(document).ready(function() {
 										var data_variations;
 										var newform = [];
 										$.each(data_variables, function(index,item){
-											newform.push({label: "<b>"+item.name+"</b>", input: ["text,var_$$id,itext".render({id:item.id})]});
+											if(item.type == "str"){
+												newform.push({label: "<b>"+item.name+"</b>", input: ["textarea,var_$$id,itext".render({id:item.id})]});
+											}else{
+												newform.push({label: "<b>"+item.name+"</b>", input: ["text,var_$$id,itext".render({id:item.id})]});
+											}
 											newform.push({label: "Descrição", input: ["textlabel,textlabel_explanation_$$id,ilabel".render({id:item.id})]});
 											newform.push({label: "Fonte", input: ["select,source_$$id,iselect source".render({id:item.id}),"text,source_$$id_new,itext300px".render({id:item.id})]});
 											newform.push({label: "Observações", input: ["text,observations_$$id,itext".render({id:item.id})]});
@@ -4893,12 +4897,14 @@ $(document).ready(function() {
 													informou_valores = false;
 												}
 												var valor = $("#dashboard-content .content .filter_result").find("#var_"+data_variables[index].id).val();
-												valor = $.convertNumberToBd(valor);
-												if (isNaN(valor)){
-													informou_valores_validos = false;
-												}
-												if ($("#dashboard-content .content .filter_result").find("#var_"+data_variables[index].id).val() != "" && $("#dashboard-content .content .filter_result").find("#source_"+data_variables[index].id).val() == ""){
-													informou_fontes = false;
+												if ($("#dashboard-content .content .filter_result").find("#var_"+data_variables[index].id).is("input")){
+													valor = $.convertNumberToBd(valor);
+													if (isNaN(valor)){
+														informou_valores_validos = false;
+													}
+													if ($("#dashboard-content .content .filter_result").find("#var_"+data_variables[index].id).val() != "" && $("#dashboard-content .content .filter_result").find("#source_"+data_variables[index].id).val() == ""){
+														informou_fontes = false;
+													}
 												}
 											});
 

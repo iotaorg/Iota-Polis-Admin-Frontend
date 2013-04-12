@@ -4740,6 +4740,15 @@ $(document).ready(function() {
 										$(formbuild).find("div .field:odd").addClass("odd");
 										$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 										$(formbuild).find("#new_variation_add").html("Adicionar");
+										
+										if (data_indicator.goal){
+											var ref_meta = "";
+											if (data_indicator.goal_operator){
+												ref_meta += data_indicator.goal_operator + "&nbsp;";
+											}
+											ref_meta += data_indicator.goal;
+											$(formbuild).find("#goal").after("<span class='ref-meta'>&nbsp;Ref. Meta:&nbsp;<span class='valor'>" + ref_meta + "</span></span>");
+										}
 
 										$.each(data_variables, function(index,item){
 											setNewSource($("#dashboard-content .content select#source_"+item.id),$("#dashboard-content .content input#source_" + item.id + "_new"));

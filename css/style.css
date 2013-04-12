@@ -1297,3 +1297,7 @@ a#indicator-remove.active:hover{
 select.iselect{
 	max-width: 400px;	
 }
+span.ref-meta{
+	font-size: 0.9em;
+	color: #009999;
+}

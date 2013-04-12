@@ -212,25 +212,26 @@ $(document).ready(function() {
 		submenu_access["superadmin"] = ["countries","states","cities","units"];
 		menu_access["admin"] = ["prefs","users","parameters","variable","myvariableedit","axis","indicator"];
 		submenu_access["admin"] = ["countries","states","cities","units"];
-		if (user_info.institute){
-			if(user_info.institute.can_use_custom_pages == 1){
-				if (!findInArray(menu_access["admin"],"customize")){
-					menu_access["admin"].push("customize");	
-				}
-				submenu_access["admin"].push("pages");	
-				submenu_access["admin"].push("menus");	
-			}
-			if(user_info.institute.can_use_custom_css == 1){
-				if (!findInArray(menu_access["admin"],"customize")){
-					menu_access["admin"].push("customize");	
-				}
-				submenu_access["admin"].push("css");	
-			}
-		}
 		menu_access["admin"].push("logout");
 		submenu_access["user"] = [];
 		if (findInArray(user_info.roles,"user")){
-			menu_access["user"] = ["prefs","myvariable"];
+			menu_access["user"] = ["prefs"];
+			if (user_info.institute){
+				if(user_info.institute.can_use_custom_pages == 1){
+					if (!findInArray(menu_access["user"],"customize")){
+						menu_access["user"].push("customize");	
+					}
+					submenu_access["user"].push("pages");	
+					submenu_access["user"].push("menus");	
+				}
+				if(user_info.institute.can_use_custom_css == 1){
+					if (!findInArray(menu_access["user"],"customize")){
+						menu_access["user"].push("customize");	
+					}
+					submenu_access["user"].push("css");	
+				}
+			}
+			menu_access["user"].push("myvariable");
 			if(user_info.institute.users_can_edit_value == 1){
 				menu_access["user"].push("myvariableedit");	
 			}

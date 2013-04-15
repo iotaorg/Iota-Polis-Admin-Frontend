@@ -1383,3 +1383,10 @@ select.iselect{
 	float: left;
 	max-width: 350px;
 }
+a.link-files{
+	color: #009999;
+	font-size: 0.9em;	
+}
+a.link-files:hover{
+	color: #666666;
+}

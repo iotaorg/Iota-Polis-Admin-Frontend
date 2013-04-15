@@ -1301,3 +1301,20 @@ span.ref-meta{
 	font-size: 0.9em;
 	color: #009999;
 }
+
+.logo_preview{
+	clear: both;
+}
+.imagem_preview{
+	float: left;
+	max-width: 350px;
+}
+
+
+a.link-files{
+	color: #009999;
+	font-size: 0.9em;	
+}
+a.link-files:hover{
+	color: #666666;
+}

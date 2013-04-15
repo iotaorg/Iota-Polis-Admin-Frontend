@@ -5549,6 +5549,27 @@ $(document).ready(function() {
 								$(formbuild).find("input#telefone_contato").val(data.telefone_contato);
 								$(formbuild).find("input#nome_responsavel_cadastro").val(data.nome_responsavel_cadastro);
 
+								if (findInArray(user_info.roles,"_prefeitura")){
+									if (data.files.programa_metas){
+										$("input#arquivo_programa_metas").after("<br />[<a href='" + data.files.programa_metas + "' class='link-files' target='_blank'> arquivo atual </a>]");
+									}
+									if (data.files.carta_compromis){
+										$("input#arquivo_carta_compromisso").after("<br />[<a href='" + data.files.carta_compromis + "' class='link-files' target='_blank'> arquivo atual </a>]");
+									}
+									if (data.files.imagem_cidade){
+										$("input#arquivo_imagem_cidade").after("<br /><img src='" + data.files.imagem_cidade + "' border='0' class='imagem_preview'>");
+									}
+								}
+
+								if (findInArray(user_info.roles,"_movimento")){
+									if (data.files.logo_movimento){
+										$("input#arquivo_logo_movimento").after("<br /><img src='" + data.files.logo_movimento + "' border='0' class='logo_preview'>");
+									}
+									if (data.files.imagem_cidade){
+										$("input#arquivo_imagem_cidade").after("<br /><img src='" + data.files.imagem_cidade + "' border='0' class='imagem_preview'>");
+									}
+								}
+
 								break;
 						}
 					},
@@ -5665,15 +5686,11 @@ $(document).ready(function() {
 
 									var erro = 0;
 									if ($(this).contents()){
-										if 	($(this).contents()[0].body){
-											if 	($(this).contents()[0].body.outerHTML){
-												var retorno = $(this).contents()[0].body.outerHTML;
-												retorno = retorno.replace("<body><pre>","");
-												retorno = retorno.replace("</pre></body>","");
-												retorno = $.parseJSON(retorno);
-											}else{
-												erro = 1;
-											}
+										if 	($(this).contents().find('pre')){
+											var retorno = $(this).contents().find('pre').text();
+//												retorno = retorno.replace("<body><pre>","");
+//												retorno = retorno.replace("</pre></body>","");
+											retorno = $.parseJSON(retorno);
 										}else{
 											erro = 1;
 										}

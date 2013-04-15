@@ -81,3 +81,8 @@ table.dataTable thead th {
 	background-color: #563599;
 	color: #ffffff;
 }
+
+a.link-files{
+	color: #563599;
+	font-size: 0.9em;	
+}

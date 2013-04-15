@@ -5555,15 +5555,11 @@ $(document).ready(function() {
 
 									var erro = 0;
 									if ($(this).contents()){
-										if 	($(this).contents()[0].body){
-											if 	($(this).contents()[0].body.outerHTML){
-												var retorno = $($(this).contents()[0].body.outerHTML).find('pre').text();
+										if 	($(this).contents().find('pre')){
+											var retorno = $(this).contents().find('pre').text();
 //												retorno = retorno.replace("<body><pre>","");
 //												retorno = retorno.replace("</pre></body>","");
-												retorno = $.parseJSON(retorno);
-											}else{
-												erro = 1;
-											}
+											retorno = $.parseJSON(retorno);
 										}else{
 											erro = 1;
 										}

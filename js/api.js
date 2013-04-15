@@ -2180,6 +2180,7 @@ $(document).ready(function() {
 								if 	($(this).contents()[0].body){
 									if 	($(this).contents()[0].body.outerHTML){
 										var retorno = $(this).contents()[0].body.outerHTML;
+										console.log(retorno);
 										retorno = retorno.replace("<body><pre>","");
 										retorno = retorno.replace("</pre></body>","");
 										retorno = $.parseJSON(retorno);
@@ -5307,27 +5308,29 @@ $(document).ready(function() {
 				newform.push({label: "Senha", input: ["password,password,itext"]});
 				newform.push({label: "Confirmar Senha", input: ["password,password_confirm,itext"]});
 
-				if (findInArray(user_info.roles,"_prefeitura") || findInArray(user_info.roles,"_movimento")){
-					newform.push({label: "Endereço", input: ["text,endereco,itext"]});
-					newform.push({label: "Cidade", input: ["text,cidade,itext"]});
-					newform.push({label: "Estado", input: ["text,estado,itext"]});
-					newform.push({label: "Bairro", input: ["text,bairro,itext"]});
-					newform.push({label: "CEP", input: ["text,cep,itext"]});
-					newform.push({label: "Telefone", input: ["text,telefone,itext"]});
-					newform.push({label: "Email de Contato", input: ["text,email_contato,itext"]});
-					newform.push({label: "Telefone de Contato", input: ["text,telefone_contato,itext"]});
-					newform.push({label: "Nome do responsável pelo cadastro", input: ["text,nome_responsavel_cadastro,itext"]});
-					newform.push({label: "Resumo da Cidade (texto)", input: ["textarea,city_summary,itext"]});
-				}
-
-				if (findInArray(user_info.roles,"_prefeitura")){
-					newform.push({label: "Carta Compromisso (PDF)", input: ["file,carta_compromisso,itext"]});
-					newform.push({label: "Programa de Metas (PDF)", input: ["file,programa_metas,itext"]});
-					newform.push({label: "Imagem do perfil da cidade", input: ["file,imagem_cidade,itext"]});
-				}
-				if (findInArray(user_info.roles,"_movimento")){
-					newform.push({label: "Logo(imagem)<br /><font size='1'>(altura máx: 80 pixels)</font>", input: ["file,logo_movimento,itext"]});
-					newform.push({label: "Imagem do<br />perfil da cidade<br /><font size='1'>(630x135 pixels)</font>", input: ["file,imagem_cidade,itext"]});
+				if (findInArray(user_info.roles,"user")){
+					if (user_info.network.id == 1 || user_info.network.id == 2){
+						newform.push({label: "Endereço", input: ["text,endereco,itext"]});
+						newform.push({label: "Cidade", input: ["text,cidade,itext"]});
+						newform.push({label: "Estado", input: ["text,estado,itext"]});
+						newform.push({label: "Bairro", input: ["text,bairro,itext"]});
+						newform.push({label: "CEP", input: ["text,cep,itext"]});
+						newform.push({label: "Telefone", input: ["text,telefone,itext"]});
+						newform.push({label: "Email de Contato", input: ["text,email_contato,itext"]});
+						newform.push({label: "Telefone de Contato", input: ["text,telefone_contato,itext"]});
+						newform.push({label: "Nome do responsável pelo cadastro", input: ["text,nome_responsavel_cadastro,itext"]});
+						newform.push({label: "Resumo da Cidade (texto)", input: ["textarea,city_summary,itext"]});
+					}
+	
+					if (user_info.network.id == 1){
+						newform.push({label: "Carta Compromisso (PDF)", input: ["file,carta_compromisso,itext"]});
+						newform.push({label: "Programa de Metas (PDF)", input: ["file,programa_metas,itext"]});
+						newform.push({label: "Imagem do perfil da cidade", input: ["file,imagem_cidade,itext"]});
+					}
+					if (user_info.network.id == 2){
+						newform.push({label: "Logo(imagem)<br /><font size='1'>(altura máx: 80 pixels)</font>", input: ["file,logo_movimento,itext"]});
+						newform.push({label: "Imagem do<br />perfil da cidade<br /><font size='1'>(630x135 pixels)</font>", input: ["file,imagem_cidade,itext"]});
+					}
 				}
 
 				if (findInArray(user_info.roles,"superadmin")){

@@ -614,7 +614,7 @@ var buildVariableHistory = function(var_id){
 			});
 
 			//mostra historico
-            console.log(data);
+
 			var history_table = "<div class='title'>Série Histórica</div><div class='historic-content'>";
 			history_table += "<table class='history'><thead><tr><th>Período</th><th>Valor</th><th></th></tr></thead><tbody>";
 			$.each(data_variables[0].values, function(index,value){
@@ -687,6 +687,15 @@ var buildVariableHistory = function(var_id){
 		}
 	});
 }
+function numKeys(obj)
+{
+    var count = 0;
+    for(var prop in obj)
+    {
+        count++;
+    }
+    return count;
+}
 
 var buildIndicatorHistory = function (args){
 
@@ -718,6 +727,9 @@ var buildIndicatorHistory = function (args){
 				var rows = 0;
 				$.each(data.rows, function(index,value){
 					history_table += "<tr row-id='$$row'><td class='periodo'>$$periodo</td>".render({periodo: $.convertDateToPeriod(data.rows[index].valid_from,args.period), row: rows});
+
+                    var cont = 0, num_var = numKeys(data.header);
+
 					$.each(data.rows[index].valores, function(index2,value2){
 						if (data.rows[index].valores[index2].value != "-" && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined){
 							history_table += "<td class='valor' title='$$data' value-id='$$id' variable-id='$$variable_id'>$$valor</td>".render({
@@ -726,6 +738,7 @@ var buildIndicatorHistory = function (args){
 									id: data.rows[index].valores[index2].id,
 									variable_id: data.rows[index].valores[index2].variable_id
 							});
+
 						}else{
 							history_table += "<td class='valor' title='$$data' value-id='$$id'>-</td>".render({
 									data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T"),
@@ -733,7 +746,11 @@ var buildIndicatorHistory = function (args){
 									variable_id: data.rows[index].valores[index2].variable_id
 							});
 						}
+						cont++;
 					});
+                    for (i = cont; i<num_var; i++){
+                        history_table += "<td class='valor'>-</td>";
+                    }
 					if (value.variations && value.variations.length > 0){
 						var th_valor = "";
 						for (i = 0; i < value.variations.length; i++){

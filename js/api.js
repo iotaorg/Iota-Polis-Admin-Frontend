@@ -4520,18 +4520,19 @@ $(document).ready(function() {
                                                             data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter").val();
                                                         }
 
+                                                        var acao = "user.indicator."+data.action +".";
                                                         if ($("#dashboard-content .content input#no_data").attr("checked")){
                                                             args = [{name: "api_key", value: $.cookie("key")},
-                                                                    {name: "user.indicator.create.justification_of_missing_field", value: $("#dashboard-content .content .filter_result").find("#justification_of_missing_field").val()},
-                                                                    {name: "user.indicator.create.valid_from", value: data_formatada},
-                                                                    {name: "user.indicator.create.indicator_id", value: getIdFromUrl($.getUrlVar("url"))}
+                                                                    {name: acao + "justification_of_missing_field", value: $("#dashboard-content .content .filter_result").find("#justification_of_missing_field").val()},
+                                                                    {name: acao + "valid_from", value: data_formatada},
+                                                                    {name: acao + "indicator_id", value: getIdFromUrl($.getUrlVar("url"))}
                                                                     ];
                                                             send_justification_meta = true;
                                                         }else if ($("#dashboard-content .content .filter_result").find("#goal").val() != ""){
                                                             args = [{name: "api_key", value: $.cookie("key")},
-                                                                    {name: "user.indicator.create.goal", value: $("#dashboard-content .content .filter_result").find("#goal").val()},
-                                                                    {name: "user.indicator.create.valid_from", value: data_formatada},
-                                                                    {name: "user.indicator.create.indicator_id", value: getIdFromUrl($.getUrlVar("url"))}
+                                                                    {name: acao + "goal", value: $("#dashboard-content .content .filter_result").find("#goal").val()},
+                                                                    {name: acao + "valid_from", value: data_formatada},
+                                                                    {name: acao + "indicator_id", value: getIdFromUrl($.getUrlVar("url"))}
                                                                     ];
                                                             send_justification_meta = true;
                                                         }
@@ -4540,8 +4541,9 @@ $(document).ready(function() {
                                                             $.ajax({
                                                                 type: 'POST',
                                                                 dataType: 'json',
-                                                                url: api_path + '/api/user/$$userid/indicator'.render({
-                                                                                userid: $.cookie("user.id")
+                                                                url: api_path + '/api/user/$$userid/indicator/$id'.render({
+                                                                                userid: $.cookie("user.id"),
+                                                                                id: data.action == 'update' ? getIdFromUrl($.getUrlVar("url")) : ''
                                                                             }),
                                                                 data: args,
                                                                 success: function(data, textStatus, jqXHR){
@@ -5568,8 +5570,6 @@ $(document).ready(function() {
                                     if ($(this).contents()){
                                         if 	($(this).contents().find('pre')){
                                             var retorno = $(this).contents().find('pre').text();
-//												retorno = retorno.replace("<body><pre>","");
-//												retorno = retorno.replace("</pre></body>","");
                                             retorno = $.parseJSON(retorno);
                                         }else{
                                             erro = 1;

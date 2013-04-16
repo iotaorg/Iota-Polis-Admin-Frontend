@@ -15,13 +15,13 @@ $(document).ready(function() {
 		resetWarnings();
 		sendLogin();
 	});
-	
+
 	var sendLogin = function(){
 		args = [{name: "user.login.email",value: $("#form-login #usuario").val()},
-	
+
 				{name: "user.login.password",value: $("#form-login #senha").val()}
 				];
-	
+
 		$.ajax({
 			type: 'POST',
 			dataType: 'json',
@@ -67,7 +67,7 @@ $(document).ready(function() {
 					switch(jqXHR.status){
 						case 200:
 							user_info = data;
-	
+
 							user_info.role = "";
 							if (user_info.roles.length == 1){
 								user_info.role = user_info.roles[0];
@@ -78,9 +78,9 @@ $(document).ready(function() {
 									user_info.role = user_info.roles[1];
 								}
 							}
-	
+
 							if (user_info.role != ""){
-	
+
 								var info_content = "Usuário: " + user_info.name;
 								if($("#user-info").length == 0){
 									$("#top .top-right .info").append("<div id='user-info'>" + info_content + "</div>");
@@ -173,11 +173,11 @@ $(document).ready(function() {
 			$("#menu ul").addClass("menu");
 		}
 		$("#dashboard-content #top").after(menu);
-	
+
 		menu_label = [];
 		submenu_label = [];
 		menu_access = [];
-	
+
 		menu_label["admins"] = "Administradores";
 		menu_label["axis"] = "Eixos";
 		menu_label["customize"] = "Customização";
@@ -195,7 +195,7 @@ $(document).ready(function() {
 		menu_label["tokens"] = "Tokens";
 		menu_label["users"] = "Usuários";
 		menu_label["variable"] = "Variáveis";
-	
+
 		submenu_label["parameters"] = [];
 		submenu_label["parameters"].push({"countries" : "Países"});
 		submenu_label["parameters"].push({"states" : "Estados"});
@@ -206,8 +206,8 @@ $(document).ready(function() {
 		submenu_label["customize"].push({"menus" : "Menus"});
 		submenu_label["customize"].push({"pages" : "Páginas"});
 		submenu_label["customize"].push({"css" : "CSS"});
-	
-	
+
+
 		menu_access["superadmin"] = ["prefs","parameters","networks","admins","indicator","axis","logout"];
 		submenu_access["superadmin"] = ["countries","states","cities","units"];
 		menu_access["admin"] = ["prefs","users","parameters","variable","myvariableedit","axis","indicator"];
@@ -219,35 +219,35 @@ $(document).ready(function() {
 			if (user_info.institute){
 				if(user_info.institute.can_use_custom_pages == 1){
 					if (!findInArray(menu_access["user"],"customize")){
-						menu_access["user"].push("customize");	
+						menu_access["user"].push("customize");
 					}
-					submenu_access["user"].push("pages");	
-					submenu_access["user"].push("menus");	
+					submenu_access["user"].push("pages");
+					submenu_access["user"].push("menus");
 				}
 				if(user_info.institute.can_use_custom_css == 1){
 					if (!findInArray(menu_access["user"],"customize")){
-						menu_access["user"].push("customize");	
+						menu_access["user"].push("customize");
 					}
-					submenu_access["user"].push("css");	
+					submenu_access["user"].push("css");
 				}
 			}
 			menu_access["user"].push("myvariable");
 			if(user_info.institute.users_can_edit_value == 1){
-				menu_access["user"].push("myvariableedit");	
+				menu_access["user"].push("myvariableedit");
 			}
 			menu_access["user"].push("myindicator");
 			if(user_info.institute.users_can_edit_groups == 1){
-				menu_access["user"].push("mygroup");	
+				menu_access["user"].push("mygroup");
 			}
-			
+
 			menu_access["user"].push("logout");
 		}
-	
+
 		var menu_item = "";
 		$.each(menu_access[user_info.role],function(index,value){
 			var menu_class = (getUrlSub() == value) ? "selected" : "";
 			var a_class = "";
-			
+
 			if (submenu_label[value]){
 				a_class = "submenu";
 				var submenu_item = "<ul class='submenu'>";
@@ -264,7 +264,7 @@ $(document).ready(function() {
 			}else{
 				var submenu_item = "";
 			}
-	
+
 			menu_item += "<li class='$$class' ref='$$url_sub'>$$menu$$submenu</li>".render({
 				menu: "<a href='#!/" + value + "' class='" + a_class + "'>" + menu_label[value] + "</a>",
 				url_sub: value,
@@ -275,7 +275,7 @@ $(document).ready(function() {
 		$("#menu ul.menu").append(menu_item);
 		$("#menu ul.menu li a").click(function(e){
 			if ($(this).hasClass("submenu")){
-				e.preventDefault();	
+				e.preventDefault();
 			}
 			resetWarnings();
 		});
@@ -287,17 +287,17 @@ $(document).ready(function() {
 			tSubmenu = setTimeout(function(){
 				$(obj).next("ul.submenu").hide();
 			},500);
-			
+
 		});
 		$("#menu ul.submenu").hover(function(){
-			if (typeof(tSubmenu) != "undefined") clearInterval(tSubmenu);	
+			if (typeof(tSubmenu) != "undefined") clearInterval(tSubmenu);
 		},function(){
 			var obj = $(this);
 			tSubmenu = setTimeout(function(){
 				$(obj).hide();
-				if (typeof(tSubmenu) != "undefined") clearInterval(tSubmenu);	
+				if (typeof(tSubmenu) != "undefined") clearInterval(tSubmenu);
 			},500);
-			
+
 		});
 	};
 
@@ -505,7 +505,7 @@ $(document).ready(function() {
 									{name: "user." + action + ".network_id", value: $(this).parent().parent().find("#network_id option:selected").val()},
 									{name: "user." + action + ".city_id", value: $(this).parent().parent().find("#city_id option:selected").val()}
 									];
-									
+
 							if ($(this).parent().parent().find("#password").val() != ""){
 								args.push(
 									{name: "user." + action + ".password", value: $(this).parent().parent().find("#password").val()},
@@ -632,7 +632,7 @@ $(document).ready(function() {
 					}));
 
 					$("#dashboard-content .content select#city_id").append($("<option></option>").val("").html("Selecione..."));
-					
+
 					if ($.getUrlVar("option") == "add"){
 						carregaComboCidadesUsers({"option":$.getUrlVar("option")});
 					}
@@ -697,7 +697,7 @@ $(document).ready(function() {
 									{name: "user." + action + ".role", value: "user"},
 									{name: "user." + action + ".city_id", value: $(this).parent().parent().find("#city_id option:selected").val()}
 									];
-									
+
 							if ($(this).parent().parent().find("#password").val() != ""){
 								args.push(
 									{name: "user." + action + ".password", value: $(this).parent().parent().find("#password").val()},
@@ -1664,7 +1664,7 @@ $(document).ready(function() {
 					$.each(variable_periods,function(key, value){
 						$("#dashboard-content .content select#period").append($("<option></option>").val(key).html(value));
 					});
-					
+
 					if ($.getUrlVar("option") == "edit"){
 						$.ajax({
 							type: 'GET',
@@ -1772,7 +1772,7 @@ $(document).ready(function() {
 							});
 						}
 					});
-					
+
 					$("#dashboard-content .content .botao-form[ref='cancelar']").click(function(){
 						resetWarnings();
 						history.back();
@@ -2136,7 +2136,7 @@ $(document).ready(function() {
 					$("#dashboard-content .content .variable-filter input#data_fim").datepicker("setDate", new Date());
 
 					$("#dashboard-content .content").append("<div class='resultado'></div>");
-	
+
 					$("#dashboard-content .content").append("<div class='value_via_file'></div>");
 					var newform = [];
 					newform.push({label: "Arquivo (XLSX, XLS ou CSV)", input: ["file,arquivo,itext"]});
@@ -2144,21 +2144,21 @@ $(document).ready(function() {
 					$(formbuild).find("div .field:odd").addClass("odd");
 					$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 					$("#dashboard-content .content .value_via_file .botao-form[ref='cancelar']").hide()
-					
+
 					$("#dashboard-content .content .value_via_file .botao-form[ref='enviar']").click(function(){
-	
+
 						var clickedButton = $(this);
 
 						var file = "arquivo";
 						var form = $("#formFileUpload_"+file);
-	
+
 						original_id = $('#arquivo_'+file).attr("original-id");
-	
+
 						$('#arquivo_'+file).attr({
 												name: "arquivo",
 												id: "arquivo"
 											 });
-	
+
 						form.attr("action", api_path + '/api/variable/value_via_file?api_key=$$key&content-type=application/json'.render({
 								key: $.cookie("key")
 								}));
@@ -2172,9 +2172,9 @@ $(document).ready(function() {
 												name: original_id,
 												id: original_id
 											 });
-	
+
 						$("#iframe_"+file).load( function(){
-	
+
 							var erro = 0;
 							if ($(this).contents()){
 								if 	($(this).contents()[0].body){
@@ -2192,7 +2192,7 @@ $(document).ready(function() {
 							}else{
 								erro = 1;
 							}
-	
+
 							if (erro == 0){
 								if (!retorno.error){
 									$(".value_via_file .form-aviso").setWarning({msg: "Arquivo enviado com sucesso"});
@@ -3194,7 +3194,7 @@ $(document).ready(function() {
 												}),
 											data: args
 										});
-										
+
 										$("#aviso").setWarning({msg: "Cadastro efetuado com sucesso.".render({
 													codigo: jqXHR.status
 													})
@@ -3299,7 +3299,7 @@ $(document).ready(function() {
 										$(formbuild).find("select#source").val(data.source);
 										$(formbuild).find("input#tags").val(data.tags);
 										$(formbuild).find("textarea#observations").val(data.observations);
-										
+
 										$.each(data.network_configs, function(index,item){
 											if (item.network_id == $.cookie("network.id")){
 												if (item.unfolded_in_home == 1){
@@ -3307,7 +3307,7 @@ $(document).ready(function() {
 												}
 											}
 										});
-										
+
 										if ($("#formula-editor .variables .item").length > 0) convertFormulaToCss();
 
 										if (data.indicator_type == "varied"){
@@ -3668,12 +3668,12 @@ $(document).ready(function() {
 							if (data_groups && data_groups.length > 0){
 								$.each(data_groups, function(index_group,group){
 									indicators_table += "<div class='eixos collapse'><div class='title'>$$axis</div><div class='clear'></div>".render({axis: group.name});
-									
+
 									$.each(group.items, function(index_item,item){
 										for (i = 0; i < data_indicators.length; i++){
 											if (data_indicators[i].id == item.indicator_id){
 												var formula = formataFormula(data_indicators[i].formula,data_variables,data_vvariables);
-												var tr_class = "folded";	
+												var tr_class = "folded";
 												$.each(data_indicators[i].network_configs, function(index_config,item_config){
 													if (item_config.network_id == $.cookie("network.id") && item_config.unfolded_in_home == 1){
 														tr_class = "unfolded";
@@ -3708,7 +3708,7 @@ $(document).ready(function() {
 										axis_ant = data_indicators[i].axis_id;
 									}
 									var formula = formataFormula(data_indicators[i].formula,data_variables,data_vvariables);
-									var tr_class = "folded";	
+									var tr_class = "folded";
 									$.each(data_indicators[i].network_configs, function(index_config,item_config){
 										if (item_config.network_id == $.cookie("network.id") && item_config.unfolded_in_home == 1){
 											tr_class = "unfolded";
@@ -3750,6 +3750,7 @@ $(document).ready(function() {
 											$.each(data.header,function(titulo, index){
 												headers[index] = titulo;
 											});
+                                            console.log(history_table);
 
 											$.each(headers, function(index,value){
 												history_table += "<th class='variavel'>$$variavel</th>".render({variavel:value});
@@ -3890,7 +3891,7 @@ $(document).ready(function() {
 							$("#dashboard-content .content").append("<div class='filter_indicator'></div><div class='clear'><br /></div><div class='filter_result'></div><div class='clear'><br /></div><div class='tech_info'></div><div class='clear'><br /></div><div class='historico'></div>");
 
 							var data_indicator = data;
-							
+
 							//mostra informação técnica
 							var newform = [];
 							newform.push({label: "Informação Técnica", input: ["textarea,technical_information,itext"]});
@@ -3947,7 +3948,7 @@ $(document).ready(function() {
 												user_id: $.cookie("user.id")
 											});
 									}
-	
+
 									$.ajax({
 										type: "POST",
 										dataType: 'json',
@@ -4298,7 +4299,7 @@ $(document).ready(function() {
 										$.each(data_variations, function(index_variation,item_variation){
 											$("#dashboard-content .content .filter_result div#textlabel_variation_$$id".render({id:item_variation.id})).html(item_variation.name)
 										});
-										
+
 										$.each(data_vvariables, function(index_vvariables,item_vvariables){
 											$.ajax({
 												async: false,
@@ -4850,7 +4851,7 @@ $(document).ready(function() {
 											});
 										}
 									});
-									
+
 									if ($.getUrlVar("option") == "edit"){
 										var old_selected = $("#dashboard-content .content textarea#indicators").val().split(",");
 										$.each(old_selected, function(index,value){
@@ -4903,21 +4904,21 @@ $(document).ready(function() {
 					$(formbuild).find("div .field:odd").addClass("odd");
 					$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 					$("#dashboard-content .content .upload_css .botao-form[ref='cancelar']").hide()
-					
+
 					$("#dashboard-content .content .upload_css .botao-form[ref='enviar']").click(function(){
-	
+
 						var clickedButton = $(this);
 
 						var file = "arquivo";
 						var form = $("#formFileUpload_"+file);
-	
+
 						original_id = $('#arquivo_'+file).attr("original-id");
-	
+
 						$('#arquivo_'+file).attr({
 												name: "arquivo",
 												id: "arquivo"
 											 });
-	
+
 						form.attr("action", api_path + '/api/user/$$user_id/arquivo/custom.css?api_key=$$key&content-type=application/json'.render({
 								key: $.cookie("key"),
 								user_id: $.cookie("user.id")
@@ -4932,9 +4933,9 @@ $(document).ready(function() {
 												name: original_id,
 												id: original_id
 											 });
-	
+
 						$("#iframe_"+file).load( function(){
-	
+
 							var erro = 0;
 							if ($(this).contents()){
 								if 	($(this).contents()[0].body){
@@ -4952,7 +4953,7 @@ $(document).ready(function() {
 							}else{
 								erro = 1;
 							}
-	
+
 							if (erro == 0){
 								if (!retorno.error){
 									$(".upload_css .form-aviso").setWarning({msg: "Arquivo enviado com sucesso"});
@@ -5320,7 +5321,7 @@ $(document).ready(function() {
 						newform.push({label: "Nome do responsável pelo cadastro", input: ["text,nome_responsavel_cadastro,itext"]});
 						newform.push({label: "Resumo da Cidade (texto)", input: ["textarea,city_summary,itext"]});
 					}
-	
+
 					if (user_info.network.id == 1){
 						newform.push({label: "Carta Compromisso (PDF)", input: ["file,carta_compromisso,itext"]});
 						newform.push({label: "Programa de Metas (PDF)", input: ["file,programa_metas,itext"]});

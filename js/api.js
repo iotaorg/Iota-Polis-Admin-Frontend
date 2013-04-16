@@ -4541,7 +4541,7 @@ $(document).ready(function() {
                                                             $.ajax({
                                                                 type: 'POST',
                                                                 dataType: 'json',
-                                                                url: api_path + '/api/user/$$userid/indicator/$id'.render({
+                                                                url: api_path + '/api/user/$$userid/indicator/$$id'.render({
                                                                                 userid: $.cookie("user.id"),
                                                                                 id: data.action == 'update' ? getIdFromUrl($.getUrlVar("url")) : ''
                                                                             }),

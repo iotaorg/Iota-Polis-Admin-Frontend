@@ -4543,7 +4543,7 @@ $(document).ready(function() {
                                                                 dataType: 'json',
                                                                 url: api_path + '/api/user/$$userid/indicator/$$id'.render({
                                                                                 userid: $.cookie("user.id"),
-                                                                                id: data.action == 'update' ? getIdFromUrl($.getUrlVar("url")) : ''
+                                                                                id: data.action == 'update' ? data.user_indicator_id : ''
                                                                             }),
                                                                 data: args,
                                                                 success: function(data, textStatus, jqXHR){

@@ -584,7 +584,7 @@ var buildInput = function(input_args){
 			break;
 	}
 	return newinput;
-	
+
 }
 
 var buildButton = function(label,classname,id){
@@ -614,7 +614,7 @@ var buildVariableHistory = function(var_id){
 			});
 
 			//mostra historico
-
+            console.log(data);
 			var history_table = "<div class='title'>Série Histórica</div><div class='historic-content'>";
 			history_table += "<table class='history'><thead><tr><th>Período</th><th>Valor</th><th></th></tr></thead><tbody>";
 			$.each(data_variables[0].values, function(index,value){

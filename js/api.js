@@ -3750,7 +3750,7 @@ $(document).ready(function() {
 											$.each(data.header,function(titulo, index){
 												headers[index] = titulo;
 											});
-                                            console.log(history_table);
+
 
 											$.each(headers, function(index,value){
 												history_table += "<th class='variavel'>$$variavel</th>".render({variavel:value});

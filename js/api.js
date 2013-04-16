@@ -3999,6 +3999,7 @@ $(document).ready(function() {
 							var data_variables = [];
 							$.ajax({
 								async: false,
+                               cache:true,
 								type: 'GET',
 								dataType: 'json',
 								url: api_path + '/api/variable?api_key=$$key'.render({
@@ -4014,6 +4015,7 @@ $(document).ready(function() {
 							var data_vvariables = [];
 							$.ajax({
 								async: false,
+                               cache:true,
 								type: 'GET',
 								dataType: 'json',
 								url: api_path + '/api/indicator/variable?api_key=$$key'.render({
@@ -4271,7 +4273,7 @@ $(document).ready(function() {
 
 										$("#dashboard-content .content .filter_result input#no_data").after("Não possuo os dados.");
 										$("#dashboard-content .content .filter_result .field:last").hide();
-										$("#dashboard-content .content .filter_result input#no_data").click(function(){
+										$("#dashboard-content .content .filter_result input#no_data").change(function(){
 											if ($(this).attr("checked")){
 												$("#dashboard-content .content .filter_result .field:last").show();
 												$("#dashboard-content .content .filter_result input#goal").hide();
@@ -4283,10 +4285,18 @@ $(document).ready(function() {
 
 										$.each(data_variables, function(index,value){
 											$("#dashboard-content .content .filter_result div#textlabel_explanation_$$id".render({id:data_variables[index].id})).html(data_variables[index].explanation)
-											if (data_variables[index].value != null && data_variables[index].value != undefined && data_variables[index].value != ""){
-												$("#dashboard-content .content .filter_result #var_$$id".render({id:data_variables[index].id})).val(data_variables[index].value);
-												$("#dashboard-content .content .filter_result #source_$$id".render({id:data_variables[index].id})).val(data_variables[index].source);
-												$("#dashboard-content .content .filter_result #observations_$$id".render({id:data_variables[index].id})).val(data_variables[index].observations);
+                                            if (data_variables[index].value != null && data_variables[index].value != undefined && data_variables[index].value != ""){
+                                                $("#dashboard-content .content .filter_result #var_$$id".render({id:data_variables[index].id})).val(data_variables[index].value);
+                                                $("#dashboard-content .content .filter_result #source_$$id".render({id:data_variables[index].id})).val(data_variables[index].source);
+                                                $("#dashboard-content .content .filter_result #observations_$$id".render({id:data_variables[index].id})).val(data_variables[index].observations);
+
+                                                $("#justification_of_missing_field").val(data.justification_of_missing_field);
+                                                $("#goal").val(data.goal);
+
+                                                if (data.justification_of_missing_field){
+                                                    $("#dashboard-content .content .filter_result input#no_data").click();
+                                                }
+
 											}else{
 												$("#dashboard-content .content .filter_result #var_$$id".render({id:data_variables[index].id})).attr("disabled",false);
 												$("#dashboard-content .content .filter_result #source_$$id".render({id:data_variables[index].id})).attr("disabled",false);

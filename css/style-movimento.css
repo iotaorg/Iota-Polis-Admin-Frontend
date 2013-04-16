@@ -1,88 +1,89 @@
 #top .content .link a:hover{
-	color: #563599;
+    color: #563599;
 }
 #top .content .link a span.clique{
-	color: #563599;
+    color: #563599;
 }
 
 #menu{
-	background-color: #563599;
+    background-color: #563599;
 }
-
+#menu ul.submenu{
+    background-color: #563599;
+}
 #menu ul li{
-	color: #fff;
-	border-bottom: 3px solid #563599;
+    color: #fff;
+    border-bottom: 3px solid #563599;
 }
 #menu ul li a{
-	color: #deccff;
+    color: #deccff;
 }
 #header-title .title{
-	color: #4d2a7c;
+    color: #4d2a7c;
 }
 
 a.button-add{
-	color: #60419f;
-	border: 1px solid #dbd3ee;
+    color: #60419f;
+    border: 1px solid #dbd3ee;
 }
 
 a.button-add:hover{
-	border: 1px solid #684e86;
+    border: 1px solid #684e86;
 }
 
 .form{
-	border: 1px solid #563599;
-	border-bottom: 5px solid #563599;
+    border: 1px solid #563599;
+    border-bottom: 5px solid #563599;
 }
 .form .title{
-	background-color: #563599;
+    background-color: #563599;
 }
 .form .form-aviso div{
-	color: #4b1ebf;
+    color: #4b1ebf;
 }
 
 a.button-default{
-	background: url("../images/bg_botao_movimento.gif") repeat-x top center;
-	text-shadow:#382465 1px 1px 0px;
-	-moz-text-shadow:#382465 1px 1px 0px;
-	-webkit-text-shadow:#382465 1px 1px 0px;
-	border: 1px solid #8463a6;
+    background: url("../images/bg_botao_movimento.gif") repeat-x top center;
+    text-shadow:#382465 1px 1px 0px;
+    -moz-text-shadow:#382465 1px 1px 0px;
+    -webkit-text-shadow:#382465 1px 1px 0px;
+    border: 1px solid #8463a6;
 }
 
 .button-default:hover{
-	background: url("../images/bg_botao_movimento.gif") repeat-x bottom center;
-	border: 1px solid #674e86;
+    background: url("../images/bg_botao_movimento.gif") repeat-x bottom center;
+    border: 1px solid #674e86;
 }
 
 input.botao-form,
 a.botao-form{
-	background: url("../images/bg_botao_movimento.gif") repeat-x top center;
-	text-shadow:#382465 1px 1px 0px;
-	-moz-text-shadow:#382465 1px 1px 0px;
-	-webkit-text-shadow:#382465 1px 1px 0px;
-	border: 1px solid #8463a6;
+    background: url("../images/bg_botao_movimento.gif") repeat-x top center;
+    text-shadow:#382465 1px 1px 0px;
+    -moz-text-shadow:#382465 1px 1px 0px;
+    -webkit-text-shadow:#382465 1px 1px 0px;
+    border: 1px solid #8463a6;
 }
 
 input.botao-form:hover,
 a.botao-form:hover{
-	background: url("../images/bg_botao_movimento.gif") repeat-x bottom center;
-	border: 1px solid #674e86;
+    background: url("../images/bg_botao_movimento.gif") repeat-x bottom center;
+    border: 1px solid #674e86;
 }
 
 table.dataTable {
-	border: 1px solid #d3e5ee;
-	border-bottom: 5px solid #563599;
+    border: 1px solid #d3e5ee;
+    border-bottom: 5px solid #563599;
 }
 
 table.dataTable thead th {
-	padding: 3px 18px 3px 10px;
-	font-weight: normal;
-	cursor: pointer;
-	*cursor: hand;
-	background-color: #563599;
-	color: #ffffff;
+    padding: 3px 18px 3px 10px;
+    font-weight: normal;
+    cursor: pointer;
+    *cursor: hand;
+    background-color: #563599;
+    color: #ffffff;
 }
-
 a.link-files{
-	color: #563599;
-	font-size: 0.9em;	
+    color: #563599;
+    font-size: 0.9em;
 }

@@ -13,9 +13,6 @@ var titleBarContent = {
 					"users,add":{
 							"title": "Novo Usuário",
 							"tip": "Preencha os campos abaixo para adicionar um novo Usuário."},
-					"cities":{
-							"title": "Cidades",
-							"tip": ""},
 					"variable":{
 							"title": "Variáveis",
 							"tip": "Veja as variáveis já cadastradas. Utilize o botão 'Adicionar' para criar uma nova variável."},
@@ -43,7 +40,37 @@ var titleBarContent = {
 					"reports":{
 							"title": "Relatórios",
 							"tip": ""},
+					"axis":{
+							"title": "Eixos",
+							"tip": ""},
+					"countries":{
+							"title": "Parâmetros - Países",
+							"tip": ""},
+					"states":{
+							"title": "Parâmetros - Estados",
+							"tip": ""},
+					"cities":{
+							"title": "Parâmetros - Cidades",
+							"tip": ""},
+					"units":{
+							"title": "Parâmetros - Unidades de Medida",
+							"tip": ""},
+					"networks":{
+							"title": "Redes",
+							"tip": ""},
+					"admins":{
+							"title": "Administradores",
+							"tip": ""},
+					"menus":{
+							"title": "Customização - Menus",
+							"tip": ""},
+					"pages":{
+							"title": "Customização - Páginas",
+							"tip": ""},
+					"css":{
+							"title": "Customização - CSS",
+							"tip": ""},
 					"prefs":{
 							"title": "Preferências",
-							"tip": ""},
+							"tip": ""}
 				  };

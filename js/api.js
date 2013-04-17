@@ -4136,7 +4136,11 @@ $(document).ready(function() {
                                         var data_variations;
                                         var newform = [];
                                         $.each(data_variables, function(index,item){
-                                            newform.push({label: "<b>"+item.name+"</b>", input: ["text,var_$$id,itext".render({id:item.id})]});
+											if(item.type == "str"){
+												newform.push({label: "<b>"+item.name+"</b>", input: ["textarea,var_$$id,itext".render({id:item.id})]});
+											}else{
+												newform.push({label: "<b>"+item.name+"</b>", input: ["text,var_$$id,itext".render({id:item.id})]});
+											}
                                             newform.push({label: "Descrição", input: ["textlabel,textlabel_explanation_$$id,ilabel".render({id:item.id})]});
                                             newform.push({label: "Fonte", input: ["select,source_$$id,iselect source".render({id:item.id}),"text,source_$$id_new,itext300px".render({id:item.id})]});
                                             newform.push({label: "Observações", input: ["text,observations_$$id,itext".render({id:item.id})]});
@@ -4195,6 +4199,15 @@ $(document).ready(function() {
                                         $(formbuild).find("div .field:odd").addClass("odd");
                                         $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
                                         $(formbuild).find("#new_variation_add").html("Adicionar");
+										
+										if (data_indicator.goal){
+											var ref_meta = "";
+											if (data_indicator.goal_operator){
+												ref_meta += data_indicator.goal_operator + "&nbsp;";
+											}
+											ref_meta += data_indicator.goal;
+											$(formbuild).find("#goal").after("<span class='ref-meta'>&nbsp;Ref. Meta:&nbsp;<span class='valor'>" + ref_meta + "</span></span>");
+										}
 
                                         $.each(data_variables, function(index,item){
                                             setNewSource($("#dashboard-content .content select#source_"+item.id),$("#dashboard-content .content input#source_" + item.id + "_new"));
@@ -4360,12 +4373,14 @@ $(document).ready(function() {
                                                     informou_valores = false;
                                                 }
                                                 var valor = $("#dashboard-content .content .filter_result").find("#var_"+data_variables[index].id).val();
-                                                valor = $.convertNumberToBd(valor);
-                                                if (isNaN(valor)){
-                                                    informou_valores_validos = false;
-                                                }
-                                                if ($("#dashboard-content .content .filter_result").find("#var_"+data_variables[index].id).val() != "" && $("#dashboard-content .content .filter_result").find("#source_"+data_variables[index].id).val() == ""){
-                                                    informou_fontes = false;
+												if ($("#dashboard-content .content .filter_result").find("#var_"+data_variables[index].id).is("input")){
+													valor = $.convertNumberToBd(valor);
+													if (isNaN(valor)){
+														informou_valores_validos = false;
+													}
+													if ($("#dashboard-content .content .filter_result").find("#var_"+data_variables[index].id).val() != "" && $("#dashboard-content .content .filter_result").find("#source_"+data_variables[index].id).val() == ""){
+														informou_fontes = false;
+													}
                                                 }
                                             });
 

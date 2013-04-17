@@ -237,7 +237,6 @@ a.button-add:hover{
 
 #dashboard{
     text-align: left;
-    min-height: 350px;
 }
 
 #dashboard #form-login{
@@ -1374,11 +1373,6 @@ a#indicator-remove.active:hover{
 
 select.iselect{
     max-width: 400px;
-}
-
-span.ref-meta{
-	font-size: 0.9em;
-	color: #009999;
 }
 
 .logo_preview{

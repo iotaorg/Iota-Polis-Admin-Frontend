@@ -3,19 +3,19 @@
 	color: #666;
 }
 body{
-	margin: 0 auto;	
+	margin: 0 auto;
 	padding: 0;
 }
 body, td, div{
-	font-size: 11pt;	
+	font-size: 11pt;
 }
 
 .clear{
-	clear: both;	
+	clear: both;
 }
 
 a{
-	text-decoration: none;	
+	text-decoration: none;
 }
 
 #top{
@@ -53,7 +53,7 @@ a{
 	margin: 58px 0 -3px 148px;
 	float: left;
 }
-#top .content .link a{	
+#top .content .link a{
 	color: #999;
 	text-decoration: none;
 }
@@ -201,7 +201,7 @@ a.botao-form{
 	-moz-border-radius:3px;
 	-webkit-border-radius:3px;
 	border: 1px solid #637aa6;
-	margin: 2px 5px;	
+	margin: 2px 5px;
 }
 
 input.botao-form:hover,
@@ -226,7 +226,7 @@ a.button-add{
 	-moz-border-radius:3px;
 	-webkit-border-radius:3px;
 	border: 1px solid #d3eeea;
-	margin: 5px 0px;	
+	margin: 5px 0px;
 }
 
 a.button-add:hover{
@@ -236,8 +236,7 @@ a.button-add:hover{
 }
 
 #dashboard{
-	text-align: left;	
-	min-height: 350px;
+	text-align: left;
 }
 
 #dashboard #form-login{
@@ -286,7 +285,7 @@ a.button-add:hover{
 	border-bottom: 1px solid #e0e0e0;
 }
 .form .odd{
-	background-color: #f5f5f5;	
+	background-color: #f5f5f5;
 }
 
 .form .div{
@@ -528,7 +527,7 @@ table#results td.botoes a{
 table#results a.edit,
 table#results a.zoom,
 table#results a.delete{
-	font-size: 9pt;	
+	font-size: 9pt;
 }
 
 table#results td.log{
@@ -543,7 +542,7 @@ table#results td.log.data{
 
 table#results span.noresults{
 	font-size: 10pt;
-	font-style: italic;	
+	font-style: italic;
 }
 
 #formula-editor{
@@ -759,7 +758,7 @@ a#help-formula:hover{
 }
 
 #footer-menu{
-	border-top: 1px solid #dadada;	
+	border-top: 1px solid #dadada;
 	background-color: #efefef;
 	clear: both;
 }
@@ -856,7 +855,7 @@ a#help-formula:hover{
 
 #aware .content{
 	width: 890px;
-	text-align: right;	
+	text-align: right;
 	font-size: 9pt;
 	font-family: arial;
 	padding: 5px;
@@ -1063,7 +1062,7 @@ div.historico .item .no-record{
 
 
 .historico-popup{
-	text-align: center;	
+	text-align: center;
 	display: none;
 }
 
@@ -1122,7 +1121,7 @@ table.history tbody tr.selected{
 .form iframe{
 	width: 0;
 	height: 0;
-	border: none;	
+	border: none;
 }
 
 .variacoes-list table,
@@ -1173,7 +1172,7 @@ table.history tbody tr.selected{
 
 .variacoes-add,
 .vvariacoes-add{
-	margin-top: 3px;	
+	margin-top: 3px;
 }
 
 #variacoes-input,
@@ -1236,7 +1235,7 @@ a#delete-unit:hover{
 
 #group-editor .group-selected{
 	width: 400px;
-	float: left;	
+	float: left;
 }
 #group-editor .indicator-list-selected{
 	border: 1px solid #e0e0e0;
@@ -1248,7 +1247,7 @@ a#delete-unit:hover{
 	padding: 2px;
 	width: 255px;
 	margin-left: 5px;
-	float: left;	
+	float: left;
 }
 #group-editor .indicator-list{
 	border: 1px solid #e0e0e0;
@@ -1373,7 +1372,7 @@ a#indicator-remove.active:hover{
 }
 
 select.iselect{
-	max-width: 400px;	
+	max-width: 400px;
 }
 
 .logo_preview{
@@ -1385,7 +1384,7 @@ select.iselect{
 }
 a.link-files{
 	color: #009999;
-	font-size: 0.9em;	
+	font-size: 0.9em;
 }
 a.link-files:hover{
 	color: #666666;

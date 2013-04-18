@@ -4284,31 +4284,32 @@ $(document).ready(function() {
 
                                         }
 
-                                        $("#dashboard-content .content .filter_result input#no_data").after("Não possuo os dados.");
+                                        $("#no_data").after("Não possuo os dados.");
                                         $("#dashboard-content .content .filter_result .field:last").hide();
-                                        $("#dashboard-content .content .filter_result input#no_data").change(function(){
+                                        $("#no_data").change(function(){
                                             if ($(this).attr("checked")){
                                                 $("#dashboard-content .content .filter_result .field:last").show();
-                                                $("#dashboard-content .content .filter_result input#goal").hide();
+                                                $("#goal").hide();
                                             }else{
                                                 $("#dashboard-content .content .filter_result .field:last").hide();
-                                                $("#dashboard-content .content .filter_result input#goal").show();
+                                                $("#goal").show();
+                                                $("#justification_of_missing_field").val('');
                                             }
                                         });
 
                                         $.each(data_variables, function(index,value){
                                             $("#dashboard-content .content .filter_result div#textlabel_explanation_$$id".render({id:data_variables[index].id})).html(data_variables[index].explanation)
                                             if (data_variables[index].value != null && data_variables[index].value != undefined && data_variables[index].value != ""){
-                                                $("#dashboard-content .content .filter_result #var_$$id".render({id:data_variables[index].id})).val(data_variables[index].value);
-                                                $("#dashboard-content .content .filter_result #source_$$id".render({id:data_variables[index].id})).val(data_variables[index].source);
-                                                $("#dashboard-content .content .filter_result #observations_$$id".render({id:data_variables[index].id})).val(data_variables[index].observations);
+                                                $("#var_$$id".render({id:data_variables[index].id})).val(data_variables[index].value);
+                                                $("#source_$$id".render({id:data_variables[index].id})).val(data_variables[index].source);
+                                                $("#observations_$$id".render({id:data_variables[index].id})).val(data_variables[index].observations);
 
                                             }else{
-                                                $("#dashboard-content .content .filter_result #var_$$id".render({id:data_variables[index].id})).attr("disabled",false);
-                                                $("#dashboard-content .content .filter_result #source_$$id".render({id:data_variables[index].id})).attr("disabled",false);
-                                                $("#dashboard-content .content .filter_result #observations_$$id".render({id:data_variables[index].id})).attr("disabled",false);
-                                                $("#dashboard-content .content .filter_result input#no_data").attr("disabled",false);
-                                                $("#dashboard-content .content .filter_result #goal").attr("disabled",false);
+                                                $("#var_$$id".render({id:data_variables[index].id})).attr("disabled",false);
+                                                $("#source_$$id".render({id:data_variables[index].id})).attr("disabled",false);
+                                                $("#observations_$$id".render({id:data_variables[index].id})).attr("disabled",false);
+                                                $("#no_data").attr("disabled",false);
+                                                $("#goal").attr("disabled",false);
                                             }
                                         });
 
@@ -4316,7 +4317,7 @@ $(document).ready(function() {
                                         $("#goal").val(data.goal);
 
                                         if (data.justification_of_missing_field){
-                                            $("#dashboard-content .content .filter_result input#no_data").click();
+                                            $("#no_data").click();
                                         }
 
                                         $.each(data_variations, function(index_variation,item_variation){
@@ -4337,7 +4338,7 @@ $(document).ready(function() {
                                                 success: function(data, textStatus, jqXHR){
                                                     $.loading.hide();
                                                     $.each(data.values,function(index_value,item_value){
-                                                        var obj = "#dashboard-content .content .filter_result #v_$$var_id_var_$$id".render({
+                                                        var obj = "#v_$$var_id_var_$$id".render({
                                                                 id: item_vvariables.id,
                                                                 var_id: item_value.indicator_variation_id
                                                             });
@@ -4399,15 +4400,15 @@ $(document).ready(function() {
                                                 });
                                             }
 
-                                            if (!informou_valores && !$("#dashboard-content .content .filter_result input#no_data").attr("checked")){
+                                            if (!informou_valores && !$("#no_data").attr("checked")){
                                                 $(".filter_result .form-aviso").setWarning({msg: "Por favor informe os valores"});
-                                            }else if (!informou_valores_validos && !$("#dashboard-content .content .filter_result input#no_data").attr("checked")){
+                                            }else if (!informou_valores_validos && !$("#no_data").attr("checked")){
                                                 $(".filter_result .form-aviso").setWarning({msg: "Os valores devem ser apenas numéricos"});
-                                            }else if (!informou_vvalores_validos && !$("#dashboard-content .content .filter_result input#no_data").attr("checked")){
+                                            }else if (!informou_vvalores_validos && !$("#no_data").attr("checked")){
                                                 $(".filter_result .form-aviso").setWarning({msg: "Os valores devem ser apenas números inteiros"});
-                                            }else if (!informou_fontes && !$("#dashboard-content .content .filter_result input#no_data").attr("checked")){
+                                            }else if (!informou_fontes && !$("#no_data").attr("checked")){
                                                 $(".filter_result .form-aviso").setWarning({msg: "Por favor informe a fonte dos valores"});
-                                            }else if ($("#dashboard-content .content .filter_result input#no_data").attr("checked") && $("#dashboard-content .content").find("#justification_of_missing_field").val() == ""){
+                                            }else if ($("#no_data").attr("checked") && $("#dashboard-content .content").find("#justification_of_missing_field").val() == ""){
                                                 $(".filter_result .form-aviso").setWarning({msg: "Por favor informe a justificativa"});
                                             }else{
                                                 $("#dashboard-content .content .filter_result .botao-form[ref='enviar']").hide();

@@ -740,11 +740,16 @@ var buildIndicatorHistory = function (args){
 							});
 
 						}else{
-							history_table += "<td class='valor' title='$$data' value-id='$$id'>-</td>".render({
-									data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T"),
-									id: data.rows[index].valores[index2].id,
-									variable_id: data.rows[index].valores[index2].variable_id
-							});
+                           if (data.rows[index].valores[index2]){
+                                history_table += "<td class='valor' title='$$data' value-id='$$id'>-</td>".render({
+                                        data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T"),
+                                        id: data.rows[index].valores[index2].id,
+                                        variable_id: data.rows[index].valores[index2].variable_id
+                                });
+                            }else{
+                                history_table += "<td class='valor'>-</td>";
+
+                            }
 						}
 						cont++;
 					});

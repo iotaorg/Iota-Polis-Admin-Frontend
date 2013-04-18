@@ -4199,7 +4199,7 @@ $(document).ready(function() {
                                         $(formbuild).find("div .field:odd").addClass("odd");
                                         $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
                                         $(formbuild).find("#new_variation_add").html("Adicionar");
-										
+
 										if (data_indicator.goal){
 											var ref_meta = "";
 											if (data_indicator.goal_operator){
@@ -4484,14 +4484,13 @@ $(document).ready(function() {
                                                                         data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter").val();
                                                                     }
 
-                                                                    var ajax_method;
                                                                     var ajax_id;
                                                                     if ($("#dashboard-content .content .filter_result").find("#v_"+item_variation.id + "_var_"+item_variables.id).attr("update") != undefined){
-                                                                        ajax_method = "PUT";
+
                                                                         ajax_option = "update";
                                                                         ajax_id = $("#dashboard-content .content .filter_result").find("#v_"+item_variation.id + "_var_"+item_variables.id).attr("item-id");
                                                                     }else{
-                                                                        ajax_method = "POST";
+
                                                                         ajax_option = "create";
                                                                         ajax_id = "";
                                                                     }
@@ -4504,11 +4503,12 @@ $(document).ready(function() {
 
                                                                     $.ajax({
                                                                         async: false,
-                                                                        type: ajax_method,
+                                                                        type: "POST",
                                                                         dataType: 'json',
-                                                                        url: api_path + '/api/indicator/$$indicator_id/variables_variation/$$var_id/values'.render({
+                                                                        url: api_path + '/api/indicator/$$indicator_id/variables_variation/$$var_id/values/$$ajax_id'.render({
                                                                                 indicator_id: getIdFromUrl($.getUrlVar("url")),
-                                                                                var_id: item_variables.id
+                                                                                var_id: item_variables.id,
+                                                                                ajax_id: ajax_id
                                                                             }),
                                                                         data: args,
                                                                         success: function(data, textStatus, jqXHR){

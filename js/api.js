@@ -3657,8 +3657,8 @@ $(document).ready(function() {
 
                             indicators_legend = "<div class='indicadores_legend'><div class='fillContent'>";
                             indicators_legend += "<div class='item'><div class='color no-data'></div><div class='label'>Nenhum dado preenchido</div><div class='clear'></div></div>";
-                            indicators_legend += "<div class='item'><div class='color last-period'></div><div class='label'>Preenchido (exceto ano anterior ao vigente)</div><div class='clear'></div></div>";
-                            indicators_legend += "<div class='item'><div class='color full'></div><div class='label'>Totalmente preenchido</div><div class='clear'></div></div>";
+                            indicators_legend += "<div class='item'><div class='color last-period'></div><div class='label'>Preenchido</div><div class='clear'></div></div>";
+                            indicators_legend += "<div class='item'><div class='color full'></div><div class='label'>Período corrente preenchido</div><div class='clear'></div></div>";
                             indicators_legend += "</div></div><div class='clear'></div>";
 
                             indicators_table = "<div class='indicadores_list'>";
@@ -3855,12 +3855,12 @@ $(document).ready(function() {
                                     var dataStatus = data.status;
                                     $.each(dataStatus, function(index,value){
                                         var statusClass = "";
-                                        if (dataStatus[index].ultimo_periodo == 0 &&  dataStatus[index].outros_periodos == 0){
+                                        if (dataStatus[index].without_data){
                                             statusClass = "no-data";
-                                        }else if (dataStatus[index].ultimo_periodo == 0 &&  dataStatus[index].outros_periodos == 1){
-                                            statusClass = "last-period";
-                                        }else if (dataStatus[index].ultimo_periodo == 1 &&  dataStatus[index].outros_periodos == 1){
+                                        }else if (dataStatus[index].has_current){
                                             statusClass = "full";
+                                        }else if (dataStatus[index].has_data){
+                                            statusClass = "last-period";
                                         }
                                         $(".indicadores_list .variable[indicator-id='$$indicator_id']".render({
                                                     indicator_id: data.status[index].id

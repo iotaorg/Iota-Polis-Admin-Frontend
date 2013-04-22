@@ -2094,7 +2094,7 @@ $(document).ready(function() {
                                 });
                                 $.each(data.variables, function(index,item){
                                     $("#dashboard-content .content #variable_id").append($("<option value='$$id'>$$nome</option>".render({
-                                        id: item.variable_id,
+                                        id: item.id,
                                         nome: item.name
                                     })));
                                 });

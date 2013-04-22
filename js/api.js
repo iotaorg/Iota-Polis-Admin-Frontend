@@ -2143,7 +2143,9 @@ $(document).ready(function() {
                     var formbuild = $("#dashboard-content .content .value_via_file").append(buildForm(newform,"Importar valores"));
                     $(formbuild).find("div .field:odd").addClass("odd");
                     $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
-                    $("#dashboard-content .content .value_via_file .botao-form[ref='cancelar']").hide()
+                    $("#dashboard-content .content .value_via_file .botao-form[ref='cancelar']").hide();
+
+                    formbuild.prepend($('<a href="/variaveis_exemplo.csv">Faça o download do arquivo de modelo</a>').css('color','#22F').css('padding', '20px').css('display', 'block'));
 
                     $("#dashboard-content .content .value_via_file .botao-form[ref='enviar']").click(function(){
 

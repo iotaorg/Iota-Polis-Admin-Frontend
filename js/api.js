@@ -4532,6 +4532,7 @@ $(document).ready(function() {
 
                                                         var data_formatada = "";
                                                         if (data_indicator.period == "yearly" || data_indicator.period == "monthly"){
+
                                                             data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter option:selected").val();
                                                         }else if (data_indicator.period == "daily"){
                                                             data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter").val();
@@ -5006,7 +5007,27 @@ $(document).ready(function() {
                 }
             }else if (getUrlSub() == "menus"){
                 /*  Menus  */
+				var data_menus = [];
                 if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
+
+                    $.ajax({
+                        async: false,
+                        type: 'GET',
+                        dataType: 'json',
+                        url: api_path + "/api/menu?api_key=$$key".render({
+                                    key: $.cookie("key")
+                            }),
+                        success: function(data,status,jqXHR){
+                            data.menus.sort(function (a, b) {
+                                a = String(a.title),
+                                b = String(b.title);
+                                return a.localeCompare(b);
+                            });
+							$.each(data.menus, function(index,item){
+								data_menus[item.id] = item.title;
+							});
+                        }
+                    });
 
                     var userList = buildDataTable({
                             headers: ["Título","Pai","Posição","_"]
@@ -5028,7 +5049,17 @@ $(document).ready(function() {
                                 key: $.cookie("key")
                                 }),
                         "aoColumnDefs": [
-                                            { "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 3 ] }
+                                            { "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 3 ] },
+                                            { "sClass": "center", "aTargets": [ 1, 2 ] },
+                                            { "fnRender": function ( oObj, sVal ) {
+															if (!sVal){
+																sVal = "--";
+															}else{
+																sVal = data_menus[parseInt(sVal)];	
+															}
+                                                            return sVal;
+                                                        }, "aTargets": [ 1 ]
+                                            }
                                         ],
                         "aaSorting": [[1,'asc'],[2,'asc']],
                         "fnDrawCallback": function(){
@@ -5045,7 +5076,7 @@ $(document).ready(function() {
                     newform.push({label: "Menu Pai", input: ["select,menu_id,iselect"]});
                     newform.push({label: "Título", input: ["text,title,itext"]});
                     newform.push({label: "Posição", input: ["select,position,iselect"]});
-                    newform.push({label: "Página", input: ["select,pagina_id,iselect"]});
+                    newform.push({label: "Página", input: ["select,page_id,iselect"]});
 
                     var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
                     $(formbuild).find("div .field:odd").addClass("odd");
@@ -5064,12 +5095,12 @@ $(document).ready(function() {
                                     key: $.cookie("key")
                             }),
                         success: function(data,status,jqXHR){
-                            data.title.sort(function (a, b) {
+                            data.menus.sort(function (a, b) {
                                 a = String(a.title),
                                 b = String(b.title);
                                 return a.localeCompare(b);
                             });
-                            $.each(data.menu,function(index, item){
+                            $.each(data.menus,function(index, item){
                                 if (!data.menu_id){
                                     $("#dashboard-content .content select#menu_id").append($("<option></option>").val(item.id).html(item.title));
                                 }
@@ -5090,14 +5121,14 @@ $(document).ready(function() {
                                     key: $.cookie("key")
                             }),
                         success: function(data,status,jqXHR){
-                            data.title.sort(function (a, b) {
+                            data.pages.sort(function (a, b) {
                                 a = String(a.title),
                                 b = String(b.title);
                                 return a.localeCompare(b);
                             });
-                            $.each(data.menu,function(index, item){
-                                if (!data.menu_id){
-                                    $("#dashboard-content .content select#page_id").append($("<option></option>").val(item.id).html(item.title + " url: " + item.title_url));
+                            $.each(data.pages,function(index, item){
+                                if (!data.page_id){
+                                    $("#dashboard-content .content select#page_id").append($("<option></option>").val(item.id).html(item.title + " - url: " + item.title_url));
                                 }
                             });
                         }
@@ -5212,7 +5243,7 @@ $(document).ready(function() {
                                         "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
                                         },
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/menu?api_key=$$key&content-type=application/json&columns=title,title_url,url,_,_'.render({
+                        "sAjaxSource": api_path + '/api/page?api_key=$$key&content-type=application/json&columns=title,title_url,url,_,_'.render({
                                 key: $.cookie("key")
                                 }),
                         "aoColumnDefs": [
@@ -5231,7 +5262,7 @@ $(document).ready(function() {
 
                     newform.push({label: "Título", input: ["text,title,itext"]});
                     newform.push({label: "Url", input: ["text,title_url,itext"]});
-                    newform.push({label: "Conteúdo", input: ["textarea,content,itext_content"]});
+                    newform.push({label: "Conteúdo", input: ["textarea,page_content,itext_content"]});
 
                     var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
                     $(formbuild).find("div .field:odd").addClass("odd");
@@ -5253,7 +5284,7 @@ $(document).ready(function() {
                                     case 200:
                                         $(formbuild).find("input#title").val(data.title);
                                         $(formbuild).find("input#title_url").val(data.title_url);
-                                        $(formbuild).find("textarea#content").val(data.content);
+                                        $(formbuild).find("textarea#page_content").val(data.content);
                                         break;
                                 }
                             },
@@ -5289,7 +5320,7 @@ $(document).ready(function() {
                             args = [{name: "api_key", value: $.cookie("key")},
                                     {name: "page." + action + ".title", value: $(this).parent().parent().find("#title").val()},
                                     {name: "page." + action + ".title_url", value: $(this).parent().parent().find("#title_url").val()},
-                                    {name: "page." + action + ".content", value: $(this).parent().parent().find("#content").val()}
+                                    {name: "page." + action + ".content", value: $(this).parent().parent().find("#page_content").val()}
                                     ];
                             $("#dashboard-content .content .botao-form[ref='enviar']").hide();
                             $.ajax({

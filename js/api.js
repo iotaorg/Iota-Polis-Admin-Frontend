@@ -5262,18 +5262,20 @@ $(document).ready(function() {
 
                     newform.push({label: "Título", input: ["text,title,itext"]});
                     newform.push({label: "Url", input: ["text,title_url,itext"]});
-                    newform.push({label: "Conteúdo", input: ["textarea,page_content,itext_content"]});
+                    newform.push({label: "Conteúdo", input: ["textarea,page_content"]});
 
                     var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
                     $(formbuild).find("div .field:odd").addClass("odd");
+                    $(formbuild).find(".form").width(800);
                     $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 
                     $(formbuild).find("#title").qtip( $.extend(true, {}, qtip_input, {
                             content: "Título da Página."
                     }));
-
+					
                     if ($.getUrlVar("option") == "edit"){
                         $.ajax({
+							async: false,
                             type: 'GET',
                             dataType: 'json',
                             url: $.getUrlVar("url") + "?api_key=$$key".render({
@@ -5301,12 +5303,34 @@ $(document).ready(function() {
                         });
                     }
 
+					var editor = new TINY.editor.edit('editor', {
+						id: 'page_content',
+						width: 600,
+						height: 175,
+						cssclass: 'tinyeditor',
+						controlclass: 'tinyeditor-control',
+						rowclass: 'tinyeditor-header',
+						dividerclass: 'tinyeditor-divider',
+						controls: ['bold', 'italic', 'underline', 'strikethrough', '|', 'subscript', 'superscript', '|',
+							'orderedlist', 'unorderedlist', '|', 'outdent', 'indent', '|', 'leftalign',
+							'centeralign', 'rightalign', 'blockjustify', '|', 'unformat', '|', 'undo', 'redo', 'n',
+							'size', 'style', '|', 'image', 'hr', 'link', 'unlink'],
+						footer: true,
+						fonts: ['Asap'],
+						xhtml: true,
+						cssfile: '../js/tinyeditor/custom.css',
+						bodyid: 'editor',
+						footerclass: 'tinyeditor-footer',
+						toggle: {text: 'código-fonte', activetext: 'wysiwyg', cssclass: 'toggle'},
+						resize: {cssclass: 'resize'}
+					});
+
                     $("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
                         resetWarnings();
                         if ($(this).parent().parent().find("#institute_id option:selected").val() == ""){
                             $(".form-aviso").setWarning({msg: "Por favor informe o Título"});
                         }else{
-
+											
                             if ($.getUrlVar("option") == "add"){
                                 var action = "create";
                                 var method = "POST";

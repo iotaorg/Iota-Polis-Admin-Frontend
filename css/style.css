@@ -1129,7 +1129,7 @@ table.history tbody tr.selected{
     background-color: #FF9;
 }
 
-.form iframe{
+.form iframe.upload{
     width: 0;
     height: 0;
     border: none;

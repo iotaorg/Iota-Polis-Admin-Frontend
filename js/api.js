@@ -3088,6 +3088,7 @@ $(document).ready(function() {
                             }else if ($(this).parent().parent().find("#formula").val() == ""){
                                 $(".form-aviso").setWarning({msg: "Por favor informe a Fórmula"});
                             }else{
+								
                                 args = [{name: "api_key", value: $.cookie("key")},
                                         {name: "indicator.create.name", value: $(this).parent().parent().find("#name").val()},
                                         {name: "indicator.create.indicator_roles", value: $(this).parent().parent().find("#indicator_role").val()},
@@ -3105,6 +3106,16 @@ $(document).ready(function() {
                                         {name: "indicator.create.observations", value: $(this).parent().parent().find("#observations").val()}
                                         ];
 
+								
+								if ($(this).parent().parent().find("#indicator_role").val() == "_prefeitura,_movimento"){
+                                    args.push({name: "indicator.create.visibility_level", value: "public"});
+								}else if ($(this).parent().parent().find("#indicator_role").val() == "_prefeitura"){
+                                    args.push({name: "indicator.create.visibility_level", value: "private"});
+                                    args.push({name: "indicator.create.visibility_user_id", value: 2});
+								}else if ($(this).parent().parent().find("#indicator_role").val() == "_movimento"){
+                                    args.push({name: "indicator.create.visibility_level", value: "private"});
+                                    args.push({name: "indicator.create.visibility_user_id", value: 3});
+								}
 
                                 if ($(this).parent().parent().find("#indicator_type").val() == "varied" || $(this).parent().parent().find("#indicator_type").val() == "varied_dyn"){
                                     if ($(this).parent().parent().find("#all_variations_variables_are_required").attr("checked")){
@@ -3288,7 +3299,18 @@ $(document).ready(function() {
 
                                         }
                                         if (data.indicator_roles ==  '_movimento,_prefeitura') data.indicator_roles = '_prefeitura,_movimento';
-                                        $(formbuild).find("select#indicator_role").val(String(data.indicator_roles));
+//                                        $(formbuild).find("select#indicator_role").val(String(data.indicator_roles));
+
+                                        if (data.visibility_level ==  'public'){
+	                                        $(formbuild).find("select#indicator_role").val("_prefeitura,_movimento");
+										}else if (data.visibility_level ==  'private'){
+											if (data.visibility_user_id ==  2){
+		                                        $(formbuild).find("select#indicator_role").val("_prefeitura");
+											}else{
+		                                        $(formbuild).find("select#indicator_role").val("_movimento");
+											}
+										}
+
                                         $(formbuild).find("textarea#formula").val(data.formula);
                                         $(formbuild).find("textarea#explanation").val(data.explanation);
                                         $(formbuild).find("select#sort_direction").val(String(data.sort_direction));
@@ -3394,6 +3416,16 @@ $(document).ready(function() {
                                         {name: "indicator.update.tags", value: $(this).parent().parent().find("#tags").val()},
                                         {name: "indicator.update.observations", value: $(this).parent().parent().find("#observations").val()}
                                         ];
+								
+								if ($(this).parent().parent().find("#indicator_role").val() == "_prefeitura,_movimento"){
+                                    args.push({name: "indicator.update.visibility_level", value: "public"});
+								}else if ($(this).parent().parent().find("#indicator_role").val() == "_prefeitura"){
+                                    args.push({name: "indicator.update.visibility_level", value: "private"});
+                                    args.push({name: "indicator.update.visibility_user_id", value: 2});
+								}else if ($(this).parent().parent().find("#indicator_role").val() == "_movimento"){
+                                    args.push({name: "indicator.update.visibility_level", value: "private"});
+                                    args.push({name: "indicator.update.visibility_user_id", value: 3});
+								}
 
                                 if ($(this).parent().parent().find("#indicator_type").val() == "varied" || $(this).parent().parent().find("#indicator_type").val() == "varied_dyn"){
                                     if ($(this).parent().parent().find("#all_variations_variables_are_required").attr("checked")){

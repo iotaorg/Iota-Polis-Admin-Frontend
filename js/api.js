@@ -2646,7 +2646,21 @@ $(document).ready(function() {
                     });
 
                     $.each(indicator_roles,function(key, value){
-                        $("#dashboard-content .content select#indicator_role").append($("<option></option>").val(key).html(value));
+						if (user_info.roles[0] == "admin"){
+							if ($.cookie("user.id") == 2){
+								if (key == "_prefeitura"){
+			                        $("#dashboard-content .content select#indicator_role").append($("<option></option>").val(key).html(value));
+								}
+							}
+							if ($.cookie("user.id") == 3){
+								if (key == "_movimento"){
+			                        $("#dashboard-content .content select#indicator_role").append($("<option></option>").val(key).html(value));
+								}
+							}
+						}else{
+	                        $("#dashboard-content .content select#indicator_role").append($("<option></option>").val(key).html(value));
+						}
+
                     });
 
                     $.each(indicator_types,function(key, value){

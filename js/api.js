@@ -2646,7 +2646,21 @@ $(document).ready(function() {
                     });
 
                     $.each(indicator_roles,function(key, value){
-                        $("#dashboard-content .content select#indicator_role").append($("<option></option>").val(key).html(value));
+						if (user_info.roles[0] == "admin"){
+							if ($.cookie("user.id") == 2){
+								if (key == "_prefeitura"){
+			                        $("#dashboard-content .content select#indicator_role").append($("<option></option>").val(key).html(value));
+								}
+							}
+							if ($.cookie("user.id") == 3){
+								if (key == "_movimento"){
+			                        $("#dashboard-content .content select#indicator_role").append($("<option></option>").val(key).html(value));
+								}
+							}
+						}else{
+	                        $("#dashboard-content .content select#indicator_role").append($("<option></option>").val(key).html(value));
+						}
+
                     });
 
                     $.each(indicator_types,function(key, value){
@@ -3088,6 +3102,7 @@ $(document).ready(function() {
                             }else if ($(this).parent().parent().find("#formula").val() == ""){
                                 $(".form-aviso").setWarning({msg: "Por favor informe a Fórmula"});
                             }else{
+								
                                 args = [{name: "api_key", value: $.cookie("key")},
                                         {name: "indicator.create.name", value: $(this).parent().parent().find("#name").val()},
                                         {name: "indicator.create.indicator_roles", value: $(this).parent().parent().find("#indicator_role").val()},
@@ -3105,6 +3120,16 @@ $(document).ready(function() {
                                         {name: "indicator.create.observations", value: $(this).parent().parent().find("#observations").val()}
                                         ];
 
+								
+								if ($(this).parent().parent().find("#indicator_role").val() == "_prefeitura,_movimento"){
+                                    args.push({name: "indicator.create.visibility_level", value: "public"});
+								}else if ($(this).parent().parent().find("#indicator_role").val() == "_prefeitura"){
+                                    args.push({name: "indicator.create.visibility_level", value: "private"});
+                                    args.push({name: "indicator.create.visibility_user_id", value: 2});
+								}else if ($(this).parent().parent().find("#indicator_role").val() == "_movimento"){
+                                    args.push({name: "indicator.create.visibility_level", value: "private"});
+                                    args.push({name: "indicator.create.visibility_user_id", value: 3});
+								}
 
                                 if ($(this).parent().parent().find("#indicator_type").val() == "varied" || $(this).parent().parent().find("#indicator_type").val() == "varied_dyn"){
                                     if ($(this).parent().parent().find("#all_variations_variables_are_required").attr("checked")){
@@ -3288,7 +3313,18 @@ $(document).ready(function() {
 
                                         }
                                         if (data.indicator_roles ==  '_movimento,_prefeitura') data.indicator_roles = '_prefeitura,_movimento';
-                                        $(formbuild).find("select#indicator_role").val(String(data.indicator_roles));
+//                                        $(formbuild).find("select#indicator_role").val(String(data.indicator_roles));
+
+                                        if (data.visibility_level ==  'public'){
+	                                        $(formbuild).find("select#indicator_role").val("_prefeitura,_movimento");
+										}else if (data.visibility_level ==  'private'){
+											if (data.visibility_user_id ==  2){
+		                                        $(formbuild).find("select#indicator_role").val("_prefeitura");
+											}else{
+		                                        $(formbuild).find("select#indicator_role").val("_movimento");
+											}
+										}
+
                                         $(formbuild).find("textarea#formula").val(data.formula);
                                         $(formbuild).find("textarea#explanation").val(data.explanation);
                                         $(formbuild).find("select#sort_direction").val(String(data.sort_direction));
@@ -3394,6 +3430,16 @@ $(document).ready(function() {
                                         {name: "indicator.update.tags", value: $(this).parent().parent().find("#tags").val()},
                                         {name: "indicator.update.observations", value: $(this).parent().parent().find("#observations").val()}
                                         ];
+								
+								if ($(this).parent().parent().find("#indicator_role").val() == "_prefeitura,_movimento"){
+                                    args.push({name: "indicator.update.visibility_level", value: "public"});
+								}else if ($(this).parent().parent().find("#indicator_role").val() == "_prefeitura"){
+                                    args.push({name: "indicator.update.visibility_level", value: "private"});
+                                    args.push({name: "indicator.update.visibility_user_id", value: 2});
+								}else if ($(this).parent().parent().find("#indicator_role").val() == "_movimento"){
+                                    args.push({name: "indicator.update.visibility_level", value: "private"});
+                                    args.push({name: "indicator.update.visibility_user_id", value: 3});
+								}
 
                                 if ($(this).parent().parent().find("#indicator_type").val() == "varied" || $(this).parent().parent().find("#indicator_type").val() == "varied_dyn"){
                                     if ($(this).parent().parent().find("#all_variations_variables_are_required").attr("checked")){
@@ -4532,6 +4578,7 @@ $(document).ready(function() {
 
                                                         var data_formatada = "";
                                                         if (data_indicator.period == "yearly" || data_indicator.period == "monthly"){
+
                                                             data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter option:selected").val();
                                                         }else if (data_indicator.period == "daily"){
                                                             data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter").val();
@@ -5006,7 +5053,27 @@ $(document).ready(function() {
                 }
             }else if (getUrlSub() == "menus"){
                 /*  Menus  */
+				var data_menus = [];
                 if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
+
+                    $.ajax({
+                        async: false,
+                        type: 'GET',
+                        dataType: 'json',
+                        url: api_path + "/api/menu?api_key=$$key".render({
+                                    key: $.cookie("key")
+                            }),
+                        success: function(data,status,jqXHR){
+                            data.menus.sort(function (a, b) {
+                                a = String(a.title),
+                                b = String(b.title);
+                                return a.localeCompare(b);
+                            });
+							$.each(data.menus, function(index,item){
+								data_menus[item.id] = item.title;
+							});
+                        }
+                    });
 
                     var userList = buildDataTable({
                             headers: ["Título","Pai","Posição","_"]
@@ -5028,7 +5095,17 @@ $(document).ready(function() {
                                 key: $.cookie("key")
                                 }),
                         "aoColumnDefs": [
-                                            { "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 3 ] }
+                                            { "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 3 ] },
+                                            { "sClass": "center", "aTargets": [ 1, 2 ] },
+                                            { "fnRender": function ( oObj, sVal ) {
+															if (!sVal){
+																sVal = "--";
+															}else{
+																sVal = data_menus[parseInt(sVal)];	
+															}
+                                                            return sVal;
+                                                        }, "aTargets": [ 1 ]
+                                            }
                                         ],
                         "aaSorting": [[1,'asc'],[2,'asc']],
                         "fnDrawCallback": function(){
@@ -5045,7 +5122,7 @@ $(document).ready(function() {
                     newform.push({label: "Menu Pai", input: ["select,menu_id,iselect"]});
                     newform.push({label: "Título", input: ["text,title,itext"]});
                     newform.push({label: "Posição", input: ["select,position,iselect"]});
-                    newform.push({label: "Página", input: ["select,pagina_id,iselect"]});
+                    newform.push({label: "Página", input: ["select,page_id,iselect"]});
 
                     var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
                     $(formbuild).find("div .field:odd").addClass("odd");
@@ -5064,12 +5141,12 @@ $(document).ready(function() {
                                     key: $.cookie("key")
                             }),
                         success: function(data,status,jqXHR){
-                            data.title.sort(function (a, b) {
+                            data.menus.sort(function (a, b) {
                                 a = String(a.title),
                                 b = String(b.title);
                                 return a.localeCompare(b);
                             });
-                            $.each(data.menu,function(index, item){
+                            $.each(data.menus,function(index, item){
                                 if (!data.menu_id){
                                     $("#dashboard-content .content select#menu_id").append($("<option></option>").val(item.id).html(item.title));
                                 }
@@ -5090,14 +5167,14 @@ $(document).ready(function() {
                                     key: $.cookie("key")
                             }),
                         success: function(data,status,jqXHR){
-                            data.title.sort(function (a, b) {
+                            data.pages.sort(function (a, b) {
                                 a = String(a.title),
                                 b = String(b.title);
                                 return a.localeCompare(b);
                             });
-                            $.each(data.menu,function(index, item){
-                                if (!data.menu_id){
-                                    $("#dashboard-content .content select#page_id").append($("<option></option>").val(item.id).html(item.title + " url: " + item.title_url));
+                            $.each(data.pages,function(index, item){
+                                if (!data.page_id){
+                                    $("#dashboard-content .content select#page_id").append($("<option></option>").val(item.id).html(item.title + " - url: " + item.title_url));
                                 }
                             });
                         }
@@ -5212,7 +5289,7 @@ $(document).ready(function() {
                                         "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
                                         },
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/menu?api_key=$$key&content-type=application/json&columns=title,title_url,url,_,_'.render({
+                        "sAjaxSource": api_path + '/api/page?api_key=$$key&content-type=application/json&columns=title,title_url,url,_,_'.render({
                                 key: $.cookie("key")
                                 }),
                         "aoColumnDefs": [
@@ -5231,18 +5308,20 @@ $(document).ready(function() {
 
                     newform.push({label: "Título", input: ["text,title,itext"]});
                     newform.push({label: "Url", input: ["text,title_url,itext"]});
-                    newform.push({label: "Conteúdo", input: ["textarea,content,itext_content"]});
+                    newform.push({label: "Conteúdo", input: ["textarea,page_content"]});
 
                     var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
                     $(formbuild).find("div .field:odd").addClass("odd");
+                    $(formbuild).find(".form").width(800);
                     $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 
                     $(formbuild).find("#title").qtip( $.extend(true, {}, qtip_input, {
                             content: "Título da Página."
                     }));
-
+					
                     if ($.getUrlVar("option") == "edit"){
                         $.ajax({
+							async: false,
                             type: 'GET',
                             dataType: 'json',
                             url: $.getUrlVar("url") + "?api_key=$$key".render({
@@ -5253,7 +5332,7 @@ $(document).ready(function() {
                                     case 200:
                                         $(formbuild).find("input#title").val(data.title);
                                         $(formbuild).find("input#title_url").val(data.title_url);
-                                        $(formbuild).find("textarea#content").val(data.content);
+                                        $(formbuild).find("textarea#page_content").val(data.content);
                                         break;
                                 }
                             },
@@ -5270,12 +5349,34 @@ $(document).ready(function() {
                         });
                     }
 
+					var editor = new TINY.editor.edit('editor', {
+						id: 'page_content',
+						width: 600,
+						height: 175,
+						cssclass: 'tinyeditor',
+						controlclass: 'tinyeditor-control',
+						rowclass: 'tinyeditor-header',
+						dividerclass: 'tinyeditor-divider',
+						controls: ['bold', 'italic', 'underline', 'strikethrough', '|', 'subscript', 'superscript', '|',
+							'orderedlist', 'unorderedlist', '|', 'outdent', 'indent', '|', 'leftalign',
+							'centeralign', 'rightalign', 'blockjustify', '|', 'unformat', '|', 'undo', 'redo', 'n',
+							'size', 'style', '|', 'image', 'hr', 'link', 'unlink'],
+						footer: true,
+						fonts: ['Asap'],
+						xhtml: true,
+						cssfile: '../js/tinyeditor/custom.css',
+						bodyid: 'editor',
+						footerclass: 'tinyeditor-footer',
+						toggle: {text: 'código-fonte', activetext: 'wysiwyg', cssclass: 'toggle'},
+						resize: {cssclass: 'resize'}
+					});
+
                     $("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
                         resetWarnings();
                         if ($(this).parent().parent().find("#institute_id option:selected").val() == ""){
                             $(".form-aviso").setWarning({msg: "Por favor informe o Título"});
                         }else{
-
+											
                             if ($.getUrlVar("option") == "add"){
                                 var action = "create";
                                 var method = "POST";
@@ -5289,7 +5390,7 @@ $(document).ready(function() {
                             args = [{name: "api_key", value: $.cookie("key")},
                                     {name: "page." + action + ".title", value: $(this).parent().parent().find("#title").val()},
                                     {name: "page." + action + ".title_url", value: $(this).parent().parent().find("#title_url").val()},
-                                    {name: "page." + action + ".content", value: $(this).parent().parent().find("#content").val()}
+                                    {name: "page." + action + ".content", value: $(this).parent().parent().find("#page_content").val()}
                                     ];
                             $("#dashboard-content .content .botao-form[ref='enviar']").hide();
                             $.ajax({

@@ -3102,7 +3102,7 @@ $(document).ready(function() {
                             }else if ($(this).parent().parent().find("#formula").val() == ""){
                                 $(".form-aviso").setWarning({msg: "Por favor informe a Fórmula"});
                             }else{
-								
+
                                 args = [{name: "api_key", value: $.cookie("key")},
                                         {name: "indicator.create.name", value: $(this).parent().parent().find("#name").val()},
                                         {name: "indicator.create.indicator_roles", value: $(this).parent().parent().find("#indicator_role").val()},
@@ -3120,7 +3120,7 @@ $(document).ready(function() {
                                         {name: "indicator.create.observations", value: $(this).parent().parent().find("#observations").val()}
                                         ];
 
-								
+
 								if ($(this).parent().parent().find("#indicator_role").val() == "_prefeitura,_movimento"){
                                     args.push({name: "indicator.create.visibility_level", value: "public"});
 								}else if ($(this).parent().parent().find("#indicator_role").val() == "_prefeitura"){
@@ -3430,7 +3430,7 @@ $(document).ready(function() {
                                         {name: "indicator.update.tags", value: $(this).parent().parent().find("#tags").val()},
                                         {name: "indicator.update.observations", value: $(this).parent().parent().find("#observations").val()}
                                         ];
-								
+
 								if ($(this).parent().parent().find("#indicator_role").val() == "_prefeitura,_movimento"){
                                     args.push({name: "indicator.update.visibility_level", value: "public"});
 								}else if ($(this).parent().parent().find("#indicator_role").val() == "_prefeitura"){
@@ -4346,10 +4346,12 @@ $(document).ready(function() {
 
                                         $.each(data_variables, function(index,value){
                                             $("#dashboard-content .content .filter_result div#textlabel_explanation_$$id".render({id:data_variables[index].id})).html(data_variables[index].explanation)
+
+                                            $("#source_$$id".render({id:data_variables[index].id})).val(data_variables[index].source);
+                                            $("#observations_$$id".render({id:data_variables[index].id})).val(data_variables[index].observations);
+
                                             if (data_variables[index].value != null && data_variables[index].value != undefined && data_variables[index].value != ""){
                                                 $("#var_$$id".render({id:data_variables[index].id})).val(data_variables[index].value);
-                                                $("#source_$$id".render({id:data_variables[index].id})).val(data_variables[index].source);
-                                                $("#observations_$$id".render({id:data_variables[index].id})).val(data_variables[index].observations);
 
                                             }else{
                                                 $("#var_$$id".render({id:data_variables[index].id})).attr("disabled",false);
@@ -5101,7 +5103,7 @@ $(document).ready(function() {
 															if (!sVal){
 																sVal = "--";
 															}else{
-																sVal = data_menus[parseInt(sVal)];	
+																sVal = data_menus[parseInt(sVal)];
 															}
                                                             return sVal;
                                                         }, "aTargets": [ 1 ]
@@ -5318,7 +5320,7 @@ $(document).ready(function() {
                     $(formbuild).find("#title").qtip( $.extend(true, {}, qtip_input, {
                             content: "Título da Página."
                     }));
-					
+
                     if ($.getUrlVar("option") == "edit"){
                         $.ajax({
 							async: false,
@@ -5376,7 +5378,7 @@ $(document).ready(function() {
                         if ($(this).parent().parent().find("#institute_id option:selected").val() == ""){
                             $(".form-aviso").setWarning({msg: "Por favor informe o Título"});
                         }else{
-											
+
                             if ($.getUrlVar("option") == "add"){
                                 var action = "create";
                                 var method = "POST";

@@ -5389,8 +5389,7 @@ $(document).ready(function() {
                                 var url_action = $.getUrlVar("url");
                             }
 							
-							$(this).parent().parent().find("#page_content").val($(".tinyeditor iframe").contents().find("#editor").innerHTML());
-							//editor.post();
+							editor.post();
 
                             args = [{name: "api_key", value: $.cookie("key")},
                                     {name: "page." + action + ".title", value: $(this).parent().parent().find("#title").val()},

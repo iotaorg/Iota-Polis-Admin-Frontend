@@ -5388,6 +5388,8 @@ $(document).ready(function() {
                                 var method = "POST";
                                 var url_action = $.getUrlVar("url");
                             }
+							
+							editor.post();
 
                             args = [{name: "api_key", value: $.cookie("key")},
                                     {name: "page." + action + ".title", value: $(this).parent().parent().find("#title").val()},

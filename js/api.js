@@ -4442,9 +4442,9 @@ $(document).ready(function() {
                                                         if (isNaN(valor) && valor != ""){
                                                             informou_valores_validos = false;
                                                         }
-                                                        if (!$.isInt(valor) && valor != ""){
+/*                                                        if (!$.isInt(valor) && valor != ""){
                                                             informou_vvalores_validos = false;
-                                                        }
+                                                        }*/
                                                     });
                                                 });
                                             }

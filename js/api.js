@@ -2144,7 +2144,8 @@ $(document).ready(function() {
                     $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
                     $("#dashboard-content .content .value_via_file .botao-form[ref='cancelar']").hide();
 
-                    formbuild.prepend($('<a href="/variaveis_exemplo.csv">Faça o download do arquivo de modelo</a>').css('color','#22F').css('padding', '20px').css('display', 'block'));
+                    formbuild.prepend($('<a href="/variaveis_exemplo.xls">Faça o download do arquivo de modelo en XLS</a>').css('color','#22F').css('padding', '20px').css('display', 'block'));
+                    formbuild.prepend($('<a href="/variaveis_exemplo.csv">Faça o download do arquivo de modelo en CSV</a>').css('color','#22F').css('padding', '20px').css('display', 'block'));
 
                     $("#dashboard-content .content .value_via_file .botao-form[ref='enviar']").click(function(){
 
@@ -5388,7 +5389,7 @@ $(document).ready(function() {
                                 var method = "POST";
                                 var url_action = $.getUrlVar("url");
                             }
-							
+
 							editor.post();
 
                             args = [{name: "api_key", value: $.cookie("key")},

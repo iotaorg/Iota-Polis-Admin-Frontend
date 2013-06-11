@@ -4555,36 +4555,43 @@ $(document).ready(function() {
                                                                 data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter").val();
                                                             }
 
-                                                            if (!$("#dashboard-content .content input#no_data").attr("checked")){
-                                                                args = [{name: "api_key", value: $.cookie("key")},
-                                                                        {name: "variable.value.put.value", value: $.convertNumberToBd($("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val())},
-                                                                        {name: "variable.value.put.source", value: $("#dashboard-content .content .filter_result").find("#source_"+data_variables[cont_sent].id).val()},
-                                                                        {name: "variable.value.put.observations", value: $("#dashboard-content .content .filter_result").find("#observations_"+data_variables[cont_sent].id).val()},
-                                                                        {name: "variable.value.put.value_of_date", value: data_formatada}
-                                                                        ];
-                                                            }else if ($("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val() == ""){
-                                                                args = [{name: "api_key", value: $.cookie("key")},
-                                                                        {name: "variable.value.put.value", value: ""},
-                                                                        {name: "variable.value.put.source", value: ""},
-                                                                        {name: "variable.value.put.observations", value: $("#dashboard-content .content .filter_result").find("#observations_"+data_variables[cont_sent].id).val()},
-                                                                        {name: "variable.value.put.value_of_date", value: data_formatada}
-                                                                        ];
-                                                            }else{
-                                                                args = [{name: "api_key", value: $.cookie("key")},
-                                                                        {name: "variable.value.put.value", value: $.convertNumberToBd($("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val())},
-                                                                        {name: "variable.value.put.source", value: $("#dashboard-content .content .filter_result").find("#source_"+data_variables[cont_sent].id).val()},
-                                                                        {name: "variable.value.put.observations", value: $("#dashboard-content .content .filter_result").find("#observations_"+data_variables[cont_sent].id).val()},
-                                                                        {name: "variable.value.put.value_of_date", value: data_formatada}
-                                                                        ];
-                                                            }
-
 															if ($("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()){
 																var url = api_path + '/api/city/$$city/region/$$region/value'.render({
 																			city: getIdFromUrl(user_info.city),
 																			region: $("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()
 																			});
+																var prefix = "region.";
 															}else{
 																var url = api_path + '/api/variable/$$var_id/value'.render({var_id: data_variables[cont_sent].id});
+																var prefix = "";
+															}
+															
+                                                            if (!$("#dashboard-content .content input#no_data").attr("checked")){
+                                                                args = [{name: "api_key", value: $.cookie("key")},
+                                                                        {name: prefix + "variable.value.put.value", value: $.convertNumberToBd($("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val())},
+                                                                        {name: prefix + "variable.value.put.source", value: $("#dashboard-content .content .filter_result").find("#source_"+data_variables[cont_sent].id).val()},
+                                                                        {name: prefix + "variable.value.put.observations", value: $("#dashboard-content .content .filter_result").find("#observations_"+data_variables[cont_sent].id).val()},
+                                                                        {name: prefix + "variable.value.put.value_of_date", value: data_formatada}
+                                                                        ];
+                                                            }else if ($("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val() == ""){
+                                                                args = [{name: "api_key", value: $.cookie("key")},
+                                                                        {name: prefix + "variable.value.put.value", value: ""},
+                                                                        {name: prefix + "variable.value.put.source", value: ""},
+                                                                        {name: prefix + "variable.value.put.observations", value: $("#dashboard-content .content .filter_result").find("#observations_"+data_variables[cont_sent].id).val()},
+                                                                        {name: prefix + "variable.value.put.value_of_date", value: data_formatada}
+                                                                        ];
+                                                            }else{
+                                                                args = [{name: "api_key", value: $.cookie("key")},
+                                                                        {name: prefix + "variable.value.put.value", value: $.convertNumberToBd($("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val())},
+                                                                        {name: prefix + "variable.value.put.source", value: $("#dashboard-content .content .filter_result").find("#source_"+data_variables[cont_sent].id).val()},
+                                                                        {name: prefix + "variable.value.put.observations", value: $("#dashboard-content .content .filter_result").find("#observations_"+data_variables[cont_sent].id).val()},
+                                                                        {name: prefix + "variable.value.put.value_of_date", value: data_formatada}
+                                                                        ];
+                                                            }
+
+															if ($("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()){
+                                                                args.push = {name: prefix + "variable.value.put.variable_id", value: data_variables[cont_sent].id};
+                                                                args.push = {name: prefix + "variable.value.put.user_id", value: $.cookie("user.id");
 															}
 															
                                                             $.ajax({

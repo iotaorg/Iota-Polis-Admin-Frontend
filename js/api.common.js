@@ -703,9 +703,10 @@ var buildIndicatorHistory = function (args){
 	$.ajax({
 		type: 'GET',
 		dataType: 'json',
-		url: api_path + '/api/indicator/$$id/variable/value?api_key=$$key'.render({
+		url: api_path + '/api/indicator/$$id/variable/value?api_key=$$key$$region'.render({
 				key: $.cookie("key"),
-				id: args.id
+				id: args.id,
+				region: ($("#dashboard-content .content select#region_id option:selected").val()) ? "&region_id=" + $("#dashboard-content .content select#region_id option:selected").val() : ""
 				}),
 		success: function(data, textStatus, jqXHR){
 			if (data.header && data.rows != undefined){

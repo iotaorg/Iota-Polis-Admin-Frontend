@@ -213,12 +213,12 @@ $(document).ready(function() {
         submenu_label["variable_user"].push({"myvariable" : "Variáveis Básicas"});
         submenu_label["variable_user"].push({"myvariableedit" : "Editar Valores"});
 
-        menu_access["superadmin"] = ["prefs","parameters","networks","admins","users","indicator","axis","logout"];
+        menu_access["superadmin"] = ["dashboard","prefs","parameters","networks","admins","users","indicator","axis","logout"];
         submenu_access["superadmin"] = ["countries","states","cities","units"];
-        menu_access["admin"] = ["prefs","users","parameters","variable_user","axis","indicator"];
+        menu_access["admin"] = ["dashboard","prefs","users","parameters","variable_user","axis","indicator"];
         submenu_access["admin"] = ["countries","states","cities","units"];
         menu_access["admin"].push("logout");
-        submenu_access["user"] = [];
+        submenu_access["user"] = ["dashboard"];
         submenu_access["admin"] = [];
         if (findInArray(user_info.roles,"user")){
             menu_access["user"] = ["prefs"];
@@ -4071,7 +4071,26 @@ $(document).ready(function() {
                                                 });
 
 
+							var data_region;
+                            $.ajax({
+								async: false,
+                                type: 'GET',
+                                dataType: 'json',
+                                url: api_path + '/api/city/$$city/region?api_key=$$key'.render({
+                                        key: $.cookie("key"),
+                                        city: getIdFromUrl(user_info.city)
+                                        }),
+                                success: function(data, textStatus, jqXHR){
+                                    data_region = data.regions;
+                                }
+                            });
+
                             var newform = [];
+							
+							if (data_region && data_region.length > 0){
+                                newform.push({label: "Região", input: ["select,region_id,iselect"]});						
+							}
+							
                             newform.push({label: "Fórmula", input: ["textlabel,textlabel_formula,ilabel"]});
                             newform.push({label: "Período", input: ["textlabel,textlabel_periodo,ilabel"]});
                             if (data_indicator.period == "yearly"){
@@ -4084,10 +4103,20 @@ $(document).ready(function() {
                                 newform.push({label: "Data", input: ["select,date_filter,iselect"]});
                             }
 
-                            var formbuild = $("#dashboard-content .content .filter_indicator").append(buildForm(newform,"Informe o Período"));
+							if (data_region && data_region.length > 0){
+								var formbuild = $("#dashboard-content .content .filter_indicator").append(buildForm(newform,"Informe a Região e o Período"));
+							}else{
+								var formbuild = $("#dashboard-content .content .filter_indicator").append(buildForm(newform,"Informe o Período"));
+							}
                             $(formbuild).find("div .field:odd").addClass("odd");
                             $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 
+							if (data_region && data_region.length > 0){
+								$("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("Nenhuma"));
+								$.each(data_region,function(index,item){
+									$("#dashboard-content .content select#region_id").append($("<option></option>").val(item.id).html(item.name));
+								});
+							}
                             var data_variables = [];
                             $.ajax({
                                 async: false,
@@ -4217,10 +4246,11 @@ $(document).ready(function() {
                                 $.ajax({
                                     type: 'GET',
                                     dataType: 'json',
-                                    url: api_path + '/api/indicator/$$id/variable/period/$$period?api_key=$$key'.render({
+                                    url: api_path + '/api/indicator/$$id/variable/period/$$period?api_key=$$key$$region'.render({
                                             key: $.cookie("key"),
                                             id: getIdFromUrl($.getUrlVar("url")),
-                                            period: $("#dashboard-content .content .filter_indicator select#date_filter option:selected").val()
+                                            period: $("#dashboard-content .content .filter_indicator select#date_filter option:selected").val(),
+											region: ($("#dashboard-content .content select#region_id option:selected").val()) ? "&region_id=" + $("#dashboard-content .content select#region_id option:selected").val() : ""
                                             }),
                                     success: function(data, textStatus, jqXHR){
                                         var data_variables = data.rows;
@@ -4423,11 +4453,12 @@ $(document).ready(function() {
                                                 async: false,
                                                 type: 'GET',
                                                 dataType: 'json',
-                                                url: api_path + '/api/indicator/$$indicator_id/variables_variation/$$id/values?valid_from=$$period&api_key=$$key'.render({
+                                                url: api_path + '/api/indicator/$$indicator_id/variables_variation/$$id/values?valid_from=$$period&api_key=$$key$$region'.render({
                                                         key: $.cookie("key"),
                                                         indicator_id: getIdFromUrl($.getUrlVar("url")),
                                                         id: item_vvariables.id,
-                                                        period: $("#dashboard-content .content .filter_indicator select#date_filter option:selected").val()
+                                                        period: $("#dashboard-content .content .filter_indicator select#date_filter option:selected").val(),
+														region: ($("#dashboard-content .content select#region_id option:selected").val()) ? "&region_id=" + $("#dashboard-content .content select#region_id option:selected").val() : ""
                                                         }),
                                                 success: function(data, textStatus, jqXHR){
                                                     $.loading.hide();
@@ -4547,10 +4578,19 @@ $(document).ready(function() {
                                                                         ];
                                                             }
 
+															if ($("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()){
+																var url = api_path + '/api/city/$$city/region/$$region/value'.render({
+																			city: getIdFromUrl(user_info.city),
+																			region: $("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()
+																			});
+															}else{
+																var url = api_path + '/api/variable/$$var_id/value'.render({var_id: data_variables[cont_sent].id});
+															}
+															
                                                             $.ajax({
                                                                 type: 'PUT',
                                                                 dataType: 'json',
-                                                                url: api_path + '/api/variable/$$var_id/value'.render({var_id: data_variables[cont_sent].id}),
+                                                                url: url,
                                                                 data: args,
                                                                 success: function(data, textStatus, jqXHR){
                                                                     cont_returned++;
@@ -4595,16 +4635,22 @@ $(document).ready(function() {
                                                                             {name: "indicator.variation_value." + ajax_option + ".value_of_date", value: data_formatada},
                                                                             {name: "indicator.variation_value." + ajax_option + ".indicator_variation_id", value: item_variation.id}
                                                                             ];
+																			
+																	if ($("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()){
+																		args = {name: "indicator.variation_value." + ajax_option + ".region_id", value: $("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()};
+																	}
 
+																	var url = api_path + '/api/indicator/$$indicator_id/variables_variation/$$var_id/values/$$ajax_id'.render({
+																		indicator_id: getIdFromUrl($.getUrlVar("url")),
+																		var_id: item_variables.id,
+																		ajax_id: ajax_id
+																	});
+																	
                                                                     $.ajax({
                                                                         async: false,
                                                                         type: "POST",
                                                                         dataType: 'json',
-                                                                        url: api_path + '/api/indicator/$$indicator_id/variables_variation/$$var_id/values/$$ajax_id'.render({
-                                                                                indicator_id: getIdFromUrl($.getUrlVar("url")),
-                                                                                var_id: item_variables.id,
-                                                                                ajax_id: ajax_id
-                                                                            }),
+                                                                        url: url,
                                                                         data: args,
                                                                         success: function(data, textStatus, jqXHR){
                                                                             cont_returned++;

@@ -4591,7 +4591,7 @@ $(document).ready(function() {
 
 															if ($("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()){
                                                                 args.push = {name: prefix + "variable.value.put.variable_id", value: data_variables[cont_sent].id};
-                                                                args.push = {name: prefix + "variable.value.put.user_id", value: $.cookie("user.id");
+                                                                args.push = {name: prefix + "variable.value.put.user_id", value: $.cookie("user.id")};
 															}
 															
                                                             $.ajax({

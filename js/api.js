@@ -213,7 +213,7 @@ $(document).ready(function() {
         submenu_label["variable_user"].push({"myvariable" : "Variáveis Básicas"});
         submenu_label["variable_user"].push({"myvariableedit" : "Editar Valores"});
 
-        menu_access["superadmin"] = ["prefs","parameters","networks","admins","indicator","axis","logout"];
+        menu_access["superadmin"] = ["prefs","parameters","networks","admins","users","indicator","axis","logout"];
         submenu_access["superadmin"] = ["countries","states","cities","units"];
         menu_access["admin"] = ["prefs","users","parameters","variable_user","axis","indicator"];
         submenu_access["admin"] = ["countries","states","cities","units"];
@@ -610,9 +610,9 @@ $(document).ready(function() {
                                         "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
                                         },
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/user?role=user&network_id=$$network_id&api_key=$$key&content-type=application/json&columns=name,email,url,_,_'.render({
+                        "sAjaxSource": api_path + '/api/user?role=user$$network_id&api_key=$$key&content-type=application/json&columns=name,email,url,_,_'.render({
                                 key: $.cookie("key"),
-                                network_id: $.cookie("network.id")
+                                network_id: ($.cookie("network.id")) ? "&network_id="+$.cookie("network.id") : ""
                                 }),
                         "aoColumnDefs": [
                                             { "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 2 ] }
@@ -628,6 +628,9 @@ $(document).ready(function() {
 
                     var newform = [];
 
+					if (user_info.roles[0] == "superadmin"){
+						newform.push({label: "Rede", input: ["select,network_id,iselect"]});
+					}
                     newform.push({label: "Nome", input: ["text,name,itext"]});
                     newform.push({label: "Email", input: ["text,email,itext"]});
                     newform.push({label: "Senha", input: ["password,password,itext"]});
@@ -648,8 +651,28 @@ $(document).ready(function() {
                             content: "Utilize letras e números e pelo menos 8 caracteres."
                     }));
 
-                    $("#dashboard-content .content select#city_id").append($("<option></option>").val("").html("Selecione..."));
+					if (user_info.roles[0] == "superadmin"){
+						$.ajax({
+							async: false,
+							type: 'GET',
+							dataType: 'json',
+							url: api_path + "/api/network?api_key=$$key".render({
+										key: $.cookie("key")
+								}),
+							success: function(data,status,jqXHR){
+								data.network.sort(function (a, b) {
+									a = String(a.name),
+									b = String(b.name);
+									return a.localeCompare(b);
+								});
+								$.each(data.network,function(index, item){
+									$("#dashboard-content .content select#network_id").append($("<option></option>").val(item.id).html(item.name));
+								});
+							}
+						});
+					}
 
+                    $("#dashboard-content .content select#city_id").append($("<option></option>").val("").html("Selecione..."));
                     if ($.getUrlVar("option") == "add"){
                         carregaComboCidadesUsers({"option":$.getUrlVar("option")});
                     }
@@ -715,6 +738,10 @@ $(document).ready(function() {
                                     {name: "user." + action + ".city_id", value: $(this).parent().parent().find("#city_id option:selected").val()}
                                     ];
 
+							if (user_info.roles[0] == "superadmin"){
+								args.push = {name: "user." + action + ".network_id", value: $(this).parent().parent().find("#network_id option:selected").val()};
+							}
+									
                             if ($(this).parent().parent().find("#password").val() != ""){
                                 args.push(
                                     {name: "user." + action + ".password", value: $(this).parent().parent().find("#password").val()},

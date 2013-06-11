@@ -52,6 +52,9 @@ var titleBarContent = {
 					"cities":{
 							"title": "Parâmetros - Cidades",
 							"tip": ""},
+					"region":{
+							"title": "Sub-Prefeituras/Distritos",
+							"tip": ""},
 					"units":{
 							"title": "Parâmetros - Unidades de Medida",
 							"tip": ""},

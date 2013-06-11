@@ -739,7 +739,7 @@ $(document).ready(function() {
                                     ];
 
 							if (user_info.roles[0] == "superadmin"){
-								args.push = {name: "user." + action + ".network_id", value: $(this).parent().parent().find("#network_id option:selected").val()};
+								args.push({name: "user." + action + ".network_id", value: $(this).parent().parent().find("#network_id option:selected").val()});
 							}
 									
                             if ($(this).parent().parent().find("#password").val() != ""){
@@ -4590,8 +4590,8 @@ $(document).ready(function() {
                                                             }
 
 															if ($("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()){
-                                                                args.push = {name: prefix + "variable.value.put.variable_id", value: data_variables[cont_sent].id};
-                                                                args.push = {name: prefix + "variable.value.put.user_id", value: $.cookie("user.id")};
+                                                                args.push({name: prefix + "variable.value.put.variable_id", value: data_variables[cont_sent].id});
+                                                                args.push({name: prefix + "variable.value.put.user_id", value: $.cookie("user.id")});
 															}
 															
                                                             $.ajax({

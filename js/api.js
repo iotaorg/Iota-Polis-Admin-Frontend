@@ -363,7 +363,363 @@ $(document).ready(function() {
                         }
                     });
 
-                }
+                }else{
+					/*  VARIAVEIS DA HOME  */
+					if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
+
+						var variableList = buildDataTable({
+								headers: ["Nome","_"]
+								},null,false);
+
+						$("#dashboard-content .content").append(variableList);
+
+						$("#button-add").click(function(){
+							resetWarnings();
+							location.hash = "#!/" + getUrlSub() + "?option=add";
+						});
+						
+						//carrega dados do admin
+						var data_network;
+						var data_config_admin;
+						var data_config;
+						
+						$.ajax({
+							type: 'GET',
+							dataType: 'json',
+							url: api_path + '/api/public/network?api_key=$$key'.render({
+									key: $.cookie("key")
+									}),
+							success: function(data, textStatus, jqXHR){
+								data_network = data;
+							}
+						}).done(function(){
+							//carrega config do admin
+							$.ajax({
+								type: 'GET',
+								dataType: 'json',
+								url: api_path + '/api/user/$$user/variable_config?api_key=$$key'.render({
+										key: $.cookie("key"),
+										user: data_network.admin_users[0].id
+										}),
+								success: function(data, textStatus, jqXHR){
+									data_config_admin = data;
+								}
+							}).done(function(){
+
+								//carrega config do usuario
+								$.ajax({
+									type: 'GET',
+									dataType: 'json',
+									url: api_path + '/api/user/$$user/variable_config?api_key=$$key'.render({
+											key: $.cookie("key"),
+											user: $.cookie("user.id")
+											}),
+									success: function(data, textStatus, jqXHR){
+										data_config = data;
+									}
+								}).done(function(){
+
+									$.ajax({
+										type: 'GET',
+										dataType: 'json',
+										url: api_path + '/api/user/$$userid/variable?api_key=$$key&is_basic=1'.render({
+												key: $.cookie("key"),
+												userid: $.cookie("user.id")
+												}),
+										success: function(data, textStatus, jqXHR){
+											console.log(data_config);
+											$.each(data.variables, function(index,value){
+												if (data_config[data.variables[index].variable_id] && data_config[data.variables[index].variable_id].display_in_home == 1 ||
+												    !(data_config[data.variables[index].variable_id]) && data_config_admin[data.variables[index].variable_id] && data_config_admin[data.variables[index].variable_id].display_in_home == 1){
+													$("#dashboard-content .content #results tbody").append($("<tr><td>$$nome</td><td>$$url</td></tr>".render({nome: data.variables[index].name,
+													apelido: data.variables[index].cognomen,
+													url: data.variables[index].variable_id})));
+												}
+											});
+
+											$("#results").dataTable( {
+												"oLanguage": {
+																"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
+																},
+												"aoColumnDefs": [
+																	{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 1 ] }
+																],
+												"fnDrawCallback": function(){
+														DTdesenhaBotaoVariavel();
+													}
+											} );
+										},
+										error: function(data){
+											$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
+														codigo: $.parseJSON(data.responseText).error
+													})
+											});
+										}
+									});
+								});
+							});
+						});
+
+					}else if ($.getUrlVar("option") == "edit"){
+
+						var txtOption = "Adicionar Valor";
+
+						$.ajax({
+							type: 'GET',
+							dataType: 'json',
+							url: $.getUrlVar("url") + "?api_key=$$key".render({
+										key: $.cookie("key")
+								}),
+							success: function(data,status,jqXHR){
+								if (jqXHR.status == 200){
+
+									var data_region;
+									$.ajax({
+										async: false,
+										type: 'GET',
+										dataType: 'json',
+										url: api_path + '/api/city/$$city/region?api_key=$$key'.render({
+												key: $.cookie("key"),
+												city: getIdFromUrl(user_info.city)
+												}),
+										success: function(data, textStatus, jqXHR){
+											data_region = data.regions;
+										}
+									});
+
+									var newform = [];
+								
+									if (data_region && data_region.length > 0){
+										newform.push({label: "Região", input: ["select,region_id,iselect"]});						
+									}
+
+									newform.push({label: "Variável", input: ["textlabel,textlabel_variable,ilabel"]});
+									newform.push({label: "Valor", input: ["text,value,itext"]});
+
+									newform.push({label: "Período", input: ["textlabel,textlabel_period,ilabel"]});
+									if (data.period == "yearly"){
+										newform.push({label: "Data", input: ["select,value_of_date,iselect"]});
+									}else if(data.period == "monthly"){
+										newform.push({label: "Data", input: ["select,value_of_date_year,iselect","select,value_of_date,iselect"]});
+									}else if(data.period == "daily"){
+										newform.push({label: "Data", input: ["text,value_of_date,itext"]});
+									}
+									newform.push({label: "Descrição", input: ["textlabel,textlabel_explanation,ilabel"]});
+
+									var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
+
+									if (data_region && data_region.length > 0){
+									
+										$("#dashboard-content .content select#region_id").change(function(e){
+											buildVariableHistory();
+										});
+										$("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("Nenhuma"));
+										$.each(data_region,function(index,item){
+											$("#dashboard-content .content select#region_id").append($("<option></option>").val(item.id).html(item.name));
+										});
+									}
+
+									if (data.period == "yearly"){
+										$.ajax({
+											type: 'GET',
+											dataType: 'json',
+											url: api_path + '/api/period/year?api_key=$$key'.render({
+													key: $.cookie("key")
+												}),
+											success: function(data, textStatus, jqXHR){
+												$("#dashboard-content .content select#value_of_date option").remove();
+												$.each(data.options, function(index,value){
+													$("#dashboard-content .content select#value_of_date").append("<option value='$$value'>$$text</option>".render({
+														text:data.options[index].text,
+														value:data.options[index].value
+														}));
+												});
+												$("#dashboard-content .content select#value_of_date option:last").attr("selected","selected");
+											}
+										});
+									}else if(data.period == "monthly"){
+										$("#dashboard-content .content select#value_of_date").hide();
+										$.ajax({
+											type: 'GET',
+											dataType: 'json',
+											url: api_path + '/api/period/year?api_key=$$key'.render({
+													key: $.cookie("key")
+												}),
+											success: function(data, textStatus, jqXHR){
+												$("#dashboard-content .content select#value_of_date_year option").remove();
+												$("#dashboard-content .content select#value_of_date_year").append("<option value=''>Selecione o ano</option>");
+												$.each(data.options, function(index,value){
+													$("#dashboard-content .content select#value_of_date_year").append("<option value='$$value'>$$text</option>".render({
+														text:data.options[index].text,
+														value:data.options[index].value
+														}));
+												});
+												$("#dashboard-content .content select#value_of_date option:last").attr("selected","selected");
+
+												$("#dashboard-content .content select#value_of_date_year").change(function(){
+													$("#dashboard-content .content select#value_of_date option").remove();
+													$("#dashboard-content .content select#value_of_date").hide();
+													if ($(this).find("option:selected").val() != ""){
+														$("#dashboard-content .content select#value_of_date").show();
+														$.ajax({
+															type: 'GET',
+															dataType: 'json',
+															url: api_path + '/api/period/year/$$year/month?api_key=$$key'.render({
+																	key: $.cookie("key"),
+																	year: $("#dashboard-content .content select#value_of_date_year option:selected").html()
+																}),
+															success: function(data, textStatus, jqXHR){
+																$.each(data.options, function(index,value){
+																	$("#dashboard-content .content select#value_of_date").append("<option value='$$value'>$$text</option>".render({
+																		text:data.options[index].text,
+																		value:data.options[index].value
+																		}));
+																});
+															}
+														});
+													}
+												});
+											}
+										});
+									}else if(data.period == "daily"){
+										$("#dashboard-content .content input#value_of_date").datepicker({
+																										dateFormat: 'dd/mm/yy',
+																										defaultDate: "0",
+																										changeMonth: true,
+																										changeYear: true
+																										});
+									}
+
+									$("#dashboard-content .content .botao-form[ref='enviar']").html("Adicionar");
+									$("#dashboard-content .content .botao-form[ref='cancelar']").html("Voltar");
+									$(formbuild).find("div .field:odd").addClass("odd");
+									$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+									$("#dashboard-content .content div.historic table").width($("#dashboard-content .content").find(".form").width());
+
+									$(formbuild).find("div#textlabel_variable").html(data.name);
+									$(formbuild).find("div#textlabel_explanation").html(data.explanation);
+									$(formbuild).find("div#textlabel_period").html(variable_periods[data.period]);
+
+
+									$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
+
+										if ($(this).html() == "Adicionar"){
+											var ajax_type = "POST";
+											var api_method = "create";
+											if ($("#dashboard-content .content").find("#region_id option:selected").val()){
+												var ajax_url = api_path + "/api/city/$$city/region/$$region/value".render({
+														city: getIdFromUrl(user_info.city),
+														region: $("#dashboard-content .content").find("#region_id option:selected").val()
+												});
+											}else{
+												var ajax_url = $.getUrlVar("url") + "/value";
+											}
+										}else if ($(this).html() == "Editar"){
+											var ajax_type = "POST";
+											var api_method = "update";
+											if ($("#dashboard-content .content").find("#region_id option:selected").val()){
+												var ajax_url = api_path + "/api/city/$$city/region/$$region/value/$$id".render({
+														city: getIdFromUrl(user_info.city),
+														region: $("#dashboard-content .content").find("#region_id option:selected").val(),
+														id: $("table.history tbody tr.selected").attr("value-id")
+												});
+											}else{
+												var ajax_url = $.getUrlVar("url") + "/value/" + $("table.history tbody tr.selected").attr("value-id");
+											}
+										}
+
+										resetWarnings();
+										if ($(this).parent().parent().find("#value").val() == ""){
+											$(".form-aviso").setWarning({msg: "Por favor informe o Valor"});
+										}else{
+											var data_formatada = "";
+											if (data.period == "yearly" || data.period == "monthly"){
+												data_formatada = $(this).parent().parent().find("#value_of_date option:selected").val();
+											}else if (data.period == "daily"){
+												data_formatada = $.convertDate($(this).parent().parent().find("#value_of_date").val()," ");
+											}
+											var prefix = "";
+											if ($("#dashboard-content .content").find("#region_id option:selected").val()){
+												prefix = "region.";
+											}
+
+											args = [{name: "api_key", value: $.cookie("key")},
+													{name: prefix+"variable.value." + api_method + ".value", value: $(this).parent().parent().find("#value").val()},
+													{name: prefix+"variable.value." + api_method + ".value_of_date", value: data_formatada}
+													];
+											if ($("#dashboard-content .content").find("#region_id option:selected").val()){
+												args.push({name: prefix+"variable.value." + api_method + ".variable_id", value: getIdFromUrl($.getUrlVar("url"))});
+											}
+
+											$("#dashboard-content .content .botao-form[ref='enviar']").hide();
+											$.ajax({
+												type: ajax_type,
+												dataType: 'json',
+												url: ajax_url,
+												data: args,
+												success: function(data, textStatus, jqXHR){
+													resetWarnings();
+													$("#aviso").setWarning({msg: "Cadastro editado com sucesso.".render({
+																codigo: jqXHR.status
+																})
+													});
+													$("#dashboard-content .content .botao-form[ref='enviar']").html("Adicionar");
+													$("#dashboard-content .content .botao-form[ref='cancelar']").html("Voltar");
+													$("#dashboard-content .content .form").find(".title").html("Adicionar Valor");
+													$(formbuild).find("input#value").val("");
+													$(formbuild).find("#value_of_date").val("");
+													$("#dashboard-content .content .form").find("select").attr("disabled",false);
+													$("table.history tbody tr").removeClass("selected");
+													buildVariableHistory();
+												},
+												error: function(data){
+													$(".form-aviso").setWarning({msg: "Erro ao editar. Já existe valor para esse Período".render({
+																erro: $.parseJSON(data.responseText).error
+																})
+													});
+													$("#dashboard-content .content .botao-form[ref='cancelar']").html("Voltar");
+												},
+												complete: function(data){
+													$("#dashboard-content .content .botao-form[ref='enviar']").show();
+												}
+											});
+										}
+									});
+									$("#dashboard-content .content .botao-form[ref='cancelar']").click(function(){
+										resetWarnings();
+										if ($(this).html() == "Voltar"){
+											history.back();
+										}else if ($(this).html() == "Cancelar"){
+											$("#dashboard-content .content .form").find(".title").html("Adicionar Valor");
+											$("#dashboard-content .content .botao-form[ref='enviar']").html("Adicionar");
+											$("#dashboard-content .content .botao-form[ref='cancelar']").html("Voltar");
+											$(formbuild).find("input#value").val("");
+											$(formbuild).find("input#value_of_date").val("");
+											$("#dashboard-content .content .form").find("select").attr("disabled",false);
+											$("table.history tbody tr").removeClass("selected");
+											$("#dashboard-content .content .botao-form[ref='enviar']").show();
+											$("#dashboard-content .content .botao-form[ref='enviar']").show();
+										}
+									});
+								}
+
+								$("#dashboard-content .content").append("<div class='historico'></div>");
+
+								buildVariableHistory();
+							},
+							error: function(data){
+								switch(data.status){
+									case 400:
+										$(".form-aviso").setWarning({msg: "Erro: ($$codigo)".render({
+													codigo: $.parseJSON(data.responseText).error
+													})
+										});
+										break;
+								}
+							}
+						});
+					}				
+				}
             }else if (getUrlSub() == "admins"){
                 /*  Administradores  */
                 loadCidades();

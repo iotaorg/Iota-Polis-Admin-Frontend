@@ -273,13 +273,30 @@ var qtip_editor = {
    }
 };
 
-
 var findInArray = function(obj,value){
 	if (value == "") return true;
 	var retorno = false;
 	for (a = 0; a < obj.length; a++){
 		if (obj[a] == value) retorno = true;
 	}
+	return retorno;
+}
+
+var findInJson = function(obj,key,value){
+	var found = false;
+	var key_found = "";
+	$.each(obj, function(key1,value1){
+		$.each(obj[key1], function(key2,value2){
+			if (key2 == key){
+				if (value2 == value){
+					found = true;
+					key_found = key1;
+					return false;
+				}
+			}
+		});
+	});
+	var retorno = {"found": found, "key": key_found}
 	return retorno;
 }
 
@@ -601,9 +618,10 @@ var buildVariableHistory = function(var_id){
 	$.ajax({
 		type: 'GET',
 		dataType: 'json',
-		url: api_path + '/api/user/$$userid/variable?api_key=$$key'.render({
+		url: api_path + '/api/user/$$userid/variable?api_key=$$key$$region'.render({
 				key: $.cookie("key"),
-				userid: $.cookie("user.id")
+				userid: $.cookie("user.id"),		
+				region: ($("#dashboard-content .content select#region_id option:selected").val()) ? "&region_id=" + $("#dashboard-content .content select#region_id option:selected").val() : ""
 				}),
 		success: function(data, textStatus, jqXHR){
 			var data_variables = new Array();
@@ -649,14 +667,24 @@ var buildVariableHistory = function(var_id){
 				$(this).parent().parent().addClass("selected");
 				var value_selected = $(this);
 
-				$.ajax({
-					type: 'GET',
-					dataType: 'json',
-					url: api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
+				var url = api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
 							key: $.cookie("key"),
 							var_id: getIdFromUrl($.getUrlVar("url")),
 							value_id: $(value_selected).attr("value-id")
-							}),
+							});
+				if ($("#dashboard-content .content select#region_id option:selected").val()){
+					url = api_path + '/api/city/$$city/region/$$region/value/$$value_id?api_key=$$key'.render({
+								key: $.cookie("key"),
+								value_id: $(value_selected).attr("value-id"),
+								city: getIdFromUrl(user_info.city),
+								region: $("#dashboard-content .content select#region_id option:selected").val()
+								});				
+				}
+				
+				$.ajax({
+					type: 'GET',
+					dataType: 'json',
+					url: url,
 					success: function(data, textStatus, jqXHR){
 						$("#dashboard-content .content .form").find("input#value").val(data.value);
 						if (data_variables[0].period == "yearly"){
@@ -674,12 +702,21 @@ var buildVariableHistory = function(var_id){
 			});
 			$("table.history a.delete").click(function(){
 				var value_selected = $(this);
-				deleteRegister({
-					url: api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
+				var url = api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
 							key: $.cookie("key"),
 							var_id: getIdFromUrl($.getUrlVar("url")),
 							value_id: $(value_selected).attr("value-id")
-							}),
+							});
+				if ($("#dashboard-content .content select#region_id option:selected").val()){
+					url =  api_path + '/api/city/$$city/region/$$region/value/$$value_id?api_key=$$key'.render({
+							key: $.cookie("key"),
+							value_id: $(value_selected).attr("value-id"),
+							city: getIdFromUrl(user_info.city),
+							region: $("#dashboard-content .content select#region_id option:selected").val()
+							});
+				}
+				deleteRegister({
+					url: url,
 					redirect: false,
 					call: "buildVariableHistory"
 				});
@@ -800,7 +837,7 @@ var buildIndicatorHistory = function (args){
 				});
 				history_table += "</tbody></table>";
 			}else{
-				var history_table = "<div class='title' title='mostrar/esconder Histórico'>Série Histórica</div><div class='historic-content'><table class='history'><thead><tr><th>nenhum registro encontrado</th></tr></thead></table></div>";
+				var history_table = "<div class='historic-content'><table class='history'><thead><tr><th>nenhum registro encontrado</th></tr></thead></table></div>";
 			}
 
 			var variation_filter = "";
@@ -851,14 +888,23 @@ var buildIndicatorHistory = function (args){
 								var total_values_enviados = 0;
 
 								$(tds).each(function(index,element){
-									$.ajax({
-										type: 'DELETE',
-										dataType: 'json',
-										url: api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
+									var url = api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
 														key: $.cookie("key"),
 														var_id: $(element).attr("variable-id"),
 														value_id: $(element).attr("value-id")
-													}),
+													});
+									if ($("#dashboard-content .content select#region_id").length > 0 && ($("#dashboard-content .content select#region_id option:selected").val())){
+										url = api_path + '/api/city/$$city/region/$$region/value/$$value_id?api_key=$$key'.render({
+															key: $.cookie("key"),
+															city: getIdFromUrl(user_info.city),
+															region: $("#dashboard-content .content select#region_id option:selected").val(),
+															value_id: $(element).attr("value-id")
+														});
+									}
+									$.ajax({
+										type: 'DELETE',
+										dataType: 'json',
+										url: url,
 										success: function(data,status,jqXHR){
 											switch(jqXHR.status){
 												case 204:
@@ -1137,6 +1183,7 @@ var getUrlSub = function(){
 };
 
 var getIdFromUrl = function(url){
+	if (typeof(url) != "string") return undefined;
 	if (url == undefined) return undefined;
 	var split_url = url.split("/");
 	if (split_url.length > 0){

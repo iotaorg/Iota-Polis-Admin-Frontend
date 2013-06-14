@@ -1400,3 +1400,38 @@ a.link-files{
 a.link-files:hover{
     color: #666666;
 }
+input.admin_checked{
+	opacity: 0.5;
+}
+
+#panel-map{
+	background-color: #f5f5f5;
+	border: 1px solid #e0e0e0;
+	margin-bottom: 15px;
+}
+#panel-map #panel{
+	padding-top: 5px;
+}
+#panel-map button{
+    background: url("../images/bg_botao.gif") repeat-x top center;
+    padding: 1px 6px;
+    font-family: "PT Sans";
+    font-weight: normal;
+    font-size: 11pt;
+    color: #fff;
+    text-shadow:#004f98 1px 1px 0px;
+    -moz-text-shadow:#004f98 1px 1px 0px;
+    -webkit-text-shadow:#004f98 1px 1px 0px;
+    border-radius:3px;
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
+    border: 1px solid #637aa6;
+    margin: 2px 5px;
+}
+#map{
+	width: 100%;
+	min-height: 450px;
+	margin: 5px 0;
+	border-top: 1px solid #e0e0e0;
+	border-bottom: 1px solid #e0e0e0;
+}

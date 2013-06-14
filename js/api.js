@@ -211,6 +211,7 @@ $(document).ready(function() {
 
         submenu_label["variable_user"] = [];
         submenu_label["variable_user"].push({"myvariable" : "Variáveis Básicas"});
+        submenu_label["variable_user"].push({"variable" : "Variáveis"});
         submenu_label["variable_user"].push({"myvariableedit" : "Editar Valores"});
 
         menu_access["superadmin"] = ["dashboard","prefs","parameters","networks","admins","users","indicator","axis","logout"];
@@ -219,7 +220,6 @@ $(document).ready(function() {
         submenu_access["admin"] = ["countries","states","cities","units"];
         menu_access["admin"].push("logout");
         submenu_access["user"] = ["dashboard"];
-        submenu_access["admin"] = [];
         if (findInArray(user_info.roles,"user")){
             menu_access["user"] = ["prefs"];
             if (user_info.institute){
@@ -269,11 +269,13 @@ $(document).ready(function() {
                 var submenu_item = "<ul class='submenu'>";
                 $.each(submenu_label[value],function(index,item){
                     $.each(item,function(url_sub,text){
-                        submenu_item += "<li class='submenu $$class' ref='$$url_sub'>$$menu</li>".render({
-                            menu: "<a href='#!/" + url_sub + "'>" + text + "</a>",
-                            url_sub: url_sub,
-                            class: menu_class
-                        });
+						if (findInArray(submenu_access[user_info.role],url_sub)){
+							submenu_item += "<li class='submenu $$class' ref='$$url_sub'>$$menu</li>".render({
+								menu: "<a href='#!/" + url_sub + "'>" + text + "</a>",
+								url_sub: url_sub,
+								class: menu_class
+							});
+						}
                     });
                 });
                 submenu_item += "</ul>";
@@ -691,6 +693,9 @@ $(document).ready(function() {
                                         $(formbuild).find("input#email").val(data.email);
                                         carregaComboCidadesUsers({"option":$.getUrlVar("option"), city: data.city});
                                         $(formbuild).find("select#city_id").val(getIdFromUrl(data.city));
+										if ($(formbuild).find("select#network_id")){
+											$(formbuild).find("select#network_id").val(data.network.id);
+										}
                                         break;
                                 }
                             },
@@ -1598,7 +1603,7 @@ $(document).ready(function() {
                 if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
 
                     var variableList = buildDataTable({
-                            headers: ["Nome","Apelido","Tipo","Data Criação","Básica","_"]
+                            headers: ["Nome","Apelido","Tipo","Data Criação","Básica","Aparecer na Home","_"]
                             });
 
                     $("#dashboard-content .content").append(variableList);
@@ -1608,17 +1613,36 @@ $(document).ready(function() {
                         location.hash = "#!/" + getUrlSub() + "?option=add";
                     });
 
+					var data_config;
+					function loadVariableConfig(){
+						$.ajax({
+							async: false,
+							type: 'GET',
+							dataType: 'json',
+							url: api_path + '/api/user/$$user/variable_config?api_key=$$key'.render({
+									key: $.cookie("key"),
+									user: $.cookie("user.id")
+									}),
+							success: function(data, textStatus, jqXHR){
+								data_config = data;
+							}
+						});
+					}
+					
+					loadVariableConfig();
+
                     $("#results").dataTable( {
                         "oLanguage": {
                                         "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
                                         },
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/variable?api_key=$$key&content-type=application/json&columns=name,cognomen,type,created_at,is_basic,url,_,_'.render({
+                        "sAjaxSource": api_path + '/api/variable?api_key=$$key&content-type=application/json&columns=name,cognomen,type,created_at,is_basic,url,id,_,_'.render({
                                 key: $.cookie("key")
                                 }),
                         "aoColumnDefs": [
-                                            { "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "80px", "aTargets": [ 5 ] },
-                                            { "bSearchable": false, "bSortable": false, "sClass": "center is_basic", "aTargets": [ 4 ] },
+                                            { "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "80px", "aTargets": [ 6 ] },
+                                            { "bSearchable": false, "bSortable": true, "sClass": "checkbox center", "sWidth": "80px", "aTargets": [ 5 ] },
+                                            { "bSearchable": false, "bSortable": true, "sClass": "center is_basic", "aTargets": [ 4 ] },
                                             { "sClass": "center", "aTargets": [ 2 , 3, 4 ] },
                                             { "sWidth": "300px", "aTargets": [ 0 ] },
                                             { "fnRender": function ( oObj, sVal ) {
@@ -1638,6 +1662,20 @@ $(document).ready(function() {
 
                                                             return text;
                                                         }, "aTargets": [ 1 ]
+                                            },
+                                            { "fnRender": function ( oObj, sVal ) {
+															if (oObj.aData[4] == 1){
+																var checked = "";
+																if (data_config[getIdFromUrl(sVal)] && data_config[getIdFromUrl(sVal)].display_in_home == 1){
+																	checked = "checked=checked";
+																}
+																return "<input type='checkbox' name='chk_home' var-id='" + getIdFromUrl(sVal) + "' $$checked>".render({
+																	checked: checked
+																});
+															}else{
+																return "--";
+															}
+                                                        }, "aTargets": [ 5 ]
                                             }
                                         ],
                         "aaSorting": [[3,'desc'],[0,'asc']],
@@ -1650,6 +1688,44 @@ $(document).ready(function() {
                                     }else if ($(this).html() == "0"){
                                         $(this).html("Não");
                                     }
+                                });
+                                $("#results td.checkbox input").change( function(){
+                                    var display_in_home = ($(this).attr("checked")) ? 1 : 0;
+
+									if (!data_config[$(this).attr("var-id")]){
+										var action = "create";
+										var method = "POST";
+										var url_action = api_path + "/api/user/$$user/variable_config".render({user: $.cookie("user.id")});
+									}else{
+										var action = "update";
+										var method = "POST";
+										var url_action = api_path + "/api/user/$$user/variable_config/$$id".render({
+														user: $.cookie("user.id"),
+														id: data_config[$(this).attr("var-id")].id
+													});
+										
+									}
+
+									args = [{name: "api_key", value: $.cookie("key")},
+											{name: "user.variable_config." + action + ".display_in_home", value: display_in_home},
+											{name: "user.variable_config." + action + ".variable_id", value: $(this).attr("var-id")}
+											];
+									
+									$.ajax({
+										type: method,
+										dataType: 'json',
+										url: url_action,
+										data: args,
+										success: function(data){
+											loadVariableConfig();
+										},
+										error: function(data){
+											$("#aviso").setWarning({msg: "Erro ao atualizar configuração. ($$codigo)".render({
+														codigo: $.parseJSON(data.responseText).error
+														})
+											});
+										}
+									});
                                 });
 
                             }
@@ -1832,7 +1908,7 @@ $(document).ready(function() {
                 if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
 
                     var variableList = buildDataTable({
-                            headers: ["Nome","_"]
+                            headers: ["Nome","Mostrar na Home","_"]
                             },null,false);
 
                     $("#dashboard-content .content").append(variableList);
@@ -1841,40 +1917,167 @@ $(document).ready(function() {
                         resetWarnings();
                         location.hash = "#!/" + getUrlSub() + "?option=add";
                     });
+					
+					function loadVariableConfig(){
+						//carrega config do usuario
+						$.ajax({
+							async: "false",
+							type: 'GET',
+							dataType: 'json',
+							url: api_path + '/api/user/$$user/variable_config?api_key=$$key'.render({
+									key: $.cookie("key"),
+									user: $.cookie("user.id")
+									}),
+							success: function(data, textStatus, jqXHR){
+								data_config = data;
+							}
+						}).done(function(){
+							toggleAllCheckboxes();
+						});
+					}
+					
+					function toggleAllCheckboxes(){
+						$("table input[type=checkbox]").each(function(index,item){
+							if ($(this).attr("disabled") == "disabled"){
+								$(this).removeAttr("disabled");
+								console.log($(this).attr("disabled"));
+							}else{
+								$(this).attr("disabled","true");
+							}
+						});
+					}
+					
+					//carrega dados do admin
+					var data_network;
+					var data_config_admin;
+					var data_config;
+					
+					$.ajax({
+						type: 'GET',
+						dataType: 'json',
+						url: api_path + '/api/public/network?api_key=$$key'.render({
+								key: $.cookie("key")
+								}),
+						success: function(data, textStatus, jqXHR){
+							data_network = data;
+						}
+					}).done(function(){
+						//carrega config do admin
+						$.ajax({
+							type: 'GET',
+							dataType: 'json',
+							url: api_path + '/api/user/$$user/variable_config?api_key=$$key'.render({
+									key: $.cookie("key"),
+									user: data_network.admin_users[0].id
+									}),
+							success: function(data, textStatus, jqXHR){
+								data_config_admin = data;
+							}
+						}).done(function(){
 
-                    $.ajax({
-                        type: 'GET',
-                        dataType: 'json',
-                        url: api_path + '/api/user/$$userid/variable?api_key=$$key&is_basic=1'.render({
-                                key: $.cookie("key"),
-                                userid: $.cookie("user.id")
-                                }),
-                        success: function(data, textStatus, jqXHR){
-                            $.each(data.variables, function(index,value){
-                                $("#dashboard-content .content #results tbody").append($("<tr><td>$$nome</td><td>$$url</td></tr>".render({nome: data.variables[index].name,
-                                apelido: data.variables[index].cognomen,
-                                url: data.variables[index].variable_id})));
-                            });
+							//carrega config do usuario
+							$.ajax({
+								type: 'GET',
+								dataType: 'json',
+								url: api_path + '/api/user/$$user/variable_config?api_key=$$key'.render({
+										key: $.cookie("key"),
+										user: $.cookie("user.id")
+										}),
+								success: function(data, textStatus, jqXHR){
+									data_config = data;
+								}
+							}).done(function(){
 
-                            $("#results").dataTable( {
-                                "oLanguage": {
-                                                "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                                                },
-                                "aoColumnDefs": [
-                                                    { "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 1 ] },
-                                                ],
-                                "fnDrawCallback": function(){
-                                        DTdesenhaBotaoVariavel();
-                                    }
-                            } );
-                        },
-                        error: function(data){
-                            $("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
-                                        codigo: $.parseJSON(data.responseText).error
-                                    })
-                            });
-                        }
-                    });
+								$.ajax({
+									type: 'GET',
+									dataType: 'json',
+									url: api_path + '/api/user/$$userid/variable?api_key=$$key&is_basic=1'.render({
+											key: $.cookie("key"),
+											userid: $.cookie("user.id")
+											}),
+									success: function(data, textStatus, jqXHR){
+										console.log(data_config);
+										$.each(data.variables, function(index,value){
+											$("#dashboard-content .content #results tbody").append($("<tr><td>$$nome</td><td>$$url</td><td>$$url</td></tr>".render({nome: data.variables[index].name,
+											apelido: data.variables[index].cognomen,
+											url: data.variables[index].variable_id})));
+										});
+
+										$("#results").dataTable( {
+											"oLanguage": {
+															"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
+															},
+											"aoColumnDefs": [
+																{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 2 ] },
+																{ "bSearchable": false, "bSortable": true, "sClass": "checkbox center", "sWidth": "80px", "aTargets": [ 1 ] },
+																{ "fnRender": function ( oObj, sVal ) {
+																				var checked = "";
+																				if (data_config[getIdFromUrl(sVal)] && data_config[getIdFromUrl(sVal)].display_in_home == 1){
+																					checked = "checked=checked";
+																				}else if (!(data_config[getIdFromUrl(sVal)]) && data_config_admin[getIdFromUrl(sVal)] && data_config_admin[getIdFromUrl(sVal)].display_in_home == 1){
+																					checked = "checked=checked class='admin_checked'";
+																				}
+																				return "<input type='checkbox' name='chk_home' var-id='" + getIdFromUrl(sVal) + "' $$checked>".render({
+																					checked: checked
+																				});
+																			}, "aTargets": [ 1 ]
+																}
+															],
+											"fnDrawCallback": function(){
+													DTdesenhaBotaoVariavel();
+													$("#results td.checkbox input").change( function(){
+														toggleAllCheckboxes();
+														var display_in_home = ($(this).attr("checked")) ? 1 : 0;
+
+														if (!data_config[$(this).attr("var-id")]){
+															var action = "create";
+															var method = "POST";
+															var url_action = api_path + "/api/user/$$user/variable_config".render({user: $.cookie("user.id")});
+														}else{
+															var action = "update";
+															var method = "POST";
+															var url_action = api_path + "/api/user/$$user/variable_config/$$id".render({
+																			user: $.cookie("user.id"),
+																			id: data_config[$(this).attr("var-id")].id
+																		});
+															
+														}
+
+														args = [{name: "api_key", value: $.cookie("key")},
+																{name: "user.variable_config." + action + ".display_in_home", value: display_in_home},
+																{name: "user.variable_config." + action + ".variable_id", value: $(this).attr("var-id")}
+																];
+														
+														$.ajax({
+															type: method,
+															dataType: 'json',
+															url: url_action,
+															data: args,
+															success: function(data){
+																loadVariableConfig();
+															},
+															error: function(data){
+																$("#aviso").setWarning({msg: "Erro ao atualizar configuração. ($$codigo)".render({
+																			codigo: $.parseJSON(data.responseText).error
+																			})
+																});
+																toggleAllCheckboxes();
+															}
+														});
+													});
+												}
+										} );
+									},
+									error: function(data){
+										$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
+													codigo: $.parseJSON(data.responseText).error
+												})
+										});
+									}
+								});
+							});
+						});
+					});
 
                 }else if ($.getUrlVar("option") == "edit"){
 
@@ -1889,7 +2092,25 @@ $(document).ready(function() {
                         success: function(data,status,jqXHR){
                             if (jqXHR.status == 200){
 
+								var data_region;
+								$.ajax({
+									async: false,
+									type: 'GET',
+									dataType: 'json',
+									url: api_path + '/api/city/$$city/region?api_key=$$key'.render({
+											key: $.cookie("key"),
+											city: getIdFromUrl(user_info.city)
+											}),
+									success: function(data, textStatus, jqXHR){
+										data_region = data.regions;
+									}
+								});
+
                                 var newform = [];
+							
+								if (data_region && data_region.length > 0){
+									newform.push({label: "Região", input: ["select,region_id,iselect"]});						
+								}
 
                                 newform.push({label: "Variável", input: ["textlabel,textlabel_variable,ilabel"]});
                                 newform.push({label: "Valor", input: ["text,value,itext"]});
@@ -1905,6 +2126,17 @@ $(document).ready(function() {
                                 newform.push({label: "Descrição", input: ["textlabel,textlabel_explanation,ilabel"]});
 
                                 var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
+
+								if (data_region && data_region.length > 0){
+								
+									$("#dashboard-content .content select#region_id").change(function(e){
+										buildVariableHistory();
+									});
+									$("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("Nenhuma"));
+									$.each(data_region,function(index,item){
+										$("#dashboard-content .content select#region_id").append($("<option></option>").val(item.id).html(item.name));
+									});
+								}
 
                                 if (data.period == "yearly"){
                                     $.ajax({
@@ -1993,11 +2225,26 @@ $(document).ready(function() {
                                     if ($(this).html() == "Adicionar"){
                                         var ajax_type = "POST";
                                         var api_method = "create";
-                                        var ajax_url = $.getUrlVar("url") + "/value";
+										if ($("#dashboard-content .content").find("#region_id option:selected").val()){
+											var ajax_url = api_path + "/api/city/$$city/region/$$region/value".render({
+													city: getIdFromUrl(user_info.city),
+													region: $("#dashboard-content .content").find("#region_id option:selected").val()
+											});
+										}else{
+											var ajax_url = $.getUrlVar("url") + "/value";
+										}
                                     }else if ($(this).html() == "Editar"){
                                         var ajax_type = "POST";
                                         var api_method = "update";
-                                        var ajax_url = $.getUrlVar("url") + "/value/" + $("table.history tbody tr.selected").attr("value-id");
+										if ($("#dashboard-content .content").find("#region_id option:selected").val()){
+											var ajax_url = api_path + "/api/city/$$city/region/$$region/value/$$id".render({
+													city: getIdFromUrl(user_info.city),
+													region: $("#dashboard-content .content").find("#region_id option:selected").val(),
+													id: $("table.history tbody tr.selected").attr("value-id")
+											});
+										}else{
+											var ajax_url = $.getUrlVar("url") + "/value/" + $("table.history tbody tr.selected").attr("value-id");
+										}
                                     }
 
                                     resetWarnings();
@@ -2010,11 +2257,18 @@ $(document).ready(function() {
                                         }else if (data.period == "daily"){
                                             data_formatada = $.convertDate($(this).parent().parent().find("#value_of_date").val()," ");
                                         }
+										var prefix = "";
+										if ($("#dashboard-content .content").find("#region_id option:selected").val()){
+											prefix = "region.";
+										}
+
                                         args = [{name: "api_key", value: $.cookie("key")},
-                                                {name: "variable.value." + api_method + ".value", value: $(this).parent().parent().find("#value").val()},
-                                                {name: "variable.value." + api_method + ".value_of_date", value: data_formatada},
-                                                {name: "variable.value." + api_method + ".variable_id", value: getIdFromUrl($.getUrlVar("url"))},
+                                                {name: prefix+"variable.value." + api_method + ".value", value: $(this).parent().parent().find("#value").val()},
+                                                {name: prefix+"variable.value." + api_method + ".value_of_date", value: data_formatada}
                                                 ];
+										if ($("#dashboard-content .content").find("#region_id option:selected").val()){
+											args.push({name: prefix+"variable.value." + api_method + ".variable_id", value: getIdFromUrl($.getUrlVar("url"))});
+										}
 
                                         $("#dashboard-content .content .botao-form[ref='enviar']").hide();
                                         $.ajax({
@@ -4112,6 +4366,13 @@ $(document).ready(function() {
                             $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 
 							if (data_region && data_region.length > 0){
+							
+								$("#dashboard-content .content select#region_id").change(function(e){
+									buildIndicatorHistory({"id":getIdFromUrl($.getUrlVar("url")),
+														"period":data_indicator.period,
+														"target":$("#dashboard-content .content div.historico")
+														});
+								});
 								$("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("Nenhuma"));
 								$.each(data_region,function(index,item){
 									$("#dashboard-content .content select#region_id").append($("<option></option>").val(item.id).html(item.name));
@@ -5614,9 +5875,8 @@ $(document).ready(function() {
                             content: "Nome da Subprefeitura."
                     }));
 
-                    $("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("Nenhuma"));
+					$("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("Carregando..."));
                     $.ajax({
-                        async: false,
                         type: 'GET',
                         dataType: 'json',
                         url: api_path + "/api/city/$$city/region?api_key=$$key".render({
@@ -5624,6 +5884,8 @@ $(document).ready(function() {
 									city: getIdFromUrl(user_info.city)
                             }),
                         success: function(data,status,jqXHR){
+							$("#dashboard-content .content select#region_id option").remove();
+							$("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("Nenhuma"));
                             data.regions.sort(function (a, b) {
                                 a = String(a.name),
                                 b = String(b.name);
@@ -5637,8 +5899,11 @@ $(document).ready(function() {
                         }
                     });
 
+					var current_map_string = '';
+					
                     if ($.getUrlVar("option") == "edit"){
                         $.ajax({
+							async: false,
                             type: 'GET',
                             dataType: 'json',
                             url: $.getUrlVar("url") + "?api_key=$$key".render({
@@ -5652,6 +5917,8 @@ $(document).ready(function() {
 										}
                                         $(formbuild).find("input#name").val(data.name);
                                         $(formbuild).find("textarea#description").val(data.description);
+										current_map_string = data.polygon_path;
+										
                                         break;
                                 }
                             },
@@ -5667,6 +5934,232 @@ $(document).ready(function() {
                             }
                         });
                     }
+
+					google.load("maps", "3", {other_params:'sensor=false&libraries=drawing', callback: function(){
+						$("#dashboard-content .content div.form").after("<div id='panel-map'><div id='panel'><button id='delete-button'>Apagar formato selecionado</button><button id='save-button'>Associar formato à distrito</button></div><div id='map'></div></div>");
+
+						$("#save-button").hide();
+						
+						var $map = function(){
+					
+						if (!google.maps.Polygon.prototype.getBounds) {
+
+							google.maps.Polygon.prototype.getBounds = function(latLng) {
+		
+								var bounds = new google.maps.LatLngBounds();
+								var paths = this.getPaths();
+								var path;
+
+								for (var p = 0; p < paths.getLength(); p++) {
+									path = paths.getAt(p);
+									for (var i = 0; i < path.getLength(); i++) {
+										bounds.extend(path.getAt(i));
+									}
+								}
+
+								return bounds;
+							}
+						}
+
+						var drawingManager;
+							var selectedShape;
+
+							var _binds = {
+								on_selection_unavaiable: null,
+								on_selection_available: null,
+							};
+
+							var _is_visible = 1;
+							function hide_controls (){
+								_is_visible = 0;
+
+								if (typeof _binds.on_selection_unavaiable == 'function'){
+									_binds.on_selection_unavaiable();
+								}
+							}
+
+							function show_controls (){
+								if (_is_visible == 1) return;
+								_is_visible = 1;
+
+								if (typeof _binds.on_selection_available == 'function'){
+									_binds.on_selection_available();
+								}
+							}
+
+							// na hora de salvar usa o conteudo do current_map_string
+
+							function clearSelection() {
+								if (selectedShape) {
+									selectedShape.setEditable(false);
+									selectedShape = null;
+
+									current_map_string = '';
+									hide_controls();
+								}
+							}
+
+							function setSelection(shape) {
+								clearSelection();
+								selectedShape = shape;
+								shape.setEditable(true);
+								selectColor(shape.get('fillColor') || shape.get('strokeColor'));
+							}
+							
+							function getSelection(){
+								console.log(current_map_string);
+							}
+
+							function deleteSelectedShape() {
+								if (selectedShape) {
+									selectedShape.setMap(null);
+
+									current_map_string = '';
+									hide_controls();
+								}
+							}
+
+							function selectColor() {
+								color = '#1E90FF';
+
+								// Retrieves the current options from the drawing manager and replaces the
+								// stroke or fill color as appropriate.
+
+								var polygonOptions = drawingManager.get('polygonOptions');
+								polygonOptions.fillColor = color;
+								drawingManager.set('polygonOptions', polygonOptions);
+							}
+
+							function initialize(params) {
+
+								if (typeof params.on_selection_unavaiable == 'function')
+									_binds.on_selection_unavaiable = params.on_selection_unavaiable;
+
+								if (typeof params.on_selection_available == 'function')
+									_binds.on_selection_available = params.on_selection_available;
+
+
+								var map = new google.maps.Map(document.getElementById('map'), {
+									zoom: 5,
+
+									center: params.center,
+									mapTypeId: google.maps.MapTypeId.ROADMAP,
+									disableDefaultUI: true,
+									zoomControl: true
+								});
+
+								var polyOptions = {
+									fillColor: '#1E90FF',
+									strokeWeight: 0,
+									fillOpacity: 0.45,
+									editable: true,
+								};
+								// Creates a drawing manager attached to the map that allows the user to draw
+								// markers, lines, and shapes.
+								drawingManager = new google.maps.drawing.DrawingManager({
+									drawingMode: google.maps.drawing.OverlayType.POLYGON,
+
+									polygonOptions: polyOptions,
+									drawingControlOptions:{
+										drawingModes: [google.maps.drawing.OverlayType.POLYGON]
+									},
+									map: map
+								});
+
+								google.maps.event.addListener(drawingManager, 'overlaycomplete', function(e) {
+									if (e.type != google.maps.drawing.OverlayType.MARKER) {
+										// Switch back to non-drawing mode after drawing a shape.
+										drawingManager.setDrawingMode(null);
+
+										// Add an event listener that selects the newly-drawn shape when the user
+										// mouses down on it.
+										var newShape = e.overlay;
+										newShape.type = e.type;
+										google.maps.event.addListener(newShape, 'click', function() {
+											setSelection(newShape);
+											_store_string(newShape);
+										});
+										google.maps.event.addListener(newShape.getPath(), 'insert_at', function() {
+											_store_string(newShape);
+										});
+										google.maps.event.addListener(newShape.getPath(), 'set_at', function() {
+											_store_string(newShape);
+										});
+										setSelection(newShape);
+										_store_string(newShape);
+										selectColor();
+									}
+								});
+
+								function _store_string(theShape){
+									current_map_string = google.maps.geometry.encoding.encodePath(theShape.getPath());
+
+									show_controls();
+								}
+
+								// Clear the current selection when the drawing mode is changed, or when the
+								// map is clicked.
+								google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
+								google.maps.event.addListener(map, 'click', clearSelection);
+								google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', deleteSelectedShape);
+								google.maps.event.addDomListener(document.getElementById('save-button'), 'click', getSelection);
+
+								selectColor();
+								
+			                    if ($.getUrlVar("option") == "edit" && current_map_string != ""){
+									google.maps.event.addListenerOnce(map, 'idle', function(){
+										var triangleCoords = google.maps.geometry.encoding.decodePath(current_map_string);
+														bermudaTriangle = new google.maps.Polygon({
+														paths: triangleCoords,
+														fillColor: '#1E90FF',
+														strokeWeight: 0,
+														fillOpacity: 0.45,
+														editable: true
+										});
+										bermudaTriangle.setMap(map);
+										
+										setSelection(bermudaTriangle);
+									
+										map.fitBounds(bermudaTriangle.getBounds());
+
+										google.maps.event.addListener(bermudaTriangle, 'click', function() {
+											setSelection(bermudaTriangle);
+											_store_string(bermudaTriangle);
+										});
+										google.maps.event.addListener(bermudaTriangle.getPath(), 'insert_at', function() {
+											_store_string(bermudaTriangle);
+										});
+										google.maps.event.addListener(bermudaTriangle.getPath(), 'set_at', function() {
+											_store_string(bermudaTriangle);
+										});
+										setSelection(bermudaTriangle);
+										_store_string(bermudaTriangle);
+
+										});
+										
+								}
+
+							}
+							return {
+								init: initialize,
+								getSelectedShape: function(){ return selectedShape; },
+								getSelectedShapeAsString: function(){ return current_map_string; },
+
+							};
+						}();
+
+						$map.init({
+							on_selection_unavaiable: function(){
+								document.getElementById('delete-button').setAttribute('disabled', 'disabled');
+							},
+							on_selection_available: function(){
+								document.getElementById('delete-button').removeAttribute('disabled');
+							},
+							// talvez pegar a cidade do usuario logado. ou se for superadmin, todo o mapa
+							center: new google.maps.LatLng(-15.781444,-47.930523)
+						});
+
+					}});
 
                     $("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
                         resetWarnings();
@@ -5686,7 +6179,8 @@ $(document).ready(function() {
 							
                             args = [{name: "api_key", value: $.cookie("key")},
                                     {name: "city.region." + action + ".name", value: $(this).parent().parent().find("#name").val()},
-                                    {name: "city.region." + action + ".description", value: $(this).parent().parent().find("#description").val()}
+                                    {name: "city.region." + action + ".description", value: $(this).parent().parent().find("#description").val()},
+                                    {name: "city.region." + action + ".polygon_path", value: current_map_string}
                                     ];
 									
 							if ($(this).parent().parent().find("#region_id option:selected").val() != ""){

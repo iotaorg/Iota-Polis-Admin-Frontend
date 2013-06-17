@@ -214,6 +214,10 @@ $(document).ready(function() {
         submenu_label["variable_user"].push({"variable" : "Variáveis"});
         submenu_label["variable_user"].push({"myvariableedit" : "Editar Valores"});
 
+        submenu_label["region"] = [];
+        submenu_label["region"].push({"region-list" : "Cadastro"});
+        submenu_label["region"].push({"region-map" : "Definir Regiões no Mapa"});
+
         menu_access["superadmin"] = ["dashboard","prefs","parameters","networks","admins","users","indicator","axis","logout"];
         submenu_access["superadmin"] = ["countries","states","cities","units"];
         menu_access["admin"] = ["dashboard","prefs","users","parameters","variable_user","axis","indicator"];
@@ -252,6 +256,9 @@ $(document).ready(function() {
 			submenu_access["user"].push("mygroup");
 
             menu_access["user"].push("region");
+			submenu_access["user"].push("region-list");
+			submenu_access["user"].push("region-map");
+
             menu_access["user"].push("logout");
         }
         if (findInArray(user_info.roles,"admin")){
@@ -319,6 +326,197 @@ $(document).ready(function() {
 
         });
     };
+
+	var current_map_string = '';
+	var map;
+
+	$map = function(){
+
+		var drawingManager;
+		var selectedShape;
+
+		var _binds = {
+			on_selection_unavaiable: null,
+			on_selection_available: null,
+		};
+
+		var _is_visible = 1;
+		function hide_controls (){
+			_is_visible = 0;
+
+			if (typeof _binds.on_selection_unavaiable == 'function'){
+				_binds.on_selection_unavaiable();
+			}
+		}
+
+		function show_controls (){
+			if (_is_visible == 1) return;
+			_is_visible = 1;
+
+			if (typeof _binds.on_selection_available == 'function'){
+				_binds.on_selection_available();
+			}
+		}
+
+		// na hora de salvar usa o conteudo do current_map_string
+
+		function clearSelection() {
+			if (selectedShape) {
+				selectedShape.setEditable(false);
+				selectedShape = null;
+
+				current_map_string = '';
+				hide_controls();
+			}
+		}
+
+		function setSelection(shape) {
+			clearSelection();
+			selectedShape = shape;
+			shape.setEditable(true);
+			selectColor(shape.get('fillColor') || shape.get('strokeColor'));
+		}
+		
+		function getSelection(){
+			console.log(current_map_string);
+		}
+
+		function deleteSelectedShape() {
+			if (selectedShape) {
+				selectedShape.setMap(null);
+
+				current_map_string = '';
+				hide_controls();
+			}
+		}
+
+		function selectColor() {
+			color = '#1E90FF';
+
+			// Retrieves the current options from the drawing manager and replaces the
+			// stroke or fill color as appropriate.
+
+			var polygonOptions = drawingManager.get('polygonOptions');
+			polygonOptions.fillColor = color;
+			drawingManager.set('polygonOptions', polygonOptions);
+		}
+
+		function _store_string(theShape){
+			current_map_string = google.maps.geometry.encoding.encodePath(theShape.getPath());
+
+			show_controls();
+		}
+		
+		function _addPolygon(map_string,gbounds){
+			if (!(current_map_string) && !(map_string)) return;
+			
+			if (current_map_string && !(map_string)) map_string = current_map_string
+			var triangleCoords = google.maps.geometry.encoding.decodePath(map_string);
+			bermudaTriangle = new google.maps.Polygon({
+				paths: triangleCoords,
+				fillColor: '#1E90FF',
+				strokeWeight: 0,
+				fillOpacity: 0.45,
+				editable: true
+			});
+			bermudaTriangle.setMap(map);
+			
+			setSelection(bermudaTriangle);
+			
+			if (gbounds) map.fitBounds(bermudaTriangle.getBounds());
+
+			google.maps.event.addListener(bermudaTriangle, 'click', function() {
+				setSelection(bermudaTriangle);
+				_store_string(bermudaTriangle);
+			});
+			google.maps.event.addListener(bermudaTriangle.getPath(), 'insert_at', function() {
+				_store_string(bermudaTriangle);
+			});
+			google.maps.event.addListener(bermudaTriangle.getPath(), 'set_at', function() {
+				_store_string(bermudaTriangle);
+			});
+			setSelection(bermudaTriangle);
+			_store_string(bermudaTriangle);
+		}
+
+		function initialize(params) {
+
+			if (typeof params.on_selection_unavaiable == 'function')
+				_binds.on_selection_unavaiable = params.on_selection_unavaiable;
+
+			if (typeof params.on_selection_available == 'function')
+				_binds.on_selection_available = params.on_selection_available;
+
+
+			map = new google.maps.Map(document.getElementById('map'), {
+				zoom: 5,
+
+				center: params.center,
+				mapTypeId: google.maps.MapTypeId.ROADMAP,
+				disableDefaultUI: true,
+				zoomControl: true
+			});
+
+			var polyOptions = {
+				fillColor: '#1E90FF',
+				strokeWeight: 0,
+				fillOpacity: 0.45,
+				editable: true,
+			};
+			// Creates a drawing manager attached to the map that allows the user to draw
+			// markers, lines, and shapes.
+			drawingManager = new google.maps.drawing.DrawingManager({
+				drawingMode: google.maps.drawing.OverlayType.POLYGON,
+
+				polygonOptions: polyOptions,
+				drawingControlOptions:{
+					drawingModes: [google.maps.drawing.OverlayType.POLYGON]
+				},
+				map: map
+			});
+
+			google.maps.event.addListener(drawingManager, 'overlaycomplete', function(e) {
+				if (e.type != google.maps.drawing.OverlayType.MARKER) {
+					// Switch back to non-drawing mode after drawing a shape.
+					drawingManager.setDrawingMode(null);
+
+					// Add an event listener that selects the newly-drawn shape when the user
+					// mouses down on it.
+					var newShape = e.overlay;
+					newShape.type = e.type;
+					google.maps.event.addListener(newShape, 'click', function() {
+						setSelection(newShape);
+						_store_string(newShape);
+					});
+					google.maps.event.addListener(newShape.getPath(), 'insert_at', function() {
+						_store_string(newShape);
+					});
+					google.maps.event.addListener(newShape.getPath(), 'set_at', function() {
+						_store_string(newShape);
+					});
+					setSelection(newShape);
+					_store_string(newShape);
+					selectColor();
+				}
+			});
+			
+			// Clear the current selection when the drawing mode is changed, or when the
+			// map is clicked.
+			google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
+			google.maps.event.addListener(map, 'click', clearSelection);
+			google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', deleteSelectedShape);
+			google.maps.event.addDomListener(document.getElementById('save-button'), 'click', getSelection);
+
+			selectColor();
+			
+		}
+		return {
+			init: initialize,
+			getSelectedShape: function(){ return selectedShape; },
+			getSelectedShapeAsString: function(){ return current_map_string; },
+			addPolygon: _addPolygon
+		};
+	}();
 
     var buildContent = function(){
         if ($.inArray(getUrlSub().toString(),menu_access[user_info.role]) >= 0 || $.inArray(getUrlSub().toString(),submenu_access[user_info.role]) >= 0){
@@ -6148,7 +6346,7 @@ $(document).ready(function() {
                                                     key: $.cookie("key")
                                             })});
                 }
-            }else if (getUrlSub() == "region"){
+            }else if (getUrlSub() == "region-list"){
                 /*  Regiões  */
 				var data_regions = [];
                 if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
@@ -6162,11 +6360,6 @@ $(document).ready(function() {
 									city: getIdFromUrl(user_info.city)
                             }),
                         success: function(data,status,jqXHR){
-                            data.regions.sort(function (a, b) {
-                                a = String(a.name),
-                                b = String(b.name);
-                                return a.localeCompare(b);
-                            });
 							$.each(data.regions, function(index,item){
 								data_regions[item.id] = item.name;
 							});
@@ -6207,7 +6400,6 @@ $(document).ready(function() {
                                                         }, "aTargets": [ 1 ]
                                             }
                                         ],
-                        "aaSorting": [[0,'asc'],[1,'asc']],
                         "fnDrawCallback": function(){
                                 DTdesenhaBotoes();
                             }
@@ -6254,8 +6446,6 @@ $(document).ready(function() {
                             });
                         }
                     });
-
-					var current_map_string = '';
 					
                     if ($.getUrlVar("option") == "edit"){
                         $.ajax({
@@ -6291,13 +6481,11 @@ $(document).ready(function() {
                         });
                     }
 
-					google.load("maps", "3", {other_params:'sensor=false&libraries=drawing', callback: function(){
+					google.load("maps", "3", {other_params:'sensor=false&libraries=drawing,geometry', callback: function(){
 						$("#dashboard-content .content div.form").after("<div id='panel-map'><div id='panel'><button id='delete-button'>Apagar formato selecionado</button><button id='save-button'>Associar formato à distrito</button></div><div id='map'></div></div>");
 
 						$("#save-button").hide();
 						
-						var $map = function(){
-					
 						if (!google.maps.Polygon.prototype.getBounds) {
 
 							google.maps.Polygon.prototype.getBounds = function(latLng) {
@@ -6317,193 +6505,6 @@ $(document).ready(function() {
 							}
 						}
 
-						var drawingManager;
-							var selectedShape;
-
-							var _binds = {
-								on_selection_unavaiable: null,
-								on_selection_available: null,
-							};
-
-							var _is_visible = 1;
-							function hide_controls (){
-								_is_visible = 0;
-
-								if (typeof _binds.on_selection_unavaiable == 'function'){
-									_binds.on_selection_unavaiable();
-								}
-							}
-
-							function show_controls (){
-								if (_is_visible == 1) return;
-								_is_visible = 1;
-
-								if (typeof _binds.on_selection_available == 'function'){
-									_binds.on_selection_available();
-								}
-							}
-
-							// na hora de salvar usa o conteudo do current_map_string
-
-							function clearSelection() {
-								if (selectedShape) {
-									selectedShape.setEditable(false);
-									selectedShape = null;
-
-									current_map_string = '';
-									hide_controls();
-								}
-							}
-
-							function setSelection(shape) {
-								clearSelection();
-								selectedShape = shape;
-								shape.setEditable(true);
-								selectColor(shape.get('fillColor') || shape.get('strokeColor'));
-							}
-							
-							function getSelection(){
-								console.log(current_map_string);
-							}
-
-							function deleteSelectedShape() {
-								if (selectedShape) {
-									selectedShape.setMap(null);
-
-									current_map_string = '';
-									hide_controls();
-								}
-							}
-
-							function selectColor() {
-								color = '#1E90FF';
-
-								// Retrieves the current options from the drawing manager and replaces the
-								// stroke or fill color as appropriate.
-
-								var polygonOptions = drawingManager.get('polygonOptions');
-								polygonOptions.fillColor = color;
-								drawingManager.set('polygonOptions', polygonOptions);
-							}
-
-							function initialize(params) {
-
-								if (typeof params.on_selection_unavaiable == 'function')
-									_binds.on_selection_unavaiable = params.on_selection_unavaiable;
-
-								if (typeof params.on_selection_available == 'function')
-									_binds.on_selection_available = params.on_selection_available;
-
-
-								var map = new google.maps.Map(document.getElementById('map'), {
-									zoom: 5,
-
-									center: params.center,
-									mapTypeId: google.maps.MapTypeId.ROADMAP,
-									disableDefaultUI: true,
-									zoomControl: true
-								});
-
-								var polyOptions = {
-									fillColor: '#1E90FF',
-									strokeWeight: 0,
-									fillOpacity: 0.45,
-									editable: true,
-								};
-								// Creates a drawing manager attached to the map that allows the user to draw
-								// markers, lines, and shapes.
-								drawingManager = new google.maps.drawing.DrawingManager({
-									drawingMode: google.maps.drawing.OverlayType.POLYGON,
-
-									polygonOptions: polyOptions,
-									drawingControlOptions:{
-										drawingModes: [google.maps.drawing.OverlayType.POLYGON]
-									},
-									map: map
-								});
-
-								google.maps.event.addListener(drawingManager, 'overlaycomplete', function(e) {
-									if (e.type != google.maps.drawing.OverlayType.MARKER) {
-										// Switch back to non-drawing mode after drawing a shape.
-										drawingManager.setDrawingMode(null);
-
-										// Add an event listener that selects the newly-drawn shape when the user
-										// mouses down on it.
-										var newShape = e.overlay;
-										newShape.type = e.type;
-										google.maps.event.addListener(newShape, 'click', function() {
-											setSelection(newShape);
-											_store_string(newShape);
-										});
-										google.maps.event.addListener(newShape.getPath(), 'insert_at', function() {
-											_store_string(newShape);
-										});
-										google.maps.event.addListener(newShape.getPath(), 'set_at', function() {
-											_store_string(newShape);
-										});
-										setSelection(newShape);
-										_store_string(newShape);
-										selectColor();
-									}
-								});
-
-								function _store_string(theShape){
-									current_map_string = google.maps.geometry.encoding.encodePath(theShape.getPath());
-
-									show_controls();
-								}
-
-								// Clear the current selection when the drawing mode is changed, or when the
-								// map is clicked.
-								google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
-								google.maps.event.addListener(map, 'click', clearSelection);
-								google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', deleteSelectedShape);
-								google.maps.event.addDomListener(document.getElementById('save-button'), 'click', getSelection);
-
-								selectColor();
-								
-			                    if ($.getUrlVar("option") == "edit" && current_map_string != ""){
-									google.maps.event.addListenerOnce(map, 'idle', function(){
-										var triangleCoords = google.maps.geometry.encoding.decodePath(current_map_string);
-														bermudaTriangle = new google.maps.Polygon({
-														paths: triangleCoords,
-														fillColor: '#1E90FF',
-														strokeWeight: 0,
-														fillOpacity: 0.45,
-														editable: true
-										});
-										bermudaTriangle.setMap(map);
-										
-										setSelection(bermudaTriangle);
-									
-										map.fitBounds(bermudaTriangle.getBounds());
-
-										google.maps.event.addListener(bermudaTriangle, 'click', function() {
-											setSelection(bermudaTriangle);
-											_store_string(bermudaTriangle);
-										});
-										google.maps.event.addListener(bermudaTriangle.getPath(), 'insert_at', function() {
-											_store_string(bermudaTriangle);
-										});
-										google.maps.event.addListener(bermudaTriangle.getPath(), 'set_at', function() {
-											_store_string(bermudaTriangle);
-										});
-										setSelection(bermudaTriangle);
-										_store_string(bermudaTriangle);
-
-										});
-										
-								}
-
-							}
-							return {
-								init: initialize,
-								getSelectedShape: function(){ return selectedShape; },
-								getSelectedShapeAsString: function(){ return current_map_string; },
-
-							};
-						}();
-
 						$map.init({
 							on_selection_unavaiable: function(){
 								document.getElementById('delete-button').setAttribute('disabled', 'disabled');
@@ -6514,6 +6515,8 @@ $(document).ready(function() {
 							// talvez pegar a cidade do usuario logado. ou se for superadmin, todo o mapa
 							center: new google.maps.LatLng(-15.781444,-47.930523)
 						});
+						
+						$map.addPolygon("",true);
 
 					}});
 
@@ -6580,6 +6583,72 @@ $(document).ready(function() {
                                                     key: $.cookie("key")
                                             })});
                 }
+            }else if (getUrlSub() == "region-map"){
+                /*  Regiões Setando mapa */
+
+				$("#dashboard-content .content").append("<div id='panel-region'><div id='region-list'><div class='contents'></div></div><div id='panel-map'><div id='panel'><button id='delete-button'>Apagar formato selecionado</button><button id='save-button'>Associar formato à distrito</button></div><div id='map'></div></div></div>");
+
+				var data_regions;
+
+				$.ajax({
+					type: 'GET',
+					dataType: 'json',
+					url: api_path + "/api/city/$$city/region?api_key=$$key&with_polygon_path=1".render({
+								key: $.cookie("key"),
+								city: getIdFromUrl(user_info.city)
+						}),
+					success: function(data,status,jqXHR){
+						data_regions = data;
+						$.each(data_regions.regions, function(index,item){
+							$("#panel-region #region-list .contents").append("<div class='item' region-id='$$id'>$$name</div>".render({
+								id: item.id,
+								name: item.name
+							}));
+						});
+						$("#panel-region #region-list .contents").css("height",$("#panel-map").height() + "px");
+
+						google.load("maps", "3", {other_params:'sensor=false&libraries=drawing,geometry', callback: function(){
+							
+							if (!google.maps.Polygon.prototype.getBounds) {
+
+								google.maps.Polygon.prototype.getBounds = function(latLng) {
+			
+									var bounds = new google.maps.LatLngBounds();
+									var paths = this.getPaths();
+									var path;
+
+									for (var p = 0; p < paths.getLength(); p++) {
+										path = paths.getAt(p);
+										for (var i = 0; i < path.getLength(); i++) {
+											bounds.extend(path.getAt(i));
+										}
+									}
+
+									return bounds;
+								}
+							}
+
+							$map.init({
+								on_selection_unavaiable: function(){
+									document.getElementById('delete-button').setAttribute('disabled', 'disabled');
+								},
+								on_selection_available: function(){
+									document.getElementById('delete-button').removeAttribute('disabled');
+								},
+								// talvez pegar a cidade do usuario logado. ou se for superadmin, todo o mapa
+								center: new google.maps.LatLng(-15.781444,-47.930523),
+								google: google
+							});
+							
+							$.each(data_regions.regions,function(index,item){
+								if (item.polygon_path){
+									$map.addPolygon(item.polygon_path,false);
+								}
+							});
+
+						}});
+					}
+				});
             }else if (getUrlSub() == "prefs"){
 
                 var newform = [];

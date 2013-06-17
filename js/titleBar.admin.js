@@ -55,6 +55,12 @@ var titleBarContent = {
 					"region":{
 							"title": "Sub-Prefeituras/Distritos",
 							"tip": ""},
+					"region-list":{
+							"title": "Sub-Prefeituras/Distritos",
+							"tip": ""},
+					"region-map":{
+							"title": "Sub-Prefeituras/Distritos",
+							"tip": ""},
 					"units":{
 							"title": "Parâmetros - Unidades de Medida",
 							"tip": ""},

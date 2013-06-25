@@ -1252,15 +1252,15 @@ $.confirm = function(params){
 
 	$.each(params.buttons,function(name,obj){
 		buttons.eq(i++).click(function(){
-			obj.action();
-			$.confirm.hide();
+			$.confirm.hide(obj);
 			return false;
 		});
 	});
 };
-$.confirm.hide = function(){
+$.confirm.hide = function(obj){
 	$('#dialog-overlay').fadeOut(function(){
 		$(this).remove();
+		if (obj) obj.action();
 	});
 }
 

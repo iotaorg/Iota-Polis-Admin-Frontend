@@ -1453,6 +1453,12 @@ input.admin_checked{
 	padding: 4px 5px;
 	text-align: left;
 }
+#panel-region #region-list .contents .item[depth="2"]{
+	background-color: #fefefe;
+}
+#panel-region #region-list .contents .item[depth="3"]{
+	padding-left: 10px;
+}
 #panel-region #region-list .contents .item:hover{
 	cursor: hand;
 	cursor: pointer;
@@ -1460,8 +1466,8 @@ input.admin_checked{
     color: #000;
 }
 #panel-region #region-list .contents .item.selected{
-    background-color: #20c1c1;
-    color: #009999;
+    background-color: #c9ffff;
+    color: #20c1c1;
 }
 
 #panel-region #region-list .contents .item:last{

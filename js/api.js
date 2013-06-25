@@ -1,5 +1,5 @@
 var api_path = "";
-//var api_path = "http://rnsp.aware.com.br";
+var api_path = "http://rnsp.aware.com.br";
 
 $(document).ready(function() {
 
@@ -334,6 +334,7 @@ $(document).ready(function() {
 
 		var drawingManager;
 		var selectedShape;
+		var objTriangle = [];
 
 		var _binds = {
 			on_selection_unavaiable: null,
@@ -381,12 +382,64 @@ $(document).ready(function() {
 			console.log(current_map_string);
 		}
 
+		function saveSelectedShape(){
+			
+			if ($("#region-list .selected").length <= 0 || (!$("#region-list .selected").attr("region-id"))){
+				$("#aviso").setWarning({msg: "Nenhuma região selecionada."});
+				return;
+			}
+
+			var action = "update";
+			var method = "POST";
+			var url_action = api_path + "/api/city/$$city/region/$$region?api_key=$$key&with_polygon_path=1&limit=1000".render({
+								key: $.cookie("key"),
+								city: getIdFromUrl(user_info.city),
+								region: $("#region-list .selected").attr("region-id")
+						});
+						
+			args = [{name: "api_key", value: $.cookie("key")},
+					{name: "city.region." + action + ".polygon_path", value: current_map_string}
+					];
+								
+			$.ajax({
+				type: method,
+				dataType: 'json',
+				url: url_action,
+				data: args,
+				success: function(data,status,jqXHR){
+				
+					if (!selectedShape.region_index){
+						var index = objTriangle.length;
+						
+						selectedShape.region_index = index;
+						
+						objTriangle.push(selectedShape);
+						
+						$("#region-list .selected").attr("region-index",index);
+					}
+					$("#aviso").setWarning({msg: "Operação efetuada com sucesso."});
+				},
+				error: function(data){
+					$("#aviso").setWarning({msg: "Erro na operação. ($$codigo)".render({
+									codigo: $.parseJSON(data.responseText).error
+									})
+					});
+				}
+			});
+		}
+
 		function deleteSelectedShape() {
 			if (selectedShape) {
 				selectedShape.setMap(null);
 
 				current_map_string = '';
 				hide_controls();
+			}
+		}
+
+		function deleteShape(shape) {
+			if (shape){
+				shape.setMap(null);
 			}
 		}
 
@@ -407,36 +460,58 @@ $(document).ready(function() {
 			show_controls();
 		}
 		
-		function _addPolygon(map_string,gbounds){
-			if (!(current_map_string) && !(map_string)) return;
+		function _addPolygon(args){
+			if (!(current_map_string) && !(args.map_string)) return;
 			
-			if (current_map_string && !(map_string)) map_string = current_map_string
-			var triangleCoords = google.maps.geometry.encoding.decodePath(map_string);
-			bermudaTriangle = new google.maps.Polygon({
+			if (current_map_string && !(args.map_string)) args.map_string = current_map_string
+			var triangleCoords = google.maps.geometry.encoding.decodePath(args.map_string);
+			var index = objTriangle.length;
+
+			objTriangle.push(new google.maps.Polygon({
 				paths: triangleCoords,
 				fillColor: '#1E90FF',
 				strokeWeight: 0,
 				fillOpacity: 0.45,
-				editable: true
-			});
-			bermudaTriangle.setMap(map);
+				editable: false,
+				region_index: index
+			}));
 			
-			setSelection(bermudaTriangle);
+			objTriangle[index].setMap(map);
 			
-			if (gbounds) map.fitBounds(bermudaTriangle.getBounds());
+			setSelection(objTriangle[index]);
+			
+			if (args.focus) map.fitBounds(objTriangle[index].getBounds());
 
-			google.maps.event.addListener(bermudaTriangle, 'click', function() {
-				setSelection(bermudaTriangle);
-				_store_string(bermudaTriangle);
+			google.maps.event.addListener(objTriangle[index], 'click', function() {
+				if ($("#region-list").length > 0){
+					$("#region-list .item").removeClass("selected");
+					$("#region-list .item[region-index=" + this.region_index + "]").addClass("selected");
+					$.scrollToRegionList(this.region_index);
+				}
+				setSelection(this);
+				_store_string(this);
 			});
-			google.maps.event.addListener(bermudaTriangle.getPath(), 'insert_at', function() {
-				_store_string(bermudaTriangle);
+			google.maps.event.addListener(objTriangle[index].getPath(), 'insert_at', function() {
+				_store_string(this);
 			});
-			google.maps.event.addListener(bermudaTriangle.getPath(), 'set_at', function() {
-				_store_string(bermudaTriangle);
+			google.maps.event.addListener(objTriangle[index].getPath(), 'set_at', function() {
+				_store_string(this);
 			});
-			setSelection(bermudaTriangle);
-			_store_string(bermudaTriangle);
+			setSelection(objTriangle[index]);
+			_store_string(objTriangle[index]);
+			
+			if (args.region_id){
+				$("#region-list .item[region-id="+args.region_id+"]").attr("region-index",index);
+			}
+		}
+		
+		function _selectPolygon(index){
+			if (!index) return;
+			
+			map.fitBounds(objTriangle[index].getBounds());
+
+			setSelection(objTriangle[index]);
+			_store_string(objTriangle[index]);
 		}
 
 		function initialize(params) {
@@ -505,7 +580,7 @@ $(document).ready(function() {
 			google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
 			google.maps.event.addListener(map, 'click', clearSelection);
 			google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', deleteSelectedShape);
-			google.maps.event.addDomListener(document.getElementById('save-button'), 'click', getSelection);
+			google.maps.event.addDomListener(document.getElementById('save-button'), 'click', saveSelectedShape);
 
 			selectColor();
 			
@@ -514,7 +589,8 @@ $(document).ready(function() {
 			init: initialize,
 			getSelectedShape: function(){ return selectedShape; },
 			getSelectedShapeAsString: function(){ return current_map_string; },
-			addPolygon: _addPolygon
+			addPolygon: _addPolygon,
+			selectPolygon: _selectPolygon
 		};
 	}();
 
@@ -625,7 +701,6 @@ $(document).ready(function() {
 												userid: $.cookie("user.id")
 												}),
 										success: function(data, textStatus, jqXHR){
-											console.log(data_config);
 											$.each(data.variables, function(index,value){
 												if (data_config[data.variables[index].variable_id] && data_config[data.variables[index].variable_id].display_in_home == 1 ||
 												    !(data_config[data.variables[index].variable_id]) && data_config_admin[data.variables[index].variable_id] && data_config_admin[data.variables[index].variable_id].display_in_home == 1){
@@ -2494,7 +2569,6 @@ $(document).ready(function() {
 						$("table input[type=checkbox]").each(function(index,item){
 							if ($(this).attr("disabled") == "disabled"){
 								$(this).removeAttr("disabled");
-								console.log($(this).attr("disabled"));
 							}else{
 								$(this).attr("disabled","true");
 							}
@@ -2550,7 +2624,6 @@ $(document).ready(function() {
 											userid: $.cookie("user.id")
 											}),
 									success: function(data, textStatus, jqXHR){
-										console.log(data_config);
 										$.each(data.variables, function(index,value){
 											$("#dashboard-content .content #results tbody").append($("<tr><td>$$nome</td><td>$$url</td><td>$$url</td></tr>".render({nome: data.variables[index].name,
 											apelido: data.variables[index].cognomen,
@@ -6348,9 +6421,9 @@ $(document).ready(function() {
                 }
             }else if (getUrlSub() == "region-list"){
                 /*  Regiões  */
-				var data_regions = [];
+				var data_region = [];
+				var data_district = [];
                 if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
-
                     $.ajax({
                         async: false,
                         type: 'GET',
@@ -6360,8 +6433,42 @@ $(document).ready(function() {
 									city: getIdFromUrl(user_info.city)
                             }),
                         success: function(data,status,jqXHR){
+							results = [];
 							$.each(data.regions, function(index,item){
-								data_regions[item.id] = item.name;
+								if (item.depth_level == 2){
+									data_region.push({
+														"id": item.id,
+														"name": item.name,
+														"url": item.url
+														});
+								}else if(item.depth_level == 3){
+									data_district.push({
+														"id": item.id,
+														"name": item.name,
+														"url": item.url,
+														"upper_region_id": item.upper_region.id,
+														"upper_region_name": item.upper_region.name
+														});
+								}
+							});
+                            data_region.sort(function (a, b) {
+                                a = String(a.name),
+                                b = String(b.name);
+                                return a.localeCompare(b);
+                            });
+                            data_district.sort(function (a, b) {
+                                a = String(a.name),
+                                b = String(b.name);
+                                return a.localeCompare(b);
+                            });
+							console.log(data_region);
+							$.each(data_region,function(index,item){
+								results.push([item.name, "--", item.url]);
+								$.each(data_district,function(index2,item2){
+									if (item2.upper_region_id == item.id){
+										results.push([item2.name, item.name, item2.url]);
+									}
+								});								
 							});
                         }
                     });
@@ -6382,23 +6489,11 @@ $(document).ready(function() {
                         "oLanguage": {
                                         "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
                                         },
-                        "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/city/$$city/region?api_key=$$key&content-type=application/json&columns=name,upper_region.name,url,_,_'.render({
-                                key: $.cookie("key"),
-								city: getIdFromUrl(user_info.city)
-                                }),
+                        "aaData": results,
+						"bSort": false,
                         "aoColumnDefs": [
                                             { "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 2 ] },
-                                            { "sClass": "center", "aTargets": [ 2 ] },
-                                            { "fnRender": function ( oObj, sVal ) {
-															if (!sVal){
-																sVal = "--";
-															}else{
-																sVal = sVal;
-															}
-                                                            return sVal;
-                                                        }, "aTargets": [ 1 ]
-                                            }
+                                            { "sClass": "center", "aTargets": [ 2 ] }
                                         ],
                         "fnDrawCallback": function(){
                                 DTdesenhaBotoes();
@@ -6516,7 +6611,7 @@ $(document).ready(function() {
 							center: new google.maps.LatLng(-15.781444,-47.930523)
 						});
 						
-						$map.addPolygon("",true);
+						$map.addPolygon({"focus": true});
 
 					}});
 
@@ -6588,23 +6683,76 @@ $(document).ready(function() {
 
 				$("#dashboard-content .content").append("<div id='panel-region'><div id='region-list'><div class='contents'></div></div><div id='panel-map'><div id='panel'><button id='delete-button'>Apagar formato selecionado</button><button id='save-button'>Associar formato à distrito</button></div><div id='map'></div></div></div>");
 
+				$("#dashboard-content .content").append("<div class='upload_via_file'></div>");
+				var newform = [];
+				newform.push({label: "Arquivo .KML", input: ["file,arquivo,itext"]});
+				var formbuild = $("#dashboard-content .content .upload_via_file").append(buildForm(newform,"Importar KML"));
+				$(formbuild).find("div .field:odd").addClass("odd");
+				$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+				$("#dashboard-content .content .upload_via_file .botao-form[ref='cancelar']").hide();
+				
+				var data_region = [];
+				var data_district = [];
 				var data_regions;
 
 				$.ajax({
 					type: 'GET',
 					dataType: 'json',
-					url: api_path + "/api/city/$$city/region?api_key=$$key&with_polygon_path=1".render({
+					url: api_path + "/api/city/$$city/region?api_key=$$key&with_polygon_path=1&limit=1000".render({
 								key: $.cookie("key"),
 								city: getIdFromUrl(user_info.city)
 						}),
 					success: function(data,status,jqXHR){
 						data_regions = data;
-						$.each(data_regions.regions, function(index,item){
-							$("#panel-region #region-list .contents").append("<div class='item' region-id='$$id'>$$name</div>".render({
-								id: item.id,
-								name: item.name
-							}));
+						$.each(data.regions, function(index,item){
+							if (item.depth_level == 2){
+								data_region.push({
+													"id": item.id,
+													"name": item.name,
+													"url": item.url
+													});
+							}else if(item.depth_level == 3){
+								data_district.push({
+													"id": item.id,
+													"name": item.name,
+													"url": item.url,
+													"upper_region_id": item.upper_region.id,
+													"upper_region_name": item.upper_region.name
+													});
+							}
 						});
+						data_region.sort(function (a, b) {
+							a = String(a.name),
+							b = String(b.name);
+							return a.localeCompare(b);
+						});
+						data_district.sort(function (a, b) {
+							a = String(a.name),
+							b = String(b.name);
+							return a.localeCompare(b);
+						});
+						
+						var count = 0;
+						$.each(data_region,function(index,item){
+							$("#panel-region #region-list .contents").append("<div class='item' region-id='$$id' region-count='$$count' depth='$$depth'>$$name</div>".render({
+								id: item.id,
+								name: item.name,
+								count: count,
+								depth: 2
+							}));
+							$.each(data_district,function(index2,item2){
+								count++;
+								if (item2.upper_region_id == item.id){
+									$("#panel-region #region-list .contents").append("<div class='item' region-id='$$id' region-count='$$count' depth='$$depth'>$$name</div>".render({
+										id: item2.id,
+										name: item2.name,
+										count: count,
+										depth: 3
+									}));
+								}
+							});								
+						});
+
 						$("#panel-region #region-list .contents").css("height",$("#panel-map").height() + "px");
 
 						google.load("maps", "3", {other_params:'sensor=false&libraries=drawing,geometry', callback: function(){
@@ -6642,14 +6790,93 @@ $(document).ready(function() {
 							
 							$.each(data_regions.regions,function(index,item){
 								if (item.polygon_path){
-									$map.addPolygon(item.polygon_path,false);
+									$map.addPolygon({"map_string": item.polygon_path,"focus": false, "region_id": item.id});
 								}
 							});
+							
+							$("#region-list .item").bind('click',function(e){
+								$("#region-list .item").removeClass("selected");
+								$(this).addClass("selected");
+								$map.selectPolygon($(this).attr("region-index"));
+							});
+							
 
 						}});
 					}
 				});
-            }else if (getUrlSub() == "prefs"){
+
+
+				$("#dashboard-content .content .upload_via_file .botao-form[ref='enviar']").click(function(){
+
+					var clickedButton = $(this);
+
+					var file = "arquivo";
+					var form = $("#formFileUpload_"+file);
+
+					original_id = $('#arquivo_'+file).attr("original-id");
+
+					$('#arquivo_'+file).attr({
+											name: "arquivo",
+											id: "arquivo"
+										});
+
+					form.attr("action", api_path + '/api/user/$$user/kml?api_key=$$key&content-type=application/json'.render({
+							user: $.cookie("user.id"),
+							key: $.cookie("key")
+							}));
+					form.attr("method", "post");
+					form.attr("enctype", "multipart/form-data");
+					form.attr("encoding", "multipart/form-data");
+					form.attr("target", "iframe_"+file);
+					form.attr("file", $('#arquivo').val());
+					form.submit();
+					$('#arquivo').attr({
+											name: original_id,
+											id: original_id
+										});
+
+					$("#iframe_"+file).load( function(){
+
+						var erro = 0;
+						if ($(this).contents()){
+							if  ($(this).contents()[0].body){
+								if  ($(this).contents()[0].body.outerHTML){
+									var retorno = $(this).contents()[0].body.outerHTML;
+									retorno = retorno.replace("<body><pre>","");
+									retorno = retorno.replace("</pre></body>","");
+									console.log(retorno);
+									retorno = $.parseJSON(retorno);
+								}else{
+									erro = 1;
+								}
+							}else{
+								erro = 1;
+							}
+						}else{
+							erro = 1;
+						}
+						if (erro == 0){
+							if (!retorno.error){
+								$(".value_via_file .form-aviso").setWarning({msg: "Arquivo enviado com sucesso"});
+								$(clickedButton).html("Enviar");
+								$(clickedButton).attr("is-disabled",0);
+							}else{
+								$(".value_via_file .form-aviso").setWarning({msg: "Erro ao enviar arquivo " + file + " (" + retorno.error + ")"});
+								$(clickedButton).html("Enviar");
+								$(clickedButton).attr("is-disabled",0);
+								return;
+							}
+						}else{
+							console.log("Erro ao enviar arquivo " + file);
+							$(".upload_via_file .form-aviso").setWarning({msg: "Erro ao enviar arquivo " + file});
+							$(clickedButton).html("Enviar");
+							$(clickedButton).attr("is-disabled",0);
+							return;
+						}
+					});
+				});
+
+			}else if (getUrlSub() == "prefs"){
 
                 var newform = [];
 

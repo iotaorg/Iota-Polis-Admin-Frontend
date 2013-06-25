@@ -6901,8 +6901,8 @@ $(document).ready(function() {
 									form.attr("encoding", "multipart/form-data");
 									form.attr("target", "iframe_"+file);
 									form.attr("file", $('#arquivo').val());
-									form.submit();
 									$.loading({title: "Enviando..."});
+									form.submit();
 									$('#arquivo').attr({
 															name: original_id,
 															id: original_id

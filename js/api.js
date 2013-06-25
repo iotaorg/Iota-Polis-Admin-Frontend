@@ -6516,7 +6516,6 @@ $(document).ready(function() {
                                 b = String(b.name);
                                 return a.localeCompare(b);
                             });
-							console.log(data_region);
 							$.each(data_region,function(index,item){
 								results.push([item.name, "--", item.url]);
 								$.each(data_district,function(index2,item2){
@@ -6959,8 +6958,8 @@ $(document).ready(function() {
 				});
 				
 				function trataRetornoKML(retorno){								
+					$map.deleteAllShapes();
 					$.each(retorno.vec, function(index, foo){
-						$map.deleteAllShapes();
 						$map.addPolygon({"kml_string": foo,"focus": false, "select": false});
 					});
 					$map.focusAll();

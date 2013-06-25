@@ -6871,7 +6871,7 @@ $(document).ready(function() {
 
 
 				$("#dashboard-content .content .upload_via_file .botao-form[ref='enviar']").click(function(){
-					
+					resetWarnings();
 					$.confirm({
 						'title': 'Confirmação',
 						'message': 'As regiões atuais serão apagadas do mapa.<br />Deseja continuar?',
@@ -6902,13 +6902,14 @@ $(document).ready(function() {
 									form.attr("target", "iframe_"+file);
 									form.attr("file", $('#arquivo').val());
 									form.submit();
+									$.loading({title: "Enviando..."});
 									$('#arquivo').attr({
 															name: original_id,
 															id: original_id
 														});
 
 									$("#iframe_"+file).load( function(){
-
+										$.loading().hide();
 										var erro = 0;
 										if ($(this).contents()){
 											if  ($(this).contents()[0].body){

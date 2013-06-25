@@ -1,5 +1,7 @@
 var api_path = "";
-var api_path = "http://rnsp.aware.com.br";
+//var api_path = "http://rnsp.aware.com.br";
+
+var kml_sample = '{"vec":[{"latlng":[["-46.58166","-23.552155"],["-46.581659","-23.552154"],["-46.58163","-23.552127"],["-46.581307","-23.551821"],["-46.580617","-23.551148"],["-46.580221","-23.550764"],["-46.580189","-23.550737"],["-46.580161","-23.550715"],["-46.580287","-23.550516"],["-46.580414","-23.550317"],["-46.580589","-23.550047"],["-46.580656","-23.549962"],["-46.579082","-23.549386"],["-46.579044","-23.549373"],["-46.578937","-23.549333"],["-46.5789","-23.54932"],["-46.578864","-23.549307"],["-46.578843","-23.549299"],["-46.578705","-23.549656"],["-46.57859","-23.549939"],["-46.578341","-23.550377"],["-46.578122","-23.550763"],["-46.578004","-23.550969"],["-46.577407","-23.552019"],["-46.577371","-23.552026"],["-46.57685","-23.552136"],["-46.576585","-23.552191"],["-46.576327","-23.552255"],["-46.576195","-23.552287"],["-46.575652","-23.552428"],["-46.575334","-23.552496"],["-46.574976","-23.552568"],["-46.574677","-23.552611"],["-46.574487","-23.552617"],["-46.57419","-23.552611"],["-46.573905","-23.552605"],["-46.573389","-23.552559"],["-46.573073","-23.552538"],["-46.572643","-23.552471"],["-46.572271","-23.552398"],["-46.571167","-23.552167"],["-46.571166","-23.552167"],["-46.571151","-23.552241"],["-46.571063","-23.552482"],["-46.571026","-23.552551"],["-46.571013","-23.552563"],["-46.570956","-23.552618"],["-46.570854","-23.552671"],["-46.570729","-23.552698"],["-46.570166","-23.552755"],["-46.569951","-23.55278"],["-46.56984","-23.552793"],["-46.569749","-23.552809"],["-46.569714","-23.552826"],["-46.56968","-23.552844"],["-46.569623","-23.552885"],["-46.569589","-23.552922"],["-46.569552","-23.55296"],["-46.569543","-23.552979"],["-46.569523","-23.553016"],["-46.569514","-23.553033"],["-46.569487","-23.553102"],["-46.569475","-23.553185"],["-46.569462","-23.553302"],["-46.569398","-23.553341"],["-46.569257","-23.553407"],["-46.569168","-23.553457"],["-46.569136","-23.553475"],["-46.568988","-23.55358"],["-46.568923","-23.553626"],["-46.568901","-23.55367"],["-46.568903","-23.553718"],["-46.568925","-23.553839"],["-46.568931","-23.55386"],["-46.569049","-23.554273"],["-46.56922","-23.554887"],["-46.569379","-23.555446"],["-46.569464","-23.555748"],["-46.569534","-23.556007"],["-46.569649","-23.556431"],["-46.569716","-23.556678"],["-46.569709","-23.556727"],["-46.569703","-23.556777"],["-46.569685","-23.556839"],["-46.569692","-23.556925"],["-46.569674","-23.556961"],["-46.569287","-23.557376"],["-46.568871","-23.557824"],["-46.568713","-23.558021"],["-46.56862","-23.55814"],["-46.568611","-23.558152"],["-46.56848","-23.558208"],["-46.568115","-23.558348"],["-46.567968","-23.558428"],["-46.567833","-23.558518"],["-46.567713","-23.558623"],["-46.567593","-23.558738"],["-46.567438","-23.558929"],["-46.567192","-23.559234"],["-46.566901","-23.559602"],["-46.566757","-23.559767"],["-46.566469","-23.560058"],["-46.566443","-23.560084"],["-46.566341","-23.560217"],["-46.566242","-23.56037"],["-46.566148","-23.560528"],["-46.565986","-23.560842"],["-46.565865","-23.561065"],["-46.565715","-23.561316"],["-46.565635","-23.561432"],["-46.565521","-23.561572"],["-46.565444","-23.561651"],["-46.565313","-23.561768"],["-46.56518","-23.561872"],["-46.565061","-23.561951"],["-46.564949","-23.562013"],["-46.563485","-23.562766"],["-46.562616","-23.563209"],["-46.56242","-23.563309"],["-46.562399","-23.56332"],["-46.562394","-23.563323"],["-46.561336","-23.563863"],["-46.560927","-23.564069"],["-46.560618","-23.564229"],["-46.560607","-23.564235"],["-46.560604","-23.564236"],["-46.559784","-23.564654"],["-46.558996","-23.565027"],["-46.558959","-23.565044"],["-46.558717","-23.565159"],["-46.558446","-23.565296"],["-46.557484","-23.565783"],["-46.55706","-23.566"],["-46.55675","-23.566166"],["-46.556469","-23.56632"],["-46.556278","-23.566449"],["-46.55616","-23.566548"],["-46.555232","-23.567413"],["-46.554047","-23.568518"],["-46.554112","-23.568652"],["-46.554282","-23.569023"],["-46.554563","-23.569635"],["-46.555051","-23.570697"],["-46.555456","-23.571583"],["-46.555865","-23.572478"],["-46.556069","-23.572923"],["-46.556169","-23.573141"],["-46.556662","-23.574221"],["-46.55695","-23.57413"],["-46.557059","-23.574906"],["-46.557118","-23.575385"],["-46.557131","-23.575492"],["-46.557327","-23.577044"],["-46.557368","-23.577368"],["-46.55741","-23.577675"],["-46.557453","-23.578014"],["-46.557552","-23.578778"],["-46.55761","-23.579231"],["-46.55767","-23.579692"],["-46.557692","-23.579862"],["-46.55772","-23.580076"],["-46.557824","-23.580868"],["-46.558516","-23.580797"],["-46.55896","-23.580753"],["-46.559669","-23.580681"],["-46.559778","-23.58068"],["-46.559848","-23.580686"],["-46.559854","-23.580686"],["-46.559869","-23.580688"],["-46.55998","-23.580704"],["-46.56021","-23.580755"],["-46.560679","-23.580861"],["-46.560991","-23.580932"],["-46.561296","-23.581001"],["-46.561958","-23.581152"],["-46.562257","-23.58122"],["-46.562526","-23.581282"],["-46.562931","-23.581374"],["-46.563131","-23.581412"],["-46.563265","-23.581437"],["-46.563639","-23.581427"],["-46.564043","-23.581417"],["-46.564271","-23.581411"],["-46.564525","-23.581409"],["-46.564616","-23.581408"],["-46.56485","-23.581399"],["-46.564988","-23.581394"],["-46.565273","-23.581384"],["-46.565566","-23.581373"],["-46.565778","-23.581341"],["-46.566172","-23.581281"],["-46.566354","-23.581252"],["-46.566991","-23.581149"],["-46.567154","-23.581123"],["-46.56727","-23.581082"],["-46.567416","-23.58103"],["-46.567778","-23.580872"],["-46.567926","-23.580808"],["-46.56894","-23.580365"],["-46.569103","-23.580294"],["-46.569412","-23.580159"],["-46.56972","-23.580027"],["-46.569789","-23.580011"],["-46.569947","-23.579974"],["-46.570202","-23.579912"],["-46.57035","-23.579877"],["-46.570653","-23.579805"],["-46.571079","-23.579706"],["-46.571725","-23.579556"],["-46.571991","-23.579503"],["-46.572066","-23.579483"],["-46.572067","-23.579483"],["-46.572122","-23.579468"],["-46.572164","-23.579457"],["-46.572241","-23.579436"],["-46.572383","-23.579392"],["-46.573111","-23.579023"],["-46.573575","-23.578787"],["-46.573577","-23.578786"],["-46.573858","-23.578644"],["-46.574774","-23.578179"],["-46.575019","-23.578056"],["-46.575708","-23.577707"],["-46.57589","-23.57763"],["-46.575995","-23.577676"],["-46.576138","-23.577712"],["-46.576293","-23.577729"],["-46.576449","-23.577718"],["-46.576597","-23.577685"],["-46.576687","-23.577691"],["-46.576724","-23.577574"],["-46.576865","-23.577305"],["-46.576865","-23.577304"],["-46.577167","-23.576725"],["-46.577416","-23.576246"],["-46.577475","-23.576152"],["-46.57751","-23.576095"],["-46.577552","-23.576046"],["-46.577696","-23.575904"],["-46.577738","-23.575896"],["-46.577807","-23.575891"],["-46.577866","-23.575906"],["-46.578056","-23.575978"],["-46.578246","-23.576006"],["-46.578472","-23.575974"],["-46.579204","-23.575842"],["-46.57928","-23.575699"],["-46.579333","-23.57558"],["-46.579351","-23.575539"],["-46.579336","-23.575413"],["-46.579275","-23.575093"],["-46.5792","-23.574847"],["-46.579141","-23.574728"],["-46.579088","-23.574687"],["-46.578971","-23.574633"],["-46.578972","-23.574632"],["-46.578972","-23.574632"],["-46.579089","-23.574515"],["-46.579625","-23.574039"],["-46.579663","-23.574008"],["-46.579714","-23.573967"],["-46.579806","-23.573918"],["-46.579887","-23.573895"],["-46.580006","-23.573867"],["-46.580145","-23.573839"],["-46.580227","-23.57384"],["-46.580281","-23.573857"],["-46.580391","-23.573785"],["-46.580499","-23.573701"],["-46.580698","-23.573544"],["-46.580946","-23.573334"],["-46.581119","-23.573186"],["-46.581336","-23.572978"],["-46.581481","-23.572839"],["-46.581685","-23.572601"],["-46.581738","-23.57252"],["-46.581781","-23.572454"],["-46.581799","-23.572388"],["-46.581812","-23.572259"],["-46.581372","-23.57173"],["-46.581241","-23.571549"],["-46.58122","-23.571437"],["-46.581198","-23.571161"],["-46.581195","-23.57092"],["-46.581193","-23.57069"],["-46.581238","-23.570229"],["-46.581274","-23.569858"],["-46.5813","-23.569687"],["-46.581333","-23.569579"],["-46.581392","-23.569494"],["-46.581491","-23.569383"],["-46.581631","-23.569246"],["-46.581774","-23.569128"],["-46.581946","-23.569001"],["-46.582187","-23.568842"],["-46.582419","-23.568697"],["-46.582518","-23.568609"],["-46.582864","-23.568592"],["-46.583067","-23.568581"],["-46.583587","-23.568551"],["-46.583972","-23.568529"],["-46.584895","-23.568477"],["-46.585428","-23.56845"],["-46.58561","-23.568426"],["-46.585691","-23.568393"],["-46.585759","-23.568365"],["-46.585839","-23.568292"],["-46.586055","-23.568099"],["-46.586952","-23.567343"],["-46.587209","-23.567126"],["-46.58728","-23.567066"],["-46.58793","-23.566498"],["-46.588248","-23.56622"],["-46.588433","-23.566059"],["-46.588756","-23.56574"],["-46.588913","-23.565584"],["-46.58894","-23.565553"],["-46.589507","-23.564899"],["-46.589381","-23.564695"],["-46.58894","-23.563868"],["-46.588763","-23.563534"],["-46.588623","-23.563272"],["-46.588289","-23.562642"],["-46.587813","-23.561743"],["-46.587679","-23.56149"],["-46.58733","-23.56083"],["-46.587115","-23.560423"],["-46.586991","-23.560189"],["-46.586887","-23.559988"],["-46.586749","-23.55972"],["-46.586558","-23.55935"],["-46.586232","-23.558756"],["-46.586026","-23.55838"],["-46.585961","-23.558272"],["-46.585736","-23.557848"],["-46.5857","-23.557781"],["-46.585584","-23.557565"],["-46.585541","-23.557478"],["-46.585495","-23.557384"],["-46.58543","-23.557253"],["-46.585141","-23.556734"],["-46.585135","-23.556723"],["-46.58497","-23.556412"],["-46.584866","-23.556214"],["-46.584493","-23.555532"],["-46.584432","-23.555418"],["-46.584001","-23.554616"],["-46.583734","-23.554115"],["-46.583664","-23.554021"],["-46.583605","-23.553942"],["-46.583011","-23.553402"],["-46.582673","-23.553091"],["-46.582526","-23.552955"],["-46.582205","-23.552662"],["-46.581945","-23.552424"],["-46.581696","-23.55219"],["-46.58166","-23.552155"]],"name":"�GUA RASA"}]}';
 
 $(document).ready(function() {
 
@@ -336,6 +338,16 @@ $(document).ready(function() {
 		var selectedShape;
 		var objTriangle = [];
 
+		// perguntar a precisao
+		// 0 = 100%
+		// 20 = muito alta
+		// 100 = media
+		// 200 = ruim
+		// 500 = ruim demais
+		// 1000 = estranho
+	 
+		var _precisao = 20;
+
 		var _binds = {
 			on_selection_unavaiable: null,
 			on_selection_available: null,
@@ -442,7 +454,14 @@ $(document).ready(function() {
 				shape.setMap(null);
 			}
 		}
-
+		
+		function _deleteAllShapes(){
+			$.each(objTriangle, function(index,item){
+				deleteShape(item);
+			});
+			objTriangle = [];
+		}
+		
 		function selectColor() {
 			color = '#1E90FF';
 
@@ -461,10 +480,27 @@ $(document).ready(function() {
 		}
 		
 		function _addPolygon(args){
-			if (!(current_map_string) && !(args.map_string)) return;
+			if (!(current_map_string) && !(args.map_string) && !(args.kml_string)) return;
 			
-			if (current_map_string && !(args.map_string)) args.map_string = current_map_string
-			var triangleCoords = google.maps.geometry.encoding.decodePath(args.map_string);
+			if (!args.kml_string){
+				if (current_map_string && !(args.map_string)) args.map_string = current_map_string
+				var triangleCoords = google.maps.geometry.encoding.decodePath(args.map_string);
+			}else{
+				var triangleCoords = [];
+ 
+			   $.each(args.kml_string.latlng, function(indexx, lnt){
+				   triangleCoords.push (new google.maps.LatLng(lnt[1], lnt[0]));
+			   });
+			   
+			   if ($("#dashboard-content .content select#precision option:selected").val()){
+					_precisao = $("#dashboard-content .content select#precision option:selected").val();
+			   }else{
+					_precisao = 20;
+			   }
+			   
+			   triangleCoords = GDouglasPeucker(triangleCoords, _precisao);
+			}
+			
 			var index = objTriangle.length;
 
 			objTriangle.push(new google.maps.Polygon({
@@ -477,8 +513,6 @@ $(document).ready(function() {
 			}));
 			
 			objTriangle[index].setMap(map);
-			
-			setSelection(objTriangle[index]);
 			
 			if (args.focus) map.fitBounds(objTriangle[index].getBounds());
 
@@ -497,8 +531,10 @@ $(document).ready(function() {
 			google.maps.event.addListener(objTriangle[index].getPath(), 'set_at', function() {
 				_store_string(this);
 			});
-			setSelection(objTriangle[index]);
-			_store_string(objTriangle[index]);
+			if (args.select){
+				setSelection(objTriangle[index]);
+				_store_string(objTriangle[index]);
+			}
 			
 			if (args.region_id){
 				$("#region-list .item[region-id="+args.region_id+"]").attr("region-index",index);
@@ -512,6 +548,23 @@ $(document).ready(function() {
 
 			setSelection(objTriangle[index]);
 			_store_string(objTriangle[index]);
+		}
+
+		function _focusAll(){
+			var super_bound = null;
+			$.each(objTriangle, function(a, elm){
+
+				if (super_bound == null){
+					super_bound = elm.getBounds();
+					return true;
+				}
+
+				super_bound = super_bound.union( elm.getBounds() );
+			});
+
+			if (!(super_bound == null)){
+				map.fitBounds(super_bound);
+			}
 		}
 
 		function initialize(params) {
@@ -590,7 +643,9 @@ $(document).ready(function() {
 			getSelectedShape: function(){ return selectedShape; },
 			getSelectedShapeAsString: function(){ return current_map_string; },
 			addPolygon: _addPolygon,
-			selectPolygon: _selectPolygon
+			selectPolygon: _selectPolygon,
+			deleteAllShapes: _deleteAllShapes,
+			focusAll: _focusAll
 		};
 	}();
 
@@ -6611,7 +6666,7 @@ $(document).ready(function() {
 							center: new google.maps.LatLng(-15.781444,-47.930523)
 						});
 						
-						$map.addPolygon({"focus": true});
+						$map.addPolygon({"focus": true, "select": true});
 
 					}});
 
@@ -6686,10 +6741,19 @@ $(document).ready(function() {
 				$("#dashboard-content .content").append("<div class='upload_via_file'></div>");
 				var newform = [];
 				newform.push({label: "Arquivo .KML", input: ["file,arquivo,itext"]});
+                newform.push({label: "Precisão", input: ["select,precision,iselect"]});
 				var formbuild = $("#dashboard-content .content .upload_via_file").append(buildForm(newform,"Importar KML"));
 				$(formbuild).find("div .field:odd").addClass("odd");
 				$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 				$("#dashboard-content .content .upload_via_file .botao-form[ref='cancelar']").hide();
+
+				$("#dashboard-content .content .upload_via_file #precision").after("<div class='aviso'>Quanto maior a precisão, maior será o nível de processamento necessário. Utilize uma precisão menor caso seu navegador apresente travamentos.</div>");
+				
+				$.each(precisions,function(key, value){
+					$("#dashboard-content .content select#precision").append($("<option></option>").val(key).html(value));
+				});
+				
+				$("#dashboard-content .content select#precision").val(20);
 				
 				var data_region = [];
 				var data_district = [];
@@ -6790,9 +6854,10 @@ $(document).ready(function() {
 							
 							$.each(data_regions.regions,function(index,item){
 								if (item.polygon_path){
-									$map.addPolygon({"map_string": item.polygon_path,"focus": false, "region_id": item.id});
+									$map.addPolygon({"map_string": item.polygon_path,"focus": false, "region_id": item.id, "select": false});
 								}
 							});
+							$map.focusAll();
 							
 							$("#region-list .item").bind('click',function(e){
 								$("#region-list .item").removeClass("selected");
@@ -6807,74 +6872,98 @@ $(document).ready(function() {
 
 
 				$("#dashboard-content .content .upload_via_file .botao-form[ref='enviar']").click(function(){
+					
+					$.confirm({
+						'title': 'Confirmação',
+						'message': 'As regiões atuais serão apagadas do mapa.<br />Deseja continuar?',
+						'buttons': {
+							'Sim': {
+								'class'	: '',
+								'action': function(){
+									
+									var clickedButton = $(this);
 
-					var clickedButton = $(this);
+									var file = "arquivo";
+									var form = $("#formFileUpload_"+file);
 
-					var file = "arquivo";
-					var form = $("#formFileUpload_"+file);
+									original_id = $('#arquivo_'+file).attr("original-id");
 
-					original_id = $('#arquivo_'+file).attr("original-id");
+									$('#arquivo_'+file).attr({
+															name: "arquivo",
+															id: "arquivo"
+														});
 
-					$('#arquivo_'+file).attr({
-											name: "arquivo",
-											id: "arquivo"
-										});
+									form.attr("action", api_path + '/api/user/$$user/kml?api_key=$$key&content-type=application/json'.render({
+											user: $.cookie("user.id"),
+											key: $.cookie("key")
+											}));
+									form.attr("method", "post");
+									form.attr("enctype", "multipart/form-data");
+									form.attr("encoding", "multipart/form-data");
+									form.attr("target", "iframe_"+file);
+									form.attr("file", $('#arquivo').val());
+									form.submit();
+									$('#arquivo').attr({
+															name: original_id,
+															id: original_id
+														});
 
-					form.attr("action", api_path + '/api/user/$$user/kml?api_key=$$key&content-type=application/json'.render({
-							user: $.cookie("user.id"),
-							key: $.cookie("key")
-							}));
-					form.attr("method", "post");
-					form.attr("enctype", "multipart/form-data");
-					form.attr("encoding", "multipart/form-data");
-					form.attr("target", "iframe_"+file);
-					form.attr("file", $('#arquivo').val());
-					form.submit();
-					$('#arquivo').attr({
-											name: original_id,
-											id: original_id
-										});
+									$("#iframe_"+file).load( function(){
 
-					$("#iframe_"+file).load( function(){
-
-						var erro = 0;
-						if ($(this).contents()){
-							if  ($(this).contents()[0].body){
-								if  ($(this).contents()[0].body.outerHTML){
-									var retorno = $(this).contents()[0].body.outerHTML;
-									retorno = retorno.replace("<body><pre>","");
-									retorno = retorno.replace("</pre></body>","");
-									console.log(retorno);
-									retorno = $.parseJSON(retorno);
-								}else{
-									erro = 1;
+										var erro = 0;
+										if ($(this).contents()){
+											if  ($(this).contents()[0].body){
+												if  ($(this).contents()[0].body.outerHTML){
+													var retorno = $(this).contents()[0].body.outerHTML;
+													retorno = retorno.replace("<body><pre>","");
+													retorno = retorno.replace("</pre></body>","");
+													retorno = $.parseJSON(retorno);
+												}else{
+													erro = 1;
+												}
+											}else{
+												erro = 1;
+											}
+										}else{
+											erro = 1;
+										}
+										if (erro == 0){
+											if (!retorno.error){
+												$(".upload_via_file .form-aviso").setWarning({msg: "Arquivo enviado com sucesso"});
+												$(clickedButton).html("Enviar");
+												$(clickedButton).attr("is-disabled",0);
+												trataRetornoKML(retorno);
+											}else{
+												$(".upload_via_file .form-aviso").setWarning({msg: "Erro ao enviar arquivo " + file + " (" + retorno.error + ")"});
+												$(clickedButton).html("Enviar");
+												$(clickedButton).attr("is-disabled",0);
+												return;
+											}
+										}else{
+											$(".upload_via_file .form-aviso").setWarning({msg: "Erro ao enviar arquivo " + file});
+											$(clickedButton).html("Enviar");
+											$(clickedButton).attr("is-disabled",0);
+											return;
+										}
+									});
 								}
-							}else{
-								erro = 1;
+							},
+							'Não'	: {
+								'class'	: '',
+								'action': function(){
+								}
 							}
-						}else{
-							erro = 1;
 						}
-						if (erro == 0){
-							if (!retorno.error){
-								$(".value_via_file .form-aviso").setWarning({msg: "Arquivo enviado com sucesso"});
-								$(clickedButton).html("Enviar");
-								$(clickedButton).attr("is-disabled",0);
-							}else{
-								$(".value_via_file .form-aviso").setWarning({msg: "Erro ao enviar arquivo " + file + " (" + retorno.error + ")"});
-								$(clickedButton).html("Enviar");
-								$(clickedButton).attr("is-disabled",0);
-								return;
-							}
-						}else{
-							console.log("Erro ao enviar arquivo " + file);
-							$(".upload_via_file .form-aviso").setWarning({msg: "Erro ao enviar arquivo " + file});
-							$(clickedButton).html("Enviar");
-							$(clickedButton).attr("is-disabled",0);
-							return;
-						}
-					});
+					});	
 				});
+				
+				function trataRetornoKML(retorno){								
+					$.each(retorno.vec, function(index, foo){
+						$map.deleteAllShapes();
+						$map.addPolygon({"kml_string": foo,"focus": false, "select": false});
+					});
+					$map.focusAll();
+				}
 
 			}else if (getUrlSub() == "prefs"){
 

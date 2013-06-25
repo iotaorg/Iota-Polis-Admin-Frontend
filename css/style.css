@@ -1428,6 +1428,10 @@ input.admin_checked{
     border: 1px solid #637aa6;
     margin: 2px 5px;
 }
+#panel-map button:hover{
+	cursor: hand;
+	cursor: pointer;
+}
 #map{
 	width: 100%;
 	min-height: 450px;
@@ -1476,4 +1480,12 @@ input.admin_checked{
 #panel-region #panel-map{
 	width: 74%;
 	float: right;
+}
+
+.upload_via_file .form .aviso{
+	font-size: 0.8em;
+	text-align: left;
+	padding: 5px 10px;
+	float: right;
+	width: 88%;
 }

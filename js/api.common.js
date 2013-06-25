@@ -184,6 +184,13 @@ var sort_directions = {"greater value":"MAIOR valor, melhor classificação",
 					  "lowest value":"MENOR valor, melhor classificação"
 					  };
 
+var precisions = {"0":"10",
+					  "20":"8",
+					  "100":"6",
+					  "200":"4",
+					  "500":"2",
+					  "500":"0"
+					  };
 var measurement_units = [];
 var sources = [];
 

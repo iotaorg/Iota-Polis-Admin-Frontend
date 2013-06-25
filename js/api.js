@@ -6959,6 +6959,10 @@ $(document).ready(function() {
 				
 				function trataRetornoKML(retorno){								
 					$map.deleteAllShapes();
+					if ($("#region-list").length > 0){
+						$("#region-list .item").removeClass("selected");
+						$("#region-list .item").removeAttr("region-index");
+					}
 					$.each(retorno.vec, function(index, foo){
 						$map.addPolygon({"kml_string": foo,"focus": false, "select": false});
 					});

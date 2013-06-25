@@ -118,6 +118,7 @@ $.extend({
 		}
 	},
 	scrollToRegionList: function(id){
+		if ($("#region-list .selected").length <= 0) return;
 		var position = parseInt($("#region-list .selected").offset().top - $("#region-list .item:first").offset().top);
 		$('#region-list .contents').animate({scrollTop: position},'slow');
 	}

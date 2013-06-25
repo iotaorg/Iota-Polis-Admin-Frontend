@@ -118,7 +118,7 @@ $.extend({
 		}
 	},
 	scrollToRegionList: function(id){
-		var position = parseInt($("#region-list .item:first").outerHeight()) * parseInt($("#region-list .selected").attr("region-count"));
+		var position = parseInt($("#region-list .selected").offset().top - $("#region-list .item:first").offset().top);
 		$('#region-list .contents').animate({scrollTop: position},'slow');
 	}
 });

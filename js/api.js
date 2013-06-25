@@ -6804,8 +6804,8 @@ $(document).ready(function() {
 								depth: 2
 							}));
 							$.each(data_district,function(index2,item2){
-								count++;
 								if (item2.upper_region_id == item.id){
+									count++;
 									$("#panel-region #region-list .contents").append("<div class='item' region-id='$$id' region-count='$$count' depth='$$depth'>$$name</div>".render({
 										id: item2.id,
 										name: item2.name,

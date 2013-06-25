@@ -6929,10 +6929,16 @@ $(document).ready(function() {
 										}
 										if (erro == 0){
 											if (!retorno.error){
-												$(".upload_via_file .form-aviso").setWarning({msg: "Arquivo enviado com sucesso"});
+												$(".upload_via_file .form-aviso").setWarning({msg: "Arquivo recebido com sucesso"});
 												$(clickedButton).html("Enviar");
 												$(clickedButton).attr("is-disabled",0);
-												trataRetornoKML(retorno);
+												if (retorno.vec){
+													trataRetornoKML(retorno);
+												}else{
+													$(".upload_via_file .form-aviso").setWarning({msg: "O arquivo possui um formato inválido."});
+													$(clickedButton).html("Enviar");
+													$(clickedButton).attr("is-disabled",0);
+												}
 											}else{
 												$(".upload_via_file .form-aviso").setWarning({msg: "Erro ao enviar arquivo " + file + " (" + retorno.error + ")"});
 												$(clickedButton).html("Enviar");

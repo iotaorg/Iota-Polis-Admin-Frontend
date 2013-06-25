@@ -6915,8 +6915,9 @@ $(document).ready(function() {
 											if  ($(this).contents()[0].body){
 												if  ($(this).contents()[0].body.outerHTML){
 													var retorno = $(this).contents()[0].body.outerHTML;
-													retorno = retorno.replace("<body><pre>","");
-													retorno = retorno.replace("</pre></body>","");
+													retorno = retorno.replace('<body><pre>',"");
+													retorno = retorno.replace('<body><pre style="word-wrap: break-word; white-space: pre-wrap;">',"");
+													retorno = retorno.replace('</pre></body>',"");
 													retorno = $.parseJSON(retorno);
 												}else{
 													erro = 1;

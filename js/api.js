@@ -3550,7 +3550,7 @@ $(document).ready(function() {
                     var newform = [];
 
                     newform.push({label: "Nome", input: ["text,name,itext"]});
-                    newform.push({label: "Disponível para", input: ["select,indicator_role,iselect"]});
+                    newform.push({label: "Visibilidade", input: ["select,visibility_level,iselect"]});
                     newform.push({label: "Tipo", input: ["select,indicator_type,iselect"]});
                     newform.push({label: "Nome da Faixa", input: ["text,variety_name,itext"]});
                     newform.push({label: "Faixas", input: ["text,variacoes_placeholder,itext"]});
@@ -3624,22 +3624,8 @@ $(document).ready(function() {
                         }
                     });
 
-                    $.each(indicator_roles,function(key, value){
-						if (user_info.roles[0] == "admin"){
-							if ($.cookie("user.id") == 2){
-								if (key == "_prefeitura"){
-			                        $("#dashboard-content .content select#indicator_role").append($("<option></option>").val(key).html(value));
-								}
-							}
-							if ($.cookie("user.id") == 3){
-								if (key == "_movimento"){
-			                        $("#dashboard-content .content select#indicator_role").append($("<option></option>").val(key).html(value));
-								}
-							}
-						}else{
-	                        $("#dashboard-content .content select#indicator_role").append($("<option></option>").val(key).html(value));
-						}
-
+                    $.each(visibility_level,function(key, value){
+                        $("#dashboard-content .content select#visibility_level").append($("<option></option>").val(key).html(value));
                     });
 
                     $.each(indicator_types,function(key, value){
@@ -3654,6 +3640,106 @@ $(document).ready(function() {
                         $("#dashboard-content .content select#sort_direction").append($("<option></option>").val(key).html(value));
                     });
 
+                    $("#visibility_level").change(function(){
+						visibilityChanged();
+                    });
+					
+					function visibilityChanged(args){
+                        if ($("#visibility_level").val() == "public" || $("#visiblity_level").val() == "private" && user_info.roles[0] == "admin"){
+                            $("#visibility-options").remove();
+                        }else{
+							$("#visibility-options").remove();
+							$("#visibility_level").after("<div id='visibility-options'></div>");
+							if ($("#visibility_level").val() == "private"){
+								$("#visibility-options").append("<label class='visibility'>Selecione um usuário:</label><select id='visibility_user_id' class='iselect'><option value=''>carregando...</option></select>");
+								$.ajax({
+									type: 'GET',
+									dataType: 'json',
+									url: api_path + '/api/user?role=admin&api_key=$$key'.render({
+											key: $.cookie("key")
+											}),
+									success: function(data, textStatus, jqXHR){
+										data.users.sort(function (a, b) {
+											a = a.name,
+											b = b.name;
+											return a.localeCompare(b);
+										});
+										$("#dashboard-content .content #visibility_user_id option").remove();
+										$.each(data.users, function(index,item){
+											$("#dashboard-content .content #visibility_user_id").append($("<option value='$$id'>$$nome</option>".render({
+												id: getIdFromUrl(item.url),
+												nome: item.name
+											})));
+										});
+										if (args) args.callBack();
+									}
+								});
+							}else if ($("#visibility_level").val() == "country"){
+								$("#visibility-options").append("<label class='visibility'>Selecione um país:</label><select id='visibility_country_id' class='iselect'><option value=''>carregando...</option></select>");
+								$.ajax({
+									type: 'GET',
+									dataType: 'json',
+									url: api_path + "/api/country?api_key=$$key".render({
+												key: $.cookie("key")
+										}),
+									success: function(data, textStatus, jqXHR){
+										data.countries.sort(function (a, b) {
+											a = a.name,
+											b = b.name;
+											return a.localeCompare(b);
+										});
+										$("#dashboard-content .content #visibility_country_id option").remove();
+										$.each(data.countries, function(index,item){
+											$("#dashboard-content .content #visibility_country_id").append($("<option value='$$id'>$$nome</option>".render({
+												id: getIdFromUrl(item.url),
+												nome: item.name
+											})));
+										});
+										if (args) args.callBack();
+									}
+								});
+							}else if ($("#visibility_level").val() == "restrict"){
+								$("#visibility-options").before("<div class='clear'></div>");
+								$("#visibility-options").addClass("inline");
+								$("#visibility-options").append("<label class='visibility'>Selecione um ou mais usuários:</label><br /><select multiple id='visibility_users_select' class='iselect multiselect'><option value=''>carregando...</option></select><div class='buttons'><button id='button-add'>>></button><button id='button-remove'><<</button></div><select multiple id='visibility_users_id' class='iselect multiselect'></select>");
+								$.ajax({
+									type: 'GET',
+									dataType: 'json',
+									url: api_path + '/api/user?role=admin&api_key=$$key'.render({
+											key: $.cookie("key")
+											}),
+									success: function(data, textStatus, jqXHR){
+										data.users.sort(function (a, b) {
+											a = a.name,
+											b = b.name;
+											return a.localeCompare(b);
+										});
+										$("#dashboard-content .content #visibility_users_select option").remove();
+										$.each(data.users, function(index,item){
+											$("#dashboard-content .content #visibility_users_select").append($("<option value='$$id'>$$nome</option>".render({
+												id: getIdFromUrl(item.url),
+												nome: item.name
+											})));
+										});
+										$("#visibility-options #button-add").click(function(){
+											if ($("#visibility_users_select option:selected").length > 0){
+												$("#visibility_users_select option:selected").appendTo("#visibility_users_id");
+												sortSelectBox("#visibility_users_id");
+											}
+										});
+										$("#visibility-options #button-remove").click(function(){
+											if ($("#visibility_users_id option:selected").length > 0){
+												$("#visibility_users_id option:selected").appendTo("#visibility_users_select");
+												sortSelectBox("#visibility_users_select");
+											}
+										});
+										if (args) args.callBack();
+									}
+								});
+							}
+                        }					
+					}
+					
                     $("#dashboard-content .content textarea#formula").after("<div id='formula-editor'><div class='editor'><div class='editor-content'></div></div><div class='button'><<</div><div class='variables-title'>Variáveis</div><div class='variables'></div><div class='user-input'></div><div class='operators'></div></div>");
                     $("#formula-editor .user-input").append("<input type='text' id='formula-input' placeholder='valor'>");
                     $("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title'>$$caption</div>".render({value: "+",caption: "+",title: "Soma"}));
@@ -3918,7 +4004,6 @@ $(document).ready(function() {
                         updateVariacoesTable();
                     }
 
-
                     updateVariacoesTable();
 
                     $("#variacoes-button-add").click(function(){
@@ -4046,7 +4131,6 @@ $(document).ready(function() {
                         updateVVariacoesTable();
                     }
 
-
                     updateVVariacoesTable();
 
                     $("#variety_name").parent().parent().hide();
@@ -4084,7 +4168,6 @@ $(document).ready(function() {
 
                                 args = [{name: "api_key", value: $.cookie("key")},
                                         {name: "indicator.create.name", value: $(this).parent().parent().find("#name").val()},
-                                        {name: "indicator.create.indicator_roles", value: $(this).parent().parent().find("#indicator_role").val()},
                                         {name: "indicator.create.indicator_type", value: $(this).parent().parent().find("#indicator_type").val().replace("_dyn","")},
                                         {name: "indicator.create.formula", value: $(this).parent().parent().find("#formula").val()},
                                         {name: "indicator.create.explanation", value: $(this).parent().parent().find("#explanation").val()},
@@ -4099,15 +4182,23 @@ $(document).ready(function() {
                                         {name: "indicator.create.observations", value: $(this).parent().parent().find("#observations").val()}
                                         ];
 
+                                args.push({name: "indicator.create.visibility_level", value: $(this).parent().parent().find("#visibility_level").val()});
 
-								if ($(this).parent().parent().find("#indicator_role").val() == "_prefeitura,_movimento"){
-                                    args.push({name: "indicator.create.visibility_level", value: "public"});
-								}else if ($(this).parent().parent().find("#indicator_role").val() == "_prefeitura"){
-                                    args.push({name: "indicator.create.visibility_level", value: "private"});
-                                    args.push({name: "indicator.create.visibility_user_id", value: 2});
-								}else if ($(this).parent().parent().find("#indicator_role").val() == "_movimento"){
-                                    args.push({name: "indicator.create.visibility_level", value: "private"});
-                                    args.push({name: "indicator.create.visibility_user_id", value: 3});
+								if ($(this).parent().parent().find("#visibility_level").val() == "private"){
+                                    if (user_info.roles[0] == "superadmin"){
+										args.push({name: "indicator.create.visibility_user_id", value: $(this).parent().parent().find("#visibility_user_id").val()});
+									}else{
+										args.push({name: "indicator.create.visibility_user_id", value: $.cookie("user.id")});
+									}
+								}else if ($(this).parent().parent().find("#visibility_level").val() == "country"){
+									args.push({name: "indicator.create.visibility_country_id", value: $(this).parent().parent().find("#visibility_country_id").val()});
+								}else if ($(this).parent().parent().find("#visibility_level").val() == "restrict"){
+									var users = "";
+                                    $(this).parent().parent().find("#visibility_users_id option").each(function(index,item){
+										if (users != "") users += ",";
+										users += item.value;
+									});
+                                    args.push({name: "indicator.create.visibility_users_id", value: users});
 								}
 
                                 if ($(this).parent().parent().find("#indicator_type").val() == "varied" || $(this).parent().parent().find("#indicator_type").val() == "varied_dyn"){
@@ -4189,7 +4280,8 @@ $(document).ready(function() {
                                         args = [{name: "api_key", value: $.cookie("key")},
                                                 {name: "indicator.network_config.upsert.unfolded_in_home", value: ($("input#unfolded_in_home").attr("checked") ? 1 : 0)}
                                                 ];
-                                        $.ajax({
+
+												$.ajax({
                                             async: false,
                                             type: 'POST',
                                             dataType: 'json',
@@ -4232,8 +4324,6 @@ $(document).ready(function() {
                                 switch(jqXHR.status){
                                     case 200:
                                         $(formbuild).find("input#name").val(data.name);
-                                        if (data.indicator_roles ==  '_movimento,_prefeitura') data.indicator_roles = '_prefeitura,_movimento';
-                                        $(formbuild).find("select#indicator_role").val(data.indicator_roles);
                                         if (data.indicator_type == "varied" && data.dynamic_variations == "1"){
                                             $(formbuild).find("select#indicator_type").val("varied_dyn");
                                         }else{
@@ -4291,19 +4381,28 @@ $(document).ready(function() {
                                             updateVVariacoesTable();
 
                                         }
-                                        if (data.indicator_roles ==  '_movimento,_prefeitura') data.indicator_roles = '_prefeitura,_movimento';
-//                                        $(formbuild).find("select#indicator_role").val(String(data.indicator_roles));
 
-                                        if (data.visibility_level ==  'public'){
-	                                        $(formbuild).find("select#indicator_role").val("_prefeitura,_movimento");
-										}else if (data.visibility_level ==  'private'){
-											if (data.visibility_user_id ==  2){
-		                                        $(formbuild).find("select#indicator_role").val("_prefeitura");
-											}else{
-		                                        $(formbuild).find("select#indicator_role").val("_movimento");
+	                                    $(formbuild).find("select#visibility_level").val(data.visibility_level);
+										
+										visibilityChanged({"callBack": function(){
+											if (data.visibility_level == "private"){
+												if (data.visibility_user_id){
+													$(formbuild).find("select#visibility_user_id").val(data.visibility_user_id)
+												}
+											}else if (data.visibility_level == "country"){
+												if (data.visibility_country_id){
+													$(formbuild).find("select#visibility_country_id").val(data.visibility_country_id)
+												}
+											}else if (data.visibility_level == "restrict"){
+												if (data.restrict_to_users){
+													var users = data.restrict_to_users;
+													$.each(users, function(index,value){
+														$("#visibility_users_select option[value="+value+"]").appendTo("#visibility_users_id");
+													});
+												}
 											}
-										}
-
+										}});
+										
                                         $(formbuild).find("textarea#formula").val(data.formula);
                                         $(formbuild).find("textarea#explanation").val(data.explanation);
                                         $(formbuild).find("select#sort_direction").val(String(data.sort_direction));
@@ -4395,7 +4494,6 @@ $(document).ready(function() {
                             }else{
                                 args = [{name: "api_key", value: $.cookie("key")},
                                         {name: "indicator.update.name", value: $(this).parent().parent().find("#name").val()},
-                                        {name: "indicator.update.indicator_roles", value: $(this).parent().parent().find("#indicator_role").val()},
                                         {name: "indicator.update.indicator_type", value: $(this).parent().parent().find("#indicator_type").val().replace("_dyn","")},
                                         {name: "indicator.update.formula", value: $(this).parent().parent().find("#formula").val()},
                                         {name: "indicator.update.explanation", value: $(this).parent().parent().find("#explanation").val()},
@@ -4410,15 +4508,26 @@ $(document).ready(function() {
                                         {name: "indicator.update.observations", value: $(this).parent().parent().find("#observations").val()}
                                         ];
 
-								if ($(this).parent().parent().find("#indicator_role").val() == "_prefeitura,_movimento"){
-                                    args.push({name: "indicator.update.visibility_level", value: "public"});
-								}else if ($(this).parent().parent().find("#indicator_role").val() == "_prefeitura"){
-                                    args.push({name: "indicator.update.visibility_level", value: "private"});
-                                    args.push({name: "indicator.update.visibility_user_id", value: 2});
-								}else if ($(this).parent().parent().find("#indicator_role").val() == "_movimento"){
-                                    args.push({name: "indicator.update.visibility_level", value: "private"});
-                                    args.push({name: "indicator.update.visibility_user_id", value: 3});
+
+                                args.push({name: "indicator.update.visibility_level", value: $(this).parent().parent().find("#visibility_level").val()});
+
+								if ($(this).parent().parent().find("#visibility_level").val() == "private"){
+                                    if (user_info.roles[0] == "superadmin"){
+										args.push({name: "indicator.update.visibility_user_id", value: $(this).parent().parent().find("#visibility_user_id").val()});
+									}else{
+										args.push({name: "indicator.update.visibility_user_id", value: $.cookie("user.id")});
+									}
+								}else if ($(this).parent().parent().find("#visibility_level").val() == "country"){
+									args.push({name: "indicator.update.visibility_country_id", value: $(this).parent().parent().find("#visibility_country_id").val()});
+								}else if ($(this).parent().parent().find("#visibility_level").val() == "restrict"){
+									var users = "";
+                                    $("#visibility_users_id option").each(function(index,item){
+										if (users != "") users += ",";
+										users += item.value;
+									});
+                                    args.push({name: "indicator.update.visibility_users_id", value: users});
 								}
+
 
                                 if ($(this).parent().parent().find("#indicator_type").val() == "varied" || $(this).parent().parent().find("#indicator_type").val() == "varied_dyn"){
                                     if ($(this).parent().parent().find("#all_variations_variables_are_required").attr("checked")){

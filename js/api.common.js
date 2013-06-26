@@ -161,6 +161,11 @@ var indicator_roles = {"_prefeitura,_movimento":"Prefeituras e Movimentos",
 					  "_prefeitura":"Somente Prefeituras",
 					  "_movimento":"Somente Movimentos"
 					  };
+var visibility_level = {"public":"Público",
+					  "private":"Privado",
+					  "country":"por País",
+					  "restrict": "por Usuário"
+					  };
 var indicator_types = {"normal":"normal",
 					  "varied":"variada",
 					  "varied_dyn":"variada dinâmica"
@@ -1737,4 +1742,14 @@ var convertFormulaToCss = function(){
 		}
 	}
 	$("#formula-editor .editor-content").html(formula_css);
+}
+
+var sortSelectBox = function(id){
+    var options = $(id + ' option');
+	var arr = options.map(function(_, o) { return { t: $(o).text(), v: o.value }; }).get();
+	arr.sort(function(o1, o2) { return o1.t > o2.t ? 1 : o1.t < o2.t ? -1 : 0; });
+	options.each(function(i, o) {
+	  o.value = arr[i].v;
+	  $(o).text(arr[i].t);
+	});
 }

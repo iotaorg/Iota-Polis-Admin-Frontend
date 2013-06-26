@@ -318,12 +318,14 @@ a.button-add:hover{
     clear: right;
     word-wrap: break-word;
     width: 76%;
+	vertical-align: top;
 }
 .form .input_label{
     float: left;
     text-align: left;
     clear: right;
-    padding-top: 4px;;
+    padding-top: 4px;
+	vertical-align: top;
 }
 
 .form input.itext,
@@ -336,6 +338,7 @@ a.button-add:hover{
     -moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
 	text-align: left;
+	vertical-align: top;
 }
 .form textarea.itext_content{
     font-size: 10pt;
@@ -347,6 +350,7 @@ a.button-add:hover{
     -moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
 	text-align: left;
+	vertical-align: top;
 }
 .form input.itext50px{
     font-size: 10pt;
@@ -356,6 +360,7 @@ a.button-add:hover{
     box-shadow: inset 0 0 5px #e0e0e0;
     -moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	vertical-align: top;
 }
 .form input.itext80px{
     font-size: 10pt;
@@ -365,6 +370,7 @@ a.button-add:hover{
     box-shadow: inset 0 0 5px #e0e0e0;
     -moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	vertical-align: top;
 }
 .form input.itext250px{
     font-size: 10pt;
@@ -374,6 +380,7 @@ a.button-add:hover{
     box-shadow: inset 0 0 5px #e0e0e0;
     -moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	vertical-align: top;
 }
 .form input.itext200px{
     font-size: 10pt;
@@ -383,6 +390,7 @@ a.button-add:hover{
     box-shadow: inset 0 0 5px #e0e0e0;
     -moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	vertical-align: top;
 }
 .form input.itext300px{
     font-size: 10pt;
@@ -392,6 +400,7 @@ a.button-add:hover{
     box-shadow: inset 0 0 5px #e0e0e0;
     -moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	vertical-align: top;
 }
 .form input.itextdata{
     font-size: 10pt;
@@ -401,6 +410,7 @@ a.button-add:hover{
     box-shadow: inset 0 0 5px #e0e0e0;
     -moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	vertical-align: top;
 }
 .form select.iselect{
     font-size: 10pt;
@@ -409,6 +419,7 @@ a.button-add:hover{
     box-shadow: inset 0 0 5px #e0e0e0;
     -moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	vertical-align: top;
 }
 
 .form select.iselect200px{
@@ -419,15 +430,18 @@ a.button-add:hover{
     box-shadow: inset 0 0 5px #e0e0e0;
     -moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	vertical-align: top;
 }
 
 .form textarea.itext{
     min-height: 80px;
     _height: 80px;
+	vertical-align: top;
 }
 
 .form input.icheckbox{
     margin-top: 5px;
+	vertical-align: top;
 }
 
 .form .field.prefeitura{
@@ -1386,6 +1400,12 @@ select.iselect{
     max-width: 400px;
 }
 
+select.multiselect{
+    max-width: 350px;
+    min-width: 250px;
+	height: 150px;
+}
+
 .logo_preview{
     clear: both;
 }
@@ -1488,4 +1508,38 @@ input.admin_checked{
 	padding: 5px 10px;
 	float: right;
 	width: 88%;
+}
+
+#visibility-options{
+	display: inline-block;
+	margin-left: 15px;
+}
+#visibility-options.inline{
+	margin-left: 0;
+	margin-top: 5px;
+}
+#visibility-options label{
+	margin-right: 5px;
+	padding-top: 2px;
+}
+#visibility-options .buttons{
+    margin-top: 50px;
+	display: inline-block;
+}
+#visibility-options .buttons button{
+	margin: 0 3px;
+	display: block;
+    background-color: #fff;
+    padding: 6px;
+    border: 1px solid #bbb;
+    color: #666;
+    font-size: 8pt;
+    font-weight: bolder;
+    font-family: arial;
+}
+#visibility-options .buttons button:hover{
+    cursor: pointer;
+    cursor: hand;
+    background-color: #c9ffff;
+    color: #000;
 }

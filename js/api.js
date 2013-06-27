@@ -482,9 +482,8 @@ $(document).ready(function() {
 			$.each(objTriangle, function(index,item){
 				if (item){
 					if ($("#region-list").length > 0){
-							$("#region-list .item[region-index=" + item.region_index + "]").removeClass("selected");
-							$("#region-list .item[region-index=" + item.region_index + "]").attr("region-index","");
-						}
+						$("#region-list .item[region-index=" + item.region_index + "]").removeClass("selected");
+						$("#region-list .item[region-index=" + item.region_index + "]").attr("region-index","");
 					}
 					deleteShape(item);
 				}

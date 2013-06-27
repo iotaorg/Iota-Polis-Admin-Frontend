@@ -1,5 +1,5 @@
 var api_path = "";
-//var api_path = "http://rnsp.aware.com.br";
+var api_path = "http://rnsp.aware.com.br";
 
 $(document).ready(function() {
 
@@ -336,7 +336,7 @@ $(document).ready(function() {
 		var selectedShape;
 		var objTriangle = [];
 		var color = [];
-		color["default"] = '#1E90FF';
+		color["default"] = '#00B6C1';
 		color["select"] = '#FFC21E';
 		color["edit"] = '#FF1E1E';
 

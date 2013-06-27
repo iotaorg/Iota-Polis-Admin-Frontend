@@ -474,19 +474,13 @@ $(document).ready(function() {
 					$("#region-list .item[region-index=" + shape.region_index + "]").attr("region-index","");
 				}
 				shape.setMap(null);
-				objTriangle.splice(shape.region_index,1);
+				objTriangle[shape.region_index] = null;
 			}
 		}
 		
 		function _deleteAllShapes(){
 			$.each(objTriangle, function(index,item){
-				if (item){
-					if ($("#region-list").length > 0){
-						$("#region-list .item[region-index=" + item.region_index + "]").removeClass("selected");
-						$("#region-list .item[region-index=" + item.region_index + "]").attr("region-index","");
-					}
-					deleteShape(item);
-				}
+				deleteShape(item);
 			});
 			objTriangle = [];
 		}

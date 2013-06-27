@@ -480,11 +480,14 @@ $(document).ready(function() {
 		
 		function _deleteAllShapes(){
 			$.each(objTriangle, function(index,item){
-				if ($("#region-list").length > 0){
-					$("#region-list .item[region-index=" + item.region_index + "]").removeClass("selected");
-					$("#region-list .item[region-index=" + item.region_index + "]").attr("region-index","");
+				if (item){
+					if ($("#region-list").length > 0){
+							$("#region-list .item[region-index=" + item.region_index + "]").removeClass("selected");
+							$("#region-list .item[region-index=" + item.region_index + "]").attr("region-index","");
+						}
+					}
+					deleteShape(item);
 				}
-				deleteShape(item);
 			});
 			objTriangle = [];
 		}
@@ -7079,6 +7082,7 @@ $(document).ready(function() {
 					$("#dashboard-content .content .upload_via_file .botao-form[ref='atualizar']").hide();
 					$("#dashboard-content .content .upload_via_file .botao-form[ref='re-enviar']").hide();
 					$("#dashboard-content .content .upload_via_file .botao-form[ref='enviar']").show();
+					
 					$("#dashboard-content .content .upload_via_file .form .field:first").show();
 				});
 
@@ -7148,7 +7152,7 @@ $(document).ready(function() {
 												$(clickedButton).attr("is-disabled",0);
 												if (retorno.vec){
 													retorno_kml = retorno;
-													$(".upload_via_file field:first").hide();
+													$("#dashboard-content .content .upload_via_file .form .field:first").hide();
 													$("#dashboard-content .content .upload_via_file .botao-form[ref='atualizar']").show();
 													$("#dashboard-content .content .upload_via_file .botao-form[ref='re-enviar']").show();
 													$("#dashboard-content .content .upload_via_file .botao-form[ref='enviar']").hide();

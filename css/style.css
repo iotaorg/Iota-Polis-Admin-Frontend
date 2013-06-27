@@ -1452,6 +1452,17 @@ input.admin_checked{
 	cursor: hand;
 	cursor: pointer;
 }
+#panel-map button.disabled{
+    background: #ccc;
+    color: #999;
+    text-shadow:#666 1px 1px 0px;
+    -moz-text-shadow:#666 1px 1px 0px;
+    -webkit-text-shadow:#666 1px 1px 0px;
+    border: 1px solid #666;
+}
+#panel-map button.disabled:hover{
+	cursor: default;
+}
 #map{
 	width: 100%;
 	min-height: 450px;
@@ -1502,11 +1513,25 @@ input.admin_checked{
 	float: right;
 }
 
+#precision-value{
+	display: inline-block;
+	font-size: 12pt;
+	font-weight: bolder;
+	padding: 5px;
+	background-color: rgb(255, 255, 255);
+	border: 1px solid rgb(204, 204, 204);
+	margin-left: 5px;
+}
+#precision-slider {
+    width: 400px;
+    display: inline-block;
+    margin-left: 15px;
+}
+
 .upload_via_file .form .aviso{
 	font-size: 0.8em;
 	text-align: left;
 	padding: 5px 10px;
-	float: right;
 	width: 88%;
 }
 

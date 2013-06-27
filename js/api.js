@@ -1349,9 +1349,15 @@ $(document).ready(function() {
 									b = String(b.name);
 									return a.localeCompare(b);
 								});
+				                if ($.getUrlVar("option") == "edit"){
+									$("#dashboard-content .content select#network_id").attr("multiple","multiple");
+								}
 								$.each(data.network,function(index, item){
 									$("#dashboard-content .content select#network_id").append($("<option></option>").val(item.id).html(item.name));
 								});
+								$("#dashboard-content .content select#network_id").qtip( $.extend(true, {}, qtip_input, {
+										content: "Dica: Segure a tecla CTRL para selecionar mais de uma rede."
+								}));
 							}
 						});
 					}
@@ -1375,8 +1381,12 @@ $(document).ready(function() {
                                         $(formbuild).find("input#email").val(data.email);
                                         carregaComboCidadesUsers({"option":$.getUrlVar("option"), city: data.city});
                                         $(formbuild).find("select#city_id").val(getIdFromUrl(data.city));
-										if ($(formbuild).find("select#network_id")){
-											$(formbuild).find("select#network_id").val(data.network.id);
+										if ($(formbuild).find("select#network_id").length > 0){
+											if (data.networks){
+												$.each(data.networks, function(index,item){
+													$(formbuild).find("select#network_id option[value="+item.id+"]").attr("selected","selected");
+												});
+											}
 										}
                                         break;
                                 }
@@ -1426,7 +1436,16 @@ $(document).ready(function() {
                                     ];
 
 							if (user_info.roles[0] == "superadmin"){
-								args.push({name: "user." + action + ".network_id", value: $(this).parent().parent().find("#network_id option:selected").val()});
+								if ($.getUrlVar("option") == "add"){
+									args.push({name: "user." + action + ".network_id", value: $(this).parent().parent().find("#network_id option:selected").val()});
+								}else if ($.getUrlVar("option") == "edit"){
+									var network_ids = "";
+									$(this).parent().parent().find("#network_id option:selected").each(function(index,item){
+										if (network_ids != "") network_ids += ",";
+										network_ids += item.value;
+									});
+									args.push({name: "user." + action + ".network_ids", value: network_ids});
+								}
 							}
 									
                             if ($(this).parent().parent().find("#password").val() != ""){
@@ -1450,15 +1469,11 @@ $(document).ready(function() {
                                     location.hash = "#!/"+getUrlSub();
                                 },
                                 error: function(data){
-                                    switch(data.status){
-                                        case 400:
-                                            $("#aviso").setWarning({msg: "Erro ao $$operacao. ($$codigo)".render({
-                                                        operacao: txtOption,
-                                                        codigo: $.parseJSON(data.responseText).error
-                                                        })
-                                            });
-                                            break;
-                                    }
+									$("#aviso").setWarning({msg: "Erro ao $$operacao. ($$erro)".render({
+												operacao: txtOption,
+												erro: $.trataErro(data)
+												})
+									});
                                     $("#dashboard-content .content .botao-form[ref='enviar']").show();
                                 }
                             });

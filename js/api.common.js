@@ -104,17 +104,30 @@ $.extend({
 	isInt: function(number){
 		return number % 1 === 0;
 	},
-	trataErro: function(erro){
-		switch(erro){
-			case "Login invalid(1)":
-					return "Login Inválido";
-					break;
-			case "Login invalid(2)":
-					return "Login Inválido";
-					break;
-			default:
-					return erro;
-					break;
+	trataErro: function(data){
+		if (typeof(data) == "string"){
+			if (sys_messages[data]){
+				return sys_messages[data];
+			}else{
+				return data;
+			}
+		}else if (typeof(data) == "object"){
+			erro = $.parseJSON($.parseJSON(data.responseText).error);
+			var msg = "";
+			if (erro){
+				for (var key in erro) {
+				  if (erro.hasOwnProperty(key)) {
+					if (sys_messages[key + " " + erro[key]]){
+						if (msg != "") msg += "<br />";
+						msg += sys_messages[key + " " + erro[key]];
+					}else{
+						if (msg != "") msg += "<br />";
+						msg += "Erro " + data.status;
+					}
+				  }
+				}
+			}
+			return msg;
 		}
 	},
 	scrollToRegionList: function(id){
@@ -1753,3 +1766,9 @@ var sortSelectBox = function(id){
 	  $(o).text(arr[i].t);
 	});
 }
+
+var sys_messages = {
+					"Login invalid(1)": "Login inválido",
+					"Login invalid(2)": "Login inválido",
+					"user.update.network_ids.invalid 1": "Rede inválida."
+			};

@@ -818,7 +818,7 @@ var buildIndicatorHistory = function (args){
 
                     var cont = 0, num_var = numKeys(data.header);
 
-					$.each(data.rows[index].valores, function(index2,value2){
+					$.each(headers, function(index2,value2){
 						if (data.rows[index].valores[index2] && data.rows[index].valores[index2].value != "-" && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined){
 							history_table += "<td class='valor' title='$$data' value-id='$$id' variable-id='$$variable_id'>$$valor</td>".render({
 									valor: $.formatNumber(data.rows[index].valores[index2].value, {format:"#,##0.###", locale:"br"}),

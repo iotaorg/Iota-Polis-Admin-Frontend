@@ -3193,7 +3193,7 @@ $(document).ready(function() {
 
                     formbuild.find(".field:last").append("<div class='models center'></div>");
                     formbuild.find(".models").append('Modelo de arquivo: <a href="/variaveis_exemplo.csv">CSV</a> <a href="/variaveis_exemplo.xls">XLS</a><br />');
-                    formbuild.find(".models").append('Modelo de arquivo para Regiões: <a href="/dados/usuario/$$user/regiao_exemplo.xls">CSV</a> <a href="/dados/usuario/$$user/regiao_exemplo.xls">XLS</a><br />'.render({
+                    formbuild.find(".models").append('Modelo de arquivo para Regiões: <a href="/dados/usuario/$$user/regiao_exemplo.csv">CSV</a> <a href="/dados/usuario/$$user/regiao_exemplo.xls">XLS</a><br />'.render({
 												user: $.cookie("user.id")
 											})
 					);

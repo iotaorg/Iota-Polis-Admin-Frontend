@@ -18,6 +18,9 @@ a{
     text-decoration: none;
 }
 
+.center{
+	text-align: center;
+}
 #top{
     margin: 0 auto;
     padding: 0;
@@ -190,7 +193,7 @@ a.botao-form{
     clear: both;
     background: url("../images/bg_botao.gif") repeat-x top center;
     padding: 2px 20px;
-    font-family: "PT Sans";
+    font-family: "Asap", tahoma, sans-serif;
     font-weight: bolder;
     font-size: 12pt;
     color: #fff;
@@ -215,7 +218,7 @@ a.button-add{
     clear: both;
     background: #ffffff;
     padding: 2px 20px;
-    font-family: "PT Sans";
+    font-family: "Asap", tahoma, sans-serif;
     font-weight: bolder;
     font-size: 12pt;
     color: #419f91;
@@ -480,7 +483,7 @@ a.button-default{
     clear: both;
     background: url("../images/bg_botao.gif") repeat-x top center;
     padding: 2px 20px;
-    font-family: "PT Sans";
+    font-family: "Asap", tahoma, sans-serif;
     font-weight: bolder;
     font-size: 12pt;
     color: #fff;
@@ -1435,7 +1438,7 @@ input.admin_checked{
 #panel-map button{
     background: url("../images/bg_botao.gif") repeat-x top center;
     padding: 1px 6px;
-    font-family: "PT Sans";
+    font-family: "Asap", tahoma, sans-serif;
     font-weight: normal;
     font-size: 11pt;
     color: #fff;
@@ -1567,4 +1570,17 @@ input.admin_checked{
     cursor: hand;
     background-color: #c9ffff;
     color: #000;
+}
+.models{
+	line-height: 1.8em;
+	font-size: 0.9em;
+}
+.models a{
+	color: #20c1c1;
+	font-size: 0.9em;
+	padding: 2px 8px;
+	border: 1px solid #20c1c1;
+}
+.models a:hover{
+	color: #666;
 }

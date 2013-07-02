@@ -85,6 +85,9 @@ var titleBarContent = {
 					"css":{
 							"title": "Customização - CSS",
 							"tip": ""},
+					"best_pratice":{
+							"title": "Conteúdo - Boas Práticas",
+							"tip": ""},
 					"prefs":{
 							"title": "Preferências",
 							"tip": "Nas preferências, você deve preencher os dados básicos do movimento – endereço, telefone, email etc. Não se esqueça de mudar a senha inicial do sistema e preencher o nome da pessoa que será responsável pelo cadastro/inclusão de dados."}

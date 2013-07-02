@@ -79,6 +79,9 @@ var titleBarContent = {
 					"css":{
 							"title": "Customização - CSS",
 							"tip": ""},
+					"best_pratice":{
+							"title": "Conteúdo - Boas Práticas",
+							"tip": ""},
 					"prefs":{
 							"title": "Preferências",
 							"tip": ""}

@@ -7231,7 +7231,7 @@ $(document).ready(function() {
 				$("#dashboard-content .content .upload_via_file .botao-form[ref='re-enviar']").hide();
 				$("#dashboard-content .content .upload_via_file .botao-form[ref='atualizar']").hide();
 
-				$("#dashboard-content .content .upload_via_file #precision").after("<div class='aviso'>Quanto maior a precisão, maior será o nível de processamento necessário. Utilize uma precisão menor caso seu navegador apresente travamentos.</div>");
+				$("#dashboard-content .content .upload_via_file #precision").after("<div class='aviso'>Quanto menor a escala de precisão, maior será o nível de processamento necessário. Utilize uma precisão menor caso seu navegador apresente travamentos.</div>");
 				
 				$("#dashboard-content .content #precision").after("<div id='precision-value'>20</div><div id='precision-slider'></div>");
 				$("#dashboard-content .content #precision").remove();

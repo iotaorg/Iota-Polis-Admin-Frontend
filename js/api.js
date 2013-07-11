@@ -5051,14 +5051,14 @@ $(document).ready(function() {
 								if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1){
                                     var formula = formataFormula(data_indicators[i].formula,data_variables,data_vvariables);
                                     var tr_class = "folded";
-                                    indicators_table += "<div class='variable $$tr_class' indicator-id='$$indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$id' period='$$period'>detalhes</a><a href='$$hash?option=edit&url=$$url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
+                                    indicators_table += "<div class='variable $$tr_class' indicator-id='$$indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='$$hash?option=unhide&url=$$url&config_id=$$config_id' class='icone unhide' title='remover da lista de ocultos' alt='remover da lista de ocultos'>mostrar</a></div><div class='clear'></div></div>".render({
                                         name: data_indicators[i].name,
                                         formula: formula,
                                         hash: "#!/"+getUrlSub(),
                                         url: api_path + "/api/indicator/" + data_indicators[i].id,
                                         indicator_id: data_indicators[i].id,
                                         period: data_indicators[i].period,
-                                        id: data_indicators[i].id,
+                                        config_id: data_indicators[i].user_indicator_config.id,
                                         tr_class: tr_class
                                         });
                                     indicators_table += "<div class='clear'></div>";
@@ -6075,6 +6075,39 @@ $(document).ready(function() {
                             });
                         }
                     });
+                }else if ($.getUrlVar("option") == "unhide"){
+					$.loading();
+					var action = "update";
+					url_action = api_path + "/api/user/$$user_id/indicator_config/$$id".render({
+							user_id: $.cookie("user.id"),
+							id: $.getUrlVar("config_id")
+						});
+					args = [{name: "api_key", value: $.cookie("key")},
+							{name: "user.indicator_config." + action + ".hide_indicator", value: 0},
+							{name: "user.indicator_config." + action + ".indicator_id", value: getIdFromUrl($.getUrlVar("url"))}
+							];
+
+					$.ajax({
+						type: "POST",
+						dataType: 'json',
+						url: url_action,
+						data: args,
+						success: function(data, textStatus, jqXHR){
+							$("#aviso").setWarning({msg: "Informação salva com sucesso.".render({
+										codigo: jqXHR.status
+										})
+							});
+							$.loading.hide();
+							location.hash = "#!/" + getUrlSub();
+						},
+						error: function(data){
+							$("#aviso").setWarning({msg: "Erro ao salvar. ($$erro)".render({
+										erro: $.parseJSON(data.responseText).error
+										})
+							});
+							$.loading.hide();
+						}
+					});
                 }
             }else if (getUrlSub() == "mygroup"){
                 /*  GRUPOS DE INDICADORES  */
@@ -6377,7 +6410,7 @@ $(document).ready(function() {
                     deleteRegister({url:$.getUrlVar("url") + "?api_key=$$key".render({
                                                     key: $.cookie("key")
                                             })});
-                }
+				}
             }else if (getUrlSub() == "css"){
                 /*  CSS  */
                 if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){

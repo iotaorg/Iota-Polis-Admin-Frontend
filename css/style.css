@@ -535,6 +535,9 @@ a.icone.config{
 a.icone.zoom{
     background-position: 0px -88px;
 }
+a.icone.unhide{
+    background-position: 0px -110px;
+}
 
 
 table#results td.botoes{

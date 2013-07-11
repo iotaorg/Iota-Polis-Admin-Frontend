@@ -216,7 +216,8 @@ $(document).ready(function() {
         submenu_label["variable_user"] = [];
         submenu_label["variable_user"].push({"myvariable" : "Variáveis Básicas"});
         submenu_label["variable_user"].push({"variable" : "Variáveis"});
-        submenu_label["variable_user"].push({"myvariableedit" : "Editar Valores"});
+        submenu_label["variable_user"].push({"myvariableedit" : "Editar/Importar Valores"});
+        submenu_label["variable_user"].push({"myvariableclone" : "Clonar Valores"});
 
         submenu_label["region"] = [];
         submenu_label["region"].push({"region-list" : "Cadastro"});
@@ -258,6 +259,7 @@ $(document).ready(function() {
 
 			submenu_access["user"].push("myvariable");
 			submenu_access["user"].push("myvariableedit");
+			submenu_access["user"].push("myvariableclone");
 			submenu_access["user"].push("myindicator");
 			submenu_access["user"].push("mygroup");
 
@@ -388,7 +390,11 @@ $(document).ready(function() {
 				selectedShape = null;
 				current_map_string = '';
 				hide_controls();
-				$("#panel-map #edit-button").removeClass("disabled");
+				$("#panel-map #edit-button").addClass("disabled");
+				$("#panel-map #delete-button").addClass("disabled");
+				if ($("#region-list .item.selected").length <= 0){
+					$("#panel-map #save-button").addClass("disabled");
+				}
 			}
 		}
 
@@ -396,6 +402,11 @@ $(document).ready(function() {
 			clearSelection();
 			selectedShape = shape;
 			setColor("select");
+			$("#panel-map #edit-button").removeClass("disabled");
+			$("#panel-map #delete-button").removeClass("disabled");
+			if ($("#region-list .item.selected").length > 0){
+				$("#panel-map #save-button").removeClass("disabled");
+			}
 		}
 
 		function setShapeEditable() {
@@ -409,61 +420,120 @@ $(document).ready(function() {
 		}
 
 		function saveSelectedShape(){
+			if ($("#save-button").length > 0){
+				if ($("#save-button").hasClass("disabled")){
+					return;
+				}
+			}
 			
 			if ($("#region-list .selected").length <= 0 || (!$("#region-list .selected").attr("region-id"))){
 				$("#aviso").setWarning({msg: "Nenhuma região selecionada."});
 				return;
-			}
-
-			var action = "update";
-			var method = "POST";
-			var url_action = api_path + "/api/city/$$city/region/$$region?api_key=$$key&with_polygon_path=1&limit=1000".render({
-								key: $.cookie("key"),
-								city: getIdFromUrl(user_info.city),
-								region: $("#region-list .selected").attr("region-id")
-						});
-						
-			args = [{name: "api_key", value: $.cookie("key")},
-					{name: "city.region." + action + ".polygon_path", value: current_map_string}
-					];
-								
-			$.ajax({
-				type: method,
-				dataType: 'json',
-				url: url_action,
-				data: args,
-				success: function(data,status,jqXHR){
-				
-					if (!selectedShape.region_index){
-						var index = objTriangle.length;
-						
-						selectedShape.region_index = index;
-						
-						objTriangle.push(selectedShape);
-						
-						$("#region-list .selected").attr("region-index",index);
+			}else if(!current_map_string){
+				$.confirm({
+					'title': 'Confirmação',
+					'message': 'Nenhuma forma foi selecionada. <br />Deseja salvar assim mesmo?',
+					'buttons': {
+						'Sim': {
+							'class'	: '',
+							'action': function(){
+								Save();
+							}
+						},
+						'Não'	: {
+							'class'	: '',
+							'action': function(){
+								return;
+							}
+						}
 					}
-					$("#aviso").setWarning({msg: "Operação efetuada com sucesso."});
-				},
-				error: function(data){
-					$("#aviso").setWarning({msg: "Erro na operação. ($$codigo)".render({
-									codigo: $.parseJSON(data.responseText).error
-									})
-					});
-				}
-			});
+				});	
+			}else{
+				$.confirm({
+					'title': 'Confirmação',
+					'message': 'Tem certeza que deseja associar essa forma à região "$$regiao"?'.render({
+						regiao: $("#region-list .item.selected").text()
+					}),
+					'buttons': {
+						'Sim': {
+							'class'	: '',
+							'action': function(){
+								Save();
+							}
+						},
+						'Não'	: {
+							'class'	: '',
+							'action': function(){
+								return;
+							}
+						}
+					}
+				});	
+			}
+			
+			function Save(){
+
+				var action = "update";
+				var method = "POST";
+				var url_action = api_path + "/api/city/$$city/region/$$region?api_key=$$key&with_polygon_path=1&limit=1000".render({
+									key: $.cookie("key"),
+									city: getIdFromUrl(user_info.city),
+									region: $("#region-list .selected").attr("region-id")
+							});
+							
+				args = [{name: "api_key", value: $.cookie("key")},
+						{name: "city.region." + action + ".polygon_path", value: current_map_string}
+						];
+									
+				$.ajax({
+					type: method,
+					dataType: 'json',
+					url: url_action,
+					data: args,
+					success: function(data,status,jqXHR){
+					
+						if (!selectedShape.region_index){
+							var index = objTriangle.length;
+							
+							selectedShape.region_index = index;
+							
+							objTriangle.push(selectedShape);
+							
+						}
+						$("#region-list .selected").attr("region-index",selectedShape.region_index);
+						updateDataRegions($("#region-list .selected").attr("region-id"),current_map_string);
+						
+						$("#aviso").setWarning({msg: "Operação efetuada com sucesso."});
+					},
+					error: function(data){
+						$("#aviso").setWarning({msg: "Erro na operação. ($$codigo)".render({
+										codigo: $.parseJSON(data.responseText).error
+										})
+						});
+					}
+				});
+			}
 		}
 
 		function editSelectedShape() {
+			if ($("#save-button").length > 0){
+				if ($("#save-button").hasClass("disabled")){
+					return;
+				}
+			}
 			if (selectedShape) {
 				setShapeEditable(selectedShape);
 			}
 		}
 
 		function deleteSelectedShape() {
+			if ($("#delete-button").length > 0){
+				if ($("#delete-button").hasClass("disabled")){
+					return;
+				}
+			}
 			if (selectedShape) {
 				if ($("#region-list").length > 0){
-					$("#region-list .item[region-index=" + selectedShape.region_index + "]").removeClass("selected");
 					$("#region-list .item[region-index=" + selectedShape.region_index + "]").attr("region-index","");
 				}
 				selectedShape.setMap(null);
@@ -476,7 +546,7 @@ $(document).ready(function() {
 		function deleteShape(shape) {
 			if (shape){
 				if ($("#region-list").length > 0){
-					$("#region-list .item[region-index=" + shape.region_index + "]").removeClass("selected");
+//					$("#region-list .item[region-index=" + shape.region_index + "]").removeClass("selected");
 					$("#region-list .item[region-index=" + shape.region_index + "]").attr("region-index","");
 				}
 				shape.setMap(null);
@@ -511,8 +581,9 @@ $(document).ready(function() {
 		}
 
 		function _store_string(theShape){
-			current_map_string = google.maps.geometry.encoding.encodePath(theShape.getPath());
-
+			if (typeof theShape.getPath == "function"){
+				current_map_string = google.maps.geometry.encoding.encodePath(theShape.getPath());
+			}
 			show_controls();
 		}
 		
@@ -555,9 +626,12 @@ $(document).ready(function() {
 
 			google.maps.event.addListener(objTriangle[index], 'click', function() {
 				if ($("#region-list").length > 0){
-					$("#region-list .item").removeClass("selected");
-					$("#region-list .item[region-index=" + this.region_index + "]").addClass("selected");
-					$.scrollToRegionList(this.region_index);
+					if ($("#region-list .item[region-index=" + this.region_index + "]").length > 0){
+						$("#region-list .item").removeClass("selected");
+						$("#region-list .item[region-index=" + this.region_index + "]").addClass("selected");
+						$.scrollToRegionList(this.region_index);
+						$.setSelectedRegion();
+					}
 				}
 				setSelection(this);
 				_store_string(this);
@@ -624,6 +698,18 @@ $(document).ready(function() {
 				return null;
 			}
 		}
+				
+		function updateDataRegions(id,string){
+			var i = "";
+			$.each(data_regions.regions,function(index,item){
+				if (item.id == id){
+					i = index;
+				}
+			});
+			if (i){
+				data_regions.regions[i].polygon_path = string;
+			}
+		}
 		
 		function initialize(params) {
 
@@ -669,6 +755,14 @@ $(document).ready(function() {
 					var newShape = e.overlay;
 					newShape.type = e.type;
 					google.maps.event.addListener(newShape, 'click', function() {
+						if ($("#region-list").length > 0){
+							if ($("#region-list .item[region-index=" + this.region_index + "]").length > 0){
+								$("#region-list .item").removeClass("selected");
+								$("#region-list .item[region-index=" + this.region_index + "]").addClass("selected");
+								$.scrollToRegionList(this.region_index);
+								$.setSelectedRegion();
+							}
+						}
 						setSelection(newShape);
 						_store_string(newShape);
 					});
@@ -4794,7 +4888,7 @@ $(document).ready(function() {
                     $.ajax({
                         type: 'GET',
                         dataType: 'json',
-                        url: api_path + '/api/indicator?api_key=$$key'.render({
+                        url: api_path + '/api/indicator?api_key=$$key&user_id=$$userid'.render({
                                 key: $.cookie("key"),
                                 userid: $.cookie("user.id")
                                 }),
@@ -4808,7 +4902,8 @@ $(document).ready(function() {
                                                         "axis_id":data.indicators[index].axis_id,
                                                         "axis":data.indicators[index].axis,
                                                         "network_configs":data.indicators[index].network_configs,
-                                                        "period":'yearly',
+                                                        "user_indicator_config":data.indicators[index].user_indicator_config,
+                                                        "period":'yearly'
                                                     });
                             });
 
@@ -4885,6 +4980,9 @@ $(document).ready(function() {
 
                                     $.each(group.items, function(index_item,item){
                                         for (i = 0; i < data_indicators.length; i++){
+											if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1){
+												continue;
+											}
                                             if (data_indicators[i].id == item.indicator_id){
                                                 var formula = formataFormula(data_indicators[i].formula,data_variables,data_vvariables);
                                                 var tr_class = "folded";
@@ -4911,8 +5009,12 @@ $(document).ready(function() {
                                     indicators_table += "</div>";
                                 });
                             }
-
+							
+							//carrega indicadores por eixo
                             for (i = 0; i < data_indicators.length; i++){
+								if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1){
+									continue;
+								}
                                 if (!findInArray(indicators_in_groups,data_indicators[i].id)){
                                     if (data_indicators[i].axis_id != axis_ant){
                                         if (i > 0){
@@ -4941,11 +5043,38 @@ $(document).ready(function() {
                                     indicators_table += "<div class='clear'></div>";
                                 }
                             }
+							
+							//carrega indicadores ocultos
+							indicators_table += "</div>";
+							indicators_table += "<div class='eixos hidden collapse'><div class='title'>Indicatores Ocultos</div><div class='clear'></div>";
+                            for (i = 0; i < data_indicators.length; i++){
+								if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1){
+                                    var formula = formataFormula(data_indicators[i].formula,data_variables,data_vvariables);
+                                    var tr_class = "folded";
+                                    indicators_table += "<div class='variable $$tr_class' indicator-id='$$indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$id' period='$$period'>detalhes</a><a href='$$hash?option=edit&url=$$url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
+                                        name: data_indicators[i].name,
+                                        formula: formula,
+                                        hash: "#!/"+getUrlSub(),
+                                        url: api_path + "/api/indicator/" + data_indicators[i].id,
+                                        indicator_id: data_indicators[i].id,
+                                        period: data_indicators[i].period,
+                                        id: data_indicators[i].id,
+                                        tr_class: tr_class
+                                        });
+                                    indicators_table += "<div class='clear'></div>";
+                                }
+                            }
 
                             indicators_table += "<div><div class='clear'>";
 
                             $("#dashboard-content .content").append(indicators_legend + indicators_table);
-
+							
+							$("#dashboard-content .content .indicadores_list .eixos").each(function(index,item){
+								if ($(item).find(".variable").length <= 0){
+									$(item).append("<div class='empty'>Nenhum indicador encontrado</div>");
+								}
+							});
+							
                             $("#dashboard-content .content .indicadores_list .zoom").click( function(){
                                 var target = $(this).parent().parent();
                                 var indicator_period = $(this).attr("period");
@@ -5138,9 +5267,10 @@ $(document).ready(function() {
                                     tech_info_id = data.id;
                                     $(".tech_info #technical_information").val(data.technical_information);
 									if (data.hide_indicator == 1){
-										$(".tech_info #hide_indicador").attr("checked","checked");
+									console.log(data.hide_indicator);
+										$(".tech_info #hide_indicator").attr("checked",true);
 									}else{
-										$(".tech_info #hide_indicador").removeAttr("checked");
+										$(".tech_info #hide_indicator").attr("checked",false);
 									}
                                 },
                                 error: function(data){
@@ -7113,7 +7243,7 @@ $(document).ready(function() {
                     }
 
 					google.load("maps", "3", {other_params:'sensor=false&libraries=drawing,geometry', callback: function(){
-						$("#dashboard-content .content div.form").after("<div id='panel-map'><div id='panel'><button id='edit-button'>Editar</button><button id='delete-button'>Apagar</button><button id='save-button'>Associar forma ao distrito/região</button></div><div id='map'></div></div>");
+						$("#dashboard-content .content div.form").after("<div id='panel-map'><div id='panel'><button id='edit-button'>Editar forma</button><button id='delete-button'>Apagar forma</button><button id='save-button'>Associar forma a região selecionada</button></div><div id='map'></div></div>");
 
 						$("#save-button").hide();
 						
@@ -7217,7 +7347,7 @@ $(document).ready(function() {
             }else if (getUrlSub() == "region-map"){
                 /*  Regiões Setando mapa */
 
-				$("#dashboard-content .content").append("<div id='panel-region'><div id='region-list'><div class='contents'></div></div><div id='panel-map'><div id='panel'><button id='edit-button'>Editar</button><button id='delete-button'>Apagar</button><button id='save-button'>Associar forma ao distrito/região</button></div><div id='map'></div></div></div>");
+				$("#dashboard-content .content").append("<div id='panel-region'><div id='region-top'><div id='list-label'>Regiões:</div><div id='region-panel'><div class='contents'><div id='region-selected'>Região selecionada: <span class='selected'>Nenhuma</span></div></div></div></div><div id='region-list'><div class='contents'></div></div><div id='panel-map'><div id='panel'><button id='edit-button' class='disabled'>Editar forma</button><button id='delete-button' class='disabled'>Apagar forma</button><button id='save-button' class='disabled'>Associar forma à região selecionada</button></div><div id='map'></div></div></div>");
 
 				$("#dashboard-content .content").append("<div class='upload_via_file'></div>");
 				var newform = [];
@@ -7246,9 +7376,9 @@ $(document).ready(function() {
 					}
 				});
 				
-				var data_region = [];
-				var data_district = [];
-				var data_regions;
+				data_region = [];
+				data_district = [];
+				data_regions = "";
 
 				$.ajax({
 					type: 'GET',
@@ -7364,6 +7494,7 @@ $(document).ready(function() {
 										}
 									}
 								}
+								$.setSelectedRegion();
 								
 							});
 							

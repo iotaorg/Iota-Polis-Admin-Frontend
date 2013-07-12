@@ -3667,7 +3667,8 @@ $(document).ready(function() {
 									$.each(data.variables_names, function(variable_id,variable_name){
 										var years = [];
 										$.each(data.periods,function(index,year){
-											if (typeof data.checkbox[variable_id][year] != "undefined"){
+											if (typeof data.checkbox[variable_id] != "undefined" && typeof data.checkbox[variable_id][year] != "undefined"){
+												console.log("foi");
 												years.push({"exists":1, "checked": data.checkbox[variable_id][year]});
 											}else{
 												years.push({"exists":0, "checked": false});

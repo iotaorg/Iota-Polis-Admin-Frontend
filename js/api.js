@@ -3668,7 +3668,6 @@ $(document).ready(function() {
 										var years = [];
 										$.each(data.periods,function(index,year){
 											if (typeof data.checkbox[variable_id] != "undefined" && typeof data.checkbox[variable_id][year] != "undefined"){
-												console.log("foi");
 												years.push({"exists":1, "checked": data.checkbox[variable_id][year]});
 											}else{
 												years.push({"exists":0, "checked": false});

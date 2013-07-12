@@ -572,6 +572,15 @@ a.icone.zoom{
 a.icone.unhide{
     background-position: 0px -110px;
 }
+a.icone.justification{
+    text-indent: -2px;
+	font-size: 0.7em;
+	text-align: center;
+    height: 14px;
+	padding-top: 6px;
+	color: #fff;
+    background-position: 0px -132px;
+}
 
 
 table#results td.botoes{

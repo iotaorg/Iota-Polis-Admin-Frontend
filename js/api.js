@@ -5292,12 +5292,15 @@ $(document).ready(function() {
                             var axis_ant = "";
                             var indicators_table = "";
                             var indicators_legend = "";
+                            var indicators_status = "";
 
                             indicators_legend = "<div class='indicadores_legend'><div class='fillContent'>";
                             indicators_legend += "<div class='item'><div class='color no-data'></div><div class='label'>Nenhum dado preenchido</div><div class='clear'></div></div>";
                             indicators_legend += "<div class='item'><div class='color last-period'></div><div class='label'>Preenchido</div><div class='clear'></div></div>";
                             indicators_legend += "<div class='item'><div class='color full'></div><div class='label'>Período corrente preenchido</div><div class='clear'></div></div>";
                             indicators_legend += "</div></div><div class='clear'></div>";
+
+                            indicators_status = "<div class='indicadores-status'></div>";
 
                             indicators_table = "<div class='indicadores_list'>";
 
@@ -5396,7 +5399,7 @@ $(document).ready(function() {
 
                             indicators_table += "<div><div class='clear'>";
 
-                            $("#dashboard-content .content").append(indicators_legend + indicators_table);
+                            $("#dashboard-content .content").append(indicators_legend + indicators_status + indicators_table);
 							
 							$("#dashboard-content .content .indicadores_list .eixos").each(function(index,item){
 								if ($(item).find(".variable").length <= 0){
@@ -5521,7 +5524,8 @@ $(document).ready(function() {
                                 $(this).parent().toggleClass("collapse");
 //                              $(this).parent().find(".variable").toggle();
                             });
-
+							
+							//busca status dos indicadores
                             $.ajax({
                                 type: 'GET',
                                 dataType: 'json',
@@ -5543,7 +5547,19 @@ $(document).ready(function() {
                                         $(".indicadores_list .variable[indicator-id='$$indicator_id']".render({
                                                     indicator_id: data.status[index].id
                                             })).addClass(statusClass);
+										if (dataStatus[index].justification_count){
+											$(".indicadores_list .variable[indicator-id='$$indicator_id'] .link".render({
+														indicator_id: data.status[index].id
+												})).append("<a href='javascript: void(0);' class='icone justification' title='valores não preenchidos (justificados)' alt='valores não preenchidos (justificados)'>$$justification_count</a>".render({
+													justification_count: dataStatus[index].justification_count
+												})
+											);
+										}
                                     });
+									if (data.totals){
+										$(".indicadores_legend .item").eq(1).find(".label").append("<span class='percent'> (" + parseInt(data.totals.has_data_perc*100) + "%)</span>");
+										$(".indicadores_legend .item").eq(2).find(".label").append("<span class='percent'> (" + parseInt(data.totals.without_data_perc*100) + "%)</span>");
+									}
                                 }
                             });
 
@@ -6043,7 +6059,7 @@ $(document).ready(function() {
 
                                         }
 
-                                        $("#no_data").after("Não possuoNão possuo os dados.");
+                                        $("#no_data").after("Não possuo os dados.");
                                         $("#dashboard-content .content .filter_result .field:last").hide();
                                         $("#no_data").change(function(){
                                             if ($(this).attr("checked")){

@@ -34,6 +34,9 @@ var titleBarContent = {
 					"myvariableedit":{
 							"title": "Editar Valores",
 							"tip": ""},
+					"myvariableclone":{
+							"title": "Clonar Valores",
+							"tip": ""},
 					"indicator":{
 							"title": "Indicadores",
 							"tip": "Veja os indicadores já cadastrados. Utilize o botão 'Adicionar' para criar um novo indicador."},

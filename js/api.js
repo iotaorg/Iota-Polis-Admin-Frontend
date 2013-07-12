@@ -1,5 +1,6 @@
 var api_path = "";
 //var api_path = "http://rnsp.aware.com.br";
+//var api_path = "http://192.168.1.35:6668";
 
 $(document).ready(function() {
 
@@ -3508,6 +3509,334 @@ $(document).ready(function() {
                         });
                     }
                 }
+            }else if (getUrlSub() == "myvariableclone"){
+                /*  VARIABLE CLONE */
+                if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
+
+					var periods = [];
+					
+					function selectVariables(){
+						
+						$("#dashboard-content .content #steps-variables").empty();
+						$("#dashboard-content .content #steps-variables").show();
+						$("#dashboard-content .content #steps-years").empty();
+						var variablesList = "<div class='variables-clone'><div class='left'><div class='title'>Selecione as variáveis que você deseja importar</div><div id='variables-list'><div class='variables'></div></div></div><div class='right'><div class='title'>Variáveis selecionadas:</div><div id='variables-selected'><div class='variables'></div></div></div></div>";
+						$("#dashboard-content .content #steps-variables").append(variablesList);
+
+						$.ajax({
+							type: 'GET',
+							dataType: 'json',
+							url: api_path + '/api/variable?api_key=$$key'.render({
+											key: $.cookie("key")
+									}),
+							success: function(data, textStatus, jqXHR){
+								// ordena variaveis pelo nome
+								data.variables.sort(function (a, b) {
+									a = a.name,
+									b = b.name;
+
+									return a.localeCompare(b);
+								});
+
+								$.each(data.variables, function(index,value){
+									$("#variables-list .variables").append("<div class='item' var-id='$$id'><div class='label'>$$label</div><div class='button' title='Adicionar'>&#155;</div></div>".render({
+											id :data.variables[index].id,
+											label: data.variables[index].name
+										})
+									);
+									$("#variables-selected .variables").append("<div class='item' var-id='$$id'><div class='button' title='Remover'>&#139;</div><div class='label'>$$label</div></div>".render({
+											id :data.variables[index].id,
+											label: data.variables[index].name
+										})
+									);
+								});
+								
+								$("#variables-list .item").hover(function(){
+									$("#variables-list").find(".button").hide();
+									$(this).find(".button").fadeIn("fast");
+								},function(){
+									$(this).find(".button").hide();
+								});
+								
+								$("#variables-selected .item").hover(function(){
+									$("#variables-selected").find(".button").hide();
+									$(this).find(".button").fadeIn("fast");
+								},function(){
+									$(this).find(".button").hide();
+								});
+
+								$("#variables-list .item .button").bind('click',function(){
+									var id = $(this).parent().attr("var-id");
+									$(this).parent().toggle();
+									$("#variables-selected .item[var-id=" + id + "]").toggle();
+									$("#botao-avancar").removeClass("disabled");
+								});
+								$("#variables-selected .item .button").bind('click',function(){
+									var id = $(this).parent().attr("var-id");
+									$(this).parent().toggle();
+									$("#variables-list .item[var-id=" + id + "]").toggle();
+									if ($("#variables-selected .item:visible").length <= 0){
+										$("#botao-avancar").addClass("disabled");
+									}
+								});
+							
+								$("#dashboard-content .content #steps-buttons").empty();
+								$("#dashboard-content .content #steps-buttons").append("<button class='button-default disabled' id='botao-avancar'>Avançar</button>");
+								
+								$("#botao-avancar").unbind();
+								$("#botao-avancar").html("Avançar");								
+								$("#botao-avancar").bind('click',function(){
+									selectInstitute();
+								});
+								
+							
+							},
+							error: function(data){
+								$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
+											codigo: $.parseJSON(data.responseText).error
+										})
+								});
+							}
+						});
+					}
+					
+					function selectInstitute(){
+
+						$.ajax({
+							type: 'GET',
+							dataType: 'json',
+							url: api_path + '/api/institute?api_key=$$key'.render({
+											key: $.cookie("key")
+									}),
+							success: function(data, textStatus, jqXHR){
+								var institute_id;
+								$.each(data.institute, function(index,item){
+									if (item.id != user_info.institute.id){
+										institute_id = item.id;
+									}
+								});
+								
+								if (institute_id){
+									selectYears(institute_id);
+								}
+							}
+						});
+					}
+					
+					function selectYears(institute_id){
+					
+						$("#steps-variables").fadeOut("fast",function(){
+							$("#steps-years").fadeIn();
+						});
+						
+						var yearsList = "<div class='years-clone'></div>";
+						$("#dashboard-content .content #steps-years").append("<div class='clear'>Selecione os períodos que você deseja clonar:</div>");
+						$("#dashboard-content .content #steps-years").append(yearsList);
+						
+						var variables = "";
+						$("#variables-selected .item:visible").each(function(index,item){
+							if (variables != "") variables += ",";
+							variables += $(this).attr("var-id");
+						});
+						
+						$.ajax({
+							type: 'GET',
+							dataType: 'json',
+							url: api_path + '/api/user/$$user/clone_variable?variables=$$variables&institute_id=$$institute&api_key=$$key'.render({
+											key: $.cookie("key"),
+											institute: institute_id,
+											variables: variables,
+											user: $.cookie("user.id")
+									}),
+							success: function(data, textStatus, jqXHR){
+								var headers = ["Variáveis"];
+								var year_cols = [];
+								periods = [];
+								if (data.periods){
+									$.each(data.periods, function(index,item){
+										headers.push(item.split("-")[0]);
+										periods.push(item);
+										year_cols.push(index+1);
+									});
+								}
+								var yearsList = buildDataTable({
+										headers: headers
+										},null,false);
+								var variables_names = [];
+								if (data.variables_names){
+									$.each(data.variables_names, function(variable_id,variable_name){
+										var years = [];
+										$.each(data.periods,function(index,year){
+											if (typeof data.checkbox[variable_id][year] != "undefined"){
+												years.push({"exists":1, "checked": data.checkbox[variable_id][year]});
+											}else{
+												years.push({"exists":0, "checked": false});
+											}
+										});
+										variables_names.push({"id":variable_id, "name": variable_name, "years": years});
+									});
+									variables_names.sort(function (a, b) {
+										a = String(a.name),
+										b = String(b.name);
+										return a.localeCompare(b);
+									});
+								}
+										
+								$("#dashboard-content .content #steps-years #variables-years").remove();
+								$("#dashboard-content .content #steps-years").append("<div id='variables-years'></div>");
+								$("#dashboard-content .content #steps-years #variables-years").append(yearsList);
+								
+								var rows = "";
+								
+								$.each(variables_names, function(index,item){
+									rows += "<tr><td>" + item.name + "</td>";
+									$.each(item.years, function(i,e){
+										if(e.exists == 1){
+											rows += "<td><input type='checkbox' id='chk$$item_$$index' class='chk-year year-$$index' $$checked></td>".render({
+												item: item.id,
+												index: i,
+												checked: (e.checked) ? "checked" : ""
+											});
+										}else{
+											rows += "<td></td>";
+										}
+									});
+									rows += "</tr>";
+								});
+								$("#results tbody").append(rows);
+								$("#results").addClass("ex_highlight");
+								$("#results").addClass("ex_highlight_row");
+								
+								$("#results thead tr th").each( function(index, item){
+									if (index > 0){
+										$(this).prepend("<input type='checkbox' class='chk-all' value='$$index'>".render({
+											index: (index - 1)
+										}));
+									}
+								});
+
+								oTable = $("#results").dataTable( {
+									"oLanguage": {
+													"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
+													},
+									"aoColumnDefs": [
+														{ "bSortable": false, "sClass": "indexLeft", "aTargets": [ 0 ] },
+														{ "bSearchable": false, "bSortable": false, "sClass": "center check", "sWidth": "60px", "aTargets": year_cols },
+													],
+									"sScrollX": "100%",
+									"sScrollXInner": "900px",
+									"fnInitComplete": function () {
+										new FixedColumns( oTable, {
+											"iLeftWidth": 350
+										} );
+									 }
+								});
+								
+								$("input.chk-all").bind('click', function(index,item){
+									var checked = ($(this).attr("checked")) ? true : false;
+									var year_index = $(this).attr("value");
+									var filteredRows = oTable.$('tr', { "filter": "applied" });
+									$(filteredRows).each(function(index,row){
+										$(row).find("td input.year-"+year_index).attr("checked",checked);
+									});
+								});
+								
+								$("#botao-avancar").unbind();
+								$("#botao-avancar").html("Concluir");								
+								$("#botao-avancar").bind('click',function(){
+                                    $.loading();
+									finishClone({
+											"periods":  periods,
+											"variables_names": variables_names,
+											"institute_id": institute_id
+										});
+								});
+								if ($("#steps-buttons #botao-cancelar").length <= 0){
+									$("#dashboard-content .content #steps-buttons").append("<button class='button-default' id='botao-cancelar'>Cancelar</button>");
+								}
+								$("#botao-cancelar").bind('click',function(){
+									$("#steps-years").fadeOut("fast",function(){
+										$("#steps-years").empty();
+										$("#steps-variables").fadeIn();								
+										$("#botao-avancar").unbind();
+										$("#botao-avancar").html("Avançar");
+										$("#botao-avancar").bind('click',function(){
+											selectInstitute();
+										});
+									});
+								});
+								
+							}
+						});
+					}
+					
+					function finishClone(params){
+
+						$("#steps-years").hide();
+
+						var method = "POST";
+						var url_action = api_path + "/api/user/$$user/clone_variable".render({
+							user: $.cookie("user.id")
+						});
+
+						args = [{name: "api_key", value: $.cookie("key")},
+								{name: "institute_id", value: params.institute_id}
+								];
+						
+						if (params.periods){
+							$.each(params.periods, function(index,item){
+								args.push({name: "period"+index, value: item});								
+							});
+						}
+						
+						var filteredRows = oTable.$('tr', { "filter": "applied" });
+						$(filteredRows).each(function(index,row){
+							$(row).find("td input.chk-year").each( function(index,item){
+								if ($(this).attr("checked")){
+									args.push({name: "variable:"+$(this).attr("id").replace("chk",""), value: 1});
+								}
+							});
+						});
+
+						$.ajax({
+							type: method,
+							dataType: 'json',
+							url: url_action,
+							data: args,
+							success: function(data,status,jqXHR){
+								var mensagem = "";
+								if (data && (data.number_of_clones)){
+									mensagem = "<br />Total de itens clonados: " + data.number_of_clones;
+								}
+								$("#aviso").setWarning({msg: "Operação efetuada com sucesso." + mensagem});
+								$("#botao-avancar").unbind();
+								$("#botao-avancar").html("Voltar");								
+								$("#botao-avancar").bind('click',function(){
+									resetWarnings();
+									selectVariables();									
+								});
+								$("#botao-cancelar").hide();
+                                $.loading.hide();
+							},
+							error: function(data){
+								$("#aviso").setWarning({msg: "Erro ao enviar. ($$codigo)".render({
+											codigo: $.parseJSON(data.responseText).error
+											})
+								});
+								$("#steps-years").fadeIn();
+                                $.loading.hide();
+
+							}
+						});
+				
+					}
+
+					var stepsLayers = "<div id='steps-variables'></div><div id='steps-years'></div><div id='steps-finish'></div><div id='steps-buttons'></div>";
+					$("#dashboard-content .content").append(stepsLayers);
+					
+					selectVariables();
+					
+				}
             }else if (getUrlSub() == "axis"){
                 /*  EIXOS  */
                 if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
@@ -5267,7 +5596,6 @@ $(document).ready(function() {
                                     tech_info_id = data.id;
                                     $(".tech_info #technical_information").val(data.technical_information);
 									if (data.hide_indicator == 1){
-									console.log(data.hide_indicator);
 										$(".tech_info #hide_indicator").attr("checked",true);
 									}else{
 										$(".tech_info #hide_indicator").attr("checked",false);

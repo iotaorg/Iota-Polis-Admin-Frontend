@@ -18,6 +18,40 @@ a{
     text-decoration: none;
 }
 
+.button-default{
+    background: url("../images/bg_botao.gif") repeat-x top center;
+    padding: 2px 5px;
+    font-family: "Asap", tahoma, sans-serif;
+    font-weight: normal;
+    font-size: 11pt;
+    color: #fff;
+    text-shadow:#004f98 1px 1px 0px;
+    -moz-text-shadow:#004f98 1px 1px 0px;
+    -webkit-text-shadow:#004f98 1px 1px 0px;
+    border-radius:3px;
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
+    border: 1px solid #637aa6;
+    margin: 2px 5px;
+}
+.button-default:hover{
+	cursor: hand;
+	cursor: pointer;
+    background: url("../images/bg_botao.gif") repeat-x bottom center;
+    color: #fff;
+    border: 1px solid #4e6286;
+}
+.button-default.disabled{
+    background: #ccc;
+    color: #999;
+    text-shadow:#666 1px 1px 0px;
+    -moz-text-shadow:#666 1px 1px 0px;
+    -webkit-text-shadow:#666 1px 1px 0px;
+    border: 1px solid #666;	
+}
+.button-default.disabled:hover{
+	cursor: default;
+}
 .center{
 	text-align: center;
 }
@@ -555,6 +589,9 @@ table#results td.left{
 table#results td.botoes a{
     margin: 0;
 }
+table#results td.check{
+    border-left: 1px solid #e0e0e0;
+}
 table#results a.edit,
 table#results a.zoom,
 table#results a.delete{
@@ -651,7 +688,9 @@ table#results span.noresults{
 }
 
 
-#formula-editor .variables{
+#formula-editor .variables,
+#variables-list .variables,
+#variables-selected .variables{
     background-color: #fff;
     margin-left: 5px;
     float: left;
@@ -661,7 +700,9 @@ table#results span.noresults{
     overflow-y: auto;
 }
 
-#formula-editor .variables .item{
+#formula-editor .variables .item,
+#variables-list .variables .item,
+#variables-selected .variables .item{
     padding: 2px 5px;
     clear: both;
     background-color: #f5f5f5;
@@ -674,10 +715,10 @@ table#results span.noresults{
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+	text-align: left;
 }
 #formula-editor .variables .item:hover{
-    cursor: pointer;
-    cursor: hand;
+	cursor: default;
     background-color: #c9ffff;
     color: #000;
 }
@@ -1628,4 +1669,95 @@ input.admin_checked{
 }
 .models a:hover{
 	color: #666;
+}
+
+.variables-clone{
+	margin: 0 auto;
+}
+.variables-clone .left,
+.variables-clone .right{
+	width: 40%;
+	display: inline-block;
+}
+.variables-clone .title{
+	font-size: 0.9em;
+	padding: 2px;
+}
+
+#variables-list .variables,
+#variables-selected .variables{
+	background-color: #efefef;
+	width: 100%;
+    height: 220px;
+}
+#variables-selected .variables{
+	margin-left: 20px;
+}
+
+#variables-list .variables .item,
+#variables-selected .variables .item{
+	position: relative;
+	min-height: 24px;
+	font-size: 0.9em;
+}
+#variables-selected .variables .item{
+	display: none;
+}
+#variables-list .variables .item:hover,
+#variables-selected .variables .item:hover{
+    background-color: #fefefe;
+}
+#variables-list .variables .item .label{
+	display: inline-block;
+	width: 95%;
+	clear: left;
+}
+#variables-list .variables .item .button{
+	display: none;
+	background-color: #fff;
+	border: 1px solid #d0d0d0;
+	position: absolute;
+	right: 2px;
+	float: right;
+	width: 5%;
+	clear: right;
+	top: 50%;
+	text-align: center;
+	width: 16px;
+	height: 22px;
+	padding: 0;
+	margin: 0;
+	margin-top: -11px;
+}
+#variables-selected .variables .item .label{
+	width: 95%;
+	margin-left: 5%;
+}
+#variables-selected .variables .item .button{
+	display: none;
+	background-color: #fff;
+	border: 1px solid #d0d0d0;
+	position: absolute;
+	left: 2px;
+	width: 5%;
+	top: 50%;
+	text-align: center;
+	width: 16px;
+	height: 22px;
+	padding: 0;
+	margin: 0;
+	margin-top: -11px;
+}
+
+#variables-list .variables .item .button:hover,
+#variables-selected .variables .item .button:hover{
+	cursor: hand;
+	cursor: pointer;
+	background-color: #e9ffff;
+	border: 1px solid #55c5c6;
+	color: #55c5c6;
+}
+
+#steps-buttons{
+	margin-top: 20px;
 }

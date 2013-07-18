@@ -271,9 +271,9 @@ $(document).ready(function() {
 			submenu_access["user"].push("myindicator");
 			submenu_access["user"].push("mygroup");
 
-            menu_access["user"].push("region");
+/*            menu_access["user"].push("region");
 			submenu_access["user"].push("region-list");
-			submenu_access["user"].push("region-map");
+			submenu_access["user"].push("region-map");*/ 
 
             menu_access["user"].push("logout");
         }

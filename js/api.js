@@ -1,6 +1,5 @@
 var api_path = "";
 //var api_path = "http://rnsp.aware.com.br";
-//var api_path = "http://192.168.1.35:6668";
 
 $(document).ready(function() {
 
@@ -2462,7 +2461,7 @@ $(document).ready(function() {
                                         "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
                                         },
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/variable?api_key=$$key&content-type=application/json&columns=name,cognomen,type,created_at,is_basic,url,id,_,_'.render({
+                        "sAjaxSource": api_path + '/api/variable?api_key=$$key&content-type=application/json&columns=name,cognomen,type,created_at,is_basic,url,url,_,_'.render({
                                 key: $.cookie("key")
                                 }),
                         "aoColumnDefs": [

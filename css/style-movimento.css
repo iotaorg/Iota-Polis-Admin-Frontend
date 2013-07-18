@@ -42,7 +42,7 @@ a.button-add:hover{
     color: #4b1ebf;
 }
 
-a.button-default{
+.button-default{
     background: url("../images/bg_botao_movimento.gif") repeat-x top center;
     text-shadow:#382465 1px 1px 0px;
     -moz-text-shadow:#382465 1px 1px 0px;
@@ -88,5 +88,23 @@ a.link-files{
     font-size: 0.9em;
 }
 span.ref-meta{
+	color: #563599;
+}
+#formula-editor .variables .item:hover{
+	cursor: default;
+    background-color: #f2e6ff;
+    color: #000;
+}
+#formula-editor .variables .item.selected{
+    background-color: #8463a6;
+    color: #e4dcff;
+}
+#formula-editor .button:hover{
+    background-color: #f2e6ff;
+}
+#variables-list .variables .item .button:hover,
+#variables-selected .variables .item .button:hover{
+	background-color: #d3e5ee;
+	border: 1px solid #674e86;
 	color: #563599;
 }

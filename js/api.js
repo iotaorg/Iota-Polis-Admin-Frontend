@@ -5531,8 +5531,9 @@ $(document).ready(function() {
 										}
                                     });
 									if (data.totals){
+                                       $(".indicadores_legend .item").eq(0).find(".label").append("<span class='percent'> (" + parseInt(data.totals.without_data_perc*100) + "%)</span>");
 										$(".indicadores_legend .item").eq(1).find(".label").append("<span class='percent'> (" + parseInt(data.totals.has_data_perc*100) + "%)</span>");
-										$(".indicadores_legend .item").eq(2).find(".label").append("<span class='percent'> (" + parseInt(data.totals.without_data_perc*100) + "%)</span>");
+										$(".indicadores_legend .item").eq(2).find(".label").append("<span class='percent'> (" + parseInt(data.totals.has_current_perc*100) + "%)</span>");
 									}
                                 }
                             });

@@ -16,6 +16,15 @@ var titleBarContent = {
 					"cities":{
 							"title": "Cidades",
 							"tip": ""},
+					"region":{
+							"title": "Sub-Prefeituras/Distritos",
+							"tip": ""},
+					"region-list":{
+							"title": "Sub-Prefeituras/Distritos",
+							"tip": ""},
+					"region-map":{
+							"title": "Sub-Prefeituras/Distritos",
+							"tip": ""},
 					"variable":{
 							"title": "Variáveis",
 							"tip": "Veja as variáveis já cadastradas. Utilize o botão 'Adicionar' para criar uma nova variável."},
@@ -24,6 +33,9 @@ var titleBarContent = {
 							"tip": "As variáveis básicas são usadas na página principal de apresentação do movimento e na composição de indicadores. Para adicionar um novo valor, clique na figura do lápis.<br /><br />A partir daí será apresentado o nome da variável, um campo em branco para você informar o valor, a periodicidade com a qual você terá que preencher a variável, a data que você escolherá para aquele dado e uma descrição do que é a variável.<br /><br />Após preencher o valor da variável e o ano a que ela corresponde, clique em &quot;Adicionar&quot;.<br /><br />Após os dados serem preenchidos, será apresentado um quadro de série histórica."},
 					"myvariableedit":{
 							"title": "Editar Valores",
+							"tip": ""},
+					"myvariableclone":{
+							"title": "Clonar Valores",
 							"tip": ""},
 					"indicator":{
 							"title": "Indicadores",
@@ -55,6 +67,9 @@ var titleBarContent = {
 					"cities":{
 							"title": "Parâmetros - Cidades",
 							"tip": ""},
+					"region":{
+							"title": "Sub-Prefeituras/Distritos",
+							"tip": ""},
 					"units":{
 							"title": "Parâmetros - Unidades de Medida",
 							"tip": ""},
@@ -72,6 +87,9 @@ var titleBarContent = {
 							"tip": ""},
 					"css":{
 							"title": "Customização - CSS",
+							"tip": ""},
+					"best_pratice":{
+							"title": "Conteúdo - Boas Práticas",
 							"tip": ""},
 					"prefs":{
 							"title": "Preferências",

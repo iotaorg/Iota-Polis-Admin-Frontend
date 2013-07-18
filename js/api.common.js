@@ -104,19 +104,41 @@ $.extend({
 	isInt: function(number){
 		return number % 1 === 0;
 	},
-	trataErro: function(erro){
-		switch(erro){
-			case "Login invalid(1)":
-					return "Login Inválido";
-					break;
-			case "Login invalid(2)":
-					return "Login Inválido";
-					break;
-			default:
-					return erro;
-					break;
+	trataErro: function(data){
+		if (typeof(data) == "string"){
+			if (sys_messages[data]){
+				return sys_messages[data];
+			}else{
+				return data;
+			}
+		}else if (typeof(data) == "object"){
+			erro = $.parseJSON($.parseJSON(data.responseText).error);
+			var msg = "";
+			if (erro){
+				for (var key in erro) {
+				  if (erro.hasOwnProperty(key)) {
+					if (sys_messages[key + " " + erro[key]]){
+						if (msg != "") msg += "<br />";
+						msg += sys_messages[key + " " + erro[key]];
+					}else{
+						if (msg != "") msg += "<br />";
+						msg += "Erro " + data.status;
+					}
+				  }
+				}
+			}
+			return msg;
 		}
+	},
+	scrollToRegionList: function(id){
+		if ($("#region-list .selected").length <= 0) return;
+		var position = parseInt($("#region-list .selected").offset().top - $("#region-list .item:first").offset().top);
+		$('#region-list .contents').animate({scrollTop: position},'slow');
+	},
+	setSelectedRegion: function(){
+		$("#region-selected span.selected").text($("#region-list .item.selected").text());
 	}
+
 });
 
 $.xhrPool = [];
@@ -156,6 +178,11 @@ var indicator_roles = {"_prefeitura,_movimento":"Prefeituras e Movimentos",
 					  "_prefeitura":"Somente Prefeituras",
 					  "_movimento":"Somente Movimentos"
 					  };
+var visibility_level = {"public":"Público",
+					  "private":"Privado",
+					  "country":"por País",
+					  "restrict": "por Usuário"
+					  };
 var indicator_types = {"normal":"normal",
 					  "varied":"variada",
 					  "varied_dyn":"variada dinâmica"
@@ -180,6 +207,13 @@ var sort_directions = {"greater value":"MAIOR valor, melhor classificação",
 					  "lowest value":"MENOR valor, melhor classificação"
 					  };
 
+var precisions = {"0":"10",
+					  "20":"8",
+					  "100":"6",
+					  "200":"4",
+					  "500":"2",
+					  "500":"0"
+					  };
 var measurement_units = [];
 var sources = [];
 
@@ -273,13 +307,30 @@ var qtip_editor = {
    }
 };
 
-
 var findInArray = function(obj,value){
 	if (value == "") return true;
 	var retorno = false;
 	for (a = 0; a < obj.length; a++){
 		if (obj[a] == value) retorno = true;
 	}
+	return retorno;
+}
+
+var findInJson = function(obj,key,value){
+	var found = false;
+	var key_found = "";
+	$.each(obj, function(key1,value1){
+		$.each(obj[key1], function(key2,value2){
+			if (key2 == key){
+				if (value2 == value){
+					found = true;
+					key_found = key1;
+					return false;
+				}
+			}
+		});
+	});
+	var retorno = {"found": found, "key": key_found}
 	return retorno;
 }
 
@@ -303,6 +354,26 @@ $.fn.clearWarning = function(){
 	$(this).html("");
 };
 
+
+$.fn.offsetRelative = function(top){
+	var $this = $(this);
+	var $parent = $this.offsetParent();
+	var offset = $this.position();
+	if(!top) return offset; // Didn't pass a 'top' element
+	else if($parent.get(0).tagName == "BODY") return offset; // Reached top of document
+	else if($(top,$parent).length) return offset; // Parent element contains the 'top' element we want the offset to be relative to
+	else if($parent[0] == $(top)[0]) return offset; // Reached the 'top' element we want the offset to be relative to
+	else { // Get parent's relative offset
+		var parent_offset = $parent.offsetRelative(top);
+		offset.top += parent_offset.top;
+		offset.left += parent_offset.left;
+		return offset;
+	}
+};
+$.fn.positionRelative = function(top){
+	return $(this).offsetRelative(top);
+};
+	
 var findCidadePrefeito = function(city_id){
 	var retorno = "";
 	for (i = 0; i < cidades_prefeitos.length; i++){
@@ -601,9 +672,10 @@ var buildVariableHistory = function(var_id){
 	$.ajax({
 		type: 'GET',
 		dataType: 'json',
-		url: api_path + '/api/user/$$userid/variable?api_key=$$key'.render({
+		url: api_path + '/api/user/$$userid/variable?api_key=$$key$$region'.render({
 				key: $.cookie("key"),
-				userid: $.cookie("user.id")
+				userid: $.cookie("user.id"),		
+				region: ($("#dashboard-content .content select#region_id option:selected").val()) ? "&region_id=" + $("#dashboard-content .content select#region_id option:selected").val() : ""
 				}),
 		success: function(data, textStatus, jqXHR){
 			var data_variables = new Array();
@@ -649,14 +721,24 @@ var buildVariableHistory = function(var_id){
 				$(this).parent().parent().addClass("selected");
 				var value_selected = $(this);
 
-				$.ajax({
-					type: 'GET',
-					dataType: 'json',
-					url: api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
+				var url = api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
 							key: $.cookie("key"),
 							var_id: getIdFromUrl($.getUrlVar("url")),
 							value_id: $(value_selected).attr("value-id")
-							}),
+							});
+				if ($("#dashboard-content .content select#region_id option:selected").val()){
+					url = api_path + '/api/city/$$city/region/$$region/value/$$value_id?api_key=$$key'.render({
+								key: $.cookie("key"),
+								value_id: $(value_selected).attr("value-id"),
+								city: getIdFromUrl(user_info.city),
+								region: $("#dashboard-content .content select#region_id option:selected").val()
+								});				
+				}
+				
+				$.ajax({
+					type: 'GET',
+					dataType: 'json',
+					url: url,
 					success: function(data, textStatus, jqXHR){
 						$("#dashboard-content .content .form").find("input#value").val(data.value);
 						if (data_variables[0].period == "yearly"){
@@ -674,12 +756,21 @@ var buildVariableHistory = function(var_id){
 			});
 			$("table.history a.delete").click(function(){
 				var value_selected = $(this);
-				deleteRegister({
-					url: api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
+				var url = api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
 							key: $.cookie("key"),
 							var_id: getIdFromUrl($.getUrlVar("url")),
 							value_id: $(value_selected).attr("value-id")
-							}),
+							});
+				if ($("#dashboard-content .content select#region_id option:selected").val()){
+					url =  api_path + '/api/city/$$city/region/$$region/value/$$value_id?api_key=$$key'.render({
+							key: $.cookie("key"),
+							value_id: $(value_selected).attr("value-id"),
+							city: getIdFromUrl(user_info.city),
+							region: $("#dashboard-content .content select#region_id option:selected").val()
+							});
+				}
+				deleteRegister({
+					url: url,
 					redirect: false,
 					call: "buildVariableHistory"
 				});
@@ -703,9 +794,10 @@ var buildIndicatorHistory = function (args){
 	$.ajax({
 		type: 'GET',
 		dataType: 'json',
-		url: api_path + '/api/indicator/$$id/variable/value?api_key=$$key'.render({
+		url: api_path + '/api/indicator/$$id/variable/value?api_key=$$key$$region'.render({
 				key: $.cookie("key"),
-				id: args.id
+				id: args.id,
+				region: ($("#dashboard-content .content select#region_id option:selected").val()) ? "&region_id=" + $("#dashboard-content .content select#region_id option:selected").val() : ""
 				}),
 		success: function(data, textStatus, jqXHR){
 			if (data.header && data.rows != undefined){
@@ -730,7 +822,7 @@ var buildIndicatorHistory = function (args){
 
                     var cont = 0, num_var = numKeys(data.header);
 
-					$.each(data.rows[index].valores, function(index2,value2){
+					$.each(headers, function(index2,value2){
 						if (data.rows[index].valores[index2] && data.rows[index].valores[index2].value != "-" && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined){
 							history_table += "<td class='valor' title='$$data' value-id='$$id' variable-id='$$variable_id'>$$valor</td>".render({
 									valor: $.formatNumber(data.rows[index].valores[index2].value, {format:"#,##0.###", locale:"br"}),
@@ -799,7 +891,7 @@ var buildIndicatorHistory = function (args){
 				});
 				history_table += "</tbody></table>";
 			}else{
-				var history_table = "<div class='title' title='mostrar/esconder Histórico'>Série Histórica</div><div class='historic-content'><table class='history'><thead><tr><th>nenhum registro encontrado</th></tr></thead></table></div>";
+				var history_table = "<div class='historic-content'><table class='history'><thead><tr><th>nenhum registro encontrado</th></tr></thead></table></div>";
 			}
 
 			var variation_filter = "";
@@ -850,14 +942,23 @@ var buildIndicatorHistory = function (args){
 								var total_values_enviados = 0;
 
 								$(tds).each(function(index,element){
-									$.ajax({
-										type: 'DELETE',
-										dataType: 'json',
-										url: api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
+									var url = api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
 														key: $.cookie("key"),
 														var_id: $(element).attr("variable-id"),
 														value_id: $(element).attr("value-id")
-													}),
+													});
+									if ($("#dashboard-content .content select#region_id").length > 0 && ($("#dashboard-content .content select#region_id option:selected").val())){
+										url = api_path + '/api/city/$$city/region/$$region/value/$$value_id?api_key=$$key'.render({
+															key: $.cookie("key"),
+															city: getIdFromUrl(user_info.city),
+															region: $("#dashboard-content .content select#region_id option:selected").val(),
+															value_id: $(element).attr("value-id")
+														});
+									}
+									$.ajax({
+										type: 'DELETE',
+										dataType: 'json',
+										url: url,
 										success: function(data,status,jqXHR){
 											switch(jqXHR.status){
 												case 204:
@@ -1136,6 +1237,7 @@ var getUrlSub = function(){
 };
 
 var getIdFromUrl = function(url){
+	if (typeof(url) != "string") return undefined;
 	if (url == undefined) return undefined;
 	var split_url = url.split("/");
 	if (split_url.length > 0){
@@ -1172,15 +1274,15 @@ $.confirm = function(params){
 
 	$.each(params.buttons,function(name,obj){
 		buttons.eq(i++).click(function(){
-			obj.action();
-			$.confirm.hide();
+			$.confirm.hide(obj);
 			return false;
 		});
 	});
 };
-$.confirm.hide = function(){
+$.confirm.hide = function(obj){
 	$('#dialog-overlay').fadeOut(function(){
 		$(this).remove();
+		if (obj) obj.action();
 	});
 }
 
@@ -1658,3 +1760,19 @@ var convertFormulaToCss = function(){
 	}
 	$("#formula-editor .editor-content").html(formula_css);
 }
+
+var sortSelectBox = function(id){
+    var options = $(id + ' option');
+	var arr = options.map(function(_, o) { return { t: $(o).text(), v: o.value }; }).get();
+	arr.sort(function(o1, o2) { return o1.t > o2.t ? 1 : o1.t < o2.t ? -1 : 0; });
+	options.each(function(i, o) {
+	  o.value = arr[i].v;
+	  $(o).text(arr[i].t);
+	});
+}
+
+var sys_messages = {
+					"Login invalid(1)": "Login inválido",
+					"Login invalid(2)": "Login inválido",
+					"user.update.network_ids.invalid 1": "Rede inválida."
+			};

@@ -18,6 +18,43 @@ a{
     text-decoration: none;
 }
 
+.button-default{
+    background: url("../images/bg_botao.gif") repeat-x top center;
+    padding: 2px 5px;
+    font-family: "Asap", tahoma, sans-serif;
+    font-weight: normal;
+    font-size: 11pt;
+    color: #fff;
+    text-shadow:#004f98 1px 1px 0px;
+    -moz-text-shadow:#004f98 1px 1px 0px;
+    -webkit-text-shadow:#004f98 1px 1px 0px;
+    border-radius:3px;
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
+    border: 1px solid #637aa6;
+    margin: 2px 5px;
+}
+.button-default:hover{
+	cursor: hand;
+	cursor: pointer;
+    background: url("../images/bg_botao.gif") repeat-x bottom center;
+    color: #fff;
+    border: 1px solid #4e6286;
+}
+.button-default.disabled{
+    background: #ccc;
+    color: #999;
+    text-shadow:#666 1px 1px 0px;
+    -moz-text-shadow:#666 1px 1px 0px;
+    -webkit-text-shadow:#666 1px 1px 0px;
+    border: 1px solid #666;	
+}
+.button-default.disabled:hover{
+	cursor: default;
+}
+.center{
+	text-align: center;
+}
 #top{
     margin: 0 auto;
     padding: 0;
@@ -81,7 +118,7 @@ a{
 
 #top .top-right .empty{
     width: 100px;
-    height: 66px;
+    min-height: 66px;
 }
 
 #top .top-right .logo img{
@@ -190,7 +227,7 @@ a.botao-form{
     clear: both;
     background: url("../images/bg_botao.gif") repeat-x top center;
     padding: 2px 20px;
-    font-family: "PT Sans";
+    font-family: "Asap", tahoma, sans-serif;
     font-weight: bolder;
     font-size: 12pt;
     color: #fff;
@@ -215,7 +252,7 @@ a.button-add{
     clear: both;
     background: #ffffff;
     padding: 2px 20px;
-    font-family: "PT Sans";
+    font-family: "Asap", tahoma, sans-serif;
     font-weight: bolder;
     font-size: 12pt;
     color: #419f91;
@@ -318,12 +355,14 @@ a.button-add:hover{
     clear: right;
     word-wrap: break-word;
     width: 76%;
+	vertical-align: top;
 }
 .form .input_label{
     float: left;
     text-align: left;
     clear: right;
-    padding-top: 4px;;
+    padding-top: 4px;
+	vertical-align: top;
 }
 
 .form input.itext,
@@ -336,6 +375,7 @@ a.button-add:hover{
     -moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
 	text-align: left;
+	vertical-align: top;
 }
 .form textarea.itext_content{
     font-size: 10pt;
@@ -347,6 +387,7 @@ a.button-add:hover{
     -moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
 	text-align: left;
+	vertical-align: top;
 }
 .form input.itext50px{
     font-size: 10pt;
@@ -356,6 +397,7 @@ a.button-add:hover{
     box-shadow: inset 0 0 5px #e0e0e0;
     -moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	vertical-align: top;
 }
 .form input.itext80px{
     font-size: 10pt;
@@ -365,6 +407,7 @@ a.button-add:hover{
     box-shadow: inset 0 0 5px #e0e0e0;
     -moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	vertical-align: top;
 }
 .form input.itext250px{
     font-size: 10pt;
@@ -374,6 +417,7 @@ a.button-add:hover{
     box-shadow: inset 0 0 5px #e0e0e0;
     -moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	vertical-align: top;
 }
 .form input.itext200px{
     font-size: 10pt;
@@ -383,6 +427,7 @@ a.button-add:hover{
     box-shadow: inset 0 0 5px #e0e0e0;
     -moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	vertical-align: top;
 }
 .form input.itext300px{
     font-size: 10pt;
@@ -392,6 +437,7 @@ a.button-add:hover{
     box-shadow: inset 0 0 5px #e0e0e0;
     -moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	vertical-align: top;
 }
 .form input.itextdata{
     font-size: 10pt;
@@ -401,6 +447,7 @@ a.button-add:hover{
     box-shadow: inset 0 0 5px #e0e0e0;
     -moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	vertical-align: top;
 }
 .form select.iselect{
     font-size: 10pt;
@@ -409,6 +456,7 @@ a.button-add:hover{
     box-shadow: inset 0 0 5px #e0e0e0;
     -moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	vertical-align: top;
 }
 
 .form select.iselect200px{
@@ -419,15 +467,18 @@ a.button-add:hover{
     box-shadow: inset 0 0 5px #e0e0e0;
     -moz-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0, 0.25);
+	vertical-align: top;
 }
 
 .form textarea.itext{
     min-height: 80px;
     _height: 80px;
+	vertical-align: top;
 }
 
 .form input.icheckbox{
     margin-top: 5px;
+	vertical-align: top;
 }
 
 .form .field.prefeitura{
@@ -466,7 +517,7 @@ a.button-default{
     clear: both;
     background: url("../images/bg_botao.gif") repeat-x top center;
     padding: 2px 20px;
-    font-family: "PT Sans";
+    font-family: "Asap", tahoma, sans-serif;
     font-weight: bolder;
     font-size: 12pt;
     color: #fff;
@@ -518,6 +569,18 @@ a.icone.config{
 a.icone.zoom{
     background-position: 0px -88px;
 }
+a.icone.unhide{
+    background-position: 0px -110px;
+}
+a.icone.justification{
+    text-indent: -4px;
+	font-size: 0.7em;
+	text-align: center;
+    height: 14px;
+	padding-top: 6px;
+	color: #fff;
+    background-position: 0px -132px;
+}
 
 
 table#results td.botoes{
@@ -534,6 +597,9 @@ table#results td.left{
 }
 table#results td.botoes a{
     margin: 0;
+}
+table#results td.check{
+    border-left: 1px solid #e0e0e0;
 }
 table#results a.edit,
 table#results a.zoom,
@@ -607,8 +673,8 @@ table#results span.noresults{
     margin: 100px 0px 90px 5px;
     padding: 6px;
     float: left;
-    width: 13px;
-    height: 13px;
+    width: 14px;
+    height: 14px;
     border: 1px solid #bbb;
     color: #666;
     font-size: 8pt;
@@ -631,7 +697,9 @@ table#results span.noresults{
 }
 
 
-#formula-editor .variables{
+#formula-editor .variables,
+#variables-list .variables,
+#variables-selected .variables{
     background-color: #fff;
     margin-left: 5px;
     float: left;
@@ -641,7 +709,9 @@ table#results span.noresults{
     overflow-y: auto;
 }
 
-#formula-editor .variables .item{
+#formula-editor .variables .item,
+#variables-list .variables .item,
+#variables-selected .variables .item{
     padding: 2px 5px;
     clear: both;
     background-color: #f5f5f5;
@@ -654,10 +724,10 @@ table#results span.noresults{
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+	text-align: left;
 }
 #formula-editor .variables .item:hover{
-    cursor: pointer;
-    cursor: hand;
+	cursor: default;
     background-color: #c9ffff;
     color: #000;
 }
@@ -962,11 +1032,20 @@ div.indicadores_list .eixos{
     margin-bottom: 5px;
 }
 
+div.indicadores_list .hidden{
+    margin-top: 40px;
+    opacity:0.60;
+    -moz-opacity:.60;
+    filter:alpha(opacity=60);
+
+}
+
 div.indicadores_list .eixos .variable{
     display: block;
 }
 
-div.indicadores_list .eixos.collapse .variable{
+div.indicadores_list .eixos.collapse .variable,
+div.indicadores_list .eixos.collapse .empty{
     display: none;
 }
 
@@ -988,6 +1067,10 @@ div.indicadores_list .eixos .variable{
     clear: both;
     padding: 5px 10px;
     border-bottom: 1px solid #f0f0f0;
+}
+
+div.indicadores_list .eixos .empty{
+    padding: 5px 10px;
 }
 
 div.indicadores_list .eixos .variable.unfolded{
@@ -1386,6 +1469,12 @@ select.iselect{
     max-width: 400px;
 }
 
+select.multiselect{
+    max-width: 350px;
+    min-width: 250px;
+	height: 150px;
+}
+
 .logo_preview{
     clear: both;
 }
@@ -1399,4 +1488,285 @@ a.link-files{
 }
 a.link-files:hover{
     color: #666666;
+}
+input.admin_checked{
+	opacity: 0.5;
+}
+
+#panel-map{
+	background-color: #f5f5f5;
+	border: 1px solid #e0e0e0;
+	margin-bottom: 15px;
+}
+#panel-map #panel{
+	padding-top: 5px;
+}
+#panel-map button{
+    background: url("../images/bg_botao.gif") repeat-x top center;
+    padding: 1px 6px;
+    font-family: "Asap", tahoma, sans-serif;
+    font-weight: normal;
+    font-size: 11pt;
+    color: #fff;
+    text-shadow:#004f98 1px 1px 0px;
+    -moz-text-shadow:#004f98 1px 1px 0px;
+    -webkit-text-shadow:#004f98 1px 1px 0px;
+    border-radius:3px;
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
+    border: 1px solid #637aa6;
+    margin: 2px 5px;
+}
+#panel-map button:hover{
+	cursor: hand;
+	cursor: pointer;
+}
+#panel-map button.disabled{
+    background: #ccc;
+    color: #999;
+    text-shadow:#666 1px 1px 0px;
+    -moz-text-shadow:#666 1px 1px 0px;
+    -webkit-text-shadow:#666 1px 1px 0px;
+    border: 1px solid #666;
+}
+#panel-map button.disabled:hover{
+	cursor: default;
+}
+#map{
+	width: 100%;
+	min-height: 450px;
+	margin: 5px 0;
+	border-top: 1px solid #e0e0e0;
+	border-bottom: 1px solid #e0e0e0;
+}
+
+#panel-region{
+	position: relative;
+}
+#panel-region #region-top{
+	clear: both;
+	margin-bottom: 5px;
+}
+#panel-region #region-top #list-label{
+	width: 25%;
+	display: inline-block;
+	padding: 2px 1px;
+	text-align: left;
+}
+#panel-region #region-top #region-panel{
+	width: 74%;
+	display: inline-block;
+	background-color: #f5f5f5;
+	border: 1px solid #e0e0e0;
+	margin-left: 6px;
+}
+#panel-region #region-top #region-panel .contents{
+	text-align: left;
+	padding: 5px 10px;
+}
+
+#panel-region #region-top #region-panel #region-selected span.selected{
+	border: 1px solid #ccc;
+	background-color: #fff;
+	padding: 2px 5px;
+	color: #009999;
+	font-size: 1.2em;
+}
+#panel-region #region-list{
+	width: 25%;
+	float: left;
+}
+#panel-region #region-list .contents{
+	border: 1px solid #e0e0e0;
+	overflow-y: scroll;
+}
+#panel-region #region-list .contents .item{
+	border-bottom: 1px solid #ddd;
+	background-color: #f5f5f5;
+	padding: 4px 5px;
+	text-align: left;
+}
+#panel-region #region-list .contents .item[depth="2"]{
+	background-color: #fefefe;
+}
+#panel-region #region-list .contents .item[depth="3"]{
+	padding-left: 10px;
+}
+#panel-region #region-list .contents .item:hover{
+	cursor: hand;
+	cursor: pointer;
+	background-color: #c9ffff;
+    color: #000;
+}
+#panel-region #region-list .contents .item.selected{
+    background-color: #c9ffff;
+    color: #20c1c1;
+}
+
+#panel-region #region-list .contents .item:last{
+	border-bottom: none;
+}
+#panel-region #panel-map{
+	width: 74%;
+	float: right;
+}
+
+#precision-value{
+	display: inline-block;
+	font-size: 12pt;
+	font-weight: bolder;
+	padding: 5px;
+	background-color: rgb(255, 255, 255);
+	border: 1px solid rgb(204, 204, 204);
+	margin-left: 5px;
+}
+#precision-slider {
+    width: 400px;
+    display: inline-block;
+    margin-left: 15px;
+}
+
+.upload_via_file .form .aviso{
+	font-size: 0.8em;
+	text-align: left;
+	padding: 5px 10px;
+	width: 88%;
+}
+
+#visibility-options{
+	display: inline-block;
+	margin-left: 15px;
+}
+#visibility-options.inline{
+	margin-left: 0;
+	margin-top: 5px;
+}
+#visibility-options label{
+	margin-right: 5px;
+	padding-top: 2px;
+}
+#visibility-options .buttons{
+    margin-top: 50px;
+	display: inline-block;
+}
+#visibility-options .buttons button{
+	margin: 0 3px;
+	display: block;
+    background-color: #fff;
+    padding: 6px;
+    border: 1px solid #bbb;
+    color: #666;
+    font-size: 8pt;
+    font-weight: bolder;
+    font-family: arial;
+}
+#visibility-options .buttons button:hover{
+    cursor: pointer;
+    cursor: hand;
+    background-color: #c9ffff;
+    color: #000;
+}
+.models{
+	line-height: 1.8em;
+	font-size: 0.9em;
+}
+.models a{
+	color: #20c1c1;
+	font-size: 0.9em;
+	padding: 2px 8px;
+	border: 1px solid #20c1c1;
+}
+.models a:hover{
+	color: #666;
+}
+
+.variables-clone{
+	margin: 0 auto;
+}
+.variables-clone .left,
+.variables-clone .right{
+	width: 40%;
+	display: inline-block;
+}
+.variables-clone .title{
+	font-size: 0.9em;
+	padding: 2px;
+}
+
+#variables-list .variables,
+#variables-selected .variables{
+	background-color: #efefef;
+	width: 100%;
+    height: 220px;
+}
+#variables-selected .variables{
+	margin-left: 20px;
+}
+
+#variables-list .variables .item,
+#variables-selected .variables .item{
+	position: relative;
+	min-height: 24px;
+	font-size: 0.9em;
+}
+#variables-selected .variables .item{
+	display: none;
+}
+#variables-list .variables .item:hover,
+#variables-selected .variables .item:hover{
+    background-color: #fefefe;
+}
+#variables-list .variables .item .label{
+	display: inline-block;
+	width: 95%;
+	clear: left;
+}
+#variables-list .variables .item .button{
+	display: none;
+	background-color: #fff;
+	border: 1px solid #d0d0d0;
+	position: absolute;
+	right: 2px;
+	float: right;
+	width: 5%;
+	clear: right;
+	top: 50%;
+	text-align: center;
+	width: 16px;
+	height: 22px;
+	padding: 0;
+	margin: 0;
+	margin-top: -11px;
+}
+#variables-selected .variables .item .label{
+	width: 95%;
+	margin-left: 5%;
+}
+#variables-selected .variables .item .button{
+	display: none;
+	background-color: #fff;
+	border: 1px solid #d0d0d0;
+	position: absolute;
+	left: 2px;
+	width: 5%;
+	top: 50%;
+	text-align: center;
+	width: 16px;
+	height: 22px;
+	padding: 0;
+	margin: 0;
+	margin-top: -11px;
+}
+
+#variables-list .variables .item .button:hover,
+#variables-selected .variables .item .button:hover{
+	cursor: hand;
+	cursor: pointer;
+	background-color: #e9ffff;
+	border: 1px solid #55c5c6;
+	color: #55c5c6;
+}
+
+#steps-buttons{
+	margin-top: 20px;
 }

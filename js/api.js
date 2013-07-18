@@ -1,5 +1,6 @@
 var api_path = "";
 //var api_path = "http://rnsp.aware.com.br";
+//var api_path = "http://192.168.1.35:6668";
 
 $(document).ready(function() {
 
@@ -33,7 +34,6 @@ $(document).ready(function() {
                         resetWarnings();
                         $.cookie("user.login",data.login,{ expires: 1, path: "/" });
                         $.cookie("user.id",data.id,{ expires: 1, path: "/" });
-                        $.cookie("network.id",data.network_id,{ expires: 1, path: "/" });
                         $.cookie("key",data.api_key,{ expires: 1, path: "/" });
                         $("#dashboard #form-login").hide();
                         location.hash = "!/dashboard";
@@ -69,6 +69,13 @@ $(document).ready(function() {
                             user_info = data;
 
                             user_info.role = "";
+							
+							if (user_info.networks){
+								if (user_info.networks[0]){
+									user_info.network = user_info.networks[0].id;
+								}
+							}
+							
                             if (user_info.roles.length == 1){
                                 user_info.role = user_info.roles[0];
                             }else if (user_info.roles.length == 2){
@@ -178,23 +185,23 @@ $(document).ready(function() {
         submenu_label = [];
         menu_access = [];
 
-        menu_label["admins"] = "Administradores";
-        menu_label["axis"] = "Eixos";
-        menu_label["customize"] = "Customização";
         menu_label["dashboard"] = "Início";
+        menu_label["admins"] = "Administradores";
+        menu_label["users"] = "Usuários";
+        menu_label["customize"] = "Customização";
+        menu_label["content"] = "Conteúdo";
+        menu_label["axis"] = "Eixos";
         menu_label["indicator"] = "Indicadores";
-        menu_label["logout"] = "Sair";
-        menu_label["mygroup"] = "Grupos de Indicadores";
-        menu_label["myindicator"] = "Indicadores";
-        menu_label["myvariable"] = "Variáveis Básicas";
-        menu_label["myvariableedit"] = "Editar Valores";
+        menu_label["indicator_user"] = "Indicadores";
+        menu_label["variable_user"] = "Variáveis";
+        menu_label["region"] = "Regiões";
         menu_label["networks"] = "Redes";
         menu_label["parameters"] = "Parâmetros";
+        menu_label["logs"] = "Logs";
         menu_label["prefs"] = "Preferências";
         menu_label["reports"] = "Relatórios";
         menu_label["tokens"] = "Tokens";
-        menu_label["users"] = "Usuários";
-        menu_label["variable"] = "Variáveis";
+        menu_label["logout"] = "Sair";
 
         submenu_label["parameters"] = [];
         submenu_label["parameters"].push({"countries" : "Países"});
@@ -207,13 +214,29 @@ $(document).ready(function() {
         submenu_label["customize"].push({"pages" : "Páginas"});
         submenu_label["customize"].push({"css" : "CSS"});
 
+        submenu_label["content"] = [];
+        submenu_label["content"].push({"best_pratice" : "Boas Práticas"});
 
-        menu_access["superadmin"] = ["prefs","parameters","networks","admins","indicator","axis","logout"];
+        submenu_label["indicator_user"] = [];
+        submenu_label["indicator_user"].push({"myindicator" : "Editar Indicadores"});
+        submenu_label["indicator_user"].push({"mygroup" : "Grupos de Indicadores"});
+
+        submenu_label["variable_user"] = [];
+        submenu_label["variable_user"].push({"myvariable" : "Variáveis Básicas"});
+        submenu_label["variable_user"].push({"variable" : "Variáveis"});
+        submenu_label["variable_user"].push({"myvariableedit" : "Editar/Importar Valores"});
+        submenu_label["variable_user"].push({"myvariableclone" : "Clonar Valores"});
+
+        submenu_label["region"] = [];
+        submenu_label["region"].push({"region-list" : "Cadastro"});
+        submenu_label["region"].push({"region-map" : "Definir Regiões no Mapa"});
+
+        menu_access["superadmin"] = ["dashboard","prefs","parameters","networks","admins","users","indicator","axis","logs","logout"];
         submenu_access["superadmin"] = ["countries","states","cities","units"];
-        menu_access["admin"] = ["prefs","users","parameters","variable","myvariableedit","axis","indicator"];
+        menu_access["admin"] = ["dashboard","prefs","users","parameters","variable_user","axis","indicator","logs"];
         submenu_access["admin"] = ["countries","states","cities","units"];
         menu_access["admin"].push("logout");
-        submenu_access["user"] = [];
+        submenu_access["user"] = ["dashboard"];
         if (findInArray(user_info.roles,"user")){
             menu_access["user"] = ["prefs"];
             if (user_info.institute){
@@ -230,17 +253,33 @@ $(document).ready(function() {
                     }
                     submenu_access["user"].push("css");
                 }
+				menu_access["user"].push("content");
+				submenu_access["user"].push("best_pratice");
             }
-            menu_access["user"].push("myvariable");
+            menu_access["user"].push("variable_user");
             if(user_info.institute.users_can_edit_value == 1){
-                menu_access["user"].push("myvariableedit");
+                submenu_access["user"].push("myvariableedit");
             }
-            menu_access["user"].push("myindicator");
+            menu_access["user"].push("indicator_user");
             if(user_info.institute.users_can_edit_groups == 1){
-                menu_access["user"].push("mygroup");
+                submenu_access["user"].push("mygroup");
             }
 
+			submenu_access["user"].push("myvariable");
+			submenu_access["user"].push("myvariableedit");
+			submenu_access["user"].push("myvariableclone");
+			submenu_access["user"].push("myindicator");
+			submenu_access["user"].push("mygroup");
+
+/*            menu_access["user"].push("region");
+			submenu_access["user"].push("region-list");
+			submenu_access["user"].push("region-map");*/ 
+
             menu_access["user"].push("logout");
+        }
+        if (findInArray(user_info.roles,"admin")){
+			submenu_access["admin"].push("variable");
+			submenu_access["admin"].push("myvariableedit");
         }
 
         var menu_item = "";
@@ -253,11 +292,13 @@ $(document).ready(function() {
                 var submenu_item = "<ul class='submenu'>";
                 $.each(submenu_label[value],function(index,item){
                     $.each(item,function(url_sub,text){
-                        submenu_item += "<li class='submenu $$class' ref='$$url_sub'>$$menu</li>".render({
-                            menu: "<a href='#!/" + url_sub + "'>" + text + "</a>",
-                            url_sub: url_sub,
-                            class: menu_class
-                        });
+						if (findInArray(submenu_access[user_info.role],url_sub)){
+							submenu_item += "<li class='submenu $$class' ref='$$url_sub'>$$menu</li>".render({
+								menu: "<a href='#!/" + url_sub + "'>" + text + "</a>",
+								url_sub: url_sub,
+								class: menu_class
+							});
+						}
                     });
                 });
                 submenu_item += "</ul>";
@@ -281,6 +322,7 @@ $(document).ready(function() {
         });
         var tSubmenu;
         $("#menu ul.menu li a.submenu").hover(function(){
+            $("#menu ul.menu").find("ul").hide();
             $(this).parent().find("ul").show();
         },function(){
             var obj = $(this);
@@ -301,6 +343,472 @@ $(document).ready(function() {
         });
     };
 
+	var current_map_string = '';
+	var map;
+
+	$map = function(){
+
+		var drawingManager;
+		var selectedShape;
+		var objTriangle = [];
+		var color = [];
+		color["default"] = '#00B6C1';
+		color["select"] = '#FFC21E';
+		color["edit"] = '#FF1E1E';
+
+		// perguntar a precisao
+		// 0 = 100%
+		// 20 = muito alta
+		// 100 = media
+		// 200 = ruim
+		// 500 = ruim demais
+		// 1000 = estranho
+	 
+		var _precisao = 20;
+
+		var _binds = {
+			on_selection_unavaiable: null,
+			on_selection_available: null,
+		};
+
+		var _is_visible = 1;
+		function hide_controls (){
+			_is_visible = 0;
+
+			if (typeof _binds.on_selection_unavaiable == 'function'){
+				_binds.on_selection_unavaiable();
+			}
+		}
+
+		function show_controls (){
+			if (_is_visible == 1) return;
+			_is_visible = 1;
+
+			if (typeof _binds.on_selection_available == 'function'){
+				_binds.on_selection_available();
+			}
+		}
+
+		// na hora de salvar usa o conteudo do current_map_string
+
+		function clearSelection() {
+			if (selectedShape) {
+				setColor("default");
+				selectedShape.setEditable(false);
+				selectedShape = null;
+				current_map_string = '';
+				hide_controls();
+				$("#panel-map #edit-button").addClass("disabled");
+				$("#panel-map #delete-button").addClass("disabled");
+				if ($("#region-list .item.selected").length <= 0){
+					$("#panel-map #save-button").addClass("disabled");
+				}
+			}
+		}
+
+		function setSelection(shape) {
+			clearSelection();
+			selectedShape = shape;
+			setColor("select");
+			$("#panel-map #edit-button").removeClass("disabled");
+			$("#panel-map #delete-button").removeClass("disabled");
+			if ($("#region-list .item.selected").length > 0){
+				$("#panel-map #save-button").removeClass("disabled");
+			}
+		}
+
+		function setShapeEditable() {
+			$("#panel-map #edit-button").addClass("disabled");
+			setColor("edit");
+			selectedShape.setEditable(true);
+		}
+		
+		function getSelection(){
+			console.log(current_map_string);
+		}
+
+		function saveSelectedShape(){
+			if ($("#save-button").length > 0){
+				if ($("#save-button").hasClass("disabled")){
+					return;
+				}
+			}
+			
+			if ($("#region-list .selected").length <= 0 || (!$("#region-list .selected").attr("region-id"))){
+				$("#aviso").setWarning({msg: "Nenhuma região selecionada."});
+				return;
+			}else if(!current_map_string){
+				$.confirm({
+					'title': 'Confirmação',
+					'message': 'Nenhuma forma foi selecionada. <br />Deseja salvar assim mesmo?',
+					'buttons': {
+						'Sim': {
+							'class'	: '',
+							'action': function(){
+								Save();
+							}
+						},
+						'Não'	: {
+							'class'	: '',
+							'action': function(){
+								return;
+							}
+						}
+					}
+				});	
+			}else{
+				$.confirm({
+					'title': 'Confirmação',
+					'message': 'Tem certeza que deseja associar essa forma à região "$$regiao"?'.render({
+						regiao: $("#region-list .item.selected").text()
+					}),
+					'buttons': {
+						'Sim': {
+							'class'	: '',
+							'action': function(){
+								Save();
+							}
+						},
+						'Não'	: {
+							'class'	: '',
+							'action': function(){
+								return;
+							}
+						}
+					}
+				});	
+			}
+			
+			function Save(){
+
+				var action = "update";
+				var method = "POST";
+				var url_action = api_path + "/api/city/$$city/region/$$region?api_key=$$key&with_polygon_path=1&limit=1000".render({
+									key: $.cookie("key"),
+									city: getIdFromUrl(user_info.city),
+									region: $("#region-list .selected").attr("region-id")
+							});
+							
+				args = [{name: "api_key", value: $.cookie("key")},
+						{name: "city.region." + action + ".polygon_path", value: current_map_string}
+						];
+									
+				$.ajax({
+					type: method,
+					dataType: 'json',
+					url: url_action,
+					data: args,
+					success: function(data,status,jqXHR){
+					
+						if (!selectedShape.region_index){
+							var index = objTriangle.length;
+							
+							selectedShape.region_index = index;
+							
+							objTriangle.push(selectedShape);
+							
+						}
+						$("#region-list .selected").attr("region-index",selectedShape.region_index);
+						updateDataRegions($("#region-list .selected").attr("region-id"),current_map_string);
+						
+						$("#aviso").setWarning({msg: "Operação efetuada com sucesso."});
+					},
+					error: function(data){
+						$("#aviso").setWarning({msg: "Erro na operação. ($$codigo)".render({
+										codigo: $.parseJSON(data.responseText).error
+										})
+						});
+					}
+				});
+			}
+		}
+
+		function editSelectedShape() {
+			if ($("#save-button").length > 0){
+				if ($("#save-button").hasClass("disabled")){
+					return;
+				}
+			}
+			if (selectedShape) {
+				setShapeEditable(selectedShape);
+			}
+		}
+
+		function deleteSelectedShape() {
+			if ($("#delete-button").length > 0){
+				if ($("#delete-button").hasClass("disabled")){
+					return;
+				}
+			}
+			if (selectedShape) {
+				if ($("#region-list").length > 0){
+					$("#region-list .item[region-index=" + selectedShape.region_index + "]").attr("region-index","");
+				}
+				selectedShape.setMap(null);
+				objTriangle[selectedShape.region_index] = null;
+				current_map_string = '';
+				hide_controls();
+			}
+		}
+
+		function deleteShape(shape) {
+			if (shape){
+				if ($("#region-list").length > 0){
+//					$("#region-list .item[region-index=" + shape.region_index + "]").removeClass("selected");
+					$("#region-list .item[region-index=" + shape.region_index + "]").attr("region-index","");
+				}
+				shape.setMap(null);
+				objTriangle[shape.region_index] = null;
+			}
+		}
+		
+		function _deleteAllShapes(){
+			$.each(objTriangle, function(index,item){
+				deleteShape(item);
+			});
+			objTriangle = [];
+		}
+		
+		function selectColor(status) {
+			if (!status) status = 'default';
+			// Retrieves the current options from the drawing manager and replaces the
+			// stroke or fill color as appropriate.
+
+			var polygonOptions = drawingManager.get('polygonOptions');
+			polygonOptions.fillColor = color[status];
+			drawingManager.set('polygonOptions', polygonOptions);
+		}
+		
+		function setColor(status) {
+			if (!selectedShape) return;
+			if (!status) status = 'default';
+			// Retrieves the current options from the drawing manager and replaces the
+			// stroke or fill color as appropriate.
+
+			selectedShape.setOptions({fillColor: color[status]});
+		}
+
+		function _store_string(theShape){
+			if (typeof theShape.getPath == "function"){
+				current_map_string = google.maps.geometry.encoding.encodePath(theShape.getPath());
+			}
+			show_controls();
+		}
+		
+		function _addPolygon(args){
+			if (!(current_map_string) && !(args.map_string) && !(args.kml_string)) return;
+			
+			if (!args.kml_string){
+				if (current_map_string && !(args.map_string)) args.map_string = current_map_string
+				var triangleCoords = google.maps.geometry.encoding.decodePath(args.map_string);
+			}else{
+				var triangleCoords = [];
+ 
+			   $.each(args.kml_string.latlng, function(indexx, lnt){
+				   triangleCoords.push (new google.maps.LatLng(lnt[1], lnt[0]));
+			   });
+			   
+			   if ($( "#precision-slider" ).slider("value")){
+					_precisao = parseInt($( "#precision-slider" ).slider("value"));
+			   }else{
+					_precisao = 20;
+			   }
+			   
+			   triangleCoords = GDouglasPeucker(triangleCoords, _precisao);
+			}
+			
+			var index = objTriangle.length;
+
+			objTriangle.push(new google.maps.Polygon({
+				paths: triangleCoords,
+				fillColor: color['default'],
+				strokeWeight: 0,
+				fillOpacity: 0.45,
+				editable: false,
+				region_index: index
+			}));
+			
+			objTriangle[index].setMap(map);
+			
+			if (args.focus) map.fitBounds(objTriangle[index].getBounds());
+
+			google.maps.event.addListener(objTriangle[index], 'click', function() {
+				if ($("#region-list").length > 0){
+					if ($("#region-list .item[region-index=" + this.region_index + "]").length > 0){
+						$("#region-list .item").removeClass("selected");
+						$("#region-list .item[region-index=" + this.region_index + "]").addClass("selected");
+						$.scrollToRegionList(this.region_index);
+						$.setSelectedRegion();
+					}
+				}
+				setSelection(this);
+				_store_string(this);
+			});
+			google.maps.event.addListener(objTriangle[index].getPath(), 'insert_at', function() {
+				_store_string(this);
+			});
+			google.maps.event.addListener(objTriangle[index].getPath(), 'set_at', function() {
+				_store_string(this);
+			});
+			if (args.select){
+				setSelection(objTriangle[index]);
+				_store_string(objTriangle[index]);
+			}
+			
+			if (args.region_id){
+				$("#region-list .item[region-id="+args.region_id+"]").attr("region-index",index);
+			}
+		}
+		
+		function _selectPolygon(index){
+			if (!index) return;
+			
+			map.fitBounds(objTriangle[index].getBounds());
+
+			setSelection(objTriangle[index]);
+			_store_string(objTriangle[index]);
+		}
+		
+		function _editPolygon(index){
+			if (!index) return;
+			
+			map.fitBounds(objTriangle[index].getBounds());
+
+			setShapeEditable(objTriangle[index]);
+			_store_string(objTriangle[index]);
+		}
+
+		function _focusAll(){
+			var super_bound = null;
+			$.each(objTriangle, function(a, elm){
+
+				if (super_bound == null){
+					super_bound = elm.getBounds();
+					return true;
+				}
+
+				super_bound = super_bound.union( elm.getBounds() );
+			});
+
+			if (!(super_bound == null)){
+				map.fitBounds(super_bound);
+			}
+		}
+
+		function _getObjTriangle(index){
+			if (objTriangle){
+				if (objTriangle[index]){
+					return objTriangle[index];
+				}else{
+					return null;
+				}
+			}else{
+				return null;
+			}
+		}
+				
+		function updateDataRegions(id,string){
+			var i = "";
+			$.each(data_regions.regions,function(index,item){
+				if (item.id == id){
+					i = index;
+				}
+			});
+			if (i){
+				data_regions.regions[i].polygon_path = string;
+			}
+		}
+		
+		function initialize(params) {
+
+			if (typeof params.on_selection_unavaiable == 'function')
+				_binds.on_selection_unavaiable = params.on_selection_unavaiable;
+
+			if (typeof params.on_selection_available == 'function')
+				_binds.on_selection_available = params.on_selection_available;
+
+
+			map = new google.maps.Map(document.getElementById('map'), {
+				zoom: 5,
+				center: params.center,
+				mapTypeId: google.maps.MapTypeId.ROADMAP,
+				disableDefaultUI: true,
+				zoomControl: true
+			});
+
+			var polyOptions = {
+				fillColor: color['default'],
+				strokeWeight: 0,
+				fillOpacity: 0.45,
+				editable: true,
+			};
+			// Creates a drawing manager attached to the map that allows the user to draw
+			// markers, lines, and shapes.
+			drawingManager = new google.maps.drawing.DrawingManager({
+				drawingMode: google.maps.drawing.OverlayType.POLYGON,
+				polygonOptions: polyOptions,
+				drawingControlOptions:{
+					drawingModes: [google.maps.drawing.OverlayType.POLYGON]
+				},
+				map: map
+			});
+
+			google.maps.event.addListener(drawingManager, 'overlaycomplete', function(e) {
+				if (e.type != google.maps.drawing.OverlayType.MARKER) {
+					// Switch back to non-drawing mode after drawing a shape.
+					drawingManager.setDrawingMode(null);
+
+					// Add an event listener that selects the newly-drawn shape when the user
+					// mouses down on it.
+					var newShape = e.overlay;
+					newShape.type = e.type;
+					google.maps.event.addListener(newShape, 'click', function() {
+						if ($("#region-list").length > 0){
+							if ($("#region-list .item[region-index=" + this.region_index + "]").length > 0){
+								$("#region-list .item").removeClass("selected");
+								$("#region-list .item[region-index=" + this.region_index + "]").addClass("selected");
+								$.scrollToRegionList(this.region_index);
+								$.setSelectedRegion();
+							}
+						}
+						setSelection(newShape);
+						_store_string(newShape);
+					});
+					google.maps.event.addListener(newShape.getPath(), 'insert_at', function() {
+						_store_string(newShape);
+					});
+					google.maps.event.addListener(newShape.getPath(), 'set_at', function() {
+						_store_string(newShape);
+					});
+					setSelection(newShape);
+					_store_string(newShape);
+				}
+			});
+			
+			// Clear the current selection when the drawing mode is changed, or when the
+			// map is clicked.
+			google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
+			google.maps.event.addListener(map, 'click', clearSelection);
+			google.maps.event.addDomListener(document.getElementById('edit-button'), 'click', editSelectedShape);
+			google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', deleteSelectedShape);
+			google.maps.event.addDomListener(document.getElementById('save-button'), 'click', saveSelectedShape);
+
+			selectColor();
+			
+		}
+		return {
+			init: initialize,
+			getSelectedShape: function(){ return selectedShape; },
+			getSelectedShapeAsString: function(){ return current_map_string; },
+			addPolygon: _addPolygon,
+			selectPolygon: _selectPolygon,
+			editPolygon: _editPolygon,
+			deleteAllShapes: _deleteAllShapes,
+			getObjTriangle: _getObjTriangle,
+			focusAll: _focusAll
+		};
+	}();
+
     var buildContent = function(){
         if ($.inArray(getUrlSub().toString(),menu_access[user_info.role]) >= 0 || $.inArray(getUrlSub().toString(),submenu_access[user_info.role]) >= 0){
             $.xhrPool.abortAll();
@@ -310,41 +818,362 @@ $(document).ready(function() {
 
                 if (!findInArray(user_info.roles,"_prefeitura") && !findInArray(user_info.roles,"_movimento")){
 
-                    var logList = buildDataTable({
-                            headers: ["Usuário","Mensagem","Data"]
-                            },null,false);
+                }else{
+					/*  VARIAVEIS DA HOME  */
+					if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
 
-                    $("#dashboard-content .content").append(logList);
+						var variableList = buildDataTable({
+								headers: ["Nome","_"]
+								},null,false);
 
-                    var url_log = api_path + '/api/log?api_key=' + $.cookie("key");
+						$("#dashboard-content .content").append(variableList);
 
-                    $.ajax({
-                        type: 'GET',
-                        dataType: 'json',
-                        url: url_log,
-                        success: function(data, textStatus, jqXHR){
-                            $.each(data.logs, function(index,value){
-                                $("#dashboard-content .content #results tbody").append($("<tr><td>$$usuario</td><td>$$mensagem</td><td>$$data</td></tr>".render({
-                                usuario: data.logs[index].user.nome,
-                                mensagem: data.logs[index].message,
-                                data: $.convertDateTime(data.logs[index].date,"T")
-                                })));
-                            });
+						$("#button-add").click(function(){
+							resetWarnings();
+							location.hash = "#!/" + getUrlSub() + "?option=add";
+						});
+						
+						//carrega dados do admin
+						var data_network;
+						var data_config_admin;
+						var data_config;
+						
+						$.ajax({
+							type: 'GET',
+							dataType: 'json',
+							url: api_path + '/api/public/network?api_key=$$key'.render({
+									key: $.cookie("key")
+									}),
+							success: function(data, textStatus, jqXHR){
+								data_network = data;
+							}
+						}).done(function(){
+							//carrega config do admin
+							$.ajax({
+								type: 'GET',
+								dataType: 'json',
+								url: api_path + '/api/user/$$user/variable_config?api_key=$$key'.render({
+										key: $.cookie("key"),
+										user: data_network.admin_users[0].id
+										}),
+								success: function(data, textStatus, jqXHR){
+									data_config_admin = data;
+								}
+							}).done(function(){
 
-                            $("#results").dataTable( {
-                                "oLanguage": {
-                                                "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                                                },
-                                "aaSorting": [[2,'desc']],
-                                "aoColumnDefs": [
-                                                    { "sClass": "log", "aTargets": [ 0 , 1 , 2 ] },
-                                                    { "sClass": "log.data", "aTargets": [ 2 ] }
-                                                ]
-                            } );
-                        }
-                    });
+								//carrega config do usuario
+								$.ajax({
+									type: 'GET',
+									dataType: 'json',
+									url: api_path + '/api/user/$$user/variable_config?api_key=$$key'.render({
+											key: $.cookie("key"),
+											user: $.cookie("user.id")
+											}),
+									success: function(data, textStatus, jqXHR){
+										data_config = data;
+									}
+								}).done(function(){
 
-                }
+									$.ajax({
+										type: 'GET',
+										dataType: 'json',
+										url: api_path + '/api/user/$$userid/variable?api_key=$$key&is_basic=1'.render({
+												key: $.cookie("key"),
+												userid: $.cookie("user.id")
+												}),
+										success: function(data, textStatus, jqXHR){
+											$.each(data.variables, function(index,value){
+												if (data_config[data.variables[index].variable_id] && data_config[data.variables[index].variable_id].display_in_home == 1 ||
+												    !(data_config[data.variables[index].variable_id]) && data_config_admin[data.variables[index].variable_id] && data_config_admin[data.variables[index].variable_id].display_in_home == 1){
+													$("#dashboard-content .content #results tbody").append($("<tr><td>$$nome</td><td>$$url</td></tr>".render({nome: data.variables[index].name,
+													apelido: data.variables[index].cognomen,
+													url: data.variables[index].variable_id})));
+												}
+											});
+
+											$("#results").dataTable( {
+												"oLanguage": {
+																"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
+																},
+												"aoColumnDefs": [
+																	{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 1 ] }
+																],
+												"fnDrawCallback": function(){
+														DTdesenhaBotaoVariavel();
+													}
+											} );
+										},
+										error: function(data){
+											$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
+														codigo: $.parseJSON(data.responseText).error
+													})
+											});
+										}
+									});
+								});
+							});
+						});
+
+					}else if ($.getUrlVar("option") == "edit"){
+
+						var txtOption = "Adicionar Valor";
+
+						$.ajax({
+							type: 'GET',
+							dataType: 'json',
+							url: $.getUrlVar("url") + "?api_key=$$key".render({
+										key: $.cookie("key")
+								}),
+							success: function(data,status,jqXHR){
+								if (jqXHR.status == 200){
+
+									var data_region;
+									$.ajax({
+										async: false,
+										type: 'GET',
+										dataType: 'json',
+										url: api_path + '/api/city/$$city/region?api_key=$$key'.render({
+												key: $.cookie("key"),
+												city: getIdFromUrl(user_info.city)
+												}),
+										success: function(data, textStatus, jqXHR){
+											data_region = data.regions;
+										}
+									});
+
+									var newform = [];
+								
+									if (data_region && data_region.length > 0){
+										newform.push({label: "Região", input: ["select,region_id,iselect"]});						
+									}
+
+									newform.push({label: "Variável", input: ["textlabel,textlabel_variable,ilabel"]});
+									newform.push({label: "Valor", input: ["text,value,itext"]});
+
+									newform.push({label: "Período", input: ["textlabel,textlabel_period,ilabel"]});
+									if (data.period == "yearly"){
+										newform.push({label: "Data", input: ["select,value_of_date,iselect"]});
+									}else if(data.period == "monthly"){
+										newform.push({label: "Data", input: ["select,value_of_date_year,iselect","select,value_of_date,iselect"]});
+									}else if(data.period == "daily"){
+										newform.push({label: "Data", input: ["text,value_of_date,itext"]});
+									}
+									newform.push({label: "Descrição", input: ["textlabel,textlabel_explanation,ilabel"]});
+
+									var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
+
+									if (data_region && data_region.length > 0){
+									
+										$("#dashboard-content .content select#region_id").change(function(e){
+											buildVariableHistory();
+										});
+										$("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("Nenhuma"));
+										$.each(data_region,function(index,item){
+											$("#dashboard-content .content select#region_id").append($("<option></option>").val(item.id).html(item.name));
+										});
+									}
+
+									if (data.period == "yearly"){
+										$.ajax({
+											type: 'GET',
+											dataType: 'json',
+											url: api_path + '/api/period/year?api_key=$$key'.render({
+													key: $.cookie("key")
+												}),
+											success: function(data, textStatus, jqXHR){
+												$("#dashboard-content .content select#value_of_date option").remove();
+												$.each(data.options, function(index,value){
+													$("#dashboard-content .content select#value_of_date").append("<option value='$$value'>$$text</option>".render({
+														text:data.options[index].text,
+														value:data.options[index].value
+														}));
+												});
+												$("#dashboard-content .content select#value_of_date option:last").attr("selected","selected");
+											}
+										});
+									}else if(data.period == "monthly"){
+										$("#dashboard-content .content select#value_of_date").hide();
+										$.ajax({
+											type: 'GET',
+											dataType: 'json',
+											url: api_path + '/api/period/year?api_key=$$key'.render({
+													key: $.cookie("key")
+												}),
+											success: function(data, textStatus, jqXHR){
+												$("#dashboard-content .content select#value_of_date_year option").remove();
+												$("#dashboard-content .content select#value_of_date_year").append("<option value=''>Selecione o ano</option>");
+												$.each(data.options, function(index,value){
+													$("#dashboard-content .content select#value_of_date_year").append("<option value='$$value'>$$text</option>".render({
+														text:data.options[index].text,
+														value:data.options[index].value
+														}));
+												});
+												$("#dashboard-content .content select#value_of_date option:last").attr("selected","selected");
+
+												$("#dashboard-content .content select#value_of_date_year").change(function(){
+													$("#dashboard-content .content select#value_of_date option").remove();
+													$("#dashboard-content .content select#value_of_date").hide();
+													if ($(this).find("option:selected").val() != ""){
+														$("#dashboard-content .content select#value_of_date").show();
+														$.ajax({
+															type: 'GET',
+															dataType: 'json',
+															url: api_path + '/api/period/year/$$year/month?api_key=$$key'.render({
+																	key: $.cookie("key"),
+																	year: $("#dashboard-content .content select#value_of_date_year option:selected").html()
+																}),
+															success: function(data, textStatus, jqXHR){
+																$.each(data.options, function(index,value){
+																	$("#dashboard-content .content select#value_of_date").append("<option value='$$value'>$$text</option>".render({
+																		text:data.options[index].text,
+																		value:data.options[index].value
+																		}));
+																});
+															}
+														});
+													}
+												});
+											}
+										});
+									}else if(data.period == "daily"){
+										$("#dashboard-content .content input#value_of_date").datepicker({
+																										dateFormat: 'dd/mm/yy',
+																										defaultDate: "0",
+																										changeMonth: true,
+																										changeYear: true
+																										});
+									}
+
+									$("#dashboard-content .content .botao-form[ref='enviar']").html("Adicionar");
+									$("#dashboard-content .content .botao-form[ref='cancelar']").html("Voltar");
+									$(formbuild).find("div .field:odd").addClass("odd");
+									$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+									$("#dashboard-content .content div.historic table").width($("#dashboard-content .content").find(".form").width());
+
+									$(formbuild).find("div#textlabel_variable").html(data.name);
+									$(formbuild).find("div#textlabel_explanation").html(data.explanation);
+									$(formbuild).find("div#textlabel_period").html(variable_periods[data.period]);
+
+
+									$("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
+
+										if ($(this).html() == "Adicionar"){
+											var ajax_type = "POST";
+											var api_method = "create";
+											if ($("#dashboard-content .content").find("#region_id option:selected").val()){
+												var ajax_url = api_path + "/api/city/$$city/region/$$region/value".render({
+														city: getIdFromUrl(user_info.city),
+														region: $("#dashboard-content .content").find("#region_id option:selected").val()
+												});
+											}else{
+												var ajax_url = $.getUrlVar("url") + "/value";
+											}
+										}else if ($(this).html() == "Editar"){
+											var ajax_type = "POST";
+											var api_method = "update";
+											if ($("#dashboard-content .content").find("#region_id option:selected").val()){
+												var ajax_url = api_path + "/api/city/$$city/region/$$region/value/$$id".render({
+														city: getIdFromUrl(user_info.city),
+														region: $("#dashboard-content .content").find("#region_id option:selected").val(),
+														id: $("table.history tbody tr.selected").attr("value-id")
+												});
+											}else{
+												var ajax_url = $.getUrlVar("url") + "/value/" + $("table.history tbody tr.selected").attr("value-id");
+											}
+										}
+
+										resetWarnings();
+										if ($(this).parent().parent().find("#value").val() == ""){
+											$(".form-aviso").setWarning({msg: "Por favor informe o Valor"});
+										}else{
+											var data_formatada = "";
+											if (data.period == "yearly" || data.period == "monthly"){
+												data_formatada = $(this).parent().parent().find("#value_of_date option:selected").val();
+											}else if (data.period == "daily"){
+												data_formatada = $.convertDate($(this).parent().parent().find("#value_of_date").val()," ");
+											}
+											var prefix = "";
+											if ($("#dashboard-content .content").find("#region_id option:selected").val()){
+												prefix = "region.";
+											}
+
+											args = [{name: "api_key", value: $.cookie("key")},
+													{name: prefix+"variable.value." + api_method + ".value", value: $(this).parent().parent().find("#value").val()},
+													{name: prefix+"variable.value." + api_method + ".value_of_date", value: data_formatada}
+													];
+											if ($("#dashboard-content .content").find("#region_id option:selected").val()){
+												args.push({name: prefix+"variable.value." + api_method + ".variable_id", value: getIdFromUrl($.getUrlVar("url"))});
+											}
+
+											$("#dashboard-content .content .botao-form[ref='enviar']").hide();
+											$.ajax({
+												type: ajax_type,
+												dataType: 'json',
+												url: ajax_url,
+												data: args,
+												success: function(data, textStatus, jqXHR){
+													resetWarnings();
+													$("#aviso").setWarning({msg: "Cadastro editado com sucesso.".render({
+																codigo: jqXHR.status
+																})
+													});
+													$("#dashboard-content .content .botao-form[ref='enviar']").html("Adicionar");
+													$("#dashboard-content .content .botao-form[ref='cancelar']").html("Voltar");
+													$("#dashboard-content .content .form").find(".title").html("Adicionar Valor");
+													$(formbuild).find("input#value").val("");
+													$(formbuild).find("#value_of_date").val("");
+													$("#dashboard-content .content .form").find("select").attr("disabled",false);
+													$("table.history tbody tr").removeClass("selected");
+													buildVariableHistory();
+												},
+												error: function(data){
+													$(".form-aviso").setWarning({msg: "Erro ao editar. Já existe valor para esse Período".render({
+																erro: $.parseJSON(data.responseText).error
+																})
+													});
+													$("#dashboard-content .content .botao-form[ref='cancelar']").html("Voltar");
+												},
+												complete: function(data){
+													$("#dashboard-content .content .botao-form[ref='enviar']").show();
+												}
+											});
+										}
+									});
+									$("#dashboard-content .content .botao-form[ref='cancelar']").click(function(){
+										resetWarnings();
+										if ($(this).html() == "Voltar"){
+											history.back();
+										}else if ($(this).html() == "Cancelar"){
+											$("#dashboard-content .content .form").find(".title").html("Adicionar Valor");
+											$("#dashboard-content .content .botao-form[ref='enviar']").html("Adicionar");
+											$("#dashboard-content .content .botao-form[ref='cancelar']").html("Voltar");
+											$(formbuild).find("input#value").val("");
+											$(formbuild).find("input#value_of_date").val("");
+											$("#dashboard-content .content .form").find("select").attr("disabled",false);
+											$("table.history tbody tr").removeClass("selected");
+											$("#dashboard-content .content .botao-form[ref='enviar']").show();
+											$("#dashboard-content .content .botao-form[ref='enviar']").show();
+										}
+									});
+								}
+
+								$("#dashboard-content .content").append("<div class='historico'></div>");
+
+								buildVariableHistory();
+							},
+							error: function(data){
+								switch(data.status){
+									case 400:
+										$(".form-aviso").setWarning({msg: "Erro: ($$codigo)".render({
+													codigo: $.parseJSON(data.responseText).error
+													})
+										});
+										break;
+								}
+							}
+						});
+					}				
+				}
             }else if (getUrlSub() == "admins"){
                 /*  Administradores  */
                 loadCidades();
@@ -593,9 +1422,9 @@ $(document).ready(function() {
                                         "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
                                         },
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/user?role=user&network_id=$$network_id&api_key=$$key&content-type=application/json&columns=name,email,url,_,_'.render({
+                        "sAjaxSource": api_path + '/api/user?role=user$$network_id&api_key=$$key&content-type=application/json&columns=name,email,url,_,_'.render({
                                 key: $.cookie("key"),
-                                network_id: $.cookie("network.id")
+                                network_id: (user_info.network) ? "&network_id="+user_info.network : ""
                                 }),
                         "aoColumnDefs": [
                                             { "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 2 ] }
@@ -611,6 +1440,9 @@ $(document).ready(function() {
 
                     var newform = [];
 
+					if (user_info.roles[0] == "superadmin"){
+						newform.push({label: "Rede", input: ["select,network_id,iselect"]});
+					}
                     newform.push({label: "Nome", input: ["text,name,itext"]});
                     newform.push({label: "Email", input: ["text,email,itext"]});
                     newform.push({label: "Senha", input: ["password,password,itext"]});
@@ -631,8 +1463,34 @@ $(document).ready(function() {
                             content: "Utilize letras e números e pelo menos 8 caracteres."
                     }));
 
-                    $("#dashboard-content .content select#city_id").append($("<option></option>").val("").html("Selecione..."));
+					if (user_info.roles[0] == "superadmin"){
+						$.ajax({
+							async: false,
+							type: 'GET',
+							dataType: 'json',
+							url: api_path + "/api/network?api_key=$$key".render({
+										key: $.cookie("key")
+								}),
+							success: function(data,status,jqXHR){
+								data.network.sort(function (a, b) {
+									a = String(a.name),
+									b = String(b.name);
+									return a.localeCompare(b);
+								});
+				                if ($.getUrlVar("option") == "edit"){
+									$("#dashboard-content .content select#network_id").attr("multiple","multiple");
+								}
+								$.each(data.network,function(index, item){
+									$("#dashboard-content .content select#network_id").append($("<option></option>").val(item.id).html(item.name));
+								});
+								$("#dashboard-content .content select#network_id").qtip( $.extend(true, {}, qtip_input, {
+										content: "Dica: Segure a tecla CTRL para selecionar mais de uma rede."
+								}));
+							}
+						});
+					}
 
+                    $("#dashboard-content .content select#city_id").append($("<option></option>").val("").html("Selecione..."));
                     if ($.getUrlVar("option") == "add"){
                         carregaComboCidadesUsers({"option":$.getUrlVar("option")});
                     }
@@ -651,6 +1509,13 @@ $(document).ready(function() {
                                         $(formbuild).find("input#email").val(data.email);
                                         carregaComboCidadesUsers({"option":$.getUrlVar("option"), city: data.city});
                                         $(formbuild).find("select#city_id").val(getIdFromUrl(data.city));
+										if ($(formbuild).find("select#network_id").length > 0){
+											if (data.networks){
+												$.each(data.networks, function(index,item){
+													$(formbuild).find("select#network_id option[value="+item.id+"]").attr("selected","selected");
+												});
+											}
+										}
                                         break;
                                 }
                             },
@@ -698,6 +1563,19 @@ $(document).ready(function() {
                                     {name: "user." + action + ".city_id", value: $(this).parent().parent().find("#city_id option:selected").val()}
                                     ];
 
+							if (user_info.roles[0] == "superadmin"){
+								if ($.getUrlVar("option") == "add"){
+									args.push({name: "user." + action + ".network_id", value: $(this).parent().parent().find("#network_id option:selected").val()});
+								}else if ($.getUrlVar("option") == "edit"){
+									var network_ids = "";
+									$(this).parent().parent().find("#network_id option:selected").each(function(index,item){
+										if (network_ids != "") network_ids += ",";
+										network_ids += item.value;
+									});
+									args.push({name: "user." + action + ".network_ids", value: network_ids});
+								}
+							}
+									
                             if ($(this).parent().parent().find("#password").val() != ""){
                                 args.push(
                                     {name: "user." + action + ".password", value: $(this).parent().parent().find("#password").val()},
@@ -719,15 +1597,11 @@ $(document).ready(function() {
                                     location.hash = "#!/"+getUrlSub();
                                 },
                                 error: function(data){
-                                    switch(data.status){
-                                        case 400:
-                                            $("#aviso").setWarning({msg: "Erro ao $$operacao. ($$codigo)".render({
-                                                        operacao: txtOption,
-                                                        codigo: $.parseJSON(data.responseText).error
-                                                        })
-                                            });
-                                            break;
-                                    }
+									$("#aviso").setWarning({msg: "Erro ao $$operacao. ($$erro)".render({
+												operacao: txtOption,
+												erro: $.trataErro(data)
+												})
+									});
                                     $("#dashboard-content .content .botao-form[ref='enviar']").show();
                                 }
                             });
@@ -1554,7 +2428,7 @@ $(document).ready(function() {
                 if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
 
                     var variableList = buildDataTable({
-                            headers: ["Nome","Apelido","Tipo","Data Criação","Básica","_"]
+                            headers: ["Nome","Apelido","Tipo","Data Criação","Básica","Aparecer na Home","_"]
                             });
 
                     $("#dashboard-content .content").append(variableList);
@@ -1564,17 +2438,36 @@ $(document).ready(function() {
                         location.hash = "#!/" + getUrlSub() + "?option=add";
                     });
 
+					var data_config;
+					function loadVariableConfig(){
+						$.ajax({
+							async: false,
+							type: 'GET',
+							dataType: 'json',
+							url: api_path + '/api/user/$$user/variable_config?api_key=$$key'.render({
+									key: $.cookie("key"),
+									user: $.cookie("user.id")
+									}),
+							success: function(data, textStatus, jqXHR){
+								data_config = data;
+							}
+						});
+					}
+					
+					loadVariableConfig();
+
                     $("#results").dataTable( {
                         "oLanguage": {
                                         "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
                                         },
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/variable?api_key=$$key&content-type=application/json&columns=name,cognomen,type,created_at,is_basic,url,_,_'.render({
+                        "sAjaxSource": api_path + '/api/variable?api_key=$$key&content-type=application/json&columns=name,cognomen,type,created_at,is_basic,url,id,_,_'.render({
                                 key: $.cookie("key")
                                 }),
                         "aoColumnDefs": [
-                                            { "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "80px", "aTargets": [ 5 ] },
-                                            { "bSearchable": false, "bSortable": false, "sClass": "center is_basic", "aTargets": [ 4 ] },
+                                            { "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "80px", "aTargets": [ 6 ] },
+                                            { "bSearchable": false, "bSortable": true, "sClass": "checkbox center", "sWidth": "80px", "aTargets": [ 5 ] },
+                                            { "bSearchable": false, "bSortable": true, "sClass": "center is_basic", "aTargets": [ 4 ] },
                                             { "sClass": "center", "aTargets": [ 2 , 3, 4 ] },
                                             { "sWidth": "300px", "aTargets": [ 0 ] },
                                             { "fnRender": function ( oObj, sVal ) {
@@ -1594,6 +2487,20 @@ $(document).ready(function() {
 
                                                             return text;
                                                         }, "aTargets": [ 1 ]
+                                            },
+                                            { "fnRender": function ( oObj, sVal ) {
+															if (oObj.aData[4] == 1){
+																var checked = "";
+																if (data_config[getIdFromUrl(sVal)] && data_config[getIdFromUrl(sVal)].display_in_home == 1){
+																	checked = "checked=checked";
+																}
+																return "<input type='checkbox' name='chk_home' var-id='" + getIdFromUrl(sVal) + "' $$checked>".render({
+																	checked: checked
+																});
+															}else{
+																return "--";
+															}
+                                                        }, "aTargets": [ 5 ]
                                             }
                                         ],
                         "aaSorting": [[3,'desc'],[0,'asc']],
@@ -1606,6 +2513,44 @@ $(document).ready(function() {
                                     }else if ($(this).html() == "0"){
                                         $(this).html("Não");
                                     }
+                                });
+                                $("#results td.checkbox input").change( function(){
+                                    var display_in_home = ($(this).attr("checked")) ? 1 : 0;
+
+									if (!data_config[$(this).attr("var-id")]){
+										var action = "create";
+										var method = "POST";
+										var url_action = api_path + "/api/user/$$user/variable_config".render({user: $.cookie("user.id")});
+									}else{
+										var action = "update";
+										var method = "POST";
+										var url_action = api_path + "/api/user/$$user/variable_config/$$id".render({
+														user: $.cookie("user.id"),
+														id: data_config[$(this).attr("var-id")].id
+													});
+										
+									}
+
+									args = [{name: "api_key", value: $.cookie("key")},
+											{name: "user.variable_config." + action + ".display_in_home", value: display_in_home},
+											{name: "user.variable_config." + action + ".variable_id", value: $(this).attr("var-id")}
+											];
+									
+									$.ajax({
+										type: method,
+										dataType: 'json',
+										url: url_action,
+										data: args,
+										success: function(data){
+											loadVariableConfig();
+										},
+										error: function(data){
+											$("#aviso").setWarning({msg: "Erro ao atualizar configuração. ($$codigo)".render({
+														codigo: $.parseJSON(data.responseText).error
+														})
+											});
+										}
+									});
                                 });
 
                             }
@@ -1788,7 +2733,7 @@ $(document).ready(function() {
                 if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
 
                     var variableList = buildDataTable({
-                            headers: ["Nome","_"]
+                            headers: ["Nome","Mostrar na Home","_"]
                             },null,false);
 
                     $("#dashboard-content .content").append(variableList);
@@ -1797,40 +2742,165 @@ $(document).ready(function() {
                         resetWarnings();
                         location.hash = "#!/" + getUrlSub() + "?option=add";
                     });
+					
+					function loadVariableConfig(){
+						//carrega config do usuario
+						$.ajax({
+							async: "false",
+							type: 'GET',
+							dataType: 'json',
+							url: api_path + '/api/user/$$user/variable_config?api_key=$$key'.render({
+									key: $.cookie("key"),
+									user: $.cookie("user.id")
+									}),
+							success: function(data, textStatus, jqXHR){
+								data_config = data;
+							}
+						}).done(function(){
+							toggleAllCheckboxes();
+						});
+					}
+					
+					function toggleAllCheckboxes(){
+						$("table input[type=checkbox]").each(function(index,item){
+							if ($(this).attr("disabled") == "disabled"){
+								$(this).removeAttr("disabled");
+							}else{
+								$(this).attr("disabled","true");
+							}
+						});
+					}
+					
+					//carrega dados do admin
+					var data_network;
+					var data_config_admin;
+					var data_config;
+					
+					$.ajax({
+						type: 'GET',
+						dataType: 'json',
+						url: api_path + '/api/public/network?api_key=$$key'.render({
+								key: $.cookie("key")
+								}),
+						success: function(data, textStatus, jqXHR){
+							data_network = data;
+						}
+					}).done(function(){
+						//carrega config do admin
+						$.ajax({
+							type: 'GET',
+							dataType: 'json',
+							url: api_path + '/api/user/$$user/variable_config?api_key=$$key'.render({
+									key: $.cookie("key"),
+									user: data_network.admin_users[0].id
+									}),
+							success: function(data, textStatus, jqXHR){
+								data_config_admin = data;
+							}
+						}).done(function(){
 
-                    $.ajax({
-                        type: 'GET',
-                        dataType: 'json',
-                        url: api_path + '/api/user/$$userid/variable?api_key=$$key&is_basic=1'.render({
-                                key: $.cookie("key"),
-                                userid: $.cookie("user.id")
-                                }),
-                        success: function(data, textStatus, jqXHR){
-                            $.each(data.variables, function(index,value){
-                                $("#dashboard-content .content #results tbody").append($("<tr><td>$$nome</td><td>$$url</td></tr>".render({nome: data.variables[index].name,
-                                apelido: data.variables[index].cognomen,
-                                url: data.variables[index].variable_id})));
-                            });
+							//carrega config do usuario
+							$.ajax({
+								type: 'GET',
+								dataType: 'json',
+								url: api_path + '/api/user/$$user/variable_config?api_key=$$key'.render({
+										key: $.cookie("key"),
+										user: $.cookie("user.id")
+										}),
+								success: function(data, textStatus, jqXHR){
+									data_config = data;
+								}
+							}).done(function(){
 
-                            $("#results").dataTable( {
-                                "oLanguage": {
-                                                "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                                                },
-                                "aoColumnDefs": [
-                                                    { "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 1 ] },
-                                                ],
-                                "fnDrawCallback": function(){
-                                        DTdesenhaBotaoVariavel();
-                                    }
-                            } );
-                        },
-                        error: function(data){
-                            $("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
-                                        codigo: $.parseJSON(data.responseText).error
-                                    })
-                            });
-                        }
-                    });
+								$.ajax({
+									type: 'GET',
+									dataType: 'json',
+									url: api_path + '/api/user/$$userid/variable?api_key=$$key&is_basic=1'.render({
+											key: $.cookie("key"),
+											userid: $.cookie("user.id")
+											}),
+									success: function(data, textStatus, jqXHR){
+										$.each(data.variables, function(index,value){
+											$("#dashboard-content .content #results tbody").append($("<tr><td>$$nome</td><td>$$url</td><td>$$url</td></tr>".render({nome: data.variables[index].name,
+											apelido: data.variables[index].cognomen,
+											url: data.variables[index].variable_id})));
+										});
+
+										$("#results").dataTable( {
+											"oLanguage": {
+															"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
+															},
+											"aoColumnDefs": [
+																{ "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 2 ] },
+																{ "bSearchable": false, "bSortable": true, "sClass": "checkbox center", "sWidth": "80px", "aTargets": [ 1 ] },
+																{ "fnRender": function ( oObj, sVal ) {
+																				var checked = "";
+																				if (data_config[getIdFromUrl(sVal)] && data_config[getIdFromUrl(sVal)].display_in_home == 1){
+																					checked = "checked=checked";
+																				}else if (!(data_config[getIdFromUrl(sVal)]) && data_config_admin[getIdFromUrl(sVal)] && data_config_admin[getIdFromUrl(sVal)].display_in_home == 1){
+																					checked = "checked=checked class='admin_checked'";
+																				}
+																				return "<input type='checkbox' name='chk_home' var-id='" + getIdFromUrl(sVal) + "' $$checked>".render({
+																					checked: checked
+																				});
+																			}, "aTargets": [ 1 ]
+																}
+															],
+											"fnDrawCallback": function(){
+													DTdesenhaBotaoVariavel();
+													$("#results td.checkbox input").change( function(){
+														toggleAllCheckboxes();
+														var display_in_home = ($(this).attr("checked")) ? 1 : 0;
+
+														if (!data_config[$(this).attr("var-id")]){
+															var action = "create";
+															var method = "POST";
+															var url_action = api_path + "/api/user/$$user/variable_config".render({user: $.cookie("user.id")});
+														}else{
+															var action = "update";
+															var method = "POST";
+															var url_action = api_path + "/api/user/$$user/variable_config/$$id".render({
+																			user: $.cookie("user.id"),
+																			id: data_config[$(this).attr("var-id")].id
+																		});
+															
+														}
+
+														args = [{name: "api_key", value: $.cookie("key")},
+																{name: "user.variable_config." + action + ".display_in_home", value: display_in_home},
+																{name: "user.variable_config." + action + ".variable_id", value: $(this).attr("var-id")}
+																];
+														
+														$.ajax({
+															type: method,
+															dataType: 'json',
+															url: url_action,
+															data: args,
+															success: function(data){
+																loadVariableConfig();
+															},
+															error: function(data){
+																$("#aviso").setWarning({msg: "Erro ao atualizar configuração. ($$codigo)".render({
+																			codigo: $.parseJSON(data.responseText).error
+																			})
+																});
+																toggleAllCheckboxes();
+															}
+														});
+													});
+												}
+										} );
+									},
+									error: function(data){
+										$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
+													codigo: $.parseJSON(data.responseText).error
+												})
+										});
+									}
+								});
+							});
+						});
+					});
 
                 }else if ($.getUrlVar("option") == "edit"){
 
@@ -1845,7 +2915,25 @@ $(document).ready(function() {
                         success: function(data,status,jqXHR){
                             if (jqXHR.status == 200){
 
+								var data_region;
+								$.ajax({
+									async: false,
+									type: 'GET',
+									dataType: 'json',
+									url: api_path + '/api/city/$$city/region?api_key=$$key'.render({
+											key: $.cookie("key"),
+											city: getIdFromUrl(user_info.city)
+											}),
+									success: function(data, textStatus, jqXHR){
+										data_region = data.regions;
+									}
+								});
+
                                 var newform = [];
+							
+								if (data_region && data_region.length > 0){
+									newform.push({label: "Região", input: ["select,region_id,iselect"]});						
+								}
 
                                 newform.push({label: "Variável", input: ["textlabel,textlabel_variable,ilabel"]});
                                 newform.push({label: "Valor", input: ["text,value,itext"]});
@@ -1861,6 +2949,17 @@ $(document).ready(function() {
                                 newform.push({label: "Descrição", input: ["textlabel,textlabel_explanation,ilabel"]});
 
                                 var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
+
+								if (data_region && data_region.length > 0){
+								
+									$("#dashboard-content .content select#region_id").change(function(e){
+										buildVariableHistory();
+									});
+									$("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("Nenhuma"));
+									$.each(data_region,function(index,item){
+										$("#dashboard-content .content select#region_id").append($("<option></option>").val(item.id).html(item.name));
+									});
+								}
 
                                 if (data.period == "yearly"){
                                     $.ajax({
@@ -1949,11 +3048,26 @@ $(document).ready(function() {
                                     if ($(this).html() == "Adicionar"){
                                         var ajax_type = "POST";
                                         var api_method = "create";
-                                        var ajax_url = $.getUrlVar("url") + "/value";
+										if ($("#dashboard-content .content").find("#region_id option:selected").val()){
+											var ajax_url = api_path + "/api/city/$$city/region/$$region/value".render({
+													city: getIdFromUrl(user_info.city),
+													region: $("#dashboard-content .content").find("#region_id option:selected").val()
+											});
+										}else{
+											var ajax_url = $.getUrlVar("url") + "/value";
+										}
                                     }else if ($(this).html() == "Editar"){
                                         var ajax_type = "POST";
                                         var api_method = "update";
-                                        var ajax_url = $.getUrlVar("url") + "/value/" + $("table.history tbody tr.selected").attr("value-id");
+										if ($("#dashboard-content .content").find("#region_id option:selected").val()){
+											var ajax_url = api_path + "/api/city/$$city/region/$$region/value/$$id".render({
+													city: getIdFromUrl(user_info.city),
+													region: $("#dashboard-content .content").find("#region_id option:selected").val(),
+													id: $("table.history tbody tr.selected").attr("value-id")
+											});
+										}else{
+											var ajax_url = $.getUrlVar("url") + "/value/" + $("table.history tbody tr.selected").attr("value-id");
+										}
                                     }
 
                                     resetWarnings();
@@ -1966,11 +3080,18 @@ $(document).ready(function() {
                                         }else if (data.period == "daily"){
                                             data_formatada = $.convertDate($(this).parent().parent().find("#value_of_date").val()," ");
                                         }
+										var prefix = "";
+										if ($("#dashboard-content .content").find("#region_id option:selected").val()){
+											prefix = "region.";
+										}
+
                                         args = [{name: "api_key", value: $.cookie("key")},
-                                                {name: "variable.value." + api_method + ".value", value: $(this).parent().parent().find("#value").val()},
-                                                {name: "variable.value." + api_method + ".value_of_date", value: data_formatada},
-                                                {name: "variable.value." + api_method + ".variable_id", value: getIdFromUrl($.getUrlVar("url"))},
+                                                {name: prefix+"variable.value." + api_method + ".value", value: $(this).parent().parent().find("#value").val()},
+                                                {name: prefix+"variable.value." + api_method + ".value_of_date", value: data_formatada}
                                                 ];
+										if ($("#dashboard-content .content").find("#region_id option:selected").val()){
+											args.push({name: prefix+"variable.value." + api_method + ".variable_id", value: getIdFromUrl($.getUrlVar("url"))});
+										}
 
                                         $("#dashboard-content .content .botao-form[ref='enviar']").hide();
                                         $.ajax({
@@ -2052,7 +3173,7 @@ $(document).ready(function() {
                             dataType: 'json',
                             url: api_path + '/api/user?role=user&network_id=$$network_id&api_key=$$key'.render({
                                     key: $.cookie("key"),
-                                    network_id: $.cookie("network.id")
+                                    network_id: user_info.network
                                     }),
                             success: function(data, textStatus, jqXHR){
                                 data.users.sort(function (a, b) {
@@ -2144,8 +3265,12 @@ $(document).ready(function() {
                     $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
                     $("#dashboard-content .content .value_via_file .botao-form[ref='cancelar']").hide();
 
-                    formbuild.prepend($('<a href="/variaveis_exemplo.xls">Faça o download do arquivo de modelo en XLS</a>').css('color','#22F').css('padding', '20px').css('display', 'block'));
-                    formbuild.prepend($('<a href="/variaveis_exemplo.csv">Faça o download do arquivo de modelo en CSV</a>').css('color','#22F').css('padding', '20px').css('display', 'block'));
+                    formbuild.find(".field:last").append("<div class='models center'></div>");
+                    formbuild.find(".models").append('Modelo de arquivo: <a href="/variaveis_exemplo.csv">CSV</a> <a href="/variaveis_exemplo.xls">XLS</a><br />');
+                    formbuild.find(".models").append('Modelo de arquivo para Regiões: <a href="/dados/usuario/$$user/regiao_exemplo.csv">CSV</a> <a href="/dados/usuario/$$user/regiao_exemplo.xls">XLS</a><br />'.render({
+												user: $.cookie("user.id")
+											})
+					);
 
                     $("#dashboard-content .content .value_via_file .botao-form[ref='enviar']").click(function(){
 
@@ -2357,6 +3482,334 @@ $(document).ready(function() {
                         });
                     }
                 }
+            }else if (getUrlSub() == "myvariableclone"){
+                /*  VARIABLE CLONE */
+                if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
+
+					var periods = [];
+					
+					function selectVariables(){
+						
+						$("#dashboard-content .content #steps-variables").empty();
+						$("#dashboard-content .content #steps-variables").show();
+						$("#dashboard-content .content #steps-years").empty();
+						var variablesList = "<div class='variables-clone'><div class='left'><div class='title'>Selecione as variáveis que você deseja importar</div><div id='variables-list'><div class='variables'></div></div></div><div class='right'><div class='title'>Variáveis selecionadas:</div><div id='variables-selected'><div class='variables'></div></div></div></div>";
+						$("#dashboard-content .content #steps-variables").append(variablesList);
+
+						$.ajax({
+							type: 'GET',
+							dataType: 'json',
+							url: api_path + '/api/variable?api_key=$$key'.render({
+											key: $.cookie("key")
+									}),
+							success: function(data, textStatus, jqXHR){
+								// ordena variaveis pelo nome
+								data.variables.sort(function (a, b) {
+									a = a.name,
+									b = b.name;
+
+									return a.localeCompare(b);
+								});
+
+								$.each(data.variables, function(index,value){
+									$("#variables-list .variables").append("<div class='item' var-id='$$id'><div class='label'>$$label</div><div class='button' title='Adicionar'>&#155;</div></div>".render({
+											id :data.variables[index].id,
+											label: data.variables[index].name
+										})
+									);
+									$("#variables-selected .variables").append("<div class='item' var-id='$$id'><div class='button' title='Remover'>&#139;</div><div class='label'>$$label</div></div>".render({
+											id :data.variables[index].id,
+											label: data.variables[index].name
+										})
+									);
+								});
+								
+								$("#variables-list .item").hover(function(){
+									$("#variables-list").find(".button").hide();
+									$(this).find(".button").fadeIn("fast");
+								},function(){
+									$(this).find(".button").hide();
+								});
+								
+								$("#variables-selected .item").hover(function(){
+									$("#variables-selected").find(".button").hide();
+									$(this).find(".button").fadeIn("fast");
+								},function(){
+									$(this).find(".button").hide();
+								});
+
+								$("#variables-list .item .button").bind('click',function(){
+									var id = $(this).parent().attr("var-id");
+									$(this).parent().toggle();
+									$("#variables-selected .item[var-id=" + id + "]").toggle();
+									$("#botao-avancar").removeClass("disabled");
+								});
+								$("#variables-selected .item .button").bind('click',function(){
+									var id = $(this).parent().attr("var-id");
+									$(this).parent().toggle();
+									$("#variables-list .item[var-id=" + id + "]").toggle();
+									if ($("#variables-selected .item:visible").length <= 0){
+										$("#botao-avancar").addClass("disabled");
+									}
+								});
+							
+								$("#dashboard-content .content #steps-buttons").empty();
+								$("#dashboard-content .content #steps-buttons").append("<button class='button-default disabled' id='botao-avancar'>Avançar</button>");
+								
+								$("#botao-avancar").unbind();
+								$("#botao-avancar").html("Avançar");								
+								$("#botao-avancar").bind('click',function(){
+									selectInstitute();
+								});
+								
+							
+							},
+							error: function(data){
+								$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
+											codigo: $.parseJSON(data.responseText).error
+										})
+								});
+							}
+						});
+					}
+					
+					function selectInstitute(){
+
+						$.ajax({
+							type: 'GET',
+							dataType: 'json',
+							url: api_path + '/api/institute?api_key=$$key'.render({
+											key: $.cookie("key")
+									}),
+							success: function(data, textStatus, jqXHR){
+								var institute_id;
+								$.each(data.institute, function(index,item){
+									if (item.id != user_info.institute.id){
+										institute_id = item.id;
+									}
+								});
+								
+								if (institute_id){
+									selectYears(institute_id);
+								}
+							}
+						});
+					}
+					
+					function selectYears(institute_id){
+					
+						$("#steps-variables").fadeOut("fast",function(){
+							$("#steps-years").fadeIn();
+						});
+						
+						var yearsList = "<div class='years-clone'></div>";
+						$("#dashboard-content .content #steps-years").append("<div class='clear'>Selecione os períodos que você deseja clonar:</div>");
+						$("#dashboard-content .content #steps-years").append(yearsList);
+						
+						var variables = "";
+						$("#variables-selected .item:visible").each(function(index,item){
+							if (variables != "") variables += ",";
+							variables += $(this).attr("var-id");
+						});
+						
+						$.ajax({
+							type: 'GET',
+							dataType: 'json',
+							url: api_path + '/api/user/$$user/clone_variable?variables=$$variables&institute_id=$$institute&api_key=$$key'.render({
+											key: $.cookie("key"),
+											institute: institute_id,
+											variables: variables,
+											user: $.cookie("user.id")
+									}),
+							success: function(data, textStatus, jqXHR){
+								var headers = ["Variáveis"];
+								var year_cols = [];
+								periods = [];
+								if (data.periods){
+									$.each(data.periods, function(index,item){
+										headers.push(item.split("-")[0]);
+										periods.push(item);
+										year_cols.push(index+1);
+									});
+								}
+								var yearsList = buildDataTable({
+										headers: headers
+										},null,false);
+								var variables_names = [];
+								if (data.variables_names){
+									$.each(data.variables_names, function(variable_id,variable_name){
+										var years = [];
+										$.each(data.periods,function(index,year){
+											if (typeof data.checkbox[variable_id] != "undefined" && typeof data.checkbox[variable_id][year] != "undefined"){
+												years.push({"exists":1, "checked": data.checkbox[variable_id][year]});
+											}else{
+												years.push({"exists":0, "checked": false});
+											}
+										});
+										variables_names.push({"id":variable_id, "name": variable_name, "years": years});
+									});
+									variables_names.sort(function (a, b) {
+										a = String(a.name),
+										b = String(b.name);
+										return a.localeCompare(b);
+									});
+								}
+										
+								$("#dashboard-content .content #steps-years #variables-years").remove();
+								$("#dashboard-content .content #steps-years").append("<div id='variables-years'></div>");
+								$("#dashboard-content .content #steps-years #variables-years").append(yearsList);
+								
+								var rows = "";
+								
+								$.each(variables_names, function(index,item){
+									rows += "<tr><td>" + item.name + "</td>";
+									$.each(item.years, function(i,e){
+										if(e.exists == 1){
+											rows += "<td><input type='checkbox' id='chk$$item_$$index' class='chk-year year-$$index' $$checked></td>".render({
+												item: item.id,
+												index: i,
+												checked: (e.checked) ? "checked" : ""
+											});
+										}else{
+											rows += "<td></td>";
+										}
+									});
+									rows += "</tr>";
+								});
+								$("#results tbody").append(rows);
+								$("#results").addClass("ex_highlight");
+								$("#results").addClass("ex_highlight_row");
+								
+								$("#results thead tr th").each( function(index, item){
+									if (index > 0){
+										$(this).prepend("<input type='checkbox' class='chk-all' value='$$index'>".render({
+											index: (index - 1)
+										}));
+									}
+								});
+
+								oTable = $("#results").dataTable( {
+									"oLanguage": {
+													"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
+													},
+									"aoColumnDefs": [
+														{ "bSortable": false, "sClass": "indexLeft", "aTargets": [ 0 ] },
+														{ "bSearchable": false, "bSortable": false, "sClass": "center check", "sWidth": "60px", "aTargets": year_cols },
+													],
+									"sScrollX": "100%",
+									"sScrollXInner": "900px",
+									"fnInitComplete": function () {
+										new FixedColumns( oTable, {
+											"iLeftWidth": 350
+										} );
+									 }
+								});
+								
+								$("input.chk-all").bind('click', function(index,item){
+									var checked = ($(this).attr("checked")) ? true : false;
+									var year_index = $(this).attr("value");
+									var filteredRows = oTable.$('tr', { "filter": "applied" });
+									$(filteredRows).each(function(index,row){
+										$(row).find("td input.year-"+year_index).attr("checked",checked);
+									});
+								});
+								
+								$("#botao-avancar").unbind();
+								$("#botao-avancar").html("Concluir");								
+								$("#botao-avancar").bind('click',function(){
+                                    $.loading();
+									finishClone({
+											"periods":  periods,
+											"variables_names": variables_names,
+											"institute_id": institute_id
+										});
+								});
+								if ($("#steps-buttons #botao-cancelar").length <= 0){
+									$("#dashboard-content .content #steps-buttons").append("<button class='button-default' id='botao-cancelar'>Cancelar</button>");
+								}
+								$("#botao-cancelar").bind('click',function(){
+									$("#steps-years").fadeOut("fast",function(){
+										$("#steps-years").empty();
+										$("#steps-variables").fadeIn();								
+										$("#botao-avancar").unbind();
+										$("#botao-avancar").html("Avançar");
+										$("#botao-avancar").bind('click',function(){
+											selectInstitute();
+										});
+									});
+								});
+								
+							}
+						});
+					}
+					
+					function finishClone(params){
+
+						$("#steps-years").hide();
+
+						var method = "POST";
+						var url_action = api_path + "/api/user/$$user/clone_variable".render({
+							user: $.cookie("user.id")
+						});
+
+						args = [{name: "api_key", value: $.cookie("key")},
+								{name: "institute_id", value: params.institute_id}
+								];
+						
+						if (params.periods){
+							$.each(params.periods, function(index,item){
+								args.push({name: "period"+index, value: item});								
+							});
+						}
+						
+						var filteredRows = oTable.$('tr', { "filter": "applied" });
+						$(filteredRows).each(function(index,row){
+							$(row).find("td input.chk-year").each( function(index,item){
+								if ($(this).attr("checked")){
+									args.push({name: "variable:"+$(this).attr("id").replace("chk",""), value: 1});
+								}
+							});
+						});
+
+						$.ajax({
+							type: method,
+							dataType: 'json',
+							url: url_action,
+							data: args,
+							success: function(data,status,jqXHR){
+								var mensagem = "";
+								if (data && (data.number_of_clones)){
+									mensagem = "<br />Total de itens clonados: " + data.number_of_clones;
+								}
+								$("#aviso").setWarning({msg: "Operação efetuada com sucesso." + mensagem});
+								$("#botao-avancar").unbind();
+								$("#botao-avancar").html("Voltar");								
+								$("#botao-avancar").bind('click',function(){
+									resetWarnings();
+									selectVariables();									
+								});
+								$("#botao-cancelar").hide();
+                                $.loading.hide();
+							},
+							error: function(data){
+								$("#aviso").setWarning({msg: "Erro ao enviar. ($$codigo)".render({
+											codigo: $.parseJSON(data.responseText).error
+											})
+								});
+								$("#steps-years").fadeIn();
+                                $.loading.hide();
+
+							}
+						});
+				
+					}
+
+					var stepsLayers = "<div id='steps-variables'></div><div id='steps-years'></div><div id='steps-finish'></div><div id='steps-buttons'></div>";
+					$("#dashboard-content .content").append(stepsLayers);
+					
+					selectVariables();
+					
+				}
             }else if (getUrlSub() == "axis"){
                 /*  EIXOS  */
                 if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
@@ -2572,7 +4025,7 @@ $(document).ready(function() {
                     var newform = [];
 
                     newform.push({label: "Nome", input: ["text,name,itext"]});
-                    newform.push({label: "Disponível para", input: ["select,indicator_role,iselect"]});
+                    newform.push({label: "Visibilidade", input: ["select,visibility_level,iselect"]});
                     newform.push({label: "Tipo", input: ["select,indicator_type,iselect"]});
                     newform.push({label: "Nome da Faixa", input: ["text,variety_name,itext"]});
                     newform.push({label: "Faixas", input: ["text,variacoes_placeholder,itext"]});
@@ -2646,22 +4099,8 @@ $(document).ready(function() {
                         }
                     });
 
-                    $.each(indicator_roles,function(key, value){
-						if (user_info.roles[0] == "admin"){
-							if ($.cookie("user.id") == 2){
-								if (key == "_prefeitura"){
-			                        $("#dashboard-content .content select#indicator_role").append($("<option></option>").val(key).html(value));
-								}
-							}
-							if ($.cookie("user.id") == 3){
-								if (key == "_movimento"){
-			                        $("#dashboard-content .content select#indicator_role").append($("<option></option>").val(key).html(value));
-								}
-							}
-						}else{
-	                        $("#dashboard-content .content select#indicator_role").append($("<option></option>").val(key).html(value));
-						}
-
+                    $.each(visibility_level,function(key, value){
+                        $("#dashboard-content .content select#visibility_level").append($("<option></option>").val(key).html(value));
                     });
 
                     $.each(indicator_types,function(key, value){
@@ -2676,6 +4115,106 @@ $(document).ready(function() {
                         $("#dashboard-content .content select#sort_direction").append($("<option></option>").val(key).html(value));
                     });
 
+                    $("#visibility_level").change(function(){
+						visibilityChanged();
+                    });
+					
+					function visibilityChanged(args){
+                        if ($("#visibility_level").val() == "public" || $("#visiblity_level").val() == "private" && user_info.roles[0] == "admin"){
+                            $("#visibility-options").remove();
+                        }else{
+							$("#visibility-options").remove();
+							$("#visibility_level").after("<div id='visibility-options'></div>");
+							if ($("#visibility_level").val() == "private"){
+								$("#visibility-options").append("<label class='visibility'>Selecione um usuário:</label><select id='visibility_user_id' class='iselect'><option value=''>carregando...</option></select>");
+								$.ajax({
+									type: 'GET',
+									dataType: 'json',
+									url: api_path + '/api/user?role=admin&api_key=$$key'.render({
+											key: $.cookie("key")
+											}),
+									success: function(data, textStatus, jqXHR){
+										data.users.sort(function (a, b) {
+											a = a.name,
+											b = b.name;
+											return a.localeCompare(b);
+										});
+										$("#dashboard-content .content #visibility_user_id option").remove();
+										$.each(data.users, function(index,item){
+											$("#dashboard-content .content #visibility_user_id").append($("<option value='$$id'>$$nome</option>".render({
+												id: getIdFromUrl(item.url),
+												nome: item.name
+											})));
+										});
+										if (args) args.callBack();
+									}
+								});
+							}else if ($("#visibility_level").val() == "country"){
+								$("#visibility-options").append("<label class='visibility'>Selecione um país:</label><select id='visibility_country_id' class='iselect'><option value=''>carregando...</option></select>");
+								$.ajax({
+									type: 'GET',
+									dataType: 'json',
+									url: api_path + "/api/country?api_key=$$key".render({
+												key: $.cookie("key")
+										}),
+									success: function(data, textStatus, jqXHR){
+										data.countries.sort(function (a, b) {
+											a = a.name,
+											b = b.name;
+											return a.localeCompare(b);
+										});
+										$("#dashboard-content .content #visibility_country_id option").remove();
+										$.each(data.countries, function(index,item){
+											$("#dashboard-content .content #visibility_country_id").append($("<option value='$$id'>$$nome</option>".render({
+												id: getIdFromUrl(item.url),
+												nome: item.name
+											})));
+										});
+										if (args) args.callBack();
+									}
+								});
+							}else if ($("#visibility_level").val() == "restrict"){
+								$("#visibility-options").before("<div class='clear'></div>");
+								$("#visibility-options").addClass("inline");
+								$("#visibility-options").append("<label class='visibility'>Selecione um ou mais usuários:</label><br /><select multiple id='visibility_users_select' class='iselect multiselect'><option value=''>carregando...</option></select><div class='buttons'><button id='button-add'>>></button><button id='button-remove'><<</button></div><select multiple id='visibility_users_id' class='iselect multiselect'></select>");
+								$.ajax({
+									type: 'GET',
+									dataType: 'json',
+									url: api_path + '/api/user?role=admin&api_key=$$key'.render({
+											key: $.cookie("key")
+											}),
+									success: function(data, textStatus, jqXHR){
+										data.users.sort(function (a, b) {
+											a = a.name,
+											b = b.name;
+											return a.localeCompare(b);
+										});
+										$("#dashboard-content .content #visibility_users_select option").remove();
+										$.each(data.users, function(index,item){
+											$("#dashboard-content .content #visibility_users_select").append($("<option value='$$id'>$$nome</option>".render({
+												id: getIdFromUrl(item.url),
+												nome: item.name
+											})));
+										});
+										$("#visibility-options #button-add").click(function(){
+											if ($("#visibility_users_select option:selected").length > 0){
+												$("#visibility_users_select option:selected").appendTo("#visibility_users_id");
+												sortSelectBox("#visibility_users_id");
+											}
+										});
+										$("#visibility-options #button-remove").click(function(){
+											if ($("#visibility_users_id option:selected").length > 0){
+												$("#visibility_users_id option:selected").appendTo("#visibility_users_select");
+												sortSelectBox("#visibility_users_select");
+											}
+										});
+										if (args) args.callBack();
+									}
+								});
+							}
+                        }					
+					}
+					
                     $("#dashboard-content .content textarea#formula").after("<div id='formula-editor'><div class='editor'><div class='editor-content'></div></div><div class='button'><<</div><div class='variables-title'>Variáveis</div><div class='variables'></div><div class='user-input'></div><div class='operators'></div></div>");
                     $("#formula-editor .user-input").append("<input type='text' id='formula-input' placeholder='valor'>");
                     $("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title'>$$caption</div>".render({value: "+",caption: "+",title: "Soma"}));
@@ -2940,7 +4479,6 @@ $(document).ready(function() {
                         updateVariacoesTable();
                     }
 
-
                     updateVariacoesTable();
 
                     $("#variacoes-button-add").click(function(){
@@ -3068,7 +4606,6 @@ $(document).ready(function() {
                         updateVVariacoesTable();
                     }
 
-
                     updateVVariacoesTable();
 
                     $("#variety_name").parent().parent().hide();
@@ -3106,7 +4643,6 @@ $(document).ready(function() {
 
                                 args = [{name: "api_key", value: $.cookie("key")},
                                         {name: "indicator.create.name", value: $(this).parent().parent().find("#name").val()},
-                                        {name: "indicator.create.indicator_roles", value: $(this).parent().parent().find("#indicator_role").val()},
                                         {name: "indicator.create.indicator_type", value: $(this).parent().parent().find("#indicator_type").val().replace("_dyn","")},
                                         {name: "indicator.create.formula", value: $(this).parent().parent().find("#formula").val()},
                                         {name: "indicator.create.explanation", value: $(this).parent().parent().find("#explanation").val()},
@@ -3121,15 +4657,23 @@ $(document).ready(function() {
                                         {name: "indicator.create.observations", value: $(this).parent().parent().find("#observations").val()}
                                         ];
 
+                                args.push({name: "indicator.create.visibility_level", value: $(this).parent().parent().find("#visibility_level").val()});
 
-								if ($(this).parent().parent().find("#indicator_role").val() == "_prefeitura,_movimento"){
-                                    args.push({name: "indicator.create.visibility_level", value: "public"});
-								}else if ($(this).parent().parent().find("#indicator_role").val() == "_prefeitura"){
-                                    args.push({name: "indicator.create.visibility_level", value: "private"});
-                                    args.push({name: "indicator.create.visibility_user_id", value: 2});
-								}else if ($(this).parent().parent().find("#indicator_role").val() == "_movimento"){
-                                    args.push({name: "indicator.create.visibility_level", value: "private"});
-                                    args.push({name: "indicator.create.visibility_user_id", value: 3});
+								if ($(this).parent().parent().find("#visibility_level").val() == "private"){
+                                    if (user_info.roles[0] == "superadmin"){
+										args.push({name: "indicator.create.visibility_user_id", value: $(this).parent().parent().find("#visibility_user_id").val()});
+									}else{
+										args.push({name: "indicator.create.visibility_user_id", value: $.cookie("user.id")});
+									}
+								}else if ($(this).parent().parent().find("#visibility_level").val() == "country"){
+									args.push({name: "indicator.create.visibility_country_id", value: $(this).parent().parent().find("#visibility_country_id").val()});
+								}else if ($(this).parent().parent().find("#visibility_level").val() == "restrict"){
+									var users = "";
+                                    $(this).parent().parent().find("#visibility_users_id option").each(function(index,item){
+										if (users != "") users += ",";
+										users += item.value;
+									});
+                                    args.push({name: "indicator.create.visibility_users_id", value: users});
 								}
 
                                 if ($(this).parent().parent().find("#indicator_type").val() == "varied" || $(this).parent().parent().find("#indicator_type").val() == "varied_dyn"){
@@ -3211,13 +4755,14 @@ $(document).ready(function() {
                                         args = [{name: "api_key", value: $.cookie("key")},
                                                 {name: "indicator.network_config.upsert.unfolded_in_home", value: ($("input#unfolded_in_home").attr("checked") ? 1 : 0)}
                                                 ];
-                                        $.ajax({
+
+												$.ajax({
                                             async: false,
                                             type: 'POST',
                                             dataType: 'json',
                                             url: api_path + '/api/indicator/$$newid/network_config/$$network_id'.render({
                                                     newid: newId,
-                                                    network_id: $.cookie("network.id")
+                                                    network_id: user_info.network
                                                 }),
                                             data: args
                                         });
@@ -3254,8 +4799,6 @@ $(document).ready(function() {
                                 switch(jqXHR.status){
                                     case 200:
                                         $(formbuild).find("input#name").val(data.name);
-                                        if (data.indicator_roles ==  '_movimento,_prefeitura') data.indicator_roles = '_prefeitura,_movimento';
-                                        $(formbuild).find("select#indicator_role").val(data.indicator_roles);
                                         if (data.indicator_type == "varied" && data.dynamic_variations == "1"){
                                             $(formbuild).find("select#indicator_type").val("varied_dyn");
                                         }else{
@@ -3313,19 +4856,28 @@ $(document).ready(function() {
                                             updateVVariacoesTable();
 
                                         }
-                                        if (data.indicator_roles ==  '_movimento,_prefeitura') data.indicator_roles = '_prefeitura,_movimento';
-//                                        $(formbuild).find("select#indicator_role").val(String(data.indicator_roles));
 
-                                        if (data.visibility_level ==  'public'){
-	                                        $(formbuild).find("select#indicator_role").val("_prefeitura,_movimento");
-										}else if (data.visibility_level ==  'private'){
-											if (data.visibility_user_id ==  2){
-		                                        $(formbuild).find("select#indicator_role").val("_prefeitura");
-											}else{
-		                                        $(formbuild).find("select#indicator_role").val("_movimento");
+	                                    $(formbuild).find("select#visibility_level").val(data.visibility_level);
+										
+										visibilityChanged({"callBack": function(){
+											if (data.visibility_level == "private"){
+												if (data.visibility_user_id){
+													$(formbuild).find("select#visibility_user_id").val(data.visibility_user_id)
+												}
+											}else if (data.visibility_level == "country"){
+												if (data.visibility_country_id){
+													$(formbuild).find("select#visibility_country_id").val(data.visibility_country_id)
+												}
+											}else if (data.visibility_level == "restrict"){
+												if (data.restrict_to_users){
+													var users = data.restrict_to_users;
+													$.each(users, function(index,value){
+														$("#visibility_users_select option[value="+value+"]").appendTo("#visibility_users_id");
+													});
+												}
 											}
-										}
-
+										}});
+										
                                         $(formbuild).find("textarea#formula").val(data.formula);
                                         $(formbuild).find("textarea#explanation").val(data.explanation);
                                         $(formbuild).find("select#sort_direction").val(String(data.sort_direction));
@@ -3339,7 +4891,7 @@ $(document).ready(function() {
                                         $(formbuild).find("textarea#observations").val(data.observations);
 
                                         $.each(data.network_configs, function(index,item){
-                                            if (item.network_id == $.cookie("network.id")){
+                                            if (item.network_id == user_info.network){
                                                 if (item.unfolded_in_home == 1){
                                                     $(formbuild).find("input#unfolded_in_home").attr("checked",true);
                                                 }
@@ -3417,7 +4969,6 @@ $(document).ready(function() {
                             }else{
                                 args = [{name: "api_key", value: $.cookie("key")},
                                         {name: "indicator.update.name", value: $(this).parent().parent().find("#name").val()},
-                                        {name: "indicator.update.indicator_roles", value: $(this).parent().parent().find("#indicator_role").val()},
                                         {name: "indicator.update.indicator_type", value: $(this).parent().parent().find("#indicator_type").val().replace("_dyn","")},
                                         {name: "indicator.update.formula", value: $(this).parent().parent().find("#formula").val()},
                                         {name: "indicator.update.explanation", value: $(this).parent().parent().find("#explanation").val()},
@@ -3432,15 +4983,26 @@ $(document).ready(function() {
                                         {name: "indicator.update.observations", value: $(this).parent().parent().find("#observations").val()}
                                         ];
 
-								if ($(this).parent().parent().find("#indicator_role").val() == "_prefeitura,_movimento"){
-                                    args.push({name: "indicator.update.visibility_level", value: "public"});
-								}else if ($(this).parent().parent().find("#indicator_role").val() == "_prefeitura"){
-                                    args.push({name: "indicator.update.visibility_level", value: "private"});
-                                    args.push({name: "indicator.update.visibility_user_id", value: 2});
-								}else if ($(this).parent().parent().find("#indicator_role").val() == "_movimento"){
-                                    args.push({name: "indicator.update.visibility_level", value: "private"});
-                                    args.push({name: "indicator.update.visibility_user_id", value: 3});
+
+                                args.push({name: "indicator.update.visibility_level", value: $(this).parent().parent().find("#visibility_level").val()});
+
+								if ($(this).parent().parent().find("#visibility_level").val() == "private"){
+                                    if (user_info.roles[0] == "superadmin"){
+										args.push({name: "indicator.update.visibility_user_id", value: $(this).parent().parent().find("#visibility_user_id").val()});
+									}else{
+										args.push({name: "indicator.update.visibility_user_id", value: $.cookie("user.id")});
+									}
+								}else if ($(this).parent().parent().find("#visibility_level").val() == "country"){
+									args.push({name: "indicator.update.visibility_country_id", value: $(this).parent().parent().find("#visibility_country_id").val()});
+								}else if ($(this).parent().parent().find("#visibility_level").val() == "restrict"){
+									var users = "";
+                                    $("#visibility_users_id option").each(function(index,item){
+										if (users != "") users += ",";
+										users += item.value;
+									});
+                                    args.push({name: "indicator.update.visibility_users_id", value: users});
 								}
+
 
                                 if ($(this).parent().parent().find("#indicator_type").val() == "varied" || $(this).parent().parent().find("#indicator_type").val() == "varied_dyn"){
                                     if ($(this).parent().parent().find("#all_variations_variables_are_required").attr("checked")){
@@ -3590,7 +5152,7 @@ $(document).ready(function() {
                                             dataType: 'json',
                                             url: api_path + '/api/indicator/$$newid/network_config/$$network_id'.render({
                                                     newid: newId,
-                                                    network_id: $.cookie("network.id")
+                                                    network_id: user_info.network
                                                 }),
                                             data: args
                                         });
@@ -3628,7 +5190,7 @@ $(document).ready(function() {
                     $.ajax({
                         type: 'GET',
                         dataType: 'json',
-                        url: api_path + '/api/indicator?api_key=$$key'.render({
+                        url: api_path + '/api/indicator?api_key=$$key&user_id=$$userid'.render({
                                 key: $.cookie("key"),
                                 userid: $.cookie("user.id")
                                 }),
@@ -3642,7 +5204,8 @@ $(document).ready(function() {
                                                         "axis_id":data.indicators[index].axis_id,
                                                         "axis":data.indicators[index].axis,
                                                         "network_configs":data.indicators[index].network_configs,
-                                                        "period":'yearly',
+                                                        "user_indicator_config":data.indicators[index].user_indicator_config,
+                                                        "period":'yearly'
                                                     });
                             });
 
@@ -3702,12 +5265,15 @@ $(document).ready(function() {
                             var axis_ant = "";
                             var indicators_table = "";
                             var indicators_legend = "";
+                            var indicators_status = "";
 
                             indicators_legend = "<div class='indicadores_legend'><div class='fillContent'>";
                             indicators_legend += "<div class='item'><div class='color no-data'></div><div class='label'>Nenhum dado preenchido</div><div class='clear'></div></div>";
                             indicators_legend += "<div class='item'><div class='color last-period'></div><div class='label'>Preenchido</div><div class='clear'></div></div>";
                             indicators_legend += "<div class='item'><div class='color full'></div><div class='label'>Período corrente preenchido</div><div class='clear'></div></div>";
                             indicators_legend += "</div></div><div class='clear'></div>";
+
+                            indicators_status = "<div class='indicadores-status'></div>";
 
                             indicators_table = "<div class='indicadores_list'>";
 
@@ -3719,11 +5285,14 @@ $(document).ready(function() {
 
                                     $.each(group.items, function(index_item,item){
                                         for (i = 0; i < data_indicators.length; i++){
+											if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1){
+												continue;
+											}
                                             if (data_indicators[i].id == item.indicator_id){
                                                 var formula = formataFormula(data_indicators[i].formula,data_variables,data_vvariables);
                                                 var tr_class = "folded";
                                                 $.each(data_indicators[i].network_configs, function(index_config,item_config){
-                                                    if (item_config.network_id == $.cookie("network.id") && item_config.unfolded_in_home == 1){
+                                                    if (item_config.network_id == user_info.network && item_config.unfolded_in_home == 1){
                                                         tr_class = "unfolded";
                                                     }
                                                 });
@@ -3745,8 +5314,12 @@ $(document).ready(function() {
                                     indicators_table += "</div>";
                                 });
                             }
-
+							
+							//carrega indicadores por eixo
                             for (i = 0; i < data_indicators.length; i++){
+								if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1){
+									continue;
+								}
                                 if (!findInArray(indicators_in_groups,data_indicators[i].id)){
                                     if (data_indicators[i].axis_id != axis_ant){
                                         if (i > 0){
@@ -3758,7 +5331,7 @@ $(document).ready(function() {
                                     var formula = formataFormula(data_indicators[i].formula,data_variables,data_vvariables);
                                     var tr_class = "folded";
                                     $.each(data_indicators[i].network_configs, function(index_config,item_config){
-                                        if (item_config.network_id == $.cookie("network.id") && item_config.unfolded_in_home == 1){
+                                        if (item_config.network_id == user_info.network && item_config.unfolded_in_home == 1){
                                             tr_class = "unfolded";
                                         }
                                     });
@@ -3775,11 +5348,38 @@ $(document).ready(function() {
                                     indicators_table += "<div class='clear'></div>";
                                 }
                             }
+							
+							//carrega indicadores ocultos
+							indicators_table += "</div>";
+							indicators_table += "<div class='eixos hidden collapse'><div class='title'>Indicatores Ocultos</div><div class='clear'></div>";
+                            for (i = 0; i < data_indicators.length; i++){
+								if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1){
+                                    var formula = formataFormula(data_indicators[i].formula,data_variables,data_vvariables);
+                                    var tr_class = "folded";
+                                    indicators_table += "<div class='variable $$tr_class' indicator-id='$$indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='$$hash?option=unhide&url=$$url&config_id=$$config_id' class='icone unhide' title='remover da lista de ocultos' alt='remover da lista de ocultos'>mostrar</a></div><div class='clear'></div></div>".render({
+                                        name: data_indicators[i].name,
+                                        formula: formula,
+                                        hash: "#!/"+getUrlSub(),
+                                        url: api_path + "/api/indicator/" + data_indicators[i].id,
+                                        indicator_id: data_indicators[i].id,
+                                        period: data_indicators[i].period,
+                                        config_id: data_indicators[i].user_indicator_config.id,
+                                        tr_class: tr_class
+                                        });
+                                    indicators_table += "<div class='clear'></div>";
+                                }
+                            }
 
                             indicators_table += "<div><div class='clear'>";
 
-                            $("#dashboard-content .content").append(indicators_legend + indicators_table);
-
+                            $("#dashboard-content .content").append(indicators_legend + indicators_status + indicators_table);
+							
+							$("#dashboard-content .content .indicadores_list .eixos").each(function(index,item){
+								if ($(item).find(".variable").length <= 0){
+									$(item).append("<div class='empty'>Nenhum indicador encontrado</div>");
+								}
+							});
+							
                             $("#dashboard-content .content .indicadores_list .zoom").click( function(){
                                 var target = $(this).parent().parent();
                                 var indicator_period = $(this).attr("period");
@@ -3808,16 +5408,22 @@ $(document).ready(function() {
                                             var vvariations = [];
                                             $.each(data.rows, function(index,value){
                                                 history_table += "<tr><td class='periodo'>$$periodo</td>".render({periodo: $.convertDateToPeriod(data.rows[index].valid_from,indicator_period)});
-                                                $.each(data.rows[index].valores, function(index2,value2){
-                                                    if (data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined && data.rows[index].valores[index2].value != "-"){
+                                                $.each(headers, function(index2,value2){
+                                                    if ((data.rows[index].valores[index2]) && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined && data.rows[index].valores[index2].value != "-"){
                                                         history_table += "<td class='valor' title='$$data'>$$valor</td>".render({
                                                                 valor: $.formatNumber(data.rows[index].valores[index2].value, {format:"#,##0.###", locale:"br"}),
                                                                 data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T")
                                                         });
                                                     }else{
-                                                        history_table += "<td class='valor' title='$$data'>-</td>".render({
-                                                                data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T")
-                                                        });
+														if ((data.rows[index].valores[index2])){
+															history_table += "<td class='valor' title='$$data'>-</td>".render({
+																	data: $.convertDate(data.rows[index].valores[index2].value_of_date,"T")
+															});
+														}else{
+															history_table += "<td class='valor' title='$$data'>-</td>".render({
+																	data: $.convertDate(data.rows[index].valid_from,"T")
+															});
+														}
                                                     }
                                                 });
                                                 if (value.variations && value.variations.length > 0){
@@ -3891,7 +5497,8 @@ $(document).ready(function() {
                                 $(this).parent().toggleClass("collapse");
 //                              $(this).parent().find(".variable").toggle();
                             });
-
+							
+							//busca status dos indicadores
                             $.ajax({
                                 type: 'GET',
                                 dataType: 'json',
@@ -3913,7 +5520,19 @@ $(document).ready(function() {
                                         $(".indicadores_list .variable[indicator-id='$$indicator_id']".render({
                                                     indicator_id: data.status[index].id
                                             })).addClass(statusClass);
+										if (dataStatus[index].justification_count){
+											$(".indicadores_list .variable[indicator-id='$$indicator_id'] .link".render({
+														indicator_id: data.status[index].id
+												})).append("<a href='javascript: void(0);' class='icone justification' title='valores não preenchidos (justificados)' alt='valores não preenchidos (justificados)'>$$justification_count</a>".render({
+													justification_count: dataStatus[index].justification_count
+												})
+											);
+										}
                                     });
+									if (data.totals){
+										$(".indicadores_legend .item").eq(1).find(".label").append("<span class='percent'> (" + parseInt(data.totals.has_data_perc*100) + "%)</span>");
+										$(".indicadores_legend .item").eq(2).find(".label").append("<span class='percent'> (" + parseInt(data.totals.without_data_perc*100) + "%)</span>");
+									}
                                 }
                             });
 
@@ -3943,10 +5562,13 @@ $(document).ready(function() {
                             //mostra informação técnica
                             var newform = [];
                             newform.push({label: "Informação Técnica", input: ["textarea,technical_information,itext"]});
+							newform.push({label: "", input: ["checkbox,hide_indicator,icheckbox"]});
 
                             var formbuild = $("#dashboard-content .content .tech_info").append(buildForm(newform,"Observações do Indicador"));
                             $(formbuild).find("div .field:odd").addClass("odd");
                             $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+
+							$("#hide_indicator").after("Ocultar esse indicador");
 
                             $("#dashboard-content .content .tech_info .botao-form[ref='enviar']").html("Salvar");
                             $("#dashboard-content .content .tech_info .botao-form[ref='cancelar']").hide();
@@ -3962,6 +5584,11 @@ $(document).ready(function() {
                                 success: function(data, textStatus, jqXHR){
                                     tech_info_id = data.id;
                                     $(".tech_info #technical_information").val(data.technical_information);
+									if (data.hide_indicator == 1){
+										$(".tech_info #hide_indicator").attr("checked",true);
+									}else{
+										$(".tech_info #hide_indicator").attr("checked",false);
+									}
                                 },
                                 error: function(data){
                                     if (data.status == 404){
@@ -3972,30 +5599,30 @@ $(document).ready(function() {
 
 
                             $("#dashboard-content .content .tech_info .botao-form[ref='enviar']").click(function(){
-                                if ($(".tech_info #technical_information").val() == ""){
+                                if ($(".tech_info #technical_information").val() == "" && (!$(".tech_info #hide_indicator").attr("checked")) && !(tech_info_id)){
                                     $(".tech_info .form-aviso").setWarning({msg: "Por favor informe a informação a ser salva.".render({
                                                 codigo: jqXHR.status
                                                 })
                                     });
                                 }else{
                                     $.loading();
-                                    if (tech_info_id){
-                                        args = [{name: "api_key", value: $.cookie("key")},
-                                                {name: "user.indicator_config.update.technical_information", value: $(".tech_info #technical_information").val()}
-                                                ];
+                                    if (!tech_info_id){
+										var action = "create";
+                                        url_action = api_path + "/api/user/$$user_id/indicator_config".render({
+                                                user_id: $.cookie("user.id")
+                                            });
+                                    }else{
+										var action = "update";
                                         url_action = api_path + "/api/user/$$user_id/indicator_config/$$id".render({
                                                 user_id: $.cookie("user.id"),
                                                 id: tech_info_id
                                             });
-                                    }else{
-                                        args = [{name: "api_key", value: $.cookie("key")},
-                                                {name: "user.indicator_config.create.technical_information", value: $(".tech_info #technical_information").val()},
-                                                {name: "user.indicator_config.create.indicator_id", value: getIdFromUrl($.getUrlVar("url"))}
-                                                ];
-                                        url_action = api_path + "/api/user/$$user_id/indicator_config".render({
-                                                user_id: $.cookie("user.id")
-                                            });
                                     }
+									args = [{name: "api_key", value: $.cookie("key")},
+											{name: "user.indicator_config." + action + ".technical_information", value: $(".tech_info #technical_information").val()},
+											{name: "user.indicator_config." + action + ".hide_indicator", value: ($(".tech_info #hide_indicator").attr("checked")) ? 1 : 0},
+                                            {name: "user.indicator_config." + action + ".indicator_id", value: getIdFromUrl($.getUrlVar("url"))}
+											];
 
                                     $.ajax({
                                         type: "POST",
@@ -4027,7 +5654,26 @@ $(document).ready(function() {
                                                 });
 
 
+							var data_region;
+                            $.ajax({
+								async: false,
+                                type: 'GET',
+                                dataType: 'json',
+                                url: api_path + '/api/city/$$city/region?api_key=$$key'.render({
+                                        key: $.cookie("key"),
+                                        city: getIdFromUrl(user_info.city)
+                                        }),
+                                success: function(data, textStatus, jqXHR){
+                                    data_region = data.regions;
+                                }
+                            });
+
                             var newform = [];
+							
+							if (data_region && data_region.length > 0){
+                                newform.push({label: "Região", input: ["select,region_id,iselect"]});						
+							}
+							
                             newform.push({label: "Fórmula", input: ["textlabel,textlabel_formula,ilabel"]});
                             newform.push({label: "Período", input: ["textlabel,textlabel_periodo,ilabel"]});
                             if (data_indicator.period == "yearly"){
@@ -4040,10 +5686,63 @@ $(document).ready(function() {
                                 newform.push({label: "Data", input: ["select,date_filter,iselect"]});
                             }
 
-                            var formbuild = $("#dashboard-content .content .filter_indicator").append(buildForm(newform,"Informe o Período"));
+							if (data_region && data_region.length > 0){
+								var formbuild = $("#dashboard-content .content .filter_indicator").append(buildForm(newform,"Informe a Região e o Período"));
+							}else{
+								var formbuild = $("#dashboard-content .content .filter_indicator").append(buildForm(newform,"Informe o Período"));
+							}
                             $(formbuild).find("div .field:odd").addClass("odd");
                             $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 
+							if (data_region && data_region.length > 0){
+							
+								$("#dashboard-content .content select#region_id").change(function(e){
+									buildIndicatorHistory({"id":getIdFromUrl($.getUrlVar("url")),
+														"period":data_indicator.period,
+														"target":$("#dashboard-content .content div.historico")
+														});
+								});
+								$("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("Nenhuma"));
+
+								var region = [];
+								var district = [];
+								$.each(data_region, function(index,item){
+									if (item.depth_level == 2){
+										region.push({
+															"id": item.id,
+															"name": item.name,
+															"url": item.url
+															});
+									}else if(item.depth_level == 3){
+										district.push({
+															"id": item.id,
+															"name": item.name,
+															"url": item.url,
+															"upper_region_id": item.upper_region.id,
+															"upper_region_name": item.upper_region.name
+															});
+									}
+								});
+								region.sort(function (a, b) {
+									a = String(a.name),
+									b = String(b.name);
+									return a.localeCompare(b);
+								});
+								district.sort(function (a, b) {
+									a = String(a.name),
+									b = String(b.name);
+									return a.localeCompare(b);
+								});
+								$.each(region,function(index,item){
+									$("#dashboard-content .content select#region_id").append($("<option></option>").val(item.id).html(item.name));
+									$.each(district,function(index2,item2){
+										if (item2.upper_region_id == item.id){
+											$("#dashboard-content .content select#region_id").append($("<option></option>").val(item2.id).html("-- " + item2.name));
+										}
+									});								
+								});
+
+							}
                             var data_variables = [];
                             $.ajax({
                                 async: false,
@@ -4169,14 +5868,15 @@ $(document).ready(function() {
                                 $.loading();
 
                                 $("#dashboard-content .content .filter_result").empty();
-
                                 $.ajax({
                                     type: 'GET',
                                     dataType: 'json',
-                                    url: api_path + '/api/indicator/$$id/variable/period/$$period?api_key=$$key'.render({
+                                    url: api_path + '/api/indicator/$$id/variable/period/$$period?api_key=$$key$$region$$active_value'.render({
                                             key: $.cookie("key"),
                                             id: getIdFromUrl($.getUrlVar("url")),
-                                            period: $("#dashboard-content .content .filter_indicator select#date_filter option:selected").val()
+                                            period: $("#dashboard-content .content .filter_indicator select#date_filter option:selected").val(),
+											region: ($("#dashboard-content .content select#region_id option:selected").val()) ? "&region_id=" + $("#dashboard-content .content select#region_id option:selected").val() : "",
+											active_value: ($("#dashboard-content .content select#region_id option:selected").text().indexOf("--") < 0) ? "&active_value=0" : ""
                                             }),
                                     success: function(data, textStatus, jqXHR){
                                         var data_variables = data.rows;
@@ -4379,11 +6079,12 @@ $(document).ready(function() {
                                                 async: false,
                                                 type: 'GET',
                                                 dataType: 'json',
-                                                url: api_path + '/api/indicator/$$indicator_id/variables_variation/$$id/values?valid_from=$$period&api_key=$$key'.render({
+                                                url: api_path + '/api/indicator/$$indicator_id/variables_variation/$$id/values?valid_from=$$period&api_key=$$key$$region'.render({
                                                         key: $.cookie("key"),
                                                         indicator_id: getIdFromUrl($.getUrlVar("url")),
                                                         id: item_vvariables.id,
-                                                        period: $("#dashboard-content .content .filter_indicator select#date_filter option:selected").val()
+                                                        period: $("#dashboard-content .content .filter_indicator select#date_filter option:selected").val(),
+														region: ($("#dashboard-content .content select#region_id option:selected").val()) ? "&region_id=" + $("#dashboard-content .content select#region_id option:selected").val() : ""
                                                         }),
                                                 success: function(data, textStatus, jqXHR){
                                                     $.loading.hide();
@@ -4480,33 +6181,49 @@ $(document).ready(function() {
                                                                 data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter").val();
                                                             }
 
+															if ($("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()){
+																var url = api_path + '/api/city/$$city/region/$$region/value'.render({
+																			city: getIdFromUrl(user_info.city),
+																			region: $("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()
+																			});
+																var prefix = "region.";
+															}else{
+																var url = api_path + '/api/variable/$$var_id/value'.render({var_id: data_variables[cont_sent].id});
+																var prefix = "";
+															}
+															
                                                             if (!$("#dashboard-content .content input#no_data").attr("checked")){
                                                                 args = [{name: "api_key", value: $.cookie("key")},
-                                                                        {name: "variable.value.put.value", value: $.convertNumberToBd($("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val())},
-                                                                        {name: "variable.value.put.source", value: $("#dashboard-content .content .filter_result").find("#source_"+data_variables[cont_sent].id).val()},
-                                                                        {name: "variable.value.put.observations", value: $("#dashboard-content .content .filter_result").find("#observations_"+data_variables[cont_sent].id).val()},
-                                                                        {name: "variable.value.put.value_of_date", value: data_formatada}
+                                                                        {name: prefix + "variable.value.put.value", value: $.convertNumberToBd($("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val())},
+                                                                        {name: prefix + "variable.value.put.source", value: $("#dashboard-content .content .filter_result").find("#source_"+data_variables[cont_sent].id).val()},
+                                                                        {name: prefix + "variable.value.put.observations", value: $("#dashboard-content .content .filter_result").find("#observations_"+data_variables[cont_sent].id).val()},
+                                                                        {name: prefix + "variable.value.put.value_of_date", value: data_formatada}
                                                                         ];
                                                             }else if ($("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val() == ""){
                                                                 args = [{name: "api_key", value: $.cookie("key")},
-                                                                        {name: "variable.value.put.value", value: ""},
-                                                                        {name: "variable.value.put.source", value: ""},
-                                                                        {name: "variable.value.put.observations", value: $("#dashboard-content .content .filter_result").find("#observations_"+data_variables[cont_sent].id).val()},
-                                                                        {name: "variable.value.put.value_of_date", value: data_formatada}
+                                                                        {name: prefix + "variable.value.put.value", value: ""},
+                                                                        {name: prefix + "variable.value.put.source", value: ""},
+                                                                        {name: prefix + "variable.value.put.observations", value: $("#dashboard-content .content .filter_result").find("#observations_"+data_variables[cont_sent].id).val()},
+                                                                        {name: prefix + "variable.value.put.value_of_date", value: data_formatada}
                                                                         ];
                                                             }else{
                                                                 args = [{name: "api_key", value: $.cookie("key")},
-                                                                        {name: "variable.value.put.value", value: $.convertNumberToBd($("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val())},
-                                                                        {name: "variable.value.put.source", value: $("#dashboard-content .content .filter_result").find("#source_"+data_variables[cont_sent].id).val()},
-                                                                        {name: "variable.value.put.observations", value: $("#dashboard-content .content .filter_result").find("#observations_"+data_variables[cont_sent].id).val()},
-                                                                        {name: "variable.value.put.value_of_date", value: data_formatada}
+                                                                        {name: prefix + "variable.value.put.value", value: $.convertNumberToBd($("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val())},
+                                                                        {name: prefix + "variable.value.put.source", value: $("#dashboard-content .content .filter_result").find("#source_"+data_variables[cont_sent].id).val()},
+                                                                        {name: prefix + "variable.value.put.observations", value: $("#dashboard-content .content .filter_result").find("#observations_"+data_variables[cont_sent].id).val()},
+                                                                        {name: prefix + "variable.value.put.value_of_date", value: data_formatada}
                                                                         ];
                                                             }
 
+															if ($("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()){
+                                                                args.push({name: prefix + "variable.value.put.variable_id", value: data_variables[cont_sent].id});
+                                                                args.push({name: prefix + "variable.value.put.user_id", value: $.cookie("user.id")});
+															}
+															
                                                             $.ajax({
                                                                 type: 'PUT',
                                                                 dataType: 'json',
-                                                                url: api_path + '/api/variable/$$var_id/value'.render({var_id: data_variables[cont_sent].id}),
+                                                                url: url,
                                                                 data: args,
                                                                 success: function(data, textStatus, jqXHR){
                                                                     cont_returned++;
@@ -4551,16 +6268,22 @@ $(document).ready(function() {
                                                                             {name: "indicator.variation_value." + ajax_option + ".value_of_date", value: data_formatada},
                                                                             {name: "indicator.variation_value." + ajax_option + ".indicator_variation_id", value: item_variation.id}
                                                                             ];
+																			
+																	if ($("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()){
+																		args = {name: "indicator.variation_value." + ajax_option + ".region_id", value: $("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()};
+																	}
 
+																	var url = api_path + '/api/indicator/$$indicator_id/variables_variation/$$var_id/values/$$ajax_id'.render({
+																		indicator_id: getIdFromUrl($.getUrlVar("url")),
+																		var_id: item_variables.id,
+																		ajax_id: ajax_id
+																	});
+																	
                                                                     $.ajax({
                                                                         async: false,
                                                                         type: "POST",
                                                                         dataType: 'json',
-                                                                        url: api_path + '/api/indicator/$$indicator_id/variables_variation/$$var_id/values/$$ajax_id'.render({
-                                                                                indicator_id: getIdFromUrl($.getUrlVar("url")),
-                                                                                var_id: item_variables.id,
-                                                                                ajax_id: ajax_id
-                                                                            }),
+                                                                        url: url,
                                                                         data: args,
                                                                         success: function(data, textStatus, jqXHR){
                                                                             cont_returned++;
@@ -4669,6 +6392,39 @@ $(document).ready(function() {
                             });
                         }
                     });
+                }else if ($.getUrlVar("option") == "unhide"){
+					$.loading();
+					var action = "update";
+					url_action = api_path + "/api/user/$$user_id/indicator_config/$$id".render({
+							user_id: $.cookie("user.id"),
+							id: $.getUrlVar("config_id")
+						});
+					args = [{name: "api_key", value: $.cookie("key")},
+							{name: "user.indicator_config." + action + ".hide_indicator", value: 0},
+							{name: "user.indicator_config." + action + ".indicator_id", value: getIdFromUrl($.getUrlVar("url"))}
+							];
+
+					$.ajax({
+						type: "POST",
+						dataType: 'json',
+						url: url_action,
+						data: args,
+						success: function(data, textStatus, jqXHR){
+							$("#aviso").setWarning({msg: "Informação salva com sucesso.".render({
+										codigo: jqXHR.status
+										})
+							});
+							$.loading.hide();
+							location.hash = "#!/" + getUrlSub();
+						},
+						error: function(data){
+							$("#aviso").setWarning({msg: "Erro ao salvar. ($$erro)".render({
+										erro: $.parseJSON(data.responseText).error
+										})
+							});
+							$.loading.hide();
+						}
+					});
                 }
             }else if (getUrlSub() == "mygroup"){
                 /*  GRUPOS DE INDICADORES  */
@@ -4971,7 +6727,7 @@ $(document).ready(function() {
                     deleteRegister({url:$.getUrlVar("url") + "?api_key=$$key".render({
                                                     key: $.cookie("key")
                                             })});
-                }
+				}
             }else if (getUrlSub() == "css"){
                 /*  CSS  */
                 if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
@@ -5434,7 +7190,810 @@ $(document).ready(function() {
                                                     key: $.cookie("key")
                                             })});
                 }
-            }else if (getUrlSub() == "prefs"){
+            }else if (getUrlSub() == "best_pratice"){
+                /*  Boas Práticas  */
+                if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
+
+                    var userList = buildDataTable({
+                            headers: ["Nome","Url","_"]
+                            });
+
+                    $("#dashboard-content .content").append(userList);
+
+                    $("#button-add").click(function(){
+                        resetWarnings();
+                        location.hash = "#!/" + getUrlSub() + "?option=add";
+                    });
+
+                    $("#results").dataTable( {
+                        "oLanguage": {
+                                        "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
+                                        },
+                        "bProcessing": true,
+                        "sAjaxSource": api_path + '/api/best_pratice?api_key=$$key&content-type=application/json&columns=name,name_url,url,_,_'.render({
+                                key: $.cookie("key")
+                                }),
+                        "aoColumnDefs": [
+                                            { "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 2 ] }
+                                        ],
+                        "fnDrawCallback": function(){
+                                DTdesenhaBotoes();
+                            }
+                    } );
+
+                }else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit"){
+
+                    var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+
+                    var newform = [];
+
+                    newform.push({label: "Eixo", input: ["select,axis_id,iselect"]});
+                    newform.push({label: "Nome", input: ["text,name,itext"]});
+                    newform.push({label: "Url", input: ["text,name_url,itext"]});
+                    newform.push({label: "Descrição", input: ["textarea,description"]});
+                    newform.push({label: "Objetivos", input: ["textarea,goals"]});
+                    newform.push({label: "Cronograma", input: ["textarea,schedule"]});
+                    newform.push({label: "Resultados", input: ["textarea,results"]});
+                    newform.push({label: "Instituições envolvidas", input: ["textarea,institutions_involved"]});
+                    newform.push({label: "Contatos", input: ["textarea,contacts"]});
+                    newform.push({label: "Fontes", input: ["textarea,sources"]});
+                    newform.push({label: "Tags", input: ["text,tags,itext"]});
+
+                    var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
+                    $(formbuild).find("div .field:odd").addClass("odd");
+                    $(formbuild).find(".form").width(800);
+                    $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+
+                    $(formbuild).find("#title").qtip( $.extend(true, {}, qtip_input, {
+                            content: "Título da Página."
+                    }));
+
+                    $.ajax({
+                        type: 'GET',
+                        dataType: 'json',
+                        url: api_path + '/api/axis?api_key=$$key'.render({
+                                key: $.cookie("key")
+                                }),
+                        success: function(data, textStatus, jqXHR){
+                            data.axis.sort(function (a, b) {
+                                a = a.name,
+                                b = b.name;
+
+                                return a.localeCompare(b);
+                            });
+                            $.each(data.axis, function(index,item){
+                                $("#dashboard-content .content select#axis_id").append($("<option></option>").val(item.id).html(item.name));
+                            });
+
+                        },
+                        error: function(data){
+                            $("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
+                                        codigo: $.parseJSON(data.responseText).error
+                                    })
+                            });
+                        }
+                    });
+
+                    if ($.getUrlVar("option") == "edit"){
+                        $.ajax({
+							async: false,
+                            type: 'GET',
+                            dataType: 'json',
+                            url: $.getUrlVar("url") + "?api_key=$$key".render({
+                                        key: $.cookie("key")
+                                }),
+                            success: function(data,status,jqXHR){
+                                switch(jqXHR.status){
+                                    case 200:
+                                        $(formbuild).find("input#name").val(data.name);
+                                        $(formbuild).find("input#name_url").val(data.name_url);
+                                        $(formbuild).find("textarea#description").val(data.description);
+                                        $(formbuild).find("textarea#goals").val(data.goals);
+                                        $(formbuild).find("textarea#schedule").val(data.schedule);
+                                        $(formbuild).find("textarea#results").val(data.results);
+                                        $(formbuild).find("textarea#institutions_involved").val(data.institutions_involved);
+                                        $(formbuild).find("textarea#contacts").val(data.contatcts);
+                                        $(formbuild).find("textarea#sources").val(data.sources);
+                                        $(formbuild).find("input#tags").val(data.tags);
+										$(formbuild).find("select#axis_id").val(data.axis_id);
+                                        break;
+                                }
+                            },
+                            error: function(data){
+                                switch(data.status){
+                                    case 400:
+                                        $(".form-aviso").setWarning({msg: "Erro: ($$codigo)".render({
+                                                    codigo: $.parseJSON(data.responseText).error
+                                                    })
+                                        });
+                                        break;
+                                }
+                            }
+                        });
+                    }
+
+					var default_params = {
+						id: 'description',
+						width: 600,
+						height: 175,
+						cssclass: 'tinyeditor',
+						controlclass: 'tinyeditor-control',
+						rowclass: 'tinyeditor-header',
+						dividerclass: 'tinyeditor-divider',
+						controls: ['bold', 'italic', 'underline', 'strikethrough', '|', 'subscript', 'superscript', '|',
+							'orderedlist', 'unorderedlist', '|', 'outdent', 'indent', '|', 'leftalign',
+							'centeralign', 'rightalign', 'blockjustify', '|', 'unformat', '|', 'undo', 'redo', 'n',
+							'size', 'style', '|', 'image', 'hr', 'link', 'unlink'],
+						footer: true,
+						fonts: ['Asap'],
+						xhtml: true,
+						cssfile: '../js/tinyeditor/custom.css',
+						bodyid: 'editor',
+						footerclass: 'tinyeditor-footer',
+						toggle: {text: 'código-fonte', activetext: 'wysiwyg', cssclass: 'toggle'},
+						resize: {cssclass: 'resize'}
+					};
+					
+					default_params.id = 'description';
+					default_params.bodyid = 'editorDescricao';
+					var editorDescricao = new TINY.editor.edit('editorDescricao', default_params);
+					
+					default_params.id = 'goals';
+					default_params.bodyid = 'editorObjetivos';					
+					var editorObjetivos = new TINY.editor.edit('editorObjetivos', default_params);
+					
+					default_params.id = 'schedule';
+					default_params.bodyid = 'editorCronograma';					
+					var editorCronograma = new TINY.editor.edit('editorCronograma', default_params);
+					
+					default_params.id = 'results';
+					default_params.bodyid = 'editorResultados';					
+					var editorResultados = new TINY.editor.edit('editorResultados', default_params);
+					
+					default_params.id = 'institutions_involved';
+					default_params.bodyid = 'editorInstituicoes';					
+					var editorInstituicoes = new TINY.editor.edit('editorInstituicoes', default_params);
+					
+					default_params.id = 'contacts';
+					default_params.bodyid = 'editorContatos';					
+					var editorContatos = new TINY.editor.edit('editorContatos', default_params);
+					
+					default_params.id = 'sources';
+					default_params.bodyid = 'editorFontes';					
+					var editorFontes = new TINY.editor.edit('editorFontes', default_params);
+
+                    $("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
+                        resetWarnings();
+                        if ($(this).parent().parent().find("#institute_id option:selected").val() == ""){
+                            $(".form-aviso").setWarning({msg: "Por favor informe o Título"});
+                        }else{
+
+                            if ($.getUrlVar("option") == "add"){
+                                var action = "create";
+                                var method = "POST";
+                                var url_action = api_path + "/api/best_pratice";
+                            }else{
+                                var action = "update";
+                                var method = "POST";
+                                var url_action = $.getUrlVar("url");
+                            }
+
+							editorDescricao.post();
+							editorObjetivos.post();					
+							editorCronograma.post();			
+							editorResultados.post();
+							editorInstituicoes.post();
+							editorContatos.post();
+							editorFontes.post();
+
+                            args = [{name: "api_key", value: $.cookie("key")},
+                                    {name: "best_pratice." + action + ".name", value: $(this).parent().parent().find("#name").val()},
+                                    {name: "best_pratice." + action + ".name_url", value: $(this).parent().parent().find("#name_url").val()},
+                                    {name: "best_pratice." + action + ".description", value: $(this).parent().parent().find("#description").val()},
+                                    {name: "best_pratice." + action + ".goals", value: $(this).parent().parent().find("#goals").val()},
+                                    {name: "best_pratice." + action + ".schedule", value: $(this).parent().parent().find("#schedule").val()},
+                                    {name: "best_pratice." + action + ".results", value: $(this).parent().parent().find("#results").val()},
+                                    {name: "best_pratice." + action + ".institutions_involved", value: $(this).parent().parent().find("#institutions_involved").val()},
+                                    {name: "best_pratice." + action + ".contatcts", value: $(this).parent().parent().find("#contacts").val()},
+                                    {name: "best_pratice." + action + ".sources", value: $(this).parent().parent().find("#sources").val()},
+									{name: "best_pratice." + action + ".tags", value: $(this).parent().parent().find("#tags").val()},
+									{name: "best_pratice." + action + ".axis_id", value: $(this).parent().parent().find("#axis_id option:selected").val()}
+                                    ];
+									
+                            $("#dashboard-content .content .botao-form[ref='enviar']").hide();
+                            $.ajax({
+                                type: method,
+                                dataType: 'json',
+                                url: url_action,
+                                data: args,
+                                success: function(data,status,jqXHR){
+                                    $("#aviso").setWarning({msg: "Operação efetuada com sucesso.".render({
+                                                codigo: jqXHR.status
+                                                })
+                                    });
+                                    location.hash = "#!/"+getUrlSub();
+                                },
+                                error: function(data){
+                                    switch(data.status){
+                                        case 400:
+                                            $("#aviso").setWarning({msg: "Erro ao $$operacao. ($$codigo)".render({
+                                                        operacao: txtOption,
+                                                        codigo: $.parseJSON(data.responseText).error
+                                                        })
+                                            });
+                                            break;
+                                    }
+                                    $("#dashboard-content .content .botao-form[ref='enviar']").show();
+                                }
+                            });
+                        }
+                    });
+                    $("#dashboard-content .content .botao-form[ref='cancelar']").click(function(){
+                        resetWarnings();
+                        history.back();
+                    });
+                }else if ($.getUrlVar("option") == "delete"){
+                    deleteRegister({url:$.getUrlVar("url") + "?api_key=$$key".render({
+                                                    key: $.cookie("key")
+                                            })});
+                }
+            }else if (getUrlSub() == "region-list"){
+                /*  Regiões  */
+				var data_region = [];
+				var data_district = [];
+                if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
+                    $.ajax({
+                        async: false,
+                        type: 'GET',
+                        dataType: 'json',
+                        url: api_path + "/api/city/$$city/region?api_key=$$key".render({
+                                    key: $.cookie("key"),
+									city: getIdFromUrl(user_info.city)
+                            }),
+                        success: function(data,status,jqXHR){
+							results = [];
+							$.each(data.regions, function(index,item){
+								if (item.depth_level == 2){
+									data_region.push({
+														"id": item.id,
+														"name": item.name,
+														"url": item.url
+														});
+								}else if(item.depth_level == 3){
+									data_district.push({
+														"id": item.id,
+														"name": item.name,
+														"url": item.url,
+														"upper_region_id": item.upper_region.id,
+														"upper_region_name": item.upper_region.name
+														});
+								}
+							});
+                            data_region.sort(function (a, b) {
+                                a = String(a.name),
+                                b = String(b.name);
+                                return a.localeCompare(b);
+                            });
+                            data_district.sort(function (a, b) {
+                                a = String(a.name),
+                                b = String(b.name);
+                                return a.localeCompare(b);
+                            });
+							$.each(data_region,function(index,item){
+								results.push([item.name, "--", item.url]);
+								$.each(data_district,function(index2,item2){
+									if (item2.upper_region_id == item.id){
+										results.push([item2.name, item.name, item2.url]);
+									}
+								});								
+							});
+                        }
+                    });
+
+                    var regionList = buildDataTable({
+                            headers: ["Nome","Distrito de","_"]
+                            });
+
+                    $("#dashboard-content .content").append(regionList);
+
+
+                    $("#button-add").click(function(){
+                        resetWarnings();
+                        location.hash = "#!/" + getUrlSub() + "?option=add";
+                    });
+
+                    $("#results").dataTable( {
+                        "oLanguage": {
+                                        "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
+                                        },
+                        "aaData": results,
+						"bSort": false,
+                        "aoColumnDefs": [
+                                            { "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 2 ] },
+                                            { "sClass": "center", "aTargets": [ 2 ] }
+                                        ],
+                        "fnDrawCallback": function(){
+                                DTdesenhaBotoes();
+                            }
+                    } );
+
+                }else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit"){
+
+                    var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+
+                    var newform = [];
+
+                    newform.push({label: "Distrito de", input: ["select,region_id,iselect"]});
+                    newform.push({label: "Nome", input: ["text,name,itext"]});
+                    newform.push({label: "Descrição", input: ["textarea,description,itext"]});
+
+                    var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
+                    $(formbuild).find("div .field:odd").addClass("odd");
+                    $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+
+                    $(formbuild).find("#name").qtip( $.extend(true, {}, qtip_input, {
+                            content: "Nome da Subprefeitura."
+                    }));
+
+					$("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("Carregando..."));
+                    $.ajax({
+                        type: 'GET',
+                        dataType: 'json',
+                        url: api_path + "/api/city/$$city/region?api_key=$$key".render({
+                                    key: $.cookie("key"),
+									city: getIdFromUrl(user_info.city)
+                            }),
+                        success: function(data,status,jqXHR){
+							$("#dashboard-content .content select#region_id option").remove();
+							$("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("Nenhuma"));
+                            data.regions.sort(function (a, b) {
+                                a = String(a.name),
+                                b = String(b.name);
+                                return a.localeCompare(b);
+                            });
+                            $.each(data.regions,function(index, item){
+                                if (!item.upper_region){
+                                    $("#dashboard-content .content select#region_id").append($("<option></option>").val(item.id).html(item.name));
+                                }
+                            });
+                        }
+                    });
+					
+                    if ($.getUrlVar("option") == "edit"){
+                        $.ajax({
+							async: false,
+                            type: 'GET',
+                            dataType: 'json',
+                            url: $.getUrlVar("url") + "?api_key=$$key".render({
+                                        key: $.cookie("key")
+                                }),
+                            success: function(data,status,jqXHR){
+                                switch(jqXHR.status){
+                                    case 200:
+										if (data.upper_region){
+											$(formbuild).find("select#region_id").val(data.upper_region.id);
+										}
+                                        $(formbuild).find("input#name").val(data.name);
+                                        $(formbuild).find("textarea#description").val(data.description);
+										current_map_string = data.polygon_path;
+                                        break;
+                                }
+                            },
+                            error: function(data){
+                                switch(data.status){
+                                    case 400:
+                                        $(".form-aviso").setWarning({msg: "Erro: ($$codigo)".render({
+                                                    codigo: $.parseJSON(data.responseText).error
+                                                    })
+                                        });
+                                        break;
+                                }
+                            }
+                        });
+                    }
+
+					google.load("maps", "3", {other_params:'sensor=false&libraries=drawing,geometry', callback: function(){
+						$("#dashboard-content .content div.form").after("<div id='panel-map'><div id='panel'><button id='edit-button'>Editar forma</button><button id='delete-button'>Apagar forma</button><button id='save-button'>Associar forma a região selecionada</button></div><div id='map'></div></div>");
+
+						$("#save-button").hide();
+						
+						if (!google.maps.Polygon.prototype.getBounds) {
+
+							google.maps.Polygon.prototype.getBounds = function(latLng) {
+		
+								var bounds = new google.maps.LatLngBounds();
+								var paths = this.getPaths();
+								var path;
+
+								for (var p = 0; p < paths.getLength(); p++) {
+									path = paths.getAt(p);
+									for (var i = 0; i < path.getLength(); i++) {
+										bounds.extend(path.getAt(i));
+									}
+								}
+
+								return bounds;
+							}
+						}
+
+						$map.init({
+							on_selection_unavaiable: function(){
+								document.getElementById('delete-button').setAttribute('disabled', 'disabled');
+							},
+							on_selection_available: function(){
+								document.getElementById('delete-button').removeAttribute('disabled');
+							},
+							// talvez pegar a cidade do usuario logado. ou se for superadmin, todo o mapa
+							center: new google.maps.LatLng(-15.781444,-47.930523)
+						});
+						
+						$map.addPolygon({"focus": true, "select": true});
+
+					}});
+
+                    $("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
+                        resetWarnings();
+                        if ($(this).parent().parent().find("#name").val() == ""){
+                            $(".form-aviso").setWarning({msg: "Por favor informe o Nome da Subprefeitura"});
+                        }else{
+
+                            if ($.getUrlVar("option") == "add"){
+                                var action = "create";
+                                var method = "POST";
+                                var url_action = api_path + "/api/city/$$city/region".render({city: getIdFromUrl(user_info.city)});
+                            }else{
+                                var action = "update";
+                                var method = "POST";
+                                var url_action = $.getUrlVar("url");
+                            }
+							
+                            args = [{name: "api_key", value: $.cookie("key")},
+                                    {name: "city.region." + action + ".name", value: $(this).parent().parent().find("#name").val()},
+                                    {name: "city.region." + action + ".description", value: $(this).parent().parent().find("#description").val()},
+                                    {name: "city.region." + action + ".polygon_path", value: current_map_string}
+                                    ];
+									
+							if ($(this).parent().parent().find("#region_id option:selected").val() != ""){
+								args.push({name: "city.region." + action + ".upper_region", value: $(this).parent().parent().find("#region_id option:selected").val()});
+							}
+							
+                            $("#dashboard-content .content .botao-form[ref='enviar']").hide();
+                            $.ajax({
+                                type: method,
+                                dataType: 'json',
+                                url: url_action,
+                                data: args,
+                                success: function(data,status,jqXHR){
+                                    $("#aviso").setWarning({msg: "Operação efetuada com sucesso.".render({
+                                                codigo: jqXHR.status
+                                                })
+                                    });
+                                    location.hash = "#!/"+getUrlSub();
+                                },
+                                error: function(data){
+                                    switch(data.status){
+                                        case 400:
+                                            $("#aviso").setWarning({msg: "Erro ao $$operacao. ($$codigo)".render({
+                                                        operacao: txtOption,
+                                                        codigo: $.parseJSON(data.responseText).error
+                                                        })
+                                            });
+                                            break;
+                                    }
+                                    $("#dashboard-content .content .botao-form[ref='enviar']").show();
+                                }
+                            });
+                        }
+                    });
+                    $("#dashboard-content .content .botao-form[ref='cancelar']").click(function(){
+                        resetWarnings();
+                        history.back();
+                    });
+                }else if ($.getUrlVar("option") == "delete"){
+                    deleteRegister({url:$.getUrlVar("url") + "?api_key=$$key".render({
+                                                    key: $.cookie("key")
+                                            })});
+                }
+            }else if (getUrlSub() == "region-map"){
+                /*  Regiões Setando mapa */
+
+				$("#dashboard-content .content").append("<div id='panel-region'><div id='region-top'><div id='list-label'>Regiões:</div><div id='region-panel'><div class='contents'><div id='region-selected'>Região selecionada: <span class='selected'>Nenhuma</span></div></div></div></div><div id='region-list'><div class='contents'></div></div><div id='panel-map'><div id='panel'><button id='edit-button' class='disabled'>Editar forma</button><button id='delete-button' class='disabled'>Apagar forma</button><button id='save-button' class='disabled'>Associar forma à região selecionada</button></div><div id='map'></div></div></div>");
+
+				$("#dashboard-content .content").append("<div class='upload_via_file'></div>");
+				var newform = [];
+				newform.push({label: "Arquivo .KML", input: ["file,arquivo,itext"]});
+                newform.push({label: "Precisão", input: ["select,precision,iselect"]});
+				var formbuild = $("#dashboard-content .content .upload_via_file").append(buildForm(newform,"Importar KML"));
+				$(formbuild).find("div .field:odd").addClass("odd");
+				$(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+				$("#dashboard-content .content .upload_via_file .botao-form[ref='enviar']").after('<a href="javascript: void(0);" class="botao-form" ref="atualizar">Atualizar Precisão</a>');
+				$("#dashboard-content .content .upload_via_file .botao-form[ref='cancelar']").attr("ref","re-enviar").text("Enviar outro arquivo");
+				$("#dashboard-content .content .upload_via_file .botao-form[ref='re-enviar']").hide();
+				$("#dashboard-content .content .upload_via_file .botao-form[ref='atualizar']").hide();
+
+				$("#dashboard-content .content .upload_via_file #precision").after("<div class='aviso'>Quanto menor a escala de precisão, maior será o nível de processamento necessário. Utilize uma precisão menor caso seu navegador apresente travamentos.</div>");
+				
+				$("#dashboard-content .content #precision").after("<div id='precision-value'>20</div><div id='precision-slider'></div>");
+				$("#dashboard-content .content #precision").remove();
+
+				$( "#precision-slider" ).slider({
+					value:20,
+					min: 0,
+					max: 500,
+					step: 10,
+					slide: function( event, ui ) {
+						$( "#precision-value" ).text( ui.value );
+					}
+				});
+				
+				data_region = [];
+				data_district = [];
+				data_regions = "";
+
+				$.ajax({
+					type: 'GET',
+					dataType: 'json',
+					url: api_path + "/api/city/$$city/region?api_key=$$key&with_polygon_path=1&limit=1000".render({
+								key: $.cookie("key"),
+								city: getIdFromUrl(user_info.city)
+						}),
+					success: function(data,status,jqXHR){
+						data_regions = data;
+						$.each(data.regions, function(index,item){
+							if (item.depth_level == 2){
+								data_region.push({
+													"id": item.id,
+													"name": item.name,
+													"url": item.url
+													});
+							}else if(item.depth_level == 3){
+								data_district.push({
+													"id": item.id,
+													"name": item.name,
+													"url": item.url,
+													"upper_region_id": item.upper_region.id,
+													"upper_region_name": item.upper_region.name
+													});
+							}
+						});
+						data_region.sort(function (a, b) {
+							a = String(a.name),
+							b = String(b.name);
+							return a.localeCompare(b);
+						});
+						data_district.sort(function (a, b) {
+							a = String(a.name),
+							b = String(b.name);
+							return a.localeCompare(b);
+						});
+						
+						var count = 0;
+						$.each(data_region,function(index,item){
+							$("#panel-region #region-list .contents").append("<div class='item' region-id='$$id' region-count='$$count' depth='$$depth'>$$name</div>".render({
+								id: item.id,
+								name: item.name,
+								count: count,
+								depth: 2
+							}));
+							$.each(data_district,function(index2,item2){
+								if (item2.upper_region_id == item.id){
+									count++;
+									$("#panel-region #region-list .contents").append("<div class='item' region-id='$$id' region-count='$$count' depth='$$depth'>$$name</div>".render({
+										id: item2.id,
+										name: item2.name,
+										count: count,
+										depth: 3
+									}));
+								}
+							});								
+						});
+
+						$("#panel-region #region-list .contents").css("height",$("#panel-map").height() + "px");
+
+						google.load("maps", "3", {other_params:'sensor=false&libraries=drawing,geometry', callback: function(){
+							
+							if (!google.maps.Polygon.prototype.getBounds) {
+
+								google.maps.Polygon.prototype.getBounds = function(latLng) {
+			
+									var bounds = new google.maps.LatLngBounds();
+									var paths = this.getPaths();
+									var path;
+
+									for (var p = 0; p < paths.getLength(); p++) {
+										path = paths.getAt(p);
+										for (var i = 0; i < path.getLength(); i++) {
+											bounds.extend(path.getAt(i));
+										}
+									}
+
+									return bounds;
+								}
+							}
+
+							$map.init({
+								on_selection_unavaiable: function(){
+									document.getElementById('delete-button').setAttribute('disabled', 'disabled');
+								},
+								on_selection_available: function(){
+									document.getElementById('delete-button').removeAttribute('disabled');
+								},
+								// talvez pegar a cidade do usuario logado. ou se for superadmin, todo o mapa
+								center: new google.maps.LatLng(-15.781444,-47.930523),
+								google: google
+							});
+							
+							$.each(data_regions.regions,function(index,item){
+								if (item.polygon_path){
+//									$map.addPolygon({"map_string": item.polygon_path,"focus": false, "region_id": item.id, "select": false});
+								}
+							});
+							$map.focusAll();
+							
+							$("#region-list .item").bind('click',function(e){
+								$("#region-list .item").removeClass("selected");
+								$(this).addClass("selected");
+								if ($(this).attr("region-id")){
+									var region_selected = getRegion($(this).attr("region-id"));
+									var region_index = $(this).attr("region-index");
+									if ((region_selected) && region_selected.polygon_path){
+										if (!$map.getObjTriangle(region_index)){
+											$map.addPolygon({"map_string": region_selected.polygon_path,"focus": true, "region_id": region_selected.id, "select": true});
+										}else{
+											$map.selectPolygon(region_index);
+										}
+									}
+								}
+								$.setSelectedRegion();
+								
+							});
+							
+
+						}});
+					}
+				});
+
+				$("#dashboard-content .content .upload_via_file .botao-form[ref='atualizar']").click(function(){
+					if (typeof retorno_kml == "undefined") return;
+					if (!retorno_kml) return;
+					trataRetornoKML();
+				});
+
+				$("#dashboard-content .content .upload_via_file .botao-form[ref='re-enviar']").click(function(){
+					$("#dashboard-content .content .upload_via_file .botao-form[ref='atualizar']").hide();
+					$("#dashboard-content .content .upload_via_file .botao-form[ref='re-enviar']").hide();
+					$("#dashboard-content .content .upload_via_file .botao-form[ref='enviar']").show();
+					
+					$("#dashboard-content .content .upload_via_file .form .field:first").show();
+				});
+
+				$("#dashboard-content .content .upload_via_file .botao-form[ref='enviar']").click(function(){
+					resetWarnings();
+					$.confirm({
+						'title': 'Confirmação',
+						'message': 'As regiões atuais serão apagadas do mapa.<br />Deseja continuar?',
+						'buttons': {
+							'Sim': {
+								'class'	: '',
+								'action': function(){
+
+									$.loading({title: "Enviando..."});
+								
+									var clickedButton = $(this);
+
+									var file = "arquivo";
+									var form = $("#formFileUpload_"+file);
+
+									original_id = $('#arquivo_'+file).attr("original-id");
+
+									$('#arquivo_'+file).attr({
+															name: "arquivo",
+															id: "arquivo"
+														});
+
+									form.attr("action", api_path + '/api/user/$$user/kml?api_key=$$key&content-type=application/json'.render({
+											user: $.cookie("user.id"),
+											key: $.cookie("key")
+											}));
+									form.attr("method", "post");
+									form.attr("enctype", "multipart/form-data");
+									form.attr("encoding", "multipart/form-data");
+									form.attr("target", "iframe_"+file);
+									form.attr("file", $('#arquivo').val());
+									form.submit();
+									$('#arquivo').attr({
+															name: original_id,
+															id: original_id
+														});
+
+									$("#iframe_"+file).load( function(){
+										$.loading.hide();
+										var erro = 0;
+										if ($(this).contents()){
+											if  ($(this).contents()[0].body){
+												if  ($(this).contents()[0].body.outerHTML){
+													var retorno = $(this).contents()[0].body.outerHTML;
+													retorno = retorno.replace('<body><pre>',"");
+													retorno = retorno.replace('<body><pre style="word-wrap: break-word; white-space: pre-wrap;">',"");
+													retorno = retorno.replace('</pre></body>',"");
+													retorno = $.parseJSON(retorno);
+												}else{
+													erro = 1;
+												}
+											}else{
+												erro = 1;
+											}
+										}else{
+											erro = 1;
+										}
+										if (erro == 0){
+											if (!retorno.error){
+												$(".upload_via_file .form-aviso").setWarning({msg: "Arquivo recebido com sucesso"});
+												$(clickedButton).html("Enviar");
+												$(clickedButton).attr("is-disabled",0);
+												if (retorno.vec){
+													retorno_kml = retorno;
+													$("#dashboard-content .content .upload_via_file .form .field:first").hide();
+													$("#dashboard-content .content .upload_via_file .botao-form[ref='atualizar']").show();
+													$("#dashboard-content .content .upload_via_file .botao-form[ref='re-enviar']").show();
+													$("#dashboard-content .content .upload_via_file .botao-form[ref='enviar']").hide();
+													trataRetornoKML();
+												}else{
+													$(".upload_via_file .form-aviso").setWarning({msg: "O arquivo possui um formato inválido."});
+													$(clickedButton).html("Enviar");
+													$(clickedButton).attr("is-disabled",0);
+												}
+											}else{
+												$(".upload_via_file .form-aviso").setWarning({msg: "Erro ao enviar arquivo " + file + " (" + retorno.error + ")"});
+												$(clickedButton).html("Enviar");
+												$(clickedButton).attr("is-disabled",0);
+												return;
+											}
+										}else{
+											$(".upload_via_file .form-aviso").setWarning({msg: "Erro ao enviar arquivo " + file});
+											$(clickedButton).html("Enviar");
+											$(clickedButton).attr("is-disabled",0);
+											return;
+										}
+									});
+								}
+							},
+							'Não'	: {
+								'class'	: '',
+								'action': function(){
+								}
+							}
+						}
+					});	
+				});
+				
+				function trataRetornoKML(){
+					$map.deleteAllShapes();
+					if ($("#region-list").length > 0){
+						$("#region-list .item").removeClass("selected");
+						$("#region-list .item").removeAttr("region-index");
+					}
+					$.each(retorno_kml.vec, function(index, foo){
+						$map.addPolygon({"kml_string": foo,"focus": false, "select": false});
+					});
+					$map.focusAll();
+				}
+				
+				function getRegion(id){
+					var i = "";
+					$.each(data_regions.regions,function(index,item){
+						if (item.id == id){
+							i = index;
+						}
+					});
+					if (i){
+						return data_regions.regions[i];
+					}else{
+						return null;
+					}
+				}
+
+			}else if (getUrlSub() == "prefs"){
 
                 var newform = [];
 
@@ -5755,6 +8314,33 @@ $(document).ready(function() {
                     resetWarnings();
                     location.hash = "#!/dashboard";
                 });
+            }else if (getUrlSub() == "logs"){
+			
+				var logList = buildDataTable({
+						headers: ["Usuário","Mensagem","Data"]
+						},null,false);
+
+				$("#dashboard-content .content").append(logList);
+
+				var url_log = api_path + '/api/log?api_key=' + $.cookie("key") + "&content-type=application/json&columns=user.nome,message,date";
+
+				$("#results").dataTable( {
+					"oLanguage": {
+									"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
+									},
+					"bProcessing": true,
+					"sAjaxSource": url_log,
+					"aaSorting": [[2,'desc']],
+					"aoColumnDefs": [
+										{ "sClass": "log", "aTargets": [ 0 , 1 , 2 ] },
+										{ "sClass": "log.data", "aTargets": [ 2 ] },
+										{ "fnRender": function ( oObj, sVal ) {
+														return $.format.date(sVal.replace("T"," "),"dd/MM/yyyy HH:mm:ss");
+													}, "aTargets": [ 2 ]
+										}
+									]
+				} );
+			
             }else if (getUrlSub() == "logout"){
                 if ($.cookie("key")){
                     var url_logout = api_path + '/api/logout?api_key=$$key'.render({

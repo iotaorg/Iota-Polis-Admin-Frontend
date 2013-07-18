@@ -22,6 +22,9 @@ var titleBarContent = {
 					"myvariableedit":{
 							"title": "Editar Valores",
 							"tip": ""},
+					"myvariableclone":{
+							"title": "Clonar Valores",
+							"tip": ""},
 					"indicator":{
 							"title": "Indicadores",
 							"tip": "Veja os indicadores já cadastrados. Utilize o botão 'Adicionar' para criar um novo indicador."},
@@ -52,6 +55,15 @@ var titleBarContent = {
 					"cities":{
 							"title": "Parâmetros - Cidades",
 							"tip": ""},
+					"region":{
+							"title": "Sub-Prefeituras/Distritos",
+							"tip": ""},
+					"region-list":{
+							"title": "Sub-Prefeituras/Distritos",
+							"tip": ""},
+					"region-map":{
+							"title": "Sub-Prefeituras/Distritos",
+							"tip": ""},
 					"units":{
 							"title": "Parâmetros - Unidades de Medida",
 							"tip": ""},
@@ -69,6 +81,12 @@ var titleBarContent = {
 							"tip": ""},
 					"css":{
 							"title": "Customização - CSS",
+							"tip": ""},
+					"best_pratice":{
+							"title": "Conteúdo - Boas Práticas",
+							"tip": ""},							
+					"logs":{
+							"title": "Relatórios do Sistema",
 							"tip": ""},
 					"prefs":{
 							"title": "Preferências",

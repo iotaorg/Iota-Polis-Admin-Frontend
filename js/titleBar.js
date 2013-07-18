@@ -16,6 +16,15 @@ var titleBarContent = {
 					"cities":{
 							"title": "Cidades",
 							"tip": ""},
+					"region":{
+							"title": "Sub-Prefeituras/Distritos",
+							"tip": ""},
+					"region-list":{
+							"title": "Sub-Prefeituras/Distritos",
+							"tip": ""},
+					"region-map":{
+							"title": "Sub-Prefeituras/Distritos",
+							"tip": ""},
 					"variable":{
 							"title": "Variáveis",
 							"tip": "Veja as variáveis já cadastradas. Utilize o botão 'Adicionar' para criar uma nova variável."},
@@ -24,6 +33,9 @@ var titleBarContent = {
 							"tip": ""},
 					"myvariableedit":{
 							"title": "Editar Valores",
+							"tip": ""},
+					"myvariableclone":{
+							"title": "Clonar Valores",
 							"tip": ""},
 					"indicator":{
 							"title": "Indicadores",
@@ -42,6 +54,9 @@ var titleBarContent = {
 							"tip": ""},
 					"reports":{
 							"title": "Relatórios",
+							"tip": ""},
+					"logs":{
+							"title": "Relatórios do Sistema",
 							"tip": ""},
 					"prefs":{
 							"title": "Preferências",

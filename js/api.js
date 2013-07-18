@@ -69,13 +69,13 @@ $(document).ready(function() {
                             user_info = data;
 
                             user_info.role = "";
-							
+
 							if (user_info.networks){
 								if (user_info.networks[0]){
 									user_info.network = user_info.networks[0].id;
 								}
 							}
-							
+
                             if (user_info.roles.length == 1){
                                 user_info.role = user_info.roles[0];
                             }else if (user_info.roles.length == 2){
@@ -219,7 +219,10 @@ $(document).ready(function() {
 
         submenu_label["indicator_user"] = [];
         submenu_label["indicator_user"].push({"myindicator" : "Editar Indicadores"});
+
+
         submenu_label["indicator_user"].push({"mygroup" : "Grupos de Indicadores"});
+
 
         submenu_label["variable_user"] = [];
         submenu_label["variable_user"].push({"myvariable" : "Variáveis Básicas"});
@@ -266,14 +269,12 @@ $(document).ready(function() {
             }
 
 			submenu_access["user"].push("myvariable");
-			submenu_access["user"].push("myvariableedit");
-			submenu_access["user"].push("myvariableclone");
-			submenu_access["user"].push("myindicator");
-			submenu_access["user"].push("mygroup");
 
-/*            menu_access["user"].push("region");
-			submenu_access["user"].push("region-list");
-			submenu_access["user"].push("region-map");*/ 
+            if(user_info.institute.id == 2){
+                submenu_access["user"].push("myvariableclone");
+            }
+
+			submenu_access["user"].push("myindicator");
 
             menu_access["user"].push("logout");
         }
@@ -363,7 +364,7 @@ $(document).ready(function() {
 		// 200 = ruim
 		// 500 = ruim demais
 		// 1000 = estranho
-	 
+
 		var _precisao = 20;
 
 		var _binds = {
@@ -422,7 +423,7 @@ $(document).ready(function() {
 			setColor("edit");
 			selectedShape.setEditable(true);
 		}
-		
+
 		function getSelection(){
 			console.log(current_map_string);
 		}
@@ -433,7 +434,7 @@ $(document).ready(function() {
 					return;
 				}
 			}
-			
+
 			if ($("#region-list .selected").length <= 0 || (!$("#region-list .selected").attr("region-id"))){
 				$("#aviso").setWarning({msg: "Nenhuma região selecionada."});
 				return;
@@ -455,7 +456,7 @@ $(document).ready(function() {
 							}
 						}
 					}
-				});	
+				});
 			}else{
 				$.confirm({
 					'title': 'Confirmação',
@@ -476,9 +477,9 @@ $(document).ready(function() {
 							}
 						}
 					}
-				});	
+				});
 			}
-			
+
 			function Save(){
 
 				var action = "update";
@@ -488,29 +489,29 @@ $(document).ready(function() {
 									city: getIdFromUrl(user_info.city),
 									region: $("#region-list .selected").attr("region-id")
 							});
-							
+
 				args = [{name: "api_key", value: $.cookie("key")},
 						{name: "city.region." + action + ".polygon_path", value: current_map_string}
 						];
-									
+
 				$.ajax({
 					type: method,
 					dataType: 'json',
 					url: url_action,
 					data: args,
 					success: function(data,status,jqXHR){
-					
+
 						if (!selectedShape.region_index){
 							var index = objTriangle.length;
-							
+
 							selectedShape.region_index = index;
-							
+
 							objTriangle.push(selectedShape);
-							
+
 						}
 						$("#region-list .selected").attr("region-index",selectedShape.region_index);
 						updateDataRegions($("#region-list .selected").attr("region-id"),current_map_string);
-						
+
 						$("#aviso").setWarning({msg: "Operação efetuada com sucesso."});
 					},
 					error: function(data){
@@ -561,14 +562,14 @@ $(document).ready(function() {
 				objTriangle[shape.region_index] = null;
 			}
 		}
-		
+
 		function _deleteAllShapes(){
 			$.each(objTriangle, function(index,item){
 				deleteShape(item);
 			});
 			objTriangle = [];
 		}
-		
+
 		function selectColor(status) {
 			if (!status) status = 'default';
 			// Retrieves the current options from the drawing manager and replaces the
@@ -578,7 +579,7 @@ $(document).ready(function() {
 			polygonOptions.fillColor = color[status];
 			drawingManager.set('polygonOptions', polygonOptions);
 		}
-		
+
 		function setColor(status) {
 			if (!selectedShape) return;
 			if (!status) status = 'default';
@@ -594,29 +595,29 @@ $(document).ready(function() {
 			}
 			show_controls();
 		}
-		
+
 		function _addPolygon(args){
 			if (!(current_map_string) && !(args.map_string) && !(args.kml_string)) return;
-			
+
 			if (!args.kml_string){
 				if (current_map_string && !(args.map_string)) args.map_string = current_map_string
 				var triangleCoords = google.maps.geometry.encoding.decodePath(args.map_string);
 			}else{
 				var triangleCoords = [];
- 
+
 			   $.each(args.kml_string.latlng, function(indexx, lnt){
 				   triangleCoords.push (new google.maps.LatLng(lnt[1], lnt[0]));
 			   });
-			   
+
 			   if ($( "#precision-slider" ).slider("value")){
 					_precisao = parseInt($( "#precision-slider" ).slider("value"));
 			   }else{
 					_precisao = 20;
 			   }
-			   
+
 			   triangleCoords = GDouglasPeucker(triangleCoords, _precisao);
 			}
-			
+
 			var index = objTriangle.length;
 
 			objTriangle.push(new google.maps.Polygon({
@@ -627,9 +628,9 @@ $(document).ready(function() {
 				editable: false,
 				region_index: index
 			}));
-			
+
 			objTriangle[index].setMap(map);
-			
+
 			if (args.focus) map.fitBounds(objTriangle[index].getBounds());
 
 			google.maps.event.addListener(objTriangle[index], 'click', function() {
@@ -654,24 +655,24 @@ $(document).ready(function() {
 				setSelection(objTriangle[index]);
 				_store_string(objTriangle[index]);
 			}
-			
+
 			if (args.region_id){
 				$("#region-list .item[region-id="+args.region_id+"]").attr("region-index",index);
 			}
 		}
-		
+
 		function _selectPolygon(index){
 			if (!index) return;
-			
+
 			map.fitBounds(objTriangle[index].getBounds());
 
 			setSelection(objTriangle[index]);
 			_store_string(objTriangle[index]);
 		}
-		
+
 		function _editPolygon(index){
 			if (!index) return;
-			
+
 			map.fitBounds(objTriangle[index].getBounds());
 
 			setShapeEditable(objTriangle[index]);
@@ -706,7 +707,7 @@ $(document).ready(function() {
 				return null;
 			}
 		}
-				
+
 		function updateDataRegions(id,string){
 			var i = "";
 			$.each(data_regions.regions,function(index,item){
@@ -718,7 +719,7 @@ $(document).ready(function() {
 				data_regions.regions[i].polygon_path = string;
 			}
 		}
-		
+
 		function initialize(params) {
 
 			if (typeof params.on_selection_unavaiable == 'function')
@@ -784,7 +785,7 @@ $(document).ready(function() {
 					_store_string(newShape);
 				}
 			});
-			
+
 			// Clear the current selection when the drawing mode is changed, or when the
 			// map is clicked.
 			google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
@@ -794,7 +795,7 @@ $(document).ready(function() {
 			google.maps.event.addDomListener(document.getElementById('save-button'), 'click', saveSelectedShape);
 
 			selectColor();
-			
+
 		}
 		return {
 			init: initialize,
@@ -832,12 +833,12 @@ $(document).ready(function() {
 							resetWarnings();
 							location.hash = "#!/" + getUrlSub() + "?option=add";
 						});
-						
+
 						//carrega dados do admin
 						var data_network;
 						var data_config_admin;
 						var data_config;
-						
+
 						$.ajax({
 							type: 'GET',
 							dataType: 'json',
@@ -942,9 +943,9 @@ $(document).ready(function() {
 									});
 
 									var newform = [];
-								
+
 									if (data_region && data_region.length > 0){
-										newform.push({label: "Região", input: ["select,region_id,iselect"]});						
+										newform.push({label: "Região", input: ["select,region_id,iselect"]});
 									}
 
 									newform.push({label: "Variável", input: ["textlabel,textlabel_variable,ilabel"]});
@@ -963,7 +964,7 @@ $(document).ready(function() {
 									var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
 
 									if (data_region && data_region.length > 0){
-									
+
 										$("#dashboard-content .content select#region_id").change(function(e){
 											buildVariableHistory();
 										});
@@ -1172,7 +1173,7 @@ $(document).ready(function() {
 								}
 							}
 						});
-					}				
+					}
 				}
             }else if (getUrlSub() == "admins"){
                 /*  Administradores  */
@@ -1575,7 +1576,7 @@ $(document).ready(function() {
 									args.push({name: "user." + action + ".network_ids", value: network_ids});
 								}
 							}
-									
+
                             if ($(this).parent().parent().find("#password").val() != ""){
                                 args.push(
                                     {name: "user." + action + ".password", value: $(this).parent().parent().find("#password").val()},
@@ -2453,7 +2454,7 @@ $(document).ready(function() {
 							}
 						});
 					}
-					
+
 					loadVariableConfig();
 
                     $("#results").dataTable( {
@@ -2528,14 +2529,14 @@ $(document).ready(function() {
 														user: $.cookie("user.id"),
 														id: data_config[$(this).attr("var-id")].id
 													});
-										
+
 									}
 
 									args = [{name: "api_key", value: $.cookie("key")},
 											{name: "user.variable_config." + action + ".display_in_home", value: display_in_home},
 											{name: "user.variable_config." + action + ".variable_id", value: $(this).attr("var-id")}
 											];
-									
+
 									$.ajax({
 										type: method,
 										dataType: 'json',
@@ -2742,7 +2743,7 @@ $(document).ready(function() {
                         resetWarnings();
                         location.hash = "#!/" + getUrlSub() + "?option=add";
                     });
-					
+
 					function loadVariableConfig(){
 						//carrega config do usuario
 						$.ajax({
@@ -2760,7 +2761,7 @@ $(document).ready(function() {
 							toggleAllCheckboxes();
 						});
 					}
-					
+
 					function toggleAllCheckboxes(){
 						$("table input[type=checkbox]").each(function(index,item){
 							if ($(this).attr("disabled") == "disabled"){
@@ -2770,12 +2771,12 @@ $(document).ready(function() {
 							}
 						});
 					}
-					
+
 					//carrega dados do admin
 					var data_network;
 					var data_config_admin;
 					var data_config;
-					
+
 					$.ajax({
 						type: 'GET',
 						dataType: 'json',
@@ -2863,14 +2864,14 @@ $(document).ready(function() {
 																			user: $.cookie("user.id"),
 																			id: data_config[$(this).attr("var-id")].id
 																		});
-															
+
 														}
 
 														args = [{name: "api_key", value: $.cookie("key")},
 																{name: "user.variable_config." + action + ".display_in_home", value: display_in_home},
 																{name: "user.variable_config." + action + ".variable_id", value: $(this).attr("var-id")}
 																];
-														
+
 														$.ajax({
 															type: method,
 															dataType: 'json',
@@ -2930,9 +2931,9 @@ $(document).ready(function() {
 								});
 
                                 var newform = [];
-							
+
 								if (data_region && data_region.length > 0){
-									newform.push({label: "Região", input: ["select,region_id,iselect"]});						
+									newform.push({label: "Região", input: ["select,region_id,iselect"]});
 								}
 
                                 newform.push({label: "Variável", input: ["textlabel,textlabel_variable,ilabel"]});
@@ -2951,7 +2952,7 @@ $(document).ready(function() {
                                 var formbuild = $("#dashboard-content .content").append(buildForm(newform,txtOption));
 
 								if (data_region && data_region.length > 0){
-								
+
 									$("#dashboard-content .content select#region_id").change(function(e){
 										buildVariableHistory();
 									});
@@ -3487,9 +3488,9 @@ $(document).ready(function() {
                 if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined){
 
 					var periods = [];
-					
+
 					function selectVariables(){
-						
+
 						$("#dashboard-content .content #steps-variables").empty();
 						$("#dashboard-content .content #steps-variables").show();
 						$("#dashboard-content .content #steps-years").empty();
@@ -3523,14 +3524,14 @@ $(document).ready(function() {
 										})
 									);
 								});
-								
+
 								$("#variables-list .item").hover(function(){
 									$("#variables-list").find(".button").hide();
 									$(this).find(".button").fadeIn("fast");
 								},function(){
 									$(this).find(".button").hide();
 								});
-								
+
 								$("#variables-selected .item").hover(function(){
 									$("#variables-selected").find(".button").hide();
 									$(this).find(".button").fadeIn("fast");
@@ -3552,17 +3553,17 @@ $(document).ready(function() {
 										$("#botao-avancar").addClass("disabled");
 									}
 								});
-							
+
 								$("#dashboard-content .content #steps-buttons").empty();
 								$("#dashboard-content .content #steps-buttons").append("<button class='button-default disabled' id='botao-avancar'>Avançar</button>");
-								
+
 								$("#botao-avancar").unbind();
-								$("#botao-avancar").html("Avançar");								
+								$("#botao-avancar").html("Avançar");
 								$("#botao-avancar").bind('click',function(){
 									selectInstitute();
 								});
-								
-							
+
+
 							},
 							error: function(data){
 								$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({
@@ -3572,7 +3573,7 @@ $(document).ready(function() {
 							}
 						});
 					}
-					
+
 					function selectInstitute(){
 
 						$.ajax({
@@ -3588,30 +3589,30 @@ $(document).ready(function() {
 										institute_id = item.id;
 									}
 								});
-								
+
 								if (institute_id){
 									selectYears(institute_id);
 								}
 							}
 						});
 					}
-					
+
 					function selectYears(institute_id){
-					
+
 						$("#steps-variables").fadeOut("fast",function(){
 							$("#steps-years").fadeIn();
 						});
-						
+
 						var yearsList = "<div class='years-clone'></div>";
 						$("#dashboard-content .content #steps-years").append("<div class='clear'>Selecione os períodos que você deseja clonar:</div>");
 						$("#dashboard-content .content #steps-years").append(yearsList);
-						
+
 						var variables = "";
 						$("#variables-selected .item:visible").each(function(index,item){
 							if (variables != "") variables += ",";
 							variables += $(this).attr("var-id");
 						});
-						
+
 						$.ajax({
 							type: 'GET',
 							dataType: 'json',
@@ -3654,13 +3655,13 @@ $(document).ready(function() {
 										return a.localeCompare(b);
 									});
 								}
-										
+
 								$("#dashboard-content .content #steps-years #variables-years").remove();
 								$("#dashboard-content .content #steps-years").append("<div id='variables-years'></div>");
 								$("#dashboard-content .content #steps-years #variables-years").append(yearsList);
-								
+
 								var rows = "";
-								
+
 								$.each(variables_names, function(index,item){
 									rows += "<tr><td>" + item.name + "</td>";
 									$.each(item.years, function(i,e){
@@ -3679,7 +3680,7 @@ $(document).ready(function() {
 								$("#results tbody").append(rows);
 								$("#results").addClass("ex_highlight");
 								$("#results").addClass("ex_highlight_row");
-								
+
 								$("#results thead tr th").each( function(index, item){
 									if (index > 0){
 										$(this).prepend("<input type='checkbox' class='chk-all' value='$$index'>".render({
@@ -3704,7 +3705,7 @@ $(document).ready(function() {
 										} );
 									 }
 								});
-								
+
 								$("input.chk-all").bind('click', function(index,item){
 									var checked = ($(this).attr("checked")) ? true : false;
 									var year_index = $(this).attr("value");
@@ -3713,9 +3714,9 @@ $(document).ready(function() {
 										$(row).find("td input.year-"+year_index).attr("checked",checked);
 									});
 								});
-								
+
 								$("#botao-avancar").unbind();
-								$("#botao-avancar").html("Concluir");								
+								$("#botao-avancar").html("Concluir");
 								$("#botao-avancar").bind('click',function(){
                                     $.loading();
 									finishClone({
@@ -3730,7 +3731,7 @@ $(document).ready(function() {
 								$("#botao-cancelar").bind('click',function(){
 									$("#steps-years").fadeOut("fast",function(){
 										$("#steps-years").empty();
-										$("#steps-variables").fadeIn();								
+										$("#steps-variables").fadeIn();
 										$("#botao-avancar").unbind();
 										$("#botao-avancar").html("Avançar");
 										$("#botao-avancar").bind('click',function(){
@@ -3738,11 +3739,11 @@ $(document).ready(function() {
 										});
 									});
 								});
-								
+
 							}
 						});
 					}
-					
+
 					function finishClone(params){
 
 						$("#steps-years").hide();
@@ -3755,13 +3756,13 @@ $(document).ready(function() {
 						args = [{name: "api_key", value: $.cookie("key")},
 								{name: "institute_id", value: params.institute_id}
 								];
-						
+
 						if (params.periods){
 							$.each(params.periods, function(index,item){
-								args.push({name: "period"+index, value: item});								
+								args.push({name: "period"+index, value: item});
 							});
 						}
-						
+
 						var filteredRows = oTable.$('tr', { "filter": "applied" });
 						$(filteredRows).each(function(index,row){
 							$(row).find("td input.chk-year").each( function(index,item){
@@ -3783,10 +3784,10 @@ $(document).ready(function() {
 								}
 								$("#aviso").setWarning({msg: "Operação efetuada com sucesso." + mensagem});
 								$("#botao-avancar").unbind();
-								$("#botao-avancar").html("Voltar");								
+								$("#botao-avancar").html("Voltar");
 								$("#botao-avancar").bind('click',function(){
 									resetWarnings();
-									selectVariables();									
+									selectVariables();
 								});
 								$("#botao-cancelar").hide();
                                 $.loading.hide();
@@ -3801,14 +3802,14 @@ $(document).ready(function() {
 
 							}
 						});
-				
+
 					}
 
 					var stepsLayers = "<div id='steps-variables'></div><div id='steps-years'></div><div id='steps-finish'></div><div id='steps-buttons'></div>";
 					$("#dashboard-content .content").append(stepsLayers);
-					
+
 					selectVariables();
-					
+
 				}
             }else if (getUrlSub() == "axis"){
                 /*  EIXOS  */
@@ -4118,7 +4119,7 @@ $(document).ready(function() {
                     $("#visibility_level").change(function(){
 						visibilityChanged();
                     });
-					
+
 					function visibilityChanged(args){
                         if ($("#visibility_level").val() == "public" || $("#visiblity_level").val() == "private" && user_info.roles[0] == "admin"){
                             $("#visibility-options").remove();
@@ -4212,9 +4213,9 @@ $(document).ready(function() {
 									}
 								});
 							}
-                        }					
+                        }
 					}
-					
+
                     $("#dashboard-content .content textarea#formula").after("<div id='formula-editor'><div class='editor'><div class='editor-content'></div></div><div class='button'><<</div><div class='variables-title'>Variáveis</div><div class='variables'></div><div class='user-input'></div><div class='operators'></div></div>");
                     $("#formula-editor .user-input").append("<input type='text' id='formula-input' placeholder='valor'>");
                     $("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title'>$$caption</div>".render({value: "+",caption: "+",title: "Soma"}));
@@ -4858,7 +4859,7 @@ $(document).ready(function() {
                                         }
 
 	                                    $(formbuild).find("select#visibility_level").val(data.visibility_level);
-										
+
 										visibilityChanged({"callBack": function(){
 											if (data.visibility_level == "private"){
 												if (data.visibility_user_id){
@@ -4877,7 +4878,7 @@ $(document).ready(function() {
 												}
 											}
 										}});
-										
+
                                         $(formbuild).find("textarea#formula").val(data.formula);
                                         $(formbuild).find("textarea#explanation").val(data.explanation);
                                         $(formbuild).find("select#sort_direction").val(String(data.sort_direction));
@@ -5314,7 +5315,7 @@ $(document).ready(function() {
                                     indicators_table += "</div>";
                                 });
                             }
-							
+
 							//carrega indicadores por eixo
                             for (i = 0; i < data_indicators.length; i++){
 								if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1){
@@ -5348,7 +5349,7 @@ $(document).ready(function() {
                                     indicators_table += "<div class='clear'></div>";
                                 }
                             }
-							
+
 							//carrega indicadores ocultos
 							indicators_table += "</div>";
 							indicators_table += "<div class='eixos hidden collapse'><div class='title'>Indicatores Ocultos</div><div class='clear'></div>";
@@ -5373,13 +5374,13 @@ $(document).ready(function() {
                             indicators_table += "<div><div class='clear'>";
 
                             $("#dashboard-content .content").append(indicators_legend + indicators_status + indicators_table);
-							
+
 							$("#dashboard-content .content .indicadores_list .eixos").each(function(index,item){
 								if ($(item).find(".variable").length <= 0){
 									$(item).append("<div class='empty'>Nenhum indicador encontrado</div>");
 								}
 							});
-							
+
                             $("#dashboard-content .content .indicadores_list .zoom").click( function(){
                                 var target = $(this).parent().parent();
                                 var indicator_period = $(this).attr("period");
@@ -5497,7 +5498,7 @@ $(document).ready(function() {
                                 $(this).parent().toggleClass("collapse");
 //                              $(this).parent().find(".variable").toggle();
                             });
-							
+
 							//busca status dos indicadores
                             $.ajax({
                                 type: 'GET',
@@ -5669,11 +5670,11 @@ $(document).ready(function() {
                             });
 
                             var newform = [];
-							
+
 							if (data_region && data_region.length > 0){
-                                newform.push({label: "Região", input: ["select,region_id,iselect"]});						
+                                newform.push({label: "Região", input: ["select,region_id,iselect"]});
 							}
-							
+
                             newform.push({label: "Fórmula", input: ["textlabel,textlabel_formula,ilabel"]});
                             newform.push({label: "Período", input: ["textlabel,textlabel_periodo,ilabel"]});
                             if (data_indicator.period == "yearly"){
@@ -5695,7 +5696,7 @@ $(document).ready(function() {
                             $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 
 							if (data_region && data_region.length > 0){
-							
+
 								$("#dashboard-content .content select#region_id").change(function(e){
 									buildIndicatorHistory({"id":getIdFromUrl($.getUrlVar("url")),
 														"period":data_indicator.period,
@@ -5739,7 +5740,7 @@ $(document).ready(function() {
 										if (item2.upper_region_id == item.id){
 											$("#dashboard-content .content select#region_id").append($("<option></option>").val(item2.id).html("-- " + item2.name));
 										}
-									});								
+									});
 								});
 
 							}
@@ -6191,7 +6192,7 @@ $(document).ready(function() {
 																var url = api_path + '/api/variable/$$var_id/value'.render({var_id: data_variables[cont_sent].id});
 																var prefix = "";
 															}
-															
+
                                                             if (!$("#dashboard-content .content input#no_data").attr("checked")){
                                                                 args = [{name: "api_key", value: $.cookie("key")},
                                                                         {name: prefix + "variable.value.put.value", value: $.convertNumberToBd($("#dashboard-content .content .filter_result").find("#var_"+data_variables[cont_sent].id).val())},
@@ -6219,7 +6220,7 @@ $(document).ready(function() {
                                                                 args.push({name: prefix + "variable.value.put.variable_id", value: data_variables[cont_sent].id});
                                                                 args.push({name: prefix + "variable.value.put.user_id", value: $.cookie("user.id")});
 															}
-															
+
                                                             $.ajax({
                                                                 type: 'PUT',
                                                                 dataType: 'json',
@@ -6268,7 +6269,7 @@ $(document).ready(function() {
                                                                             {name: "indicator.variation_value." + ajax_option + ".value_of_date", value: data_formatada},
                                                                             {name: "indicator.variation_value." + ajax_option + ".indicator_variation_id", value: item_variation.id}
                                                                             ];
-																			
+
 																	if ($("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()){
 																		args = {name: "indicator.variation_value." + ajax_option + ".region_id", value: $("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()};
 																	}
@@ -6278,7 +6279,7 @@ $(document).ready(function() {
 																		var_id: item_variables.id,
 																		ajax_id: ajax_id
 																	});
-																	
+
                                                                     $.ajax({
                                                                         async: false,
                                                                         type: "POST",
@@ -7333,33 +7334,33 @@ $(document).ready(function() {
 						toggle: {text: 'código-fonte', activetext: 'wysiwyg', cssclass: 'toggle'},
 						resize: {cssclass: 'resize'}
 					};
-					
+
 					default_params.id = 'description';
 					default_params.bodyid = 'editorDescricao';
 					var editorDescricao = new TINY.editor.edit('editorDescricao', default_params);
-					
+
 					default_params.id = 'goals';
-					default_params.bodyid = 'editorObjetivos';					
+					default_params.bodyid = 'editorObjetivos';
 					var editorObjetivos = new TINY.editor.edit('editorObjetivos', default_params);
-					
+
 					default_params.id = 'schedule';
-					default_params.bodyid = 'editorCronograma';					
+					default_params.bodyid = 'editorCronograma';
 					var editorCronograma = new TINY.editor.edit('editorCronograma', default_params);
-					
+
 					default_params.id = 'results';
-					default_params.bodyid = 'editorResultados';					
+					default_params.bodyid = 'editorResultados';
 					var editorResultados = new TINY.editor.edit('editorResultados', default_params);
-					
+
 					default_params.id = 'institutions_involved';
-					default_params.bodyid = 'editorInstituicoes';					
+					default_params.bodyid = 'editorInstituicoes';
 					var editorInstituicoes = new TINY.editor.edit('editorInstituicoes', default_params);
-					
+
 					default_params.id = 'contacts';
-					default_params.bodyid = 'editorContatos';					
+					default_params.bodyid = 'editorContatos';
 					var editorContatos = new TINY.editor.edit('editorContatos', default_params);
-					
+
 					default_params.id = 'sources';
-					default_params.bodyid = 'editorFontes';					
+					default_params.bodyid = 'editorFontes';
 					var editorFontes = new TINY.editor.edit('editorFontes', default_params);
 
                     $("#dashboard-content .content .botao-form[ref='enviar']").click(function(){
@@ -7379,8 +7380,8 @@ $(document).ready(function() {
                             }
 
 							editorDescricao.post();
-							editorObjetivos.post();					
-							editorCronograma.post();			
+							editorObjetivos.post();
+							editorCronograma.post();
 							editorResultados.post();
 							editorInstituicoes.post();
 							editorContatos.post();
@@ -7399,7 +7400,7 @@ $(document).ready(function() {
 									{name: "best_pratice." + action + ".tags", value: $(this).parent().parent().find("#tags").val()},
 									{name: "best_pratice." + action + ".axis_id", value: $(this).parent().parent().find("#axis_id option:selected").val()}
                                     ];
-									
+
                             $("#dashboard-content .content .botao-form[ref='enviar']").hide();
                             $.ajax({
                                 type: method,
@@ -7485,7 +7486,7 @@ $(document).ready(function() {
 									if (item2.upper_region_id == item.id){
 										results.push([item2.name, item.name, item2.url]);
 									}
-								});								
+								});
 							});
                         }
                     });
@@ -7558,7 +7559,7 @@ $(document).ready(function() {
                             });
                         }
                     });
-					
+
                     if ($.getUrlVar("option") == "edit"){
                         $.ajax({
 							async: false,
@@ -7596,11 +7597,11 @@ $(document).ready(function() {
 						$("#dashboard-content .content div.form").after("<div id='panel-map'><div id='panel'><button id='edit-button'>Editar forma</button><button id='delete-button'>Apagar forma</button><button id='save-button'>Associar forma a região selecionada</button></div><div id='map'></div></div>");
 
 						$("#save-button").hide();
-						
+
 						if (!google.maps.Polygon.prototype.getBounds) {
 
 							google.maps.Polygon.prototype.getBounds = function(latLng) {
-		
+
 								var bounds = new google.maps.LatLngBounds();
 								var paths = this.getPaths();
 								var path;
@@ -7626,7 +7627,7 @@ $(document).ready(function() {
 							// talvez pegar a cidade do usuario logado. ou se for superadmin, todo o mapa
 							center: new google.maps.LatLng(-15.781444,-47.930523)
 						});
-						
+
 						$map.addPolygon({"focus": true, "select": true});
 
 					}});
@@ -7646,17 +7647,17 @@ $(document).ready(function() {
                                 var method = "POST";
                                 var url_action = $.getUrlVar("url");
                             }
-							
+
                             args = [{name: "api_key", value: $.cookie("key")},
                                     {name: "city.region." + action + ".name", value: $(this).parent().parent().find("#name").val()},
                                     {name: "city.region." + action + ".description", value: $(this).parent().parent().find("#description").val()},
                                     {name: "city.region." + action + ".polygon_path", value: current_map_string}
                                     ];
-									
+
 							if ($(this).parent().parent().find("#region_id option:selected").val() != ""){
 								args.push({name: "city.region." + action + ".upper_region", value: $(this).parent().parent().find("#region_id option:selected").val()});
 							}
-							
+
                             $("#dashboard-content .content .botao-form[ref='enviar']").hide();
                             $.ajax({
                                 type: method,
@@ -7712,7 +7713,7 @@ $(document).ready(function() {
 				$("#dashboard-content .content .upload_via_file .botao-form[ref='atualizar']").hide();
 
 				$("#dashboard-content .content .upload_via_file #precision").after("<div class='aviso'>Quanto menor a escala de precisão, maior será o nível de processamento necessário. Utilize uma precisão menor caso seu navegador apresente travamentos.</div>");
-				
+
 				$("#dashboard-content .content #precision").after("<div id='precision-value'>20</div><div id='precision-slider'></div>");
 				$("#dashboard-content .content #precision").remove();
 
@@ -7725,7 +7726,7 @@ $(document).ready(function() {
 						$( "#precision-value" ).text( ui.value );
 					}
 				});
-				
+
 				data_region = [];
 				data_district = [];
 				data_regions = "";
@@ -7766,7 +7767,7 @@ $(document).ready(function() {
 							b = String(b.name);
 							return a.localeCompare(b);
 						});
-						
+
 						var count = 0;
 						$.each(data_region,function(index,item){
 							$("#panel-region #region-list .contents").append("<div class='item' region-id='$$id' region-count='$$count' depth='$$depth'>$$name</div>".render({
@@ -7785,17 +7786,17 @@ $(document).ready(function() {
 										depth: 3
 									}));
 								}
-							});								
+							});
 						});
 
 						$("#panel-region #region-list .contents").css("height",$("#panel-map").height() + "px");
 
 						google.load("maps", "3", {other_params:'sensor=false&libraries=drawing,geometry', callback: function(){
-							
+
 							if (!google.maps.Polygon.prototype.getBounds) {
 
 								google.maps.Polygon.prototype.getBounds = function(latLng) {
-			
+
 									var bounds = new google.maps.LatLngBounds();
 									var paths = this.getPaths();
 									var path;
@@ -7822,14 +7823,14 @@ $(document).ready(function() {
 								center: new google.maps.LatLng(-15.781444,-47.930523),
 								google: google
 							});
-							
+
 							$.each(data_regions.regions,function(index,item){
 								if (item.polygon_path){
 //									$map.addPolygon({"map_string": item.polygon_path,"focus": false, "region_id": item.id, "select": false});
 								}
 							});
 							$map.focusAll();
-							
+
 							$("#region-list .item").bind('click',function(e){
 								$("#region-list .item").removeClass("selected");
 								$(this).addClass("selected");
@@ -7845,9 +7846,9 @@ $(document).ready(function() {
 									}
 								}
 								$.setSelectedRegion();
-								
+
 							});
-							
+
 
 						}});
 					}
@@ -7863,7 +7864,7 @@ $(document).ready(function() {
 					$("#dashboard-content .content .upload_via_file .botao-form[ref='atualizar']").hide();
 					$("#dashboard-content .content .upload_via_file .botao-form[ref='re-enviar']").hide();
 					$("#dashboard-content .content .upload_via_file .botao-form[ref='enviar']").show();
-					
+
 					$("#dashboard-content .content .upload_via_file .form .field:first").show();
 				});
 
@@ -7878,7 +7879,7 @@ $(document).ready(function() {
 								'action': function(){
 
 									$.loading({title: "Enviando..."});
-								
+
 									var clickedButton = $(this);
 
 									var file = "arquivo";
@@ -7964,9 +7965,9 @@ $(document).ready(function() {
 								}
 							}
 						}
-					});	
+					});
 				});
-				
+
 				function trataRetornoKML(){
 					$map.deleteAllShapes();
 					if ($("#region-list").length > 0){
@@ -7978,7 +7979,7 @@ $(document).ready(function() {
 					});
 					$map.focusAll();
 				}
-				
+
 				function getRegion(id){
 					var i = "";
 					$.each(data_regions.regions,function(index,item){
@@ -8003,25 +8004,25 @@ $(document).ready(function() {
                 newform.push({label: "Confirmar Senha", input: ["password,password_confirm,itext"]});
 
                 if (findInArray(user_info.roles,"user")){
-                    if (user_info.network.id == 1 || user_info.network.id == 2){
-                        newform.push({label: "Endereço", input: ["text,endereco,itext"]});
-                        newform.push({label: "Cidade", input: ["text,cidade,itext"]});
-                        newform.push({label: "Estado", input: ["text,estado,itext"]});
-                        newform.push({label: "Bairro", input: ["text,bairro,itext"]});
-                        newform.push({label: "CEP", input: ["text,cep,itext"]});
-                        newform.push({label: "Telefone", input: ["text,telefone,itext"]});
-                        newform.push({label: "Email de Contato", input: ["text,email_contato,itext"]});
-                        newform.push({label: "Telefone de Contato", input: ["text,telefone_contato,itext"]});
-                        newform.push({label: "Nome do responsável pelo cadastro", input: ["text,nome_responsavel_cadastro,itext"]});
-                        newform.push({label: "Resumo da Cidade (texto)", input: ["textarea,city_summary,itext"]});
-                    }
 
-                    if (user_info.network.id == 1){
+                    newform.push({label: "Endereço", input: ["text,endereco,itext"]});
+                    newform.push({label: "Cidade", input: ["text,cidade,itext"]});
+                    newform.push({label: "Estado", input: ["text,estado,itext"]});
+                    newform.push({label: "Bairro", input: ["text,bairro,itext"]});
+                    newform.push({label: "CEP", input: ["text,cep,itext"]});
+                    newform.push({label: "Telefone", input: ["text,telefone,itext"]});
+                    newform.push({label: "Email de Contato", input: ["text,email_contato,itext"]});
+                    newform.push({label: "Telefone de Contato", input: ["text,telefone_contato,itext"]});
+                    newform.push({label: "Nome do responsável pelo cadastro", input: ["text,nome_responsavel_cadastro,itext"]});
+                    newform.push({label: "Resumo da Cidade (texto)", input: ["textarea,city_summary,itext"]});
+
+
+                    if (user_info.institute.id == 1){
                         newform.push({label: "Carta Compromisso (PDF)", input: ["file,carta_compromisso,itext"]});
                         newform.push({label: "Programa de Metas (PDF)", input: ["file,programa_metas,itext"]});
                         newform.push({label: "Imagem do perfil da cidade", input: ["file,imagem_cidade,itext"]});
                     }
-                    if (user_info.network.id == 2){
+                    if (user_info.institute.id == 2){
                         newform.push({label: "Logo(imagem)<br /><font size='1'>(altura máx: 80 pixels)</font>", input: ["file,logo_movimento,itext"]});
                         newform.push({label: "Imagem do<br />perfil da cidade<br /><font size='1'>(630x135 pixels)</font>", input: ["file,imagem_cidade,itext"]});
                     }
@@ -8315,7 +8316,7 @@ $(document).ready(function() {
                     location.hash = "#!/dashboard";
                 });
             }else if (getUrlSub() == "logs"){
-			
+
 				var logList = buildDataTable({
 						headers: ["Usuário","Mensagem","Data"]
 						},null,false);
@@ -8340,7 +8341,7 @@ $(document).ready(function() {
 										}
 									]
 				} );
-			
+
             }else if (getUrlSub() == "logout"){
                 if ($.cookie("key")){
                     var url_logout = api_path + '/api/logout?api_key=$$key'.render({

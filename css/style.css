@@ -118,7 +118,7 @@ a{
 
 #top .top-right .empty{
     width: 100px;
-    height: 66px;
+    min-height: 66px;
 }
 
 #top .top-right .logo img{

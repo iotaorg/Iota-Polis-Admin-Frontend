@@ -84,6 +84,9 @@ var titleBarContent = {
 							"tip": ""},
 					"best_pratice":{
 							"title": "Conteúdo - Boas Práticas",
+							"tip": ""},							
+					"logs":{
+							"title": "Relatórios do Sistema",
 							"tip": ""},
 					"prefs":{
 							"title": "Preferências",

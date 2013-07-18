@@ -34,7 +34,6 @@ $(document).ready(function() {
                         resetWarnings();
                         $.cookie("user.login",data.login,{ expires: 1, path: "/" });
                         $.cookie("user.id",data.id,{ expires: 1, path: "/" });
-                        $.cookie("network.id",data.network_id,{ expires: 1, path: "/" });
                         $.cookie("key",data.api_key,{ expires: 1, path: "/" });
                         $("#dashboard #form-login").hide();
                         location.hash = "!/dashboard";
@@ -70,6 +69,13 @@ $(document).ready(function() {
                             user_info = data;
 
                             user_info.role = "";
+							
+							if (user_info.networks){
+								if (user_info.networks[0]){
+									user_info.network = user_info.networks[0].id;
+								}
+							}
+							
                             if (user_info.roles.length == 1){
                                 user_info.role = user_info.roles[0];
                             }else if (user_info.roles.length == 2){
@@ -191,6 +197,7 @@ $(document).ready(function() {
         menu_label["region"] = "Regiões";
         menu_label["networks"] = "Redes";
         menu_label["parameters"] = "Parâmetros";
+        menu_label["logs"] = "Logs";
         menu_label["prefs"] = "Preferências";
         menu_label["reports"] = "Relatórios";
         menu_label["tokens"] = "Tokens";
@@ -224,9 +231,9 @@ $(document).ready(function() {
         submenu_label["region"].push({"region-list" : "Cadastro"});
         submenu_label["region"].push({"region-map" : "Definir Regiões no Mapa"});
 
-        menu_access["superadmin"] = ["dashboard","prefs","parameters","networks","admins","users","indicator","axis","logout"];
+        menu_access["superadmin"] = ["dashboard","prefs","parameters","networks","admins","users","indicator","axis","logs","logout"];
         submenu_access["superadmin"] = ["countries","states","cities","units"];
-        menu_access["admin"] = ["dashboard","prefs","users","parameters","variable_user","axis","indicator"];
+        menu_access["admin"] = ["dashboard","prefs","users","parameters","variable_user","axis","indicator","logs"];
         submenu_access["admin"] = ["countries","states","cities","units"];
         menu_access["admin"].push("logout");
         submenu_access["user"] = ["dashboard"];
@@ -810,40 +817,6 @@ $(document).ready(function() {
             if (getUrlSub() == "dashboard"){
 
                 if (!findInArray(user_info.roles,"_prefeitura") && !findInArray(user_info.roles,"_movimento")){
-
-                    var logList = buildDataTable({
-                            headers: ["Usuário","Mensagem","Data"]
-                            },null,false);
-
-                    $("#dashboard-content .content").append(logList);
-
-                    var url_log = api_path + '/api/log?api_key=' + $.cookie("key");
-
-                    $.ajax({
-                        type: 'GET',
-                        dataType: 'json',
-                        url: url_log,
-                        success: function(data, textStatus, jqXHR){
-                            $.each(data.logs, function(index,value){
-                                $("#dashboard-content .content #results tbody").append($("<tr><td>$$usuario</td><td>$$mensagem</td><td>$$data</td></tr>".render({
-                                usuario: (data.logs[index].user) ? data.logs[index].user.nome : "--",
-                                mensagem: data.logs[index].message,
-                                data: $.convertDateTime(data.logs[index].date,"T")
-                                })));
-                            });
-
-                            $("#results").dataTable( {
-                                "oLanguage": {
-                                                "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                                                },
-                                "aaSorting": [[2,'desc']],
-                                "aoColumnDefs": [
-                                                    { "sClass": "log", "aTargets": [ 0 , 1 , 2 ] },
-                                                    { "sClass": "log.data", "aTargets": [ 2 ] }
-                                                ]
-                            } );
-                        }
-                    });
 
                 }else{
 					/*  VARIAVEIS DA HOME  */
@@ -1451,7 +1424,7 @@ $(document).ready(function() {
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/user?role=user$$network_id&api_key=$$key&content-type=application/json&columns=name,email,url,_,_'.render({
                                 key: $.cookie("key"),
-                                network_id: ($.cookie("network.id")) ? "&network_id="+$.cookie("network.id") : ""
+                                network_id: (user_info.network) ? "&network_id="+user_info.network : ""
                                 }),
                         "aoColumnDefs": [
                                             { "bSearchable": false, "bSortable": false, "sClass": "botoes", "sWidth": "60px", "aTargets": [ 2 ] }
@@ -3200,7 +3173,7 @@ $(document).ready(function() {
                             dataType: 'json',
                             url: api_path + '/api/user?role=user&network_id=$$network_id&api_key=$$key'.render({
                                     key: $.cookie("key"),
-                                    network_id: $.cookie("network.id")
+                                    network_id: user_info.network
                                     }),
                             success: function(data, textStatus, jqXHR){
                                 data.users.sort(function (a, b) {
@@ -4789,7 +4762,7 @@ $(document).ready(function() {
                                             dataType: 'json',
                                             url: api_path + '/api/indicator/$$newid/network_config/$$network_id'.render({
                                                     newid: newId,
-                                                    network_id: $.cookie("network.id")
+                                                    network_id: user_info.network
                                                 }),
                                             data: args
                                         });
@@ -4918,7 +4891,7 @@ $(document).ready(function() {
                                         $(formbuild).find("textarea#observations").val(data.observations);
 
                                         $.each(data.network_configs, function(index,item){
-                                            if (item.network_id == $.cookie("network.id")){
+                                            if (item.network_id == user_info.network){
                                                 if (item.unfolded_in_home == 1){
                                                     $(formbuild).find("input#unfolded_in_home").attr("checked",true);
                                                 }
@@ -5179,7 +5152,7 @@ $(document).ready(function() {
                                             dataType: 'json',
                                             url: api_path + '/api/indicator/$$newid/network_config/$$network_id'.render({
                                                     newid: newId,
-                                                    network_id: $.cookie("network.id")
+                                                    network_id: user_info.network
                                                 }),
                                             data: args
                                         });
@@ -5319,7 +5292,7 @@ $(document).ready(function() {
                                                 var formula = formataFormula(data_indicators[i].formula,data_variables,data_vvariables);
                                                 var tr_class = "folded";
                                                 $.each(data_indicators[i].network_configs, function(index_config,item_config){
-                                                    if (item_config.network_id == $.cookie("network.id") && item_config.unfolded_in_home == 1){
+                                                    if (item_config.network_id == user_info.network && item_config.unfolded_in_home == 1){
                                                         tr_class = "unfolded";
                                                     }
                                                 });
@@ -5358,7 +5331,7 @@ $(document).ready(function() {
                                     var formula = formataFormula(data_indicators[i].formula,data_variables,data_vvariables);
                                     var tr_class = "folded";
                                     $.each(data_indicators[i].network_configs, function(index_config,item_config){
-                                        if (item_config.network_id == $.cookie("network.id") && item_config.unfolded_in_home == 1){
+                                        if (item_config.network_id == user_info.network && item_config.unfolded_in_home == 1){
                                             tr_class = "unfolded";
                                         }
                                     });
@@ -8341,6 +8314,33 @@ $(document).ready(function() {
                     resetWarnings();
                     location.hash = "#!/dashboard";
                 });
+            }else if (getUrlSub() == "logs"){
+			
+				var logList = buildDataTable({
+						headers: ["Usuário","Mensagem","Data"]
+						},null,false);
+
+				$("#dashboard-content .content").append(logList);
+
+				var url_log = api_path + '/api/log?api_key=' + $.cookie("key") + "&content-type=application/json&columns=user.nome,message,date";
+
+				$("#results").dataTable( {
+					"oLanguage": {
+									"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
+									},
+					"bProcessing": true,
+					"sAjaxSource": url_log,
+					"aaSorting": [[2,'desc']],
+					"aoColumnDefs": [
+										{ "sClass": "log", "aTargets": [ 0 , 1 , 2 ] },
+										{ "sClass": "log.data", "aTargets": [ 2 ] },
+										{ "fnRender": function ( oObj, sVal ) {
+														return $.format.date(sVal.replace("T"," "),"dd/MM/yyyy HH:mm:ss");
+													}, "aTargets": [ 2 ]
+										}
+									]
+				} );
+			
             }else if (getUrlSub() == "logout"){
                 if ($.cookie("key")){
                     var url_logout = api_path + '/api/logout?api_key=$$key'.render({

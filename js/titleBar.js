@@ -55,6 +55,9 @@ var titleBarContent = {
 					"reports":{
 							"title": "Relatórios",
 							"tip": ""},
+					"logs":{
+							"title": "Relatórios do Sistema",
+							"tip": ""},
 					"prefs":{
 							"title": "Preferências",
 							"tip": ""},

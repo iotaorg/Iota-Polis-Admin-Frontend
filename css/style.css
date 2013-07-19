@@ -1027,6 +1027,15 @@ div.indicadores_list{
     clear: both;
 }
 
+div.grupos_list{
+	font-size: 0.9em;
+	margin-bottom: 15px;
+	color: #999;
+}
+div.grupos_list .eixos{
+	margin-top: 2px;
+}
+
 div.indicadores_list .eixos{
     border: 1px solid #e0e0e0;
     margin-bottom: 5px;

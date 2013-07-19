@@ -5280,8 +5280,9 @@ $(document).ready(function() {
                             //carrega grupos
                             var indicators_in_groups = [];
                             if (data_groups && data_groups.length > 0){
+								indicators_table += "<div class='grupos_list'>Grupos";
                                 $.each(data_groups, function(index_group,group){
-                                    indicators_table += "<div class='eixos collapse'><div class='title'>$$axis</div><div class='clear'></div>".render({axis: group.name});
+                                    indicators_table += "<div class='eixos collapse group'><div class='title'>$$axis</div><div class='clear'></div>".render({axis: group.name});
 
                                     $.each(group.items, function(index_item,item){
                                         for (i = 0; i < data_indicators.length; i++){
@@ -5313,6 +5314,7 @@ $(document).ready(function() {
                                     });
                                     indicators_table += "</div>";
                                 });
+								indicators_table += "</div>";
                             }
 
 							//carrega indicadores por eixo
@@ -5320,7 +5322,7 @@ $(document).ready(function() {
 								if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1){
 									continue;
 								}
-                                if (!findInArray(indicators_in_groups,data_indicators[i].id)){
+                                //if (!findInArray(indicators_in_groups,data_indicators[i].id)){
                                     if (data_indicators[i].axis_id != axis_ant){
                                         if (i > 0){
                                             indicators_table += "</div>";
@@ -5346,7 +5348,7 @@ $(document).ready(function() {
                                         tr_class: tr_class
                                         });
                                     indicators_table += "<div class='clear'></div>";
-                                }
+                                //}
                             }
 
 							//carrega indicadores ocultos
@@ -5370,7 +5372,7 @@ $(document).ready(function() {
                                 }
                             }
 
-                            indicators_table += "<div><div class='clear'>";
+                            indicators_table += "<div class='clear'></div>";
 
                             $("#dashboard-content .content").append(indicators_legend + indicators_status + indicators_table);
 

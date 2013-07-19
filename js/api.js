@@ -2826,7 +2826,7 @@ $(document).ready(function() {
 											url: data.variables[index].variable_id})));
 										});
 
-										$("#results").dataTable( {
+										var oTable = $("#results").dataTable( {
 											"oLanguage": {
 															"sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
 															},
@@ -2890,6 +2890,10 @@ $(document).ready(function() {
 													});
 												}
 										} );
+										if (user_info.institute.id == 1){
+											oTable.fnSetColumnVis( 1, false );
+										}
+
 									},
 									error: function(data){
 										$("#aviso").setWarning({msg: "Erro ao carregar ($$codigo)".render({

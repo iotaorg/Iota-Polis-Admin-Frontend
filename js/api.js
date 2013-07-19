@@ -5190,7 +5190,7 @@ $(document).ready(function() {
                     $.ajax({
                         type: 'GET',
                         dataType: 'json',
-                        url: api_path + '/api/indicator?api_key=$$key&user_id=$$userid'.render({
+                        url: api_path + '/api/indicator?api_key=$$key&config_user_id=$$userid'.render({
                                 key: $.cookie("key"),
                                 userid: $.cookie("user.id")
                                 }),

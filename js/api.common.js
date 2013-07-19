@@ -373,7 +373,7 @@ $.fn.offsetRelative = function(top){
 $.fn.positionRelative = function(top){
 	return $(this).offsetRelative(top);
 };
-	
+
 var findCidadePrefeito = function(city_id){
 	var retorno = "";
 	for (i = 0; i < cidades_prefeitos.length; i++){
@@ -674,7 +674,7 @@ var buildVariableHistory = function(var_id){
 		dataType: 'json',
 		url: api_path + '/api/user/$$userid/variable?api_key=$$key$$region'.render({
 				key: $.cookie("key"),
-				userid: $.cookie("user.id"),		
+				userid: $.cookie("user.id"),
 				region: ($("#dashboard-content .content select#region_id option:selected").val()) ? "&region_id=" + $("#dashboard-content .content select#region_id option:selected").val() : ""
 				}),
 		success: function(data, textStatus, jqXHR){
@@ -732,9 +732,9 @@ var buildVariableHistory = function(var_id){
 								value_id: $(value_selected).attr("value-id"),
 								city: getIdFromUrl(user_info.city),
 								region: $("#dashboard-content .content select#region_id option:selected").val()
-								});				
+								});
 				}
-				
+
 				$.ajax({
 					type: 'GET',
 					dataType: 'json',

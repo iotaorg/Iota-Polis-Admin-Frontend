@@ -5314,7 +5314,6 @@ $(document).ready(function() {
                                     });
                                     indicators_table += "</div>";
                                 });
-								indicators_table += "</div>";
                             }
 
 							//carrega indicadores por eixo
@@ -5322,7 +5321,7 @@ $(document).ready(function() {
 								if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1){
 									continue;
 								}
-                                //if (!findInArray(indicators_in_groups,data_indicators[i].id)){
+                                //if (!findInArray(indicators_in_groups,data_indicators[i].id)){ oculta indicadores já listados nos grupos
                                     if (data_indicators[i].axis_id != axis_ant){
                                         if (i > 0){
                                             indicators_table += "</div>";
@@ -5351,27 +5350,30 @@ $(document).ready(function() {
                                 //}
                             }
 
-							//carrega indicadores ocultos
-							indicators_table += "</div>";
-							indicators_table += "<div class='eixos hidden collapse'><div class='title'>Indicatores Ocultos</div><div class='clear'></div>";
-                            for (i = 0; i < data_indicators.length; i++){
-								if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1){
-                                    var formula = formataFormula(data_indicators[i].formula,data_variables,data_vvariables);
-                                    var tr_class = "folded";
-                                    indicators_table += "<div class='variable $$tr_class' indicator-id='$$indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='$$hash?option=unhide&url=$$url&config_id=$$config_id' class='icone unhide' title='remover da lista de ocultos' alt='remover da lista de ocultos'>mostrar</a></div><div class='clear'></div></div>".render({
-                                        name: data_indicators[i].name,
-                                        formula: formula,
-                                        hash: "#!/"+getUrlSub(),
-                                        url: api_path + "/api/indicator/" + data_indicators[i].id,
-                                        indicator_id: data_indicators[i].id,
-                                        period: data_indicators[i].period,
-                                        config_id: data_indicators[i].user_indicator_config.id,
-                                        tr_class: tr_class
-                                        });
-                                    indicators_table += "<div class='clear'></div>";
-                                }
-                            }
+							if (user_info.institute.id == 2){
+								//carrega indicadores ocultos
+								indicators_table += "</div>";
+								indicators_table += "<div class='eixos hidden collapse'><div class='title'>Indicadores Ocultos</div><div class='clear'></div>";
+								for (i = 0; i < data_indicators.length; i++){
+									if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1){
+										var formula = formataFormula(data_indicators[i].formula,data_variables,data_vvariables);
+										var tr_class = "folded";
+										indicators_table += "<div class='variable $$tr_class' indicator-id='$$indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='$$hash?option=unhide&url=$$url&config_id=$$config_id' class='icone unhide' title='remover da lista de ocultos' alt='remover da lista de ocultos'>mostrar</a></div><div class='clear'></div></div>".render({
+											name: data_indicators[i].name,
+											formula: formula,
+											hash: "#!/"+getUrlSub(),
+											url: api_path + "/api/indicator/" + data_indicators[i].id,
+											indicator_id: data_indicators[i].id,
+											period: data_indicators[i].period,
+											config_id: data_indicators[i].user_indicator_config.id,
+											tr_class: tr_class
+											});
+										indicators_table += "<div class='clear'></div>";
+									}
+								}
+							}
 
+							indicators_table += "</div>";
                             indicators_table += "<div class='clear'></div>";
 
                             $("#dashboard-content .content").append(indicators_legend + indicators_status + indicators_table);
@@ -5565,44 +5567,59 @@ $(document).ready(function() {
                             //mostra informação técnica
                             var newform = [];
                             newform.push({label: "Informação Técnica", input: ["textarea,technical_information,itext"]});
-							newform.push({label: "", input: ["checkbox,hide_indicator,icheckbox"]});
+							if (user_info.institute.id == 2){
+								newform.push({label: "", input: ["checkbox,hide_indicator,icheckbox"]});
+							}
 
                             var formbuild = $("#dashboard-content .content .tech_info").append(buildForm(newform,"Observações do Indicador"));
                             $(formbuild).find("div .field:odd").addClass("odd");
                             $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 
-							$("#hide_indicator").after("Ocultar esse indicador");
-
                             $("#dashboard-content .content .tech_info .botao-form[ref='enviar']").html("Salvar");
                             $("#dashboard-content .content .tech_info .botao-form[ref='cancelar']").hide();
 
-                            $.ajax({
-                                type: 'GET',
-                                dataType: 'json',
-                                url: api_path + '/api/user/$$user_id/indicator_config?indicator_id=$$id&api_key=$$key'.render({
-                                        key: $.cookie("key"),
-                                        user_id: $.cookie("user.id"),
-                                        id: getIdFromUrl($.getUrlVar("url"))
-                                        }),
-                                success: function(data, textStatus, jqXHR){
-                                    tech_info_id = data.id;
-                                    $(".tech_info #technical_information").val(data.technical_information);
-									if (data.hide_indicator == 1){
-										$(".tech_info #hide_indicator").attr("checked",true);
-									}else{
-										$(".tech_info #hide_indicator").attr("checked",false);
-									}
-                                },
-                                error: function(data){
-                                    if (data.status == 404){
-                                        tech_info_id = null;
-                                    }
-                                }
-                            });
+							var tech_info_id;
+							$("#hide_indicator").after("Ocultar esse indicador");
 
+							$.ajax({
+								type: 'GET',
+								dataType: 'json',
+								url: api_path + '/api/user/$$user_id/indicator_config?indicator_id=$$id&api_key=$$key'.render({
+										key: $.cookie("key"),
+										user_id: $.cookie("user.id"),
+										id: getIdFromUrl($.getUrlVar("url"))
+										}),
+								success: function(data, textStatus, jqXHR){
+									tech_info_id = data.id;
+									$(".tech_info #technical_information").val(data.technical_information);
+									if (user_info.institute.id == 2){
+										if (data.hide_indicator == 1){
+											$(".tech_info #hide_indicator").attr("checked",true);
+										}else{
+											$(".tech_info #hide_indicator").attr("checked",false);
+										}
+									}
+								},
+								error: function(data){
+									if (data.status == 404){
+										tech_info_id = null;
+									}
+								}
+							});
 
                             $("#dashboard-content .content .tech_info .botao-form[ref='enviar']").click(function(){
-                                if ($(".tech_info #technical_information").val() == "" && (!$(".tech_info #hide_indicator").attr("checked")) && !(tech_info_id)){
+								var validation = true;
+								
+								if (user_info.institute.id == 2){
+									if ($(".tech_info #technical_information").val() == "" && (!$(".tech_info #hide_indicator").attr("checked")) && !(tech_info_id)){
+										validation = false;
+									}
+								}else{
+									if ($(".tech_info #technical_information").val() == "" && !(tech_info_id)){
+										validation = false;
+									}
+								}
+                                if (!validation){
                                     $(".tech_info .form-aviso").setWarning({msg: "Por favor informe a informação a ser salva.".render({
                                                 codigo: jqXHR.status
                                                 })
@@ -5623,9 +5640,12 @@ $(document).ready(function() {
                                     }
 									args = [{name: "api_key", value: $.cookie("key")},
 											{name: "user.indicator_config." + action + ".technical_information", value: $(".tech_info #technical_information").val()},
-											{name: "user.indicator_config." + action + ".hide_indicator", value: ($(".tech_info #hide_indicator").attr("checked")) ? 1 : 0},
                                             {name: "user.indicator_config." + action + ".indicator_id", value: getIdFromUrl($.getUrlVar("url"))}
 											];
+											
+									if (user_info.institute.id == 2){
+										args.push({name: "user.indicator_config." + action + ".hide_indicator", value: ($(".tech_info #hide_indicator").attr("checked")) ? 1 : 0});
+									}
 
                                     $.ajax({
                                         type: "POST",
@@ -8093,7 +8113,7 @@ $(document).ready(function() {
                                 $(formbuild).find("input#telefone_contato").val(data.telefone_contato);
                                 $(formbuild).find("input#nome_responsavel_cadastro").val(data.nome_responsavel_cadastro);
                                 if (findInArray(user_info.roles,"user")){
-                                    if (user_info.network.id == 1){
+                                    if (user_info.institute.id == 1){
                                         if (data.files.programa_metas){
                                             $("input#arquivo_programa_metas").after("<br />[<a href='" + data.files.programa_metas + "' class='link-files' target='_blank'> arquivo atual </a>]");
                                         }
@@ -8104,7 +8124,7 @@ $(document).ready(function() {
                                             $("input#arquivo_imagem_cidade").after("<br /><img src='" + data.files.imagem_cidade + "' border='0' class='imagem_preview'>");
                                         }
                                     }
-                                    if (user_info.network.id == 2){
+                                    if (user_info.institute.id == 2){
                                         if (data.files.logo_movimento){
                                             $("input#arquivo_logo_movimento").after("<br /><img src='" + data.files.logo_movimento + "' border='0' height='60' class='logo_preview'>");
                                         }

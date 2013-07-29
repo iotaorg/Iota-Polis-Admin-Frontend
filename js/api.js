@@ -275,6 +275,12 @@ $(document).ready(function() {
 
 			submenu_access["user"].push("myindicator");
 
+            if(user_info.institute.id == 2){
+				menu_access["user"].push("region");
+				submenu_access["user"].push("region-list")
+				submenu_access["user"].push("region-map")
+			}
+			
             menu_access["user"].push("logout");
         }
         if (findInArray(user_info.roles,"admin")){

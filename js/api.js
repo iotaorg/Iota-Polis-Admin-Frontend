@@ -1,5 +1,7 @@
 var api_path = "";
-//var api_path = "http://rnsp.aware.com.br";
+if (window.location.href.indexOf("localhost") >= 0){
+	api_path = "http://rnsp.aware.com.br";
+}
 
 $(document).ready(function() {
 
@@ -2666,6 +2668,9 @@ $(document).ready(function() {
                             $(".form-aviso").setWarning({msg: "Por favor informe o Nome"});
                         }else if ($(this).parent().parent().find("#cognomen").val() == ""){
                             $(".form-aviso").setWarning({msg: "Por favor informe o Apelido"});
+                        }else if ($(this).parent().parent().find("#measurement_unit option:selected").val() == "_new"){
+                            $(".form-aviso").setWarning({msg: "Por favor informe a nova unidade de medida"});
+							
                         }else{
 
                             if ($.getUrlVar("option") == "add"){

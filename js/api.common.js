@@ -1376,7 +1376,7 @@ var loadComboUnits = function(arr,objSelect,objText,objSg){
 	$(objSelect).append($("<option></option>").val("").html("nenhuma"));
 	$(objSelect).append($("<option></option>").val("_new").html("- nova unidade de medida"));
 	$.each(arr,function(index, item){
-		$(objSelect).append($("<option></option>").val(item.name).html(item.name).attr("unit-id",item.id));
+		$(objSelect).append($("<option></option>").val(item.id).html(item.name).attr("unit-id",item.id));
 	});
 
 	$(objSelect).val(old_selected);

@@ -5329,6 +5329,7 @@ $(document).ready(function() {
                                     });
                                     indicators_table += "</div>";
                                 });
+                                indicators_table += "</div>";
                             }
 
 							//carrega indicadores por eixo
@@ -5368,7 +5369,7 @@ $(document).ready(function() {
 							if (user_info.institute.id == 2){
 								//carrega indicadores ocultos
 								indicators_table += "</div>";
-								indicators_table += "<div class='eixos hidden collapse'><div class='title'>Indicadores Ocultos</div><div class='clear'></div>";
+     							indicators_table += "<div class='eixos hidden collapse'><div class='title'>Indicadores Ocultos</div><div class='clear'></div>";
 								for (i = 0; i < data_indicators.length; i++){
 									if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1){
 										var formula = formataFormula(data_indicators[i].formula,data_variables,data_vvariables);

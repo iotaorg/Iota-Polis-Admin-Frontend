@@ -1,6 +1,6 @@
 var api_path = "";
 if (window.location.href.indexOf("localhost") >= 0){
-	api_path = "http://rnsp.aware.com.br";
+	api_path = "http://indicadores.cidadessustentaveis.org.br";
 }
 
 $(document).ready(function() {
@@ -5331,7 +5331,8 @@ $(document).ready(function() {
                                 });
                                 indicators_table += "</div>";
                             }
-
+							
+							var count_i = 0;
 							//carrega indicadores por eixo
                             for (i = 0; i < data_indicators.length; i++){
 								if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1){
@@ -5339,7 +5340,7 @@ $(document).ready(function() {
 								}
                                 //if (!findInArray(indicators_in_groups,data_indicators[i].id)){ oculta indicadores já listados nos grupos
                                     if (data_indicators[i].axis_id != axis_ant){
-                                        if (i > 0){
+                                        if (count_i > 0){
                                             indicators_table += "</div>";
                                         }
                                         indicators_table += "<div class='eixos collapse'><div class='title'>$$axis</div><div class='clear'></div>".render({axis: data_indicators[i].axis.name});
@@ -5363,6 +5364,7 @@ $(document).ready(function() {
                                         tr_class: tr_class
                                         });
                                     indicators_table += "<div class='clear'></div>";
+									count_i++;
                                 //}
                             }
 

@@ -282,7 +282,7 @@ $(document).ready(function() {
 				submenu_access["user"].push("region-list")
 				submenu_access["user"].push("region-map")
 			}
-			
+
             menu_access["user"].push("logout");
         }
         if (findInArray(user_info.roles,"admin")){
@@ -2670,7 +2670,7 @@ $(document).ready(function() {
                             $(".form-aviso").setWarning({msg: "Por favor informe o Apelido"});
                         }else if ($(this).parent().parent().find("#measurement_unit option:selected").val() == "_new"){
                             $(".form-aviso").setWarning({msg: "Por favor informe a nova unidade de medida"});
-							
+
                         }else{
 
                             if ($.getUrlVar("option") == "add"){
@@ -5331,7 +5331,7 @@ $(document).ready(function() {
                                 });
                                 indicators_table += "</div>";
                             }
-							
+
 							var count_i = 0;
 							//carrega indicadores por eixo
                             for (i = 0; i < data_indicators.length; i++){
@@ -5627,7 +5627,7 @@ $(document).ready(function() {
 
                             $("#dashboard-content .content .tech_info .botao-form[ref='enviar']").click(function(){
 								var validation = true;
-								
+
 								if (user_info.institute.id == 2){
 									if ($(".tech_info #technical_information").val() == "" && (!$(".tech_info #hide_indicator").attr("checked")) && !(tech_info_id)){
 										validation = false;
@@ -5660,7 +5660,7 @@ $(document).ready(function() {
 											{name: "user.indicator_config." + action + ".technical_information", value: $(".tech_info #technical_information").val()},
                                             {name: "user.indicator_config." + action + ".indicator_id", value: getIdFromUrl($.getUrlVar("url"))}
 											];
-											
+
 									if (user_info.institute.id == 2){
 										args.push({name: "user.indicator_config." + action + ".hide_indicator", value: ($(".tech_info #hide_indicator").attr("checked")) ? 1 : 0});
 									}

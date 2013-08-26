@@ -301,7 +301,7 @@ $(document).ready(function() {
                 $.each(submenu_label[value],function(index,item){
                     $.each(item,function(url_sub,text){
 						if (findInArray(submenu_access[user_info.role],url_sub)){
-							submenu_item += "<li class='submenu $$class' ref='$$url_sub'><a href='#!/$$url_sub'>$$text<a/></li>".render({
+							submenu_item += "<li class='submenu $$class' ref='$$url_sub'><a href='#!/$$url_sub'>$$text</a></li>".render({
 								text: text,
 								url_sub: url_sub,
 								class: menu_class
@@ -314,12 +314,12 @@ $(document).ready(function() {
                 var submenu_item = "";
             }
 
-            menu_item += ("<li class='$$class' ref='$$url_sub'><a href='#!/$$value' class='$$class2'>$$menu_label</a>"+submenu_item+"</li>").render({
+            menu_item += ("<li class='$$class' ref='$$url_sub'><a href='#!/$$value' class='$$a_class'>$$menu_label</a>"+submenu_item+"</li>").render({
                 value: value,
                 menu_label: menu_label[value],
                 url_sub: value,
                 class: menu_class,
-                class2: menu_class,
+                a_class: a_class
             });
         });
         $("#menu ul.menu").append(menu_item);

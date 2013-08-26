@@ -18,12 +18,14 @@ $(document).ready(function() {
         sendLogin();
     });
 
+
     var __update_lexicon = function(){
 
 
-        console.log(lexicon_untranslated.assocArraySize());
+        console.log($.assocArraySize(lexicon_untranslated));
 
-    };
+    }, __update_lexicon_id=0;
+
     var sendLogin = function(){
         args = [{name: "user.login.email",value: $("#form-login #usuario").val()},
 
@@ -45,7 +47,8 @@ $(document).ready(function() {
                         $("#dashboard #form-login").hide();
                         location.hash = "!/dashboard";
 
-                        setInterval(__update_lexicon, 10000);
+                        clearInterval(__update_lexicon_id);
+                        __update_lexicon_id = setInterval(__update_lexicon, 10000);
 
                         break;
                 }

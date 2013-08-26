@@ -1,14 +1,15 @@
 var cur_lang='pt-br',
 lexicon = {},
 lexicon_untranslated = {};
+
 $.assocArraySize = function(obj) {
-    // http://stackoverflow.com/a/6700/11236
     var size = 0, key;
     for (key in obj) {
         if (obj.hasOwnProperty(key)) size++;
     }
     return size;
 };
+
 if (!String.prototype.render) {
 	String.prototype.render = function(args) {
 		var copy = this + '', v,n;

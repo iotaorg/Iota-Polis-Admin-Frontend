@@ -4,7 +4,7 @@ if (window.location.href.indexOf("localhost") >= 0){
 }
 
 var cur_lang='pt-br',
-lexicon,lexiconconf,
+lexicon,default_lang,langs, lexiconconf,
 lexicon_untranslated = {};
 
 $.assocArraySize = function(obj) {
@@ -58,8 +58,12 @@ if (!String.prototype.render) {
                 ) n = 1;
 
                 if (n == 0){
-                    lexicon_untranslated[v] = 1;
-                    v = '? ' + v;
+                    if (cur_lang == default_lang){
+                        lexicon[cur_lang][v] = v;
+                    }else{
+                        lexicon_untranslated[v] = 1;
+                        v = '? ' + v;
+                    }
                 }
 
                 lexicon[cur_lang][v] = v;
@@ -1850,6 +1854,10 @@ if(!lexiconconf){
         }
     });
 }
+lexicon = lexiconconf['lex'];
+langs = lexiconconf['langs'];
+default_lang = lexiconconf['default'];
+
 console.log(lexiconconf);
 
 

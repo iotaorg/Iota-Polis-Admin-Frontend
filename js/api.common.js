@@ -1,6 +1,27 @@
 var cur_lang='pt-br',
-lexicon = {},
+lexicon,lexiconconf,
 lexicon_untranslated = {};
+
+lexiconconf = $.jStorage.get("lexicon");
+if(!lexiconconf){
+
+    $.ajax({
+        async: false,
+        dataType: 'json',
+        url: api_path + '/api/lexicons',
+        data: args,
+        success: function(data,status,jqXHR){
+
+            lexiconconf = data;
+            $.jStorage.set("lexicon", lexiconconf);
+
+        },
+        error: function(data){
+            alert('erro ao carregar idiomas // error loading langs');
+        }
+    });
+}
+console.log(lexiconconf);
 
 $.assocArraySize = function(obj) {
     var size = 0, key;

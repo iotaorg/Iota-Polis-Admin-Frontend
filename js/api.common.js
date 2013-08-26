@@ -24,7 +24,7 @@ if (!String.prototype.render) {
                 !v ||
                 v.match(/^\s*$/) ||
                 v.match(/^\/api\//) ||
-                v.match(/^\<\/\/) ||
+                v.match(/^\</) ||
                 !v.match(/[a-z]/i) ||
                 v.match(/^\s*[0-9]+\s*$/)||
                 v.match(/\:\/\//)

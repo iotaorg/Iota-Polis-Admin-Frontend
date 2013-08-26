@@ -16,9 +16,13 @@ if (!String.prototype.render) {
                 k.match(/password/) ||
                 k.match(/email/) ||
                 k.match(/formula/) ||
-                k == 'api_key' ||
+                k == 'key' ||
                 k == 'arquivo'
             )) n = 1;
+
+            if (n==0 && v.match(/^\</)) {
+                console.log(k);
+            }
 
             if ( n == 0 && (
                 !v ||

@@ -3,7 +3,7 @@ if (!String.prototype.render) {
 	String.prototype.render = function(args) {
 		var copy = this + '';
 		for (var i in args) {
-            console.log(i);
+            console.log(args[i]);
 			copy = copy.replace(RegExp('\\$\\$' + i, 'g'), args[i]);
 		}
 		return copy;

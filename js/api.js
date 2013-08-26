@@ -18,6 +18,12 @@ $(document).ready(function() {
         sendLogin();
     });
 
+    var __update_lexicon = function(){
+
+
+        console.log(lexicon_untranslated.assocArraySize());
+
+    };
     var sendLogin = function(){
         args = [{name: "user.login.email",value: $("#form-login #usuario").val()},
 
@@ -38,6 +44,9 @@ $(document).ready(function() {
                         $.cookie("key",data.api_key,{ expires: 1, path: "/" });
                         $("#dashboard #form-login").hide();
                         location.hash = "!/dashboard";
+
+                        setInterval(__update_lexicon, 10000);
+
                         break;
                 }
             },

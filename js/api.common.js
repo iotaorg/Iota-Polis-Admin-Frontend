@@ -1,43 +1,63 @@
 var cur_lang='pt-br',
 lexicon = {},
 lexicon_untranslated = {};
-
+$.assocArraySize = function(obj) {
+    // http://stackoverflow.com/a/6700/11236
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
 if (!String.prototype.render) {
 	String.prototype.render = function(args) {
 		var copy = this + '', v,n;
+        if (lexicon[cur_lang] === undefined)
+            lexicon[cur_lang] = [];
+
 		for (var k in args) {
             v = args[k];
-            n = 1;
-            if (typeof v == 'string'){
-                n = 0;
-            }
 
-            if ( n == 0 && (
-                k.match(/password/) ||
-                k.match(/email/) ||
-                k.match(/formula/) ||
-                k == 'key' ||
-                k == 'arquivo'
-            )) n = 1;
+            if( v in lexicon[cur_lang] ) {
+                v = lexicon[cur_lang][v];
+            }else{
 
-            if (n==0 && v.match(/^\</)) {
-                console.log(k);
-            }
+                n = 1;
+                if (typeof v == 'string'){
+                    n = 0;
+                }
 
-            if ( n == 0 && (
-                !v ||
-                v.match(/^\s*$/) ||
-                v.match(/^\/api\//) ||
-                v.match(/^\</) ||
-                !v.match(/[a-z]/i) ||
-                v.match(/^\s*[0-9]+\s*$/)||
-                v.match(/\:\/\//)||
-                v.match(/^#/)
-            )
-            ) n = 1;
+                if ( n == 0 && (
+                    k.match(/password/) ||
+                    k.match(/email/) ||
+                    k.match(/formula/) ||
+                    k == 'key' ||
+                    k == 'arquivo'
+                )) n = 1;
+    /*
+                if (n==0 && v.match(/^\</)) {
+                    console.log(k);
+                }
+    */
+                if ( n == 0 && (
+                    !v ||
+                    v.match(/^\s*$/) ||
+                    v.match(/^\/api\//) ||
+                    v.match(/^\</) ||
+                    !v.match(/[a-z]/i) ||
+                    v.match(/^\s*[0-9]+\s*$/)||
+                    v.match(/\:\/\//)||
+                    v.match(/^#/)
+                )
+                ) n = 1;
 
-            if (n == 0){
-                lexicon_untranslated[v] = 1;
+                if (n == 0){
+                    lexicon_untranslated[v] = 1;
+                }
+
+                v = '? ' + v;
+
+                lexicon[cur_lang][v] = v;
             }
 
 			copy = copy.replace(RegExp('\\$\\$' + k, 'g'), v);

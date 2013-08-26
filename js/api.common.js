@@ -1,27 +1,11 @@
+var api_path = "";
+if (window.location.href.indexOf("localhost") >= 0){
+    api_path = "http://indicadores.cidadessustentaveis.org.br";
+}
+
 var cur_lang='pt-br',
 lexicon,lexiconconf,
 lexicon_untranslated = {};
-
-lexiconconf = $.jStorage.get("lexicon");
-if(!lexiconconf){
-
-    $.ajax({
-        async: false,
-        dataType: 'json',
-        url: api_path + '/api/lexicons',
-        data: args,
-        success: function(data,status,jqXHR){
-
-            lexiconconf = data;
-            $.jStorage.set("lexicon", lexiconconf);
-
-        },
-        error: function(data){
-            alert('erro ao carregar idiomas // error loading langs');
-        }
-    });
-}
-console.log(lexiconconf);
 
 $.assocArraySize = function(obj) {
     var size = 0, key;
@@ -1849,8 +1833,29 @@ var sortSelectBox = function(id){
 	});
 }
 
+
+lexiconconf = $.jStorage.get("lexicon");
+if(!lexiconconf){
+
+    $.ajax({
+        async: false,
+        dataType: 'json',
+        url: api_path + '/api/lexicons',
+        success: function(data,status,jqXHR){
+            lexiconconf = data;
+            $.jStorage.set("lexicon", lexiconconf);
+        },
+        error: function(data){
+            alert('erro ao carregar idiomas // error loading langs');
+        }
+    });
+}
+console.log(lexiconconf);
+
+
+
 var sys_messages = {
-					"Login invalid(1)": "Login inválido",
-					"Login invalid(2)": "Login inválido",
-					"user.update.network_ids.invalid 1": "Rede inválida."
-			};
+    "Login invalid(1)": "Login inválido",
+    "Login invalid(2)": "Login inválido",
+    "user.update.network_ids.invalid 1": "Rede inválida."
+};

@@ -1,7 +1,3 @@
-var api_path = "";
-if (window.location.href.indexOf("localhost") >= 0){
-	api_path = "http://indicadores.cidadessustentaveis.org.br";
-}
 
 $(document).ready(function() {
 

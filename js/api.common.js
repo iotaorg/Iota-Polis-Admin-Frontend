@@ -11,20 +11,20 @@ if (!String.prototype.render) {
             if (typeof v == 'string'){
                 n = 0;
             }
-            console.log(typeof v);
 
-            if (
+            if ( n == 0 && (
                 k.match(/password/) ||
                 k.match(/email/) ||
                 k.match(/formula/) ||
                 k == 'api_key' ||
                 k == 'arquivo'
-            ) n = 1;
-
+            )) n = 1;
 
             if ( n == 0 && (
                 !v ||
                 v.match(/^\s*$/) ||
+                v.match(/^\/api\//) ||
+                v.match(/^<//) ||
                 !v.match(/[a-z]/i) ||
                 v.match(/^\s*[0-9]+\s*$/)||
                 v.match(/\:\/\//)

@@ -65,8 +65,6 @@ if (!String.prototype.render) {
                         v = '? ' + v;
                     }
                 }
-
-                lexicon[cur_lang][v] = v;
             }
 
 			copy = copy.replace(RegExp('\\$\\$' + k, 'g'), v);

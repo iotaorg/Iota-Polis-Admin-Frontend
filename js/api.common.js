@@ -54,9 +54,8 @@ if (!String.prototype.render) {
 
                 if (n == 0){
                     lexicon_untranslated[v] = 1;
+                    v = '? ' + v;
                 }
-
-                v = '? ' + v;
 
                 lexicon[cur_lang][v] = v;
             }

@@ -314,11 +314,12 @@ $(document).ready(function() {
                 var submenu_item = "";
             }
 
-            menu_item += ("<li class='$$class' ref='$$url_sub'><a href='#!/$$value' class='$$class'>$$menu_label</a>"+submenu_item+"</li>").render({
+            menu_item += ("<li class='$$class' ref='$$url_sub'><a href='#!/$$value' class='$$class2'>$$menu_label</a>"+submenu_item+"</li>").render({
                 value: value,
                 menu_label: menu_label[value],
                 url_sub: value,
-                class: menu_class
+                class: menu_class,
+                class2: menu_class,
             });
         });
         $("#menu ul.menu").append(menu_item);

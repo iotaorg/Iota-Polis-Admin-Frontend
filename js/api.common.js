@@ -1,10 +1,33 @@
+var cur_lang='pt-br',
+lexicon = {},
+lexicon_untranslated = {};
 
 if (!String.prototype.render) {
 	String.prototype.render = function(args) {
-		var copy = this + '';
-		for (var i in args) {
-            console.log(args[i]);
-			copy = copy.replace(RegExp('\\$\\$' + i, 'g'), args[i]);
+		var copy = this + '', v,n;
+		for (var k in args) {
+            v = args[k];
+            n = 0;
+
+            if (
+                k.match(/password/) ||
+                k.match(/email/) ||
+                k.match(/formula/) ||
+                k == 'api_key' ||
+                k == 'arquivo'
+            ) n = 1;
+
+            if (!v ||
+                v.match(/^\s*$/) ||
+                !v.match(/[a-z]/i) ||
+                v.match(/^\s*[0-9]+\s*$/)
+            ) n = 1;
+
+            if (n == 0){
+                lexicon_untranslated[v] = 1;
+            }
+
+			copy = copy.replace(RegExp('\\$\\$' + k, 'g'), v);
 		}
 		return copy;
 	};

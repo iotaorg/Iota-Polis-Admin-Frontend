@@ -17,10 +17,17 @@ if (!String.prototype.render) {
                 k == 'arquivo'
             ) n = 1;
 
-            if (!v ||
+            if (! typeof v == 'string'){
+                n = 1;
+            }
+
+            if ( n == 0 && (
+                !v ||
                 v.match(/^\s*$/) ||
                 !v.match(/[a-z]/i) ||
-                v.match(/^\s*[0-9]+\s*$/)
+                v.match(/^\s*[0-9]+\s*$/)||
+                v.match(/\:\/\//)
+            )
             ) n = 1;
 
             if (n == 0){

@@ -7,7 +7,11 @@ if (!String.prototype.render) {
 		var copy = this + '', v,n;
 		for (var k in args) {
             v = args[k];
-            n = 0;
+            n = 1;
+            if (typeof v == 'string'){
+                n = 0;
+            }
+            console.log(typeof v);
 
             if (
                 k.match(/password/) ||
@@ -17,9 +21,6 @@ if (!String.prototype.render) {
                 k == 'arquivo'
             ) n = 1;
 
-            if (! typeof v == 'string'){
-                n = 1;
-            }
 
             if ( n == 0 && (
                 !v ||

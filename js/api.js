@@ -18,7 +18,7 @@ $(document).ready(function() {
     var _updating=0, __update_lexicon = function(){
 
         var count=$.assocArraySize(lexicon_untranslated);
-        if (_updating ==0 && count >= 0 ){
+        if (_updating ==0 && count >= 0 && $.cookie("key") != null && $.cookie("key") != ""){
             _updating=1;
 
             var args = [
@@ -50,6 +50,8 @@ $(document).ready(function() {
         }
 
     }, __update_lexicon_id=0;
+    clearInterval(__update_lexicon_id);
+    __update_lexicon_id = setInterval(__update_lexicon, 10000);
 
     var sendLogin = function(){
         args = [{name: "user.login.email",value: $("#form-login #usuario").val()},
@@ -72,8 +74,7 @@ $(document).ready(function() {
                         $("#dashboard #form-login").hide();
                         location.hash = "!/dashboard";
 
-                        clearInterval(__update_lexicon_id);
-                        __update_lexicon_id = setInterval(__update_lexicon, 10000);
+
 
                         break;
                 }
@@ -105,6 +106,7 @@ $(document).ready(function() {
                     switch(jqXHR.status){
                         case 200:
                             user_info = data;
+
 
                             user_info.role = "";
 

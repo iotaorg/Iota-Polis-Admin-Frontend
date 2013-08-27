@@ -15,10 +15,39 @@ $(document).ready(function() {
     });
 
 
-    var __update_lexicon = function(){
+    var _updating=0, __update_lexicon = function(){
 
+        var count=$.assocArraySize(lexicon_untranslated);
+        if (_updating ==0 && count >= 0 ){
+            _updating=1;
 
-        console.log($.assocArraySize(lexicon_untranslated));
+            var args = [
+                {name: "api_key", value: $.cookie("key")}
+            ];
+            for (var x in lexicon_untranslated){
+                if (lexicon_untranslated.hasOwnProperty(x))
+                    args.push({name: "lex", value: x});
+            }
+
+            _updating = 1;
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: api_path + '/api/lexicons',
+                data: args,
+                success: function(data,status,jqXHR){
+                    lexicon_untranslated = [];
+
+                    $.jStorage.set("lexicon", 0);
+                    load_lexicon();
+
+                    _updating = 0;
+                },
+                error: function(data){
+                    _updating = 0;
+                }
+            });
+        }
 
     }, __update_lexicon_id=0;
 

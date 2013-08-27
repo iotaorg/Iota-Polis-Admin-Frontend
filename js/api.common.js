@@ -1835,29 +1835,29 @@ var sortSelectBox = function(id){
 	});
 }
 
+function load_lexicon (){
+    lexiconconf = $.jStorage.get("lexicon");
+    if(!lexiconconf){
 
-lexiconconf = $.jStorage.get("lexicon");
-if(!lexiconconf){
+        $.ajax({
+            async: false,
+            dataType: 'json',
+            url: api_path + '/api/public/lexicons',
+            success: function(data,status,jqXHR){
+                lexiconconf = data;
+                $.jStorage.set("lexicon", lexiconconf);
+            },
+            error: function(data){
+                alert('erro ao carregar idiomas // error loading langs');
+            }
+        });
+    }
 
-    $.ajax({
-        async: false,
-        dataType: 'json',
-        url: api_path + '/api/lexicons',
-        success: function(data,status,jqXHR){
-            lexiconconf = data;
-            $.jStorage.set("lexicon", lexiconconf);
-        },
-        error: function(data){
-            alert('erro ao carregar idiomas // error loading langs');
-        }
-    });
+    lexicon = lexiconconf['lex'];
+    langs = lexiconconf['langs'];
+    default_lang = lexiconconf['default'];
 }
-lexicon = lexiconconf['lex'];
-langs = lexiconconf['langs'];
-default_lang = lexiconconf['default'];
-
-console.log(lexiconconf);
-
+load_lexicon();
 
 
 var sys_messages = {

@@ -384,13 +384,13 @@ $(document).ready(function() {
 
         });
         $("#menu ul.submenu").hover(function(){
-            if (typeof(tSubmenu) != "undefined") clearInterval(tSubmenu);
+            if (typeof(tSubmenu) != "undefined") clearTimeout(tSubmenu);
         },function(){
             var obj = $(this);
-            if (typeof(tSubmenu) != "undefined") clearInterval(tSubmenu);
+            if (typeof(tSubmenu) != "undefined") clearTimeout(tSubmenu);
             tSubmenu = setTimeout(function(){
                 $(obj).hide();
-                if (typeof(tSubmenu) != "undefined") clearInterval(tSubmenu);
+                if (typeof(tSubmenu) != "undefined") clearTimeout(tSubmenu);
             },500);
 
         });

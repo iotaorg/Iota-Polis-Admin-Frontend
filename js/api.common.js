@@ -60,6 +60,8 @@ if (!String.prototype.render) {
                 if (n == 0){
                     if (cur_lang == default_lang){
                         lexicon[cur_lang][v] = v;
+                        // precisa mandar pro servidor ter as outras versoes dessa palavra como TODO para traducao
+                        lexicon_untranslated[v] = 1;
                     }else{
                         lexicon_untranslated[v] = 1;
                         v = '? ' + v;

@@ -24,9 +24,10 @@ if (!String.prototype.render) {
 		for (var k in args) {
             v = args[k];
 
-            if( v in lexicon[cur_lang] ) {
+
+            if(v && v in lexicon[cur_lang] ) {
                 v = lexicon[cur_lang][v];
-            }else{
+            }else if (v){
 
                 n = 1;
                 if (typeof v == 'string'){
@@ -68,7 +69,6 @@ if (!String.prototype.render) {
                     }
                 }
             }
-
 			copy = copy.replace(RegExp('\\$\\$' + k, 'g'), v);
 		}
 		return copy;

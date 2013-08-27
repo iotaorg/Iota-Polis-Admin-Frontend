@@ -25,9 +25,13 @@ $(document).ready(function() {
                 {name: "api_key", value: $.cookie("key")}
             ];
             for (var x in lexicon_untranslated){
-                if (lexicon_untranslated.hasOwnProperty(x))
+                if (lexicon_untranslated.hasOwnProperty(x)){
                     args.push({name: "lex", value: x});
+                    untranslated_temp[x] = 1;
+                }
             }
+
+            lexicon_untranslated = [];
 
             _updating = 1;
             $.ajax({
@@ -36,14 +40,16 @@ $(document).ready(function() {
                 url: api_path + '/api/lexicons',
                 data: args,
                 success: function(data,status,jqXHR){
-                    lexicon_untranslated = [];
-
                     $.jStorage.set("lexicon", 0);
-                    load_lexicon();
-
+                    load_lexicon(true);
                     _updating = 0;
                 },
                 error: function(data){
+                    for (var x in untranslated_temp){
+                        if (untranslated_temp.hasOwnProperty(x)){
+                            lexicon_untranslated[x] = 1;
+                        }
+                    }
                     _updating = 0;
                 }
             });

@@ -5,7 +5,7 @@ if (window.location.href.indexOf("localhost") >= 0){
 
 var cur_lang='pt-br',
 lexicon,default_lang,langs, lexiconconf,
-lexicon_untranslated = {};
+lexicon_untranslated = {}, untranslated_temp={};
 
 $.assocArraySize = function(obj) {
     var size = 0, key;
@@ -1837,12 +1837,12 @@ var sortSelectBox = function(id){
 	});
 }
 
-function load_lexicon (){
+function load_lexicon (async){
     lexiconconf = $.jStorage.get("lexicon");
     if(!lexiconconf){
 
         $.ajax({
-            async: false,
+            async: async,
             dataType: 'json',
             url: api_path + '/api/public/lexicons',
             success: function(data,status,jqXHR){
@@ -1859,7 +1859,7 @@ function load_lexicon (){
     langs = lexiconconf['langs'];
     default_lang = lexiconconf['default'];
 }
-load_lexicon();
+load_lexicon(false);
 
 
 var sys_messages = {

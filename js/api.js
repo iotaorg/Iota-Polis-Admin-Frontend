@@ -18,7 +18,7 @@ $(document).ready(function() {
     var _updating=0, __update_lexicon = function(){
 
         var count=$.assocArraySize(lexicon_untranslated);
-        if (_updating ==0 && count >= 0 && $.cookie("key") != null && $.cookie("key") != ""){
+        if (_updating ==0 && count > 0 && $.cookie("key") != null && $.cookie("key") != ""){
             _updating=1;
 
             var args = [

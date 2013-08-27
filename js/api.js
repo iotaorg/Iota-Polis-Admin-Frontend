@@ -371,9 +371,13 @@ $(document).ready(function() {
         var tSubmenu;
         $("#menu ul.menu li a.submenu").hover(function(){
             $("#menu ul.menu").find("ul").hide();
+
+            if (typeof(tSubmenu) != "undefined") clearTimeout(tSubmenu);
+
             $(this).parent().find("ul").show();
         },function(){
             var obj = $(this);
+            if (typeof(tSubmenu) != "undefined") clearTimeout(tSubmenu);
             tSubmenu = setTimeout(function(){
                 $(obj).next("ul.submenu").hide();
             },500);
@@ -383,6 +387,7 @@ $(document).ready(function() {
             if (typeof(tSubmenu) != "undefined") clearInterval(tSubmenu);
         },function(){
             var obj = $(this);
+            if (typeof(tSubmenu) != "undefined") clearInterval(tSubmenu);
             tSubmenu = setTimeout(function(){
                 $(obj).hide();
                 if (typeof(tSubmenu) != "undefined") clearInterval(tSubmenu);

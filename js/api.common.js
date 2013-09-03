@@ -77,7 +77,7 @@ if (!String.prototype.render) {
                         v = '? ' + v;
                     }
                 }else{
-console.log(k, v):
+console.log(k, v);
                 }
             }
             copy = copy.replace(RegExp('\\$\\$' + k, 'g'), v);

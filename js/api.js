@@ -6466,6 +6466,7 @@ $(document).ready(function () {
                                         id: $(this).attr("indicator-id")
                                     }),
                                     success: function (data, textStatus, jqXHR) {
+                                        var vvariations = [];
                                         if (data.rows) {
                                             var history_table = "<table class='history'><thead><tr><th>Período</th>";
 
@@ -6482,7 +6483,6 @@ $(document).ready(function () {
                                             });
                                             history_table += "#theader_valor";
                                             history_table += "</tr><tbody>";
-                                            var vvariations = [];
                                             $.each(data.rows, function (index, value) {
                                                 history_table += "<tr><td class='periodo'>$$periodo</td>".render({
                                                     periodo: $.convertDateToPeriod(data.rows[index].valid_from, indicator_period)

@@ -511,7 +511,7 @@ var resetDashboard = function () {
     $("#top .top-right .logo").addClass("empty");
     $("#user-info").remove();
     $("#menu ul.menu li").remove();
-    $("#menu ul.menu").append("<li class='selected'>Entrar</li>");
+    $("#menu ul.menu").append("<li class='selected'>$$ee</li>".render({ee: 'Entrar'}));
     setTitleBar();
 };
 var resetWarnings = function () {
@@ -578,14 +578,18 @@ var buildList = function (args) {
         for (var key in fields) {
             newlist += "<td>" + data[index][fields[key]] + "</td>";
         }
-        newlist += "<td class='buttons'><a href='$$hash?option=edit&url=$$url' class='icone edit' title='editar' alt='editar'>editar</a><a href='$$hash?option=delete&url=$$url' class='icone delete' title='apagar' alt='apagar'>apagar</a></td>".render({
+        newlist += "<td class='buttons'><a href='$$hash?option=edit&url=$$url' class='icone edit' title='$$ee' alt='$$ee'>$$ee</a><a href='$$hash?option=delete&url=$$url' class='icone delete' title='$$dd' alt='$$dd'>$$dd</a></td>".render({
             hash: "#!/" + getUrlSub(),
+            ee: 'editar',
+            dd: 'apagar',
             url: data[index]["url"]
         });;
         newlist += "</tr>";
     });
     if (data.length == 0) {
-        newlist += "<td colspan='20'><span class='noresults'>Nenhum resultado encontrado</span></td>";
+        newlist += "<td colspan='20'><span class='noresults'>$$e</span></td>".render({
+            e: 'Nenhum resultado encontrado'
+        });
     }
     newlist += "<tbody>";
     newlist += "</table>";
@@ -742,50 +746,50 @@ var buildInput = function (input_args) {
     switch (input_args[0]) {
     case "text":
     case "password":
-        newinput = "<input type='$$type' name='$$id' id='$$id' class='$$class'>".render({
+        newinput = "<input type='$$type' name='$$id' id='$$id' class='$$class'>".render2({
             type: input_args[0],
             id: input_args[1],
             class: input_args[2]
         })
         break;
     case "select":
-        newinput = "<select name='$$id' id='$$id' class='$$class'></select>".render({
+        newinput = "<select name='$$id' id='$$id' class='$$class'></select>".render2({
             id: input_args[1],
             class: input_args[2]
         })
         break;
     case "radio":
-        newinput = "<input type='radio' name='$$id' id='$$id' class='$$class' />".render({
+        newinput = "<input type='radio' name='$$id' id='$$id' class='$$class' />".render2({
             id: input_args[1],
             class: input_args[2]
         })
         break;
     case "checkbox":
-        newinput = "<input type='checkbox' name='$$id' id='$$id' class='$$class' />".render({
+        newinput = "<input type='checkbox' name='$$id' id='$$id' class='$$class' />".render2({
             id: input_args[1],
             class: input_args[2]
         })
         break;
     case "textarea":
-        newinput = "<textarea name='$$id' id='$$id' class='$$class'></textarea>".render({
+        newinput = "<textarea name='$$id' id='$$id' class='$$class'></textarea>".render2({
             id: input_args[1],
             class: input_args[2]
         })
         break;
     case "textlabel":
-        newinput = "<div class='$$class' id='$$id'></div>".render({
+        newinput = "<div class='$$class' id='$$id'></div>".render2({
             id: input_args[1],
             class: input_args[2]
         })
         break;
     case "file":
-        newinput = "<form id='formFileUpload_$$id'><div class='file'><input type='file' name='arquivo_$$id' id='arquivo_$$id' original-id='arquivo_$$id' class='$$class'></div></form><iframe id='iframe_$$id' name='iframe_$$id' frameborder='0' class='upload'></iframe>".render({
+        newinput = "<form id='formFileUpload_$$id'><div class='file'><input type='file' name='arquivo_$$id' id='arquivo_$$id' original-id='arquivo_$$id' class='$$class'></div></form><iframe id='iframe_$$id' name='iframe_$$id' frameborder='0' class='upload'></iframe>".render2({
             id: input_args[1],
             class: input_args[2]
         })
         break;
     case "button":
-        newinput = "<a href='javascript: void(0);' id='$$id' class='$$class'></a>".render({
+        newinput = "<a href='javascript: void(0);' id='$$id' class='$$class'></a>".render2({
             id: input_args[1],
             class: input_args[2]
         })
@@ -829,25 +833,32 @@ var buildVariableHistory = function (var_id) {
 
             //mostra historico
 
-            var history_table = "<div class='title'>Série Histórica</div><div class='historic-content'>";
-            history_table += "<table class='history'><thead><tr><th>Período</th><th>Valor</th><th></th></tr></thead><tbody>";
+            var history_table = "<div class='title'>$$ss</div><div class='historic-content'>";
+            history_table += "<table class='history'><thead><tr><th>$$pe</th><th>$$val</th><th></th></tr></thead><tbody>".render({
+                pe: 'Período',
+                val: 'Valor',
+                ss: 'Série Histórica'
+            });
             $.each(data_variables[0].values, function (index, value) {
                 history_table += "<tr value-id='$$value_id'><td class='periodo'>$$periodo</td>".render2({
                     periodo: $.convertDateToPeriod(data_variables[0].values[index].valid_from, data_variables[0].period),
                     value_id: data_variables[0].values[index].id
                 });
-                history_table += "<td class='valor'>$$valor</td><td class='edit'><a href='javascript: void(0);' value-id='$$value_id' class='edit'>editar</a>&nbsp;<a href='javascript: void(0);' value-id='$$value_id' class='delete'>apagar</a></td>".render2({
-                    valor: $.formatNumber(data_variables[0].values[index].value, {
+                history_table += "<td class='valor'>$$_valor</td><td class='edit'><a href='javascript: void(0);' value-id='$$_value_id' class='edit'>$$ee</a>&nbsp;<a href='javascript: void(0);' value-id='$$_value_id' class='delete'>apagar</a></td>".render({
+                    ee: 'editar',
+                    _valor: $.formatNumber(data_variables[0].values[index].value, {
                         format: "#,##0.###",
                         locale: "br"
                     }),
-                    data: $.format.date(data_variables[0].values[index].value_of_date, "dd/MM/yyyy"),
-                    value_id: data_variables[0].values[index].id
+                    _data: $.format.date(data_variables[0].values[index].value_of_date, "dd/MM/yyyy"),
+                    _value_id: data_variables[0].values[index].id
                 });
                 history_table += "</tr></tbody>";
             });
             if (data_variables[0].values.length <= 0) {
-                history_table += "<tr><td class='no-data' colspan='10'>nenhum registro</td></tr>";
+                history_table += "<tr><td class='no-data' colspan='10'>$$x</td></tr>".render({
+                    x: 'nenhum registro'
+                });
             }
             history_table += "</table>";
             history_table += "</div>";

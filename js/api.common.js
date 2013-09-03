@@ -2016,6 +2016,7 @@ function load_lexicon(async) {
 
         $.ajax({
             async: async,
+            beforeSend: function () {},
             dataType: 'json',
             url: api_path + '/api/public/lexicons',
             success: function (data, status, jqXHR) {

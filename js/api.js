@@ -41,6 +41,7 @@ $(document).ready(function () {
                 _updating = 1;
                 $.ajax({
                     type: 'POST',
+                    beforeSend: function () {},
                     dataType: 'json',
                     url: api_path + '/api/lexicons',
                     data: args,

@@ -1016,7 +1016,7 @@ var buildIndicatorHistory = function (args) {
                     if (value.variations && value.variations.length > 0) {
                         var th_valor = "";
                         for (i = 0; i < value.variations.length; i++) {
-                            th_valor += "<th class='formula_valor' variation-index='" + i + "'>Valor da Fórmula</th>";
+                            th_valor += "<th class='formula_valor' variation-index='" + i + "'>$$e</th>".render({e: 'Valor da Fórmula'});
                         }
                         history_table = history_table.replace("#theader_valor", th_valor + "<th></th>");
                         $.each(value.variations, function (index, item) {
@@ -1042,7 +1042,7 @@ var buildIndicatorHistory = function (args) {
                         });
                         seta_vvariacoes = false;
                     } else {
-                        history_table = history_table.replace("#theader_valor", "<th class='formula_valor'>Valor da Fórmula</th><th></th>");
+                        history_table = history_table.replace("#theader_valor", "<th class='formula_valor'>$$x</th><th></th>".render({x: 'Valor da Fórmula'}));
                         if (data.rows[index].formula_value != "-") {
                             history_table += "<td class='formula_valor' variation-index='0'>$$valor</td>".render2({
                                 valor: $.formatNumber(data.rows[index].formula_value, {
@@ -1054,20 +1054,21 @@ var buildIndicatorHistory = function (args) {
                             history_table += "<td class='formula_valor' variation-index='0'>-</td>";
                         }
                     }
-                    history_table += "<td class='edit'><a href='javascript: void(0);' row-id='$$row' class='delete'>apagar</a></td>".render({
-                        row: rows
+                    history_table += "<td class='edit'><a href='javascript: void(0);' row-id='$$_row' class='delete'>$f</a></td>".render({
+                        _row: rows,
+                        f: 'apagar'
                     });
                     history_table += "</tr>";
                     rows++;
                 });
                 history_table += "</tbody></table>";
             } else {
-                var history_table = "<div class='historic-content'><table class='history'><thead><tr><th>nenhum registro encontrado</th></tr></thead></table></div>";
+                var history_table = "<div class='historic-content'><table class='history'><thead><tr><th>$$e</th></tr></thead></table></div>".render({e:'nenhum registro encontrado'});
             }
 
             var variation_filter = "";
             if (vvariations.length > 0) {
-                variation_filter += "<div class='variation-filter'><span class='variation-filter'>Faixa: </span><select class='variation-filter'>";
+                variation_filter += "<div class='variation-filter'><span class='variation-filter'>$$f: </span><select class='variation-filter'>".render({f:'Faixa'});
                 $.each(vvariations, function (index, item) {
                     variation_filter += "<option value='$$index'>$$name".render({
                         index: item.index,
@@ -1078,7 +1079,10 @@ var buildIndicatorHistory = function (args) {
             }
 
             $(args.target).empty();
-            $(args.target).append("<div class='title' title='mostrar/esconder Histórico'>Série Histórica</div><div class='historic-content'>" + variation_filter + history_table + "</div>");
+            $(args.target).append("<div class='title' title='$$tt'>$$e</div><div class='historic-content'>".render({
+                tt: 'mostrar/esconder Histórico',
+                e: 'Série Histórica'
+            }) + variation_filter + history_table + "</div>");
             $(args.target).find(".title").click(function () {
                 $(this).parent().find(".historic-content").toggle();
             });

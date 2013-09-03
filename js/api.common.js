@@ -691,11 +691,10 @@ var buildForm = function (form_args, title) {
             } else {
                 var separator = "";
             }
-            console.log(form_args[i]);
-            newform += "<div class='input_label'>$$bba$$label$$bbc</div>".render({
+            newform += "<div class='input_label'>$$_bba$$label$$_bbc</div>".render({
                 label: form_args[i].label,
-                bba: form_args[i].bold ? '<b>' : '',
-                bbc: form_args[i].bold ? '</b>': ''
+                _bba: form_args[i].bold ? '<b>' : '',
+                _bbc: form_args[i].bold ? '</b>': ''
             });
             newform += "<div class='clear'></div>";
             newform += "</div>";
@@ -709,8 +708,10 @@ var buildForm = function (form_args, title) {
             } else {
                 var separator = "";
             }
-            newform += "<div class='label'>$$label$$_separator</div>".render({
+            newform += "<div class='label'>$_bba$$label$_bbc$$_separator</div>".render({
                 label: form_args[i].label,
+                _bba: form_args[i].bold ? '<b>' : '',
+                _bbc: form_args[i].bold ? '</b>': ''
                 _separator: separator
             });
             var newinput;

@@ -2019,23 +2019,24 @@ function load_lexicon(async) {
             dataType: 'json',
             url: api_path + '/api/public/lexicons',
             success: function (data, status, jqXHR) {
+
                 lexiconconf = data;
                 $.jStorage.set("lexicon", lexiconconf);
+
+                lexicon = lexiconconf['lex'];
+                langs = lexiconconf['langs'];
+                default_lang = lexiconconf['default'];
             },
             error: function (data) {
                 alert('erro ao carregar idiomas // error loading langs');
             }
         });
-    }
-
-    if (lexiconconf['lex']){
+    }else{
         lexicon = lexiconconf['lex'];
         langs = lexiconconf['langs'];
         default_lang = lexiconconf['default'];
-    }else{
-        alert('erro ao carregar lexicons');
-        lexicon = {};
     }
+
 }
 
 load_lexicon(false);

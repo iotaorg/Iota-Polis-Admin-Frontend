@@ -25,6 +25,7 @@ $(document).ready(function () {
                     name: "api_key",
                     value: $.cookie("key")
                 }];
+                untranslated_temp = {};
                 for (var x in lexicon_untranslated) {
                     if (lexicon_untranslated.hasOwnProperty(x)) {
                         args.push({
@@ -35,7 +36,7 @@ $(document).ready(function () {
                     }
                 }
 
-                lexicon_untranslated = [];
+                lexicon_untranslated = {};
 
                 _updating = 1;
                 $.ajax({

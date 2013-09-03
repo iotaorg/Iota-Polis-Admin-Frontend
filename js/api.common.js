@@ -71,7 +71,7 @@ if (!String.prototype.render) {
                 if (n == 0) {
                     if (cur_lang == default_lang) {
                         lexicon[cur_lang][v] = v;
-                        // precisa mandar pro servidor ter as outras versoes dessa palavra como TODO para traducao
+                        // precisa mandar pro servidor ter as outras versoes dessa e fazer a traducao
                         lexicon_untranslated[v] = 1;
                     } else {
                         lexicon_untranslated[v] = 1;
@@ -2028,9 +2028,14 @@ function load_lexicon(async) {
         });
     }
 
-    lexicon = lexiconconf['lex'];
-    langs = lexiconconf['langs'];
-    default_lang = lexiconconf['default'];
+    if (lexiconconf['lex']){
+        lexicon = lexiconconf['lex'];
+        langs = lexiconconf['langs'];
+        default_lang = lexiconconf['default'];
+    }else{
+        alert('erro ao carregar lexicons');
+        lexicon = {};
+    }
 }
 
 load_lexicon(false);

@@ -809,7 +809,7 @@ var buildVariableHistory = function (var_id) {
     $.ajax({
         type: 'GET',
         dataType: 'json',
-        url: api_path + '/api/user/$$userid/variable?api_key=$$key$$region'.render({
+        url: api_path + '/api/user/$$userid/variable?api_key=$$key$$region'.render2({
             key: $.cookie("key"),
             userid: $.cookie("user.id"),
             region: ($("#dashboard-content .content select#region_id option:selected").val()) ? "&region_id=" + $("#dashboard-content .content select#region_id option:selected").val() : ""
@@ -938,7 +938,7 @@ var buildIndicatorHistory = function (args) {
     $.ajax({
         type: 'GET',
         dataType: 'json',
-        url: api_path + '/api/indicator/$$id/variable/value?api_key=$$key$$region'.render({
+        url: api_path + '/api/indicator/$$id/variable/value?api_key=$$key$$region'.render2({
             key: $.cookie("key"),
             id: args.id,
             region: ($("#dashboard-content .content select#region_id option:selected").val()) ? "&region_id=" + $("#dashboard-content .content select#region_id option:selected").val() : ""
@@ -1165,7 +1165,7 @@ var setNewSource = function (objSelect, objText) {
         e.preventDefault();
         if ($(objSelect).find("option:selected").val() != "") {
             deleteSource({
-                url: api_path + "/api/source/" + $(objSelect).find("option:selected").attr("source-id") + "?api_key=$$key".render({
+                url: api_path + "/api/source/" + $(objSelect).find("option:selected").attr("source-id") + "?api_key=$$key".render2({
                     key: $.cookie("key")
                 }),
                 element: $(objSelect),
@@ -1510,7 +1510,7 @@ var loadCidades = function () {
         async: false,
         type: 'GET',
         dataType: 'json',
-        url: api_path + '/api/city?api_key=$$key'.render({
+        url: api_path + '/api/city?api_key=$$key'.render2({
             key: $.cookie("key")
         }),
         success: function (data, textStatus, jqXHR) {
@@ -1540,7 +1540,7 @@ var loadUnits = function () {
         async: false,
         type: 'GET',
         dataType: 'json',
-        url: api_path + '/api/measurement_unit?api_key=$$key'.render({
+        url: api_path + '/api/measurement_unit?api_key=$$key'.render2({
             key: $.cookie("key")
         }),
         success: function (data, textStatus, jqXHR) {
@@ -1615,7 +1615,7 @@ var setNewUnit = function (objSelect, objText, objSg) {
         e.preventDefault();
         if ($(objSelect).find("option:selected").val() != "") {
             deleteUnit({
-                url: api_path + "/api/measurement_unit/" + $(objSelect).find("option:selected").attr("unit-id") + "?api_key=$$key".render({
+                url: api_path + "/api/measurement_unit/" + $(objSelect).find("option:selected").attr("unit-id") + "?api_key=$$key".render2({
                     key: $.cookie("key")
                 }),
                 element: $(objSelect),
@@ -1691,7 +1691,7 @@ var loadSources = function () {
         async: false,
         type: 'GET',
         dataType: 'json',
-        url: api_path + '/api/source?api_key=$$key'.render({
+        url: api_path + '/api/source?api_key=$$key'.render2({
             key: $.cookie("key")
         }),
         success: function (data, textStatus, jqXHR) {
@@ -1802,7 +1802,7 @@ var carregaComboCidades = function (args) {
         async: false,
         type: 'GET',
         dataType: 'json',
-        url: api_path + '/api/city?api_key=$$key'.render({
+        url: api_path + '/api/city?api_key=$$key'.render2({
             key: $.cookie("key")
         }),
         success: function (data, textStatus, jqXHR) {
@@ -1868,7 +1868,7 @@ var carregaComboCidadesUsers = function (args) {
         async: false,
         type: 'GET',
         dataType: 'json',
-        url: api_path + '/api/city?api_key=$$key'.render({
+        url: api_path + '/api/city?api_key=$$key'.render2({
             key: $.cookie("key")
         }),
         success: function (data, textStatus, jqXHR) {

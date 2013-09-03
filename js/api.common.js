@@ -193,20 +193,37 @@ $.extend({
                 return data;
             }
         } else if (typeof (data) == "object") {
-            erro = $.parseJSON($.parseJSON(data.responseText).error);
+
+            var erro;
+            if (data.responseText && data.responseText.substr(0, 1) == '{') {
+                var obj = $.parseJSON(data.responseText);
+                if (obj.error && obj.error.substr(0,1) == '{'){
+                    erro = $.parseJSON(obj.error);
+                }else if (obj.error){
+                    erro = {};
+                    erro[obj.error] = 1;
+                }
+
+            }else{
+                erro = {};
+                erro[data.responseText.substr(0, 120)] = 1;
+            }
+
             var msg = "";
             if (erro) {
                 for (var key in erro) {
                     if (erro.hasOwnProperty(key)) {
-                        if (sys_messages[key + " " + erro[key]]) {
+                        if (sys_messages[key]) {
                             if (msg != "") msg += "<br />";
-                            msg += sys_messages[key + " " + erro[key]];
+                            msg += sys_messages[key];
                         } else {
                             if (msg != "") msg += "<br />";
-                            msg += "Erro " + data.status;
+                            msg += key;
                         }
                     }
                 }
+            }else{
+                msg = 'erro fatal' + data.status;
             }
             return msg;
         }

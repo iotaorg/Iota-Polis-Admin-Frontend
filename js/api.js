@@ -3952,6 +3952,8 @@ $(document).ready(function () {
                                         var retorno = $(this).contents()[0].body.outerHTML;
                                         retorno = retorno.replace("<body><pre>", "");
                                         retorno = retorno.replace("</pre></body>", "");
+                                        console.log(retorno);
+
                                         retorno = $.parseJSON(retorno);
                                     } else {
                                         erro = 1;

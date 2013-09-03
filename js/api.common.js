@@ -66,7 +66,7 @@ if (!String.prototype.render) {
                     v.match(/^\s*[0-9]+\s*$/) ||
                     v.match(/\:\/\//) ||
                     v.match(/^#/)
-                )) n = 1;
+                )) n = 2;
 
                 if (n == 0) {
                     if (cur_lang == default_lang) {
@@ -78,7 +78,9 @@ if (!String.prototype.render) {
                         v = '? ' + v;
                     }
                 }else{
-console.log(k, v);
+                    if (n == 2){
+                        console.log(k, v);
+                    }
                 }
             }
             copy = copy.replace(RegExp('\\$\\$' + k, 'g'), v);

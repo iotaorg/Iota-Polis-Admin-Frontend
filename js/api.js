@@ -4046,12 +4046,12 @@ $(document).ready(function () {
                                                 data_formatada = $.convertDate(valor.value_of_date, " ");
                                             }
 
-                                            $("#dashboard-content .content #results tbody").append($("<tr><td>$$nome</td><td data='$$date_of_value'>$$data</td><td>$$valor</td><td>$$url</td></tr>".render({
+                                            $("#dashboard-content .content #results tbody").append($("<tr><td>$$nome</td><td data='$$_date_of_value'>$$_data</td><td>$$_valor</td><td>$$_url</td></tr>".render({
                                                 nome: item.name,
-                                                data: data_formatada,
-                                                date_of_value: valor.value_of_date,
-                                                valor: valor.value,
-                                                url: valor.url
+                                                _data: data_formatada,
+                                                _date_of_value: valor.value_of_date,
+                                                _valor: valor.value,
+                                                _url: valor.url
                                             })));
                                         });
                                     }
@@ -4097,7 +4097,7 @@ $(document).ready(function () {
                                         $("#results td.input").each(function () {
                                             if ($(this).find("input").length <= 0) {
                                                 if ($(this).find("a").length <= 0) {
-                                                    $(this).html("<input type='text' class='input' width='10' value='$$valor'>".render({
+                                                    $(this).html("<input type='text' class='input' width='10' value='$$valor'>".render2({
                                                         valor: $(this).html()
                                                     }));
                                                 }
@@ -5111,7 +5111,7 @@ $(document).ready(function () {
                                 }));
                             }
                         } else if ($(this).parent().find("input#formula-input").val() != "") {
-                            var newItem = $(this).parent().find(".editor .editor-content").append("<div class='f-input'>$$valor</div>".render({
+                            var newItem = $(this).parent().find(".editor .editor-content").append("<div class='f-input'>$$valor</div>".render2({
                                 valor: $(this).parent().find("input#formula-input").val()
                             }));
                             $("input#formula-input").val("");
@@ -6489,7 +6489,7 @@ $(document).ready(function () {
                                                 });
                                                 $.each(headers, function (index2, value2) {
                                                     if ((data.rows[index].valores[index2]) && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined && data.rows[index].valores[index2].value != "-") {
-                                                        history_table += "<td class='valor' title='$$data'>$$valor</td>".render({
+                                                        history_table += "<td class='valor' title='$$data'>$$valor</td>".render2({
                                                             valor: $.formatNumber(data.rows[index].valores[index2].value, {
                                                                 format: "#,##0.###",
                                                                 locale: "br"
@@ -6516,7 +6516,7 @@ $(document).ready(function () {
                                                     history_table = history_table.replace("#theader_valor", th_valor);
                                                     $.each(value.variations, function (index, item) {
                                                         if (item.value != "-") {
-                                                            history_table += "<td class='formula_valor' variation-index='$$index'>$$formula_valor</td>".render({
+                                                            history_table += "<td class='formula_valor' variation-index='$$index'>$$formula_valor</td>".render2({
                                                                 formula_valor: $.formatNumber(item.value, {
                                                                     format: "#,##0.###",
                                                                     locale: "br"
@@ -6524,7 +6524,7 @@ $(document).ready(function () {
                                                                 index: index
                                                             });
                                                         } else {
-                                                            history_table += "<td class='formula_valor' variation-index='$$index'>-</td>".render({
+                                                            history_table += "<td class='formula_valor' variation-index='$$index'>-</td>".render2({
                                                                 index: index
                                                             });
                                                         }

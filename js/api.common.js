@@ -15,6 +15,16 @@ $.assocArraySize = function(obj) {
     return size;
 };
 
+if (!String.prototype.render2) {
+    String.prototype.render2 = function(args) {
+        var copy = this + '';
+        for (var k in args) {
+            copy = copy.replace(RegExp('\\$\\$' + k, 'g'), args[k]);
+        }
+        return copy;
+    };
+}
+
 if (!String.prototype.render) {
 	String.prototype.render = function(args) {
 		var copy = this + '', v,n;

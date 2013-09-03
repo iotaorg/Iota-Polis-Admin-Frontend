@@ -1460,7 +1460,7 @@ $.confirm = function (params) {
 
     var buttonHTML = '';
     $.each(params.buttons, function (name, obj) {
-        buttonHTML += '<a href="javascript:;" class="button-default ' + obj['class'] + '">' + name + '</a>';
+        buttonHTML += '<a href="javascript:;" class="button-default ' + obj['class'] + '">' + "$$a".render({a:name}) + '</a>';
         if (!obj.action) {
             obj.action = function () {};
         }
@@ -1475,7 +1475,7 @@ $.confirm = function (params) {
     confirmWindow += "<div id='dialog-message'>$$message</div>".render({
         message: params.message
     });
-    confirmWindow += "<div id='dialog-buttons'>$$buttons</div>".render({
+    confirmWindow += "<div id='dialog-buttons'>$$buttons</div>".render2({
         buttons: buttonHTML
     });
     confirmWindow += "</div></div></div>";

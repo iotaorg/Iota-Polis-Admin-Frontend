@@ -7049,14 +7049,16 @@ $(document).ready(function () {
                                         $.each(data_variables, function (index, item) {
                                             if (item.type == "str") {
                                                 newform.push({
-                                                    label: "<b>" + item.name + "</b>",
+                                                    label: item.name,
+                                                    bold: 1,
                                                     input: ["textarea,var_$$id,itext".render2({
                                                         id: item.id
                                                     })]
                                                 });
                                             } else {
                                                 newform.push({
-                                                    label: "<b>" + item.name + "</b>",
+                                                    label: item.name,
+                                                    bold: 1,
                                                     input: ["text,var_$$id,itext".render2({
                                                         id: item.id
                                                     })]

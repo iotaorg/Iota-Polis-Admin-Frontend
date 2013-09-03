@@ -402,10 +402,10 @@ $(document).ready(function () {
                 $.each(submenu_label[value], function (index, item) {
                     $.each(item, function (url_sub, text) {
                         if (findInArray(submenu_access[user_info.role], url_sub)) {
-                            submenu_item += "<li class='submenu $$class' ref='$$url_sub'><a href='#!/$$url_sub'>$$text</a></li>".render({
+                            submenu_item += "<li class='submenu $$_class' ref='$$url_sub'><a href='#!/$$_url_sub'>$$text</a></li>".render({
                                 text: text,
-                                url_sub: url_sub,
-                                class: menu_class
+                                _url_sub: url_sub,
+                                _class: menu_class
                             });
                         }
                     });
@@ -1138,15 +1138,16 @@ $(document).ready(function () {
                                         $.ajax({
                                             type: 'GET',
                                             dataType: 'json',
+                                            cache:true,
                                             url: api_path + '/api/period/year?api_key=$$key'.render2({
                                                 key: $.cookie("key")
                                             }),
                                             success: function (data, textStatus, jqXHR) {
                                                 $("#dashboard-content .content select#value_of_date option").remove();
                                                 $.each(data.options, function (index, value) {
-                                                    $("#dashboard-content .content select#value_of_date").append("<option value='$$value'>$$text</option>".render({
-                                                        text: data.options[index].text,
-                                                        value: data.options[index].value
+                                                    $("#dashboard-content .content select#value_of_date").append("<option value='$$_value'>$$_text</option>".render({
+                                                        _text: data.options[index].text,
+                                                        _value: data.options[index].value
                                                     }));
                                                 });
                                                 $("#dashboard-content .content select#value_of_date option:last").attr("selected", "selected");
@@ -1157,6 +1158,7 @@ $(document).ready(function () {
                                         $.ajax({
                                             type: 'GET',
                                             dataType: 'json',
+                                            cache:true,
                                             url: api_path + '/api/period/year?api_key=$$key'.render2({
                                                 key: $.cookie("key")
                                             }),
@@ -1164,9 +1166,9 @@ $(document).ready(function () {
                                                 $("#dashboard-content .content select#value_of_date_year option").remove();
                                                 $("#dashboard-content .content select#value_of_date_year").append("<option value=''>Selecione o ano</option>");
                                                 $.each(data.options, function (index, value) {
-                                                    $("#dashboard-content .content select#value_of_date_year").append("<option value='$$value'>$$text</option>".render({
-                                                        text: data.options[index].text,
-                                                        value: data.options[index].value
+                                                    $("#dashboard-content .content select#value_of_date_year").append("<option value='$$_value'>$$_text</option>".render({
+                                                        _text: data.options[index].text,
+                                                        _value: data.options[index].value
                                                     }));
                                                 });
                                                 $("#dashboard-content .content select#value_of_date option:last").attr("selected", "selected");
@@ -1178,6 +1180,7 @@ $(document).ready(function () {
                                                         $("#dashboard-content .content select#value_of_date").show();
                                                         $.ajax({
                                                             type: 'GET',
+                                                            cache:true,
                                                             dataType: 'json',
                                                             url: api_path + '/api/period/year/$$year/month?api_key=$$key'.render2({
                                                                 key: $.cookie("key"),
@@ -1185,9 +1188,9 @@ $(document).ready(function () {
                                                             }),
                                                             success: function (data, textStatus, jqXHR) {
                                                                 $.each(data.options, function (index, value) {
-                                                                    $("#dashboard-content .content select#value_of_date").append("<option value='$$value'>$$text</option>".render({
-                                                                        text: data.options[index].text,
-                                                                        value: data.options[index].value
+                                                                    $("#dashboard-content .content select#value_of_date").append("<option value='$$_value'>$$_text</option>".render({
+                                                                        _text: data.options[index].text,
+                                                                        _value: data.options[index].value
                                                                     }));
                                                                 });
                                                             }
@@ -3592,15 +3595,16 @@ $(document).ready(function () {
                                     $.ajax({
                                         type: 'GET',
                                         dataType: 'json',
+                                        cache:true,
                                         url: api_path + '/api/period/year?api_key=$$key'.render2({
                                             key: $.cookie("key")
                                         }),
                                         success: function (data, textStatus, jqXHR) {
                                             $("#dashboard-content .content select#value_of_date option").remove();
                                             $.each(data.options, function (index, value) {
-                                                $("#dashboard-content .content select#value_of_date").append("<option value='$$value'>$$text</option>".render({
-                                                    text: data.options[index].text,
-                                                    value: data.options[index].value
+                                                $("#dashboard-content .content select#value_of_date").append("<option value='$$_value'>$$_text</option>".render({
+                                                    _text: data.options[index].text,
+                                                    _value: data.options[index].value
                                                 }));
                                             });
                                             $("#dashboard-content .content select#value_of_date option:last").attr("selected", "selected");
@@ -3611,6 +3615,7 @@ $(document).ready(function () {
                                     $.ajax({
                                         type: 'GET',
                                         dataType: 'json',
+                                        cache:true,
                                         url: api_path + '/api/period/year?api_key=$$key'.render2({
                                             key: $.cookie("key")
                                         }),
@@ -3618,9 +3623,9 @@ $(document).ready(function () {
                                             $("#dashboard-content .content select#value_of_date_year option").remove();
                                             $("#dashboard-content .content select#value_of_date_year").append("<option value=''>Selecione o ano</option>");
                                             $.each(data.options, function (index, value) {
-                                                $("#dashboard-content .content select#value_of_date_year").append("<option value='$$value'>$$text</option>".render({
-                                                    text: data.options[index].text,
-                                                    value: data.options[index].value
+                                                $("#dashboard-content .content select#value_of_date_year").append("<option value='$$_value'>$$_text</option>".render({
+                                                    _text: data.options[index].text,
+                                                    _value: data.options[index].value
                                                 }));
                                             });
                                             $("#dashboard-content .content select#value_of_date option:last").attr("selected", "selected");
@@ -3633,13 +3638,14 @@ $(document).ready(function () {
                                                     $.ajax({
                                                         type: 'GET',
                                                         dataType: 'json',
+                                                        cache: true,
                                                         url: api_path + '/api/period/year/$$year/month?api_key=$$key'.render2({
                                                             key: $.cookie("key"),
                                                             year: $("#dashboard-content .content select#value_of_date_year option:selected").html()
                                                         }),
                                                         success: function (data, textStatus, jqXHR) {
                                                             $.each(data.options, function (index, value) {
-                                                                $("#dashboard-content .content select#value_of_date").append("<option value='$$value'>$$text</option>".render({
+                                                                $("#dashboard-content .content select#value_of_date").append("<option value='$$value'>$$text</option>".render2({
                                                                     text: data.options[index].text,
                                                                     value: data.options[index].value
                                                                 }));
@@ -6953,8 +6959,8 @@ $(document).ready(function () {
                                     }),
                                     success: function (data, textStatus, jqXHR) {
                                         $.each(data.options, function (index, value) {
-                                            $("#dashboard-content .content .filter_indicator select#date_filter").append("<option value='$$_value'>$$text</option>".render({
-                                                text: data.options[index].text,
+                                            $("#dashboard-content .content .filter_indicator select#date_filter").append("<option value='$$_value'>$$_text</option>".render({
+                                                _text: data.options[index].text,
                                                 _value: data.options[index].value
                                             }));
                                         });
@@ -6964,6 +6970,7 @@ $(document).ready(function () {
                                 $.ajax({
                                     type: 'GET',
                                     dataType: 'json',
+                                    cache: true,
                                     url: api_path + '/api/period/year?api_key=$$key'.render2({
                                         key: $.cookie("key")
                                     }),
@@ -6994,9 +7001,9 @@ $(document).ready(function () {
                                                     }),
                                                     success: function (data, textStatus, jqXHR) {
                                                         $.each(data.options, function (index, value) {
-                                                            $("#dashboard-content .content .filter_indicator select#date_filter").append("<option value='$$value'>$$text</option>".render({
-                                                                text: data.options[index].text.split(" - ")[1],
-                                                                value: data.options[index].value
+                                                            $("#dashboard-content .content .filter_indicator select#date_filter").append("<option value='$$_value'>$$_text</option>".render({
+                                                                _text: data.options[index].text.split(" - ")[1],
+                                                                _value: data.options[index].value
                                                             }));
                                                         });
                                                     }

@@ -62,7 +62,7 @@ if (!String.prototype.render) {
                 if (n == 0 && (!v ||
                     v.match(/^\s*$/) ||
                     v.match(/^\/api\//) ||
-                    v.match(/^\</) || !v.match(/[a-z]/i) ||
+                    !v.match(/[a-z]/i) ||
                     v.match(/^\s*[0-9]+\s*$/) ||
                     v.match(/\:\/\//) ||
                     v.match(/^#/)
@@ -834,7 +834,7 @@ var buildVariableHistory = function (var_id) {
                     periodo: $.convertDateToPeriod(data_variables[0].values[index].valid_from, data_variables[0].period),
                     value_id: data_variables[0].values[index].id
                 });
-                history_table += "<td class='valor'>$$valor</td><td class='edit'><a href='javascript: void(0);' value-id='$$value_id' class='edit'>editar</a>&nbsp;<a href='javascript: void(0);' value-id='$$value_id' class='delete'>apagar</a></td>".render({
+                history_table += "<td class='valor'>$$valor</td><td class='edit'><a href='javascript: void(0);' value-id='$$value_id' class='edit'>editar</a>&nbsp;<a href='javascript: void(0);' value-id='$$value_id' class='delete'>apagar</a></td>".render2({
                     valor: $.formatNumber(data_variables[0].values[index].value, {
                         format: "#,##0.###",
                         locale: "br"
@@ -972,7 +972,7 @@ var buildIndicatorHistory = function (args) {
 
                     $.each(headers, function (index2, value2) {
                         if (data.rows[index].valores[index2] && data.rows[index].valores[index2].value != "-" && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined) {
-                            history_table += "<td class='valor' title='$$data' value-id='$$id' variable-id='$$variable_id'>$$valor</td>".render({
+                            history_table += "<td class='valor' title='$$data' value-id='$$id' variable-id='$$variable_id'>$$valor</td>".render2({
                                 valor: $.formatNumber(data.rows[index].valores[index2].value, {
                                     format: "#,##0.###",
                                     locale: "br"
@@ -1007,7 +1007,7 @@ var buildIndicatorHistory = function (args) {
                         history_table = history_table.replace("#theader_valor", th_valor + "<th></th>");
                         $.each(value.variations, function (index, item) {
                             if (item.value != "-") {
-                                history_table += "<td class='formula_valor' variation-index='$$index'>$$formula_valor</td>".render({
+                                history_table += "<td class='formula_valor' variation-index='$$index'>$$formula_valor</td>".render2({
                                     formula_valor: $.formatNumber(item.value, {
                                         format: "#,##0.###",
                                         locale: "br"
@@ -1030,7 +1030,7 @@ var buildIndicatorHistory = function (args) {
                     } else {
                         history_table = history_table.replace("#theader_valor", "<th class='formula_valor'>Valor da Fórmula</th><th></th>");
                         if (data.rows[index].formula_value != "-") {
-                            history_table += "<td class='formula_valor' variation-index='0'>$$valor</td>".render({
+                            history_table += "<td class='formula_valor' variation-index='0'>$$valor</td>".render2({
                                 valor: $.formatNumber(data.rows[index].formula_value, {
                                     format: "#,##0.###",
                                     locale: "br"

@@ -60,6 +60,7 @@ if (!String.prototype.render) {
                 }
     */
                 if (n == 0 && (!v ||
+                    v == '&nbsp;' ||
                     v.match(/^\s*$/) ||
                     v.match(/^\/api\//) ||
                     !v.match(/[a-z]/i) ||

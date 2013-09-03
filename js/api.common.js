@@ -691,6 +691,7 @@ var buildForm = function (form_args, title) {
             } else {
                 var separator = "";
             }
+            console.log(form_args[i]);
             newform += "<div class='input_label'>$$bba$$label$$bbc</div>".render({
                 label: form_args[i].label,
                 bba: form_args[i].bold ? '<b>' : '',

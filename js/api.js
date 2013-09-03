@@ -6484,7 +6484,7 @@ $(document).ready(function () {
                                             history_table += "#theader_valor";
                                             history_table += "</tr><tbody>";
                                             $.each(data.rows, function (index, value) {
-                                                history_table += "<tr><td class='periodo'>$$periodo</td>".render({
+                                                history_table += "<tr><td class='periodo'>$$periodo</td>".render2({
                                                     periodo: $.convertDateToPeriod(data.rows[index].valid_from, indicator_period)
                                                 });
                                                 $.each(headers, function (index2, value2) {

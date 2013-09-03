@@ -610,7 +610,7 @@ var buildDataTable = function (args, table_id, button_add, add_class) {
     newlist += "<thead>";
     newlist += "<tr>";
     for (var key in headers) {
-        newlist += "<th>" + headers[key].replace("_", "&nbsp;") + "</th>";
+        newlist += "<th>$$x</th>".render({x: headers[key].replace("_", "&nbsp;")});
     }
     newlist += "</tr>";
     newlist += "</thead>";
@@ -626,9 +626,11 @@ var DTdesenhaBotoes = function () {
     $("#results td.botoes").each(function () {
         if ($(this).find("a").length <= 0) {
             var url = $(this).html();
-            $(this).html("<a href='$$hash?option=edit&url=$$url' class='icone edit' title='editar' alt='editar'>editar</a><a href='$$hash?option=delete&url=$$url' class='icone delete' title='apagar' alt='apagar'>apagar</a>".render({
-                hash: "#!/" + getUrlSub(),
-                url: url
+            $(this).html("<a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='$$ee' alt='$$ee'>$$ee</a><a href='$$_hash?option=delete&url=$$_url' class='icone delete' title='$$dd' alt='$$dd'>$$dd</a>".render({
+                _hash: "#!/" + getUrlSub(),
+                ee: 'editar',
+                dd: 'apagar',
+                _url: url
             }));
         }
     });
@@ -638,10 +640,13 @@ var DTdesenhaBotaoVariavel = function () {
     $("#results td.botoes").each(function () {
         if ($(this).find("a").length <= 0) {
             var url = $(this).html();
-            $(this).html("<a href='$$hash?option=edit&url=$$url' class='icone edit' title='Adicionar Valor' alt='editar'>adicionar valor</a>".render({
-                hash: "#!/" + getUrlSub(),
-                url: api_path + "/api/variable/" + url
-                //                      url: "http://rnsp.aware.com.br/api/variable/" + url
+            $(this).html("<a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='$$aaa' alt='$$ee'>$$aav</a>".render({
+                _hash: "#!/" + getUrlSub(),
+                aaa: 'Adicionar Valor',
+                aav: 'adicionar valor',
+                ee: 'editar',
+                _url: api_path + "/api/variable/" + url
+
             }));
         }
     });
@@ -658,7 +663,7 @@ var buildForm = function (form_args, title) {
     for (i = 0; i < form_args.length; i++) {
         if (form_args[i].type == "div") {
             if (form_args[i].class) {
-                newform += "<div class='div $$class'></div>".render({
+                newform += "<div class='div $$class'></div>".render2({
                     class: form_args[i].class
                 });
             } else {
@@ -670,7 +675,7 @@ var buildForm = function (form_args, title) {
             });
         } else if (form_args[i].type == "inverted") {
             if (form_args[i].class == undefined) form_args[i].class = "";
-            newform += "<div class='field $$class'>".render({
+            newform += "<div class='field $$class'>".render2({
                 class: form_args[i].class
             });
             var newinput;
@@ -693,7 +698,7 @@ var buildForm = function (form_args, title) {
             newform += "</div>";
         } else {
             if (form_args[i].class == undefined) form_args[i].class = "";
-            newform += "<div class='field $$class'>".render({
+            newform += "<div class='field $$class'>".render2({
                 class: form_args[i].class
             });
             if (form_args[i].label != "") {
@@ -721,8 +726,10 @@ var buildForm = function (form_args, title) {
     newform += "</div>";
     newform += "<div class='clear'></div>";
 
-    newform += "<div class='form-buttons'><a href='javascript: void(0);' class='botao-form' ref='enviar'>Enviar</a>";
-    newform += "<a href='javascript: void(0);' class='botao-form' ref='cancelar'>Cancelar</a></div>";
+    newform += "<div class='form-buttons'><a href='javascript: void(0);' class='botao-form' ref='enviar'>$$enviar</a><a href='javascript: void(0);' class='botao-form' ref='cancelar'>$$cancelar</a></div>".render({
+        enviar: 'Enviar',
+        cancelar: 'Cancelar'
+    });
 
     return newform;
 };
@@ -785,10 +792,10 @@ var buildInput = function (input_args) {
 }
 
 var buildButton = function (label, classname, id) {
-    var new_button = "<a href='javascript: void(0);' class='$$class' id='$$id'>$$label</a>".render({
-        class: classname,
+    var new_button = "<a href='javascript: void(0);' class='$$_class' id='$$_id'>$$label</a>".render({
+        _class: classname,
         label: label,
-        id: id
+        _id: id
     });
     return new_button;
 };

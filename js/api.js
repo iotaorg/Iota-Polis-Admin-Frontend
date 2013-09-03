@@ -5004,7 +5004,7 @@ $(document).ready(function () {
                                         });
                                         $("#dashboard-content .content #visibility_users_select option").remove();
                                         $.each(data.users, function (index, item) {
-                                            $("#dashboard-content .content #visibility_users_select").append($("<option value='$$id'>$$nome</option>".render({
+                                            $("#dashboard-content .content #visibility_users_select").append($("<option value='$$id'>$$nome</option>".render2({
                                                 id: getIdFromUrl(item.url),
                                                 nome: item.name
                                             })));
@@ -5030,42 +5030,42 @@ $(document).ready(function () {
 
                     $("#dashboard-content .content textarea#formula").after("<div id='formula-editor'><div class='editor'><div class='editor-content'></div></div><div class='button'><<</div><div class='variables-title'>Variáveis</div><div class='variables'></div><div class='user-input'></div><div class='operators'></div></div>");
                     $("#formula-editor .user-input").append("<input type='text' id='formula-input' placeholder='valor'>");
-                    $("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title'>$$caption</div>".render({
+                    $("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title'>$$caption</div>".render2({
                         value: "+",
                         caption: "+",
                         title: "Soma"
                     }));
-                    $("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title'>$$caption</div>".render({
+                    $("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title'>$$caption</div>".render2({
                         value: "-",
                         caption: "-",
                         title: "Subtração"
                     }));
-                    $("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title'>$$caption</div>".render({
+                    $("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title'>$$caption</div>".render2({
                         value: "/",
                         caption: "÷",
                         title: "Divisão"
                     }));
-                    $("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title'>$$caption</div>".render({
+                    $("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title'>$$caption</div>".render2({
                         value: "*",
                         caption: "×",
                         title: "Multiplicação"
                     }));
-                    $("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title''>$$caption</div>".render({
+                    $("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title''>$$caption</div>".render2({
                         value: "(",
                         caption: "(",
                         title: "Abre Parenteses"
                     }));
-                    $("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title'>$$caption</div>".render({
+                    $("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title'>$$caption</div>".render2({
                         value: ")",
                         caption: ")",
                         title: "Fecha Parenteses"
                     }));
-                    $("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title'>$$caption</div>".render({
+                    $("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title'>$$caption</div>".render2({
                         value: "√",
                         caption: "√",
                         title: "Raíz Quadrada"
                     }));
-                    $("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title'>$$caption</div>".render({
+                    $("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title'>$$caption</div>".render2({
                         value: "CONCATENAR",
                         caption: "[ ]",
                         title: "Concatenar"
@@ -5104,16 +5104,16 @@ $(document).ready(function () {
                     $("#formula-editor .button").click(function (e) {
                         if ($(this).parent().find(".variables .selected").length > 0) {
                             if ($(this).parent().find(".variables .selected").attr("type") == "normal") {
-                                var newItem = $(this).parent().find(".editor .editor-content").append("<div class='f-variable' var_id='$$var_id'>$$nome</div>".render({
+                                var newItem = $(this).parent().find(".editor .editor-content").append("<div class='f-variable' var_id='$$_var_id'>$$nome</div>".render({
                                     nome: $(this).parent().find(".variables .selected").html(),
-                                    var_id: $(this).parent().find(".variables .selected").attr("var_id")
+                                    _var_id: $(this).parent().find(".variables .selected").attr("var_id")
                                 }));
                                 var period_selected = $(this).parent().find(".variables .selected").attr("period");
                                 $(this).parent().find(".variables .item[period!='" + period_selected + "'][type=='normal']").hide();
                             } else {
-                                var newItem = $(this).parent().find(".editor .editor-content").append("<div class='f-vvariable' var_id='$$var_id'>$$nome</div>".render({
+                                var newItem = $(this).parent().find(".editor .editor-content").append("<div class='f-vvariable' var_id='$$_var_id'>$$nome</div>".render({
                                     nome: $(this).parent().find(".variables .selected").html(),
-                                    var_id: $(this).parent().find(".variables .selected").attr("var_id")
+                                    _var_id: $(this).parent().find(".variables .selected").attr("var_id")
                                 }));
                             }
                         } else if ($(this).parent().find("input#formula-input").val() != "") {
@@ -5127,8 +5127,8 @@ $(document).ready(function () {
 
                     $("#formula-editor .op-button").click(function () {
                         if (!$(this).hasClass("op-button-disabled")) {
-                            var newItem = $("#formula-editor .editor .editor-content").append("<div class='f-operator' val='$$value'>$$caption</div>".render({
-                                value: $(this).attr("val"),
+                            var newItem = $("#formula-editor .editor .editor-content").append("<div class='f-operator' val='$$_value'>$$caption</div>".render({
+                                _value: $(this).attr("val"),
                                 caption: $(this).html()
                             }));
                             updateFormula();
@@ -5176,7 +5176,7 @@ $(document).ready(function () {
                         },
                         error: function (data) {
                             $("#aviso").setWarning({
-                                msg: "Erro ao carregar ($$codigo)".render({
+                                msg: "Erro ao carregar ($$codigo)".render2({
                                     codigo: $.trataErro(data)
                                 })
                             });
@@ -5201,12 +5201,12 @@ $(document).ready(function () {
                             });
                             $("#variacoes-form .variacoes-list table tbody").empty();
                             $.each(variacoes_list, function (index, item) {
-                                $("#variacoes-form .variacoes-list table tbody").append("<tr id='$$id' order='$$order' temp='$$temp' delete='$$delete'><td>$$name</td><td class='edit'><a href='#'>editar</a></td><td class='delete'><a href='#'>remover</a></td><td class='up'><a href='#'>subir</a></td><td class='down'><a href='#'>descer</a></td></tr>".render({
+                                $("#variacoes-form .variacoes-list table tbody").append("<tr id='$$_id' order='$$_order' temp='$$_temp' delete='$$_delete'><td>$$name</td><td class='edit'><a href='#'>editar</a></td><td class='delete'><a href='#'>remover</a></td><td class='up'><a href='#'>subir</a></td><td class='down'><a href='#'>descer</a></td></tr>".render({
                                     name: item.name,
-                                    id: item.id,
-                                    order: item.order,
-                                    temp: item.temp,
-                                    delete: item.delete
+                                    _id: item.id,
+                                    _order: item.order,
+                                    _temp: item.temp,
+                                    _delete: item.delete
                                 }));
                                 if (item.delete || item.delete == "true") {
                                     $("#variacoes-form .variacoes-list table tbody tr:last").hide();

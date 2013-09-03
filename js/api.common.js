@@ -832,7 +832,7 @@ var buildVariableHistory = function (var_id) {
             var history_table = "<div class='title'>Série Histórica</div><div class='historic-content'>";
             history_table += "<table class='history'><thead><tr><th>Período</th><th>Valor</th><th></th></tr></thead><tbody>";
             $.each(data_variables[0].values, function (index, value) {
-                history_table += "<tr value-id='$$value_id'><td class='periodo'>$$periodo</td>".render({
+                history_table += "<tr value-id='$$value_id'><td class='periodo'>$$periodo</td>".render2({
                     periodo: $.convertDateToPeriod(data_variables[0].values[index].valid_from, data_variables[0].period),
                     value_id: data_variables[0].values[index].id
                 });
@@ -964,7 +964,7 @@ var buildIndicatorHistory = function (args) {
                 history_table += "</tr></thead><tbody>";
                 var rows = 0;
                 $.each(data.rows, function (index, value) {
-                    history_table += "<tr row-id='$$row'><td class='periodo'>$$periodo</td>".render({
+                    history_table += "<tr row-id='$$row'><td class='periodo'>$$periodo</td>".render2({
                         periodo: $.convertDateToPeriod(data.rows[index].valid_from, args.period),
                         row: rows
                     });

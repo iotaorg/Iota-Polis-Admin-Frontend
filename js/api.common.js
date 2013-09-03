@@ -62,8 +62,7 @@ if (!String.prototype.render) {
                 if (n == 0 && (!v ||
                     v == '&nbsp;' ||
                     v.match(/^\s*$/) ||
-                    v.match(/^\/api\//) ||
-                    !v.match(/[a-z]/i) ||
+                    v.match(/^\/api\//) || !v.match(/[a-z]/i) ||
                     v.match(/^\s*[0-9]+\s*$/) ||
                     v.match(/\:\/\//) ||
                     v.match(/^#/)
@@ -78,8 +77,8 @@ if (!String.prototype.render) {
                         lexicon_untranslated[v] = 1;
                         v = '? ' + v;
                     }
-                }else{
-                    if (n == 2){
+                } else {
+                    if (n == 2) {
                         console.log(k, v);
                     }
                 }
@@ -512,7 +511,9 @@ var resetDashboard = function () {
     $("#top .top-right .logo").addClass("empty");
     $("#user-info").remove();
     $("#menu ul.menu li").remove();
-    $("#menu ul.menu").append("<li class='selected'>$$ee</li>".render({ee: 'Entrar'}));
+    $("#menu ul.menu").append("<li class='selected'>$$ee</li>".render({
+        ee: 'Entrar'
+    }));
     setTitleBar();
 };
 var resetWarnings = function () {
@@ -615,7 +616,9 @@ var buildDataTable = function (args, table_id, button_add, add_class) {
     newlist += "<thead>";
     newlist += "<tr>";
     for (var key in headers) {
-        newlist += "<th>$$x</th>".render({x: headers[key].replace("_", "&nbsp;")});
+        newlist += "<th>$$x</th>".render({
+            x: headers[key].replace("_", "&nbsp;")
+        });
     }
     newlist += "</tr>";
     newlist += "</thead>";
@@ -699,7 +702,7 @@ var buildForm = function (form_args, title) {
             newform += "<div class='input_label'>$$_bba$$label$$_bbc</div>".render({
                 label: form_args[i].label,
                 _bba: form_args[i].bold ? '<b>' : '',
-                _bbc: form_args[i].bold ? '</b>': ''
+                _bbc: form_args[i].bold ? '</b>' : ''
             });
             newform += "<div class='clear'></div>";
             newform += "</div>";
@@ -716,7 +719,7 @@ var buildForm = function (form_args, title) {
             newform += "<div class='label'>$$_bba$$label$$_bbc$$_separator</div>".render({
                 label: form_args[i].label,
                 _bba: form_args[i].bold ? '<b>' : '',
-                _bbc: form_args[i].bold ? '</b>': '',
+                _bbc: form_args[i].bold ? '</b>' : '',
                 _separator: separator
             });
             var newinput;
@@ -1016,7 +1019,9 @@ var buildIndicatorHistory = function (args) {
                     if (value.variations && value.variations.length > 0) {
                         var th_valor = "";
                         for (i = 0; i < value.variations.length; i++) {
-                            th_valor += "<th class='formula_valor' variation-index='" + i + "'>$$e</th>".render({e: 'Valor da Fórmula'});
+                            th_valor += "<th class='formula_valor' variation-index='" + i + "'>$$e</th>".render({
+                                e: 'Valor da Fórmula'
+                            });
                         }
                         history_table = history_table.replace("#theader_valor", th_valor + "<th></th>");
                         $.each(value.variations, function (index, item) {
@@ -1042,7 +1047,9 @@ var buildIndicatorHistory = function (args) {
                         });
                         seta_vvariacoes = false;
                     } else {
-                        history_table = history_table.replace("#theader_valor", "<th class='formula_valor'>$$x</th><th></th>".render({x: 'Valor da Fórmula'}));
+                        history_table = history_table.replace("#theader_valor", "<th class='formula_valor'>$$x</th><th></th>".render({
+                            x: 'Valor da Fórmula'
+                        }));
                         if (data.rows[index].formula_value != "-") {
                             history_table += "<td class='formula_valor' variation-index='0'>$$valor</td>".render2({
                                 valor: $.formatNumber(data.rows[index].formula_value, {
@@ -1063,12 +1070,16 @@ var buildIndicatorHistory = function (args) {
                 });
                 history_table += "</tbody></table>";
             } else {
-                var history_table = "<div class='historic-content'><table class='history'><thead><tr><th>$$e</th></tr></thead></table></div>".render({e:'nenhum registro encontrado'});
+                var history_table = "<div class='historic-content'><table class='history'><thead><tr><th>$$e</th></tr></thead></table></div>".render({
+                    e: 'nenhum registro encontrado'
+                });
             }
 
             var variation_filter = "";
             if (vvariations.length > 0) {
-                variation_filter += "<div class='variation-filter'><span class='variation-filter'>$$f: </span><select class='variation-filter'>".render({f:'Faixa'});
+                variation_filter += "<div class='variation-filter'><span class='variation-filter'>$$f: </span><select class='variation-filter'>".render({
+                    f: 'Faixa'
+                });
                 $.each(vvariations, function (index, item) {
                     variation_filter += "<option value='$$index'>$$name".render({
                         index: item.index,
@@ -2026,35 +2037,35 @@ var sortSelectBox = function (id) {
     });
 }
 
-function load_lexicon(async) {
-    lexiconconf = $.jStorage.get("lexicon");
-    if (!lexiconconf) {
+    function load_lexicon(async) {
+        lexiconconf = $.jStorage.get("lexicon");
+        if (!lexiconconf) {
 
-        $.ajax({
-            async: async,
-            beforeSend: function () {},
-            dataType: 'json',
-            url: api_path + '/api/public/lexicons',
-            success: function (data, status, jqXHR) {
+            $.ajax({
+                async: async,
+                beforeSend: function () {},
+                dataType: 'json',
+                url: api_path + '/api/public/lexicons',
+                success: function (data, status, jqXHR) {
 
-                lexiconconf = data;
-                $.jStorage.set("lexicon", lexiconconf);
+                    lexiconconf = data;
+                    $.jStorage.set("lexicon", lexiconconf);
 
-                lexicon = lexiconconf['lex'];
-                langs = lexiconconf['langs'];
-                default_lang = lexiconconf['default'];
-            },
-            error: function (data) {
-                alert('erro ao carregar idiomas // error loading langs');
-            }
-        });
-    }else{
-        lexicon = lexiconconf['lex'];
-        langs = lexiconconf['langs'];
-        default_lang = lexiconconf['default'];
+                    lexicon = lexiconconf['lex'];
+                    langs = lexiconconf['langs'];
+                    default_lang = lexiconconf['default'];
+                },
+                error: function (data) {
+                    alert('erro ao carregar idiomas // error loading langs');
+                }
+            });
+        } else {
+            lexicon = lexiconconf['lex'];
+            langs = lexiconconf['langs'];
+            default_lang = lexiconconf['default'];
+        }
+
     }
-
-}
 
 load_lexicon(false);
 

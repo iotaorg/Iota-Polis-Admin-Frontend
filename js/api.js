@@ -1140,7 +1140,7 @@ $(document).ready(function () {
                                         $.ajax({
                                             type: 'GET',
                                             dataType: 'json',
-                                            cache:true,
+                                            cache: true,
                                             url: api_path + '/api/period/year?api_key=$$key'.render2({
                                                 key: $.cookie("key")
                                             }),
@@ -1160,7 +1160,7 @@ $(document).ready(function () {
                                         $.ajax({
                                             type: 'GET',
                                             dataType: 'json',
-                                            cache:true,
+                                            cache: true,
                                             url: api_path + '/api/period/year?api_key=$$key'.render2({
                                                 key: $.cookie("key")
                                             }),
@@ -1182,7 +1182,7 @@ $(document).ready(function () {
                                                         $("#dashboard-content .content select#value_of_date").show();
                                                         $.ajax({
                                                             type: 'GET',
-                                                            cache:true,
+                                                            cache: true,
                                                             dataType: 'json',
                                                             url: api_path + '/api/period/year/$$year/month?api_key=$$key'.render2({
                                                                 key: $.cookie("key"),
@@ -3597,7 +3597,7 @@ $(document).ready(function () {
                                     $.ajax({
                                         type: 'GET',
                                         dataType: 'json',
-                                        cache:true,
+                                        cache: true,
                                         url: api_path + '/api/period/year?api_key=$$key'.render2({
                                             key: $.cookie("key")
                                         }),
@@ -3617,7 +3617,7 @@ $(document).ready(function () {
                                     $.ajax({
                                         type: 'GET',
                                         dataType: 'json',
-                                        cache:true,
+                                        cache: true,
                                         url: api_path + '/api/period/year?api_key=$$key'.render2({
                                             key: $.cookie("key")
                                         }),
@@ -3982,7 +3982,7 @@ $(document).ready(function () {
                                         msg: "Erro ao enviar arquivo $$_file ($$err)".render({
                                             err: retorno.error,
                                             _file: file
-                                       })
+                                        })
                                     });
                                     $(clickedButton).html("Enviar");
                                     $(clickedButton).attr("is-disabled", 0);

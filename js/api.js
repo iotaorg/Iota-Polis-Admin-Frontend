@@ -4812,7 +4812,8 @@ $(document).ready(function () {
                         input: ["checkbox,all_variations_variables_are_required,icheckbox"]
                     });
                     newform.push({
-                        label: "Formula<br /><a href='javascript: void(0);' id='help-formula'>ajuda</a>",
+                        label: "Formula",
+                        extra_label: "<br /><a href='javascript: void(0);' id='help-formula'>ajuda</a>",
                         input: ["textarea,formula,itext"]
                     });
                     newform.push({

@@ -77,11 +77,11 @@ if (!String.prototype.render) {
                         lexicon_untranslated[v] = 1;
                         v = '? ' + v;
                     }
-                } else {
+                } /*else {
                     if (n == 2) {
                         console.log(k, v);
                     }
-                }
+                }*/
             }
             copy = copy.replace(RegExp('\\$\\$' + k, 'g'), v);
         }

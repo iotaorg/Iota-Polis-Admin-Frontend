@@ -1061,7 +1061,7 @@ var buildIndicatorHistory = function (args) {
                             history_table += "<td class='formula_valor' variation-index='0'>-</td>";
                         }
                     }
-                    history_table += "<td class='edit'><a href='javascript: void(0);' row-id='$$_row' class='delete'>$f</a></td>".render({
+                    history_table += "<td class='edit'><a href='javascript: void(0);' row-id='$$_row' class='delete'>$$f</a></td>".render({
                         _row: rows,
                         f: 'apagar'
                     });

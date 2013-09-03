@@ -7284,7 +7284,7 @@ $(document).ready(function () {
                                             $("#source_$$id".render({
                                                 id: data_variables[index].id
                                             })).val(data_variables[index].source);
-                                            $("#observations_$$id".render({
+                                            $("#observations_$$id".render2({
                                                 id: data_variables[index].id
                                             })).val(data_variables[index].observations);
 
@@ -7300,7 +7300,7 @@ $(document).ready(function () {
                                                 $("#source_$$id".render({
                                                     id: data_variables[index].id
                                                 })).attr("disabled", false);
-                                                $("#observations_$$id".render({
+                                                $("#observations_$$id".render2({
                                                     id: data_variables[index].id
                                                 })).attr("disabled", false);
                                                 $("#no_data").attr("disabled", false);

@@ -701,9 +701,9 @@ var buildForm = function (form_args, title) {
             } else {
                 var separator = "";
             }
-            newform += "<div class='label'>$$label$$separator</div>".render({
+            newform += "<div class='label'>$$label$$_separator</div>".render({
                 label: form_args[i].label,
-                separator: separator
+                _separator: separator
             });
             var newinput;
             newform += "<div class='input'>";

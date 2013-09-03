@@ -3911,7 +3911,7 @@ $(document).ready(function () {
 
                     formbuild.find(".field:last").append("<div class='models center'></div>");
                     formbuild.find(".models").append('Modelo de arquivo: <a href="/variaveis_exemplo.csv">CSV</a> <a href="/variaveis_exemplo.xls">XLS</a><br />');
-                    formbuild.find(".models").append('Modelo de arquivo para Regiões: <a href="/dados/usuario/$$user/regiao_exemplo.csv">CSV</a> <a href="/dados/usuario/$$user/regiao_exemplo.xls">XLS</a><br />'.render({
+                    formbuild.find(".models").append('Modelo de arquivo para Regiões: <a href="/dados/usuario/$$user/regiao_exemplo.csv">CSV</a> <a href="/dados/usuario/$$user/regiao_exemplo.xls">XLS</a><br />'.render2({
                         user: $.cookie("user.id")
                     }));
 
@@ -6406,13 +6406,13 @@ $(document).ready(function () {
                                         tr_class = "unfolded";
                                     }
                                 });
-                                indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$_id' period='$$period'>detalhes</a><a href='$$hash?option=edit&url=$$_url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
+                                indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$_id' period='$$_period'>detalhes</a><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
                                     name: data_indicators[i].name,
                                     formula: formula,
-                                    hash: "#!/" + getUrlSub(),
+                                    _hash: "#!/" + getUrlSub(),
                                     _url: api_path + "/api/indicator/" + data_indicators[i].id,
                                     _indicator_id: data_indicators[i].id,
-                                    period: data_indicators[i].period,
+                                    _period: data_indicators[i].period,
                                     _id: data_indicators[i].id,
                                     _tr_class: tr_class
                                 });
@@ -6429,15 +6429,15 @@ $(document).ready(function () {
                                     if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1) {
                                         var formula = formataFormula(data_indicators[i].formula, data_variables, data_vvariables);
                                         var tr_class = "folded";
-                                        indicators_table += "<div class='variable $$tr_class' indicator-id='$$indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='$$hash?option=unhide&url=$$url&config_id=$$config_id' class='icone unhide' title='remover da lista de ocultos' alt='remover da lista de ocultos'>mostrar</a></div><div class='clear'></div></div>".render({
+                                        indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='$$_hash?option=unhide&url=$$_url&config_id=$$_config_id' class='icone unhide' title='remover da lista de ocultos' alt='remover da lista de ocultos'>mostrar</a></div><div class='clear'></div></div>".render({
                                             name: data_indicators[i].name,
                                             formula: formula,
-                                            hash: "#!/" + getUrlSub(),
-                                            url: api_path + "/api/indicator/" + data_indicators[i].id,
-                                            indicator_id: data_indicators[i].id,
-                                            period: data_indicators[i].period,
-                                            config_id: data_indicators[i].user_indicator_config.id,
-                                            tr_class: tr_class
+                                            _hash: "#!/" + getUrlSub(),
+                                            _url: api_path + "/api/indicator/" + data_indicators[i].id,
+                                            _indicator_id: data_indicators[i].id,
+
+                                            _config_id: data_indicators[i].user_indicator_config.id,
+                                            _tr_class: tr_class
                                         });
                                         indicators_table += "<div class='clear'></div>";
                                     }

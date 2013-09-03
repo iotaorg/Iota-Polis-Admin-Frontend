@@ -3951,8 +3951,6 @@ $(document).ready(function () {
                                     if ($(this).contents()[0].body.outerHTML) {
                                         var retorno = $(this).contents()[0].body.outerHTML;
                                         retorno = $(retorno).text();
-                                        console.log(retorno);
-
                                         retorno = $.parseJSON(retorno);
                                     } else {
                                         erro = 1;
@@ -3973,16 +3971,20 @@ $(document).ready(function () {
                                     $(clickedButton).attr("is-disabled", 0);
                                 } else {
                                     $(".value_via_file .form-aviso").setWarning({
-                                        msg: "Erro ao enviar arquivo " + file + " (" + retorno.error + ")"
+                                        msg: "Erro ao enviar arquivo $$_file ($$err)".render({
+                                            err: retorno.error,
+                                            _file: file
+                                       })
                                     });
                                     $(clickedButton).html("Enviar");
                                     $(clickedButton).attr("is-disabled", 0);
                                     return;
                                 }
                             } else {
-                                console.log("Erro ao enviar arquivo " + file);
                                 $(".value_via_file .form-aviso").setWarning({
-                                    msg: "Erro ao enviar arquivo " + file
+                                    msg: "Erro ao enviar arquivo $$file".render2({
+                                        file: file
+                                    })
                                 });
                                 $(clickedButton).html("Enviar");
                                 $(clickedButton).attr("is-disabled", 0);

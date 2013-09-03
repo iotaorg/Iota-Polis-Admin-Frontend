@@ -109,13 +109,13 @@ $(document).ready(function () {
             error: function (data) {
                 if (data.responseText) {
                     $("#aviso").setWarning({
-                        msg: "$$error".render({
+                        msg: "$$error".render2({
                             error: $.trataErro($.trataErro(data))
                         })
                     });
                 } else {
                     $("#aviso").setWarning({
-                        msg: "Erro ao fazer login. ($$error)".render({
+                        msg: "Erro ao fazer login. ($$error)".render2({
                             error: data.status
                         })
                     });
@@ -1291,7 +1291,7 @@ $(document).ready(function () {
                                                 success: function (data, textStatus, jqXHR) {
                                                     resetWarnings();
                                                     $("#aviso").setWarning({
-                                                        msg: "Cadastro editado com sucesso.".render({
+                                                        msg: "Cadastro editado com sucesso.".render2({
                                                             codigo: jqXHR.status
                                                         })
                                                     });
@@ -1306,7 +1306,7 @@ $(document).ready(function () {
                                                 },
                                                 error: function (data) {
                                                     $(".form-aviso").setWarning({
-                                                        msg: "Erro ao editar. Já existe valor para esse Período".render({
+                                                        msg: "Erro ao editar. Já existe valor para esse Período".render2({
                                                             erro: $.trataErro(data)
                                                         })
                                                     });
@@ -1344,7 +1344,7 @@ $(document).ready(function () {
                                 switch (data.status) {
                                 case 400:
                                     $(".form-aviso").setWarning({
-                                        msg: "Erro: ($$codigo)".render({
+                                        msg: "Erro: ($$codigo)".render2({
                                             codigo: $.trataErro(data)
                                         })
                                     });
@@ -1499,7 +1499,7 @@ $(document).ready(function () {
                                 switch (data.status) {
                                 case 400:
                                     $(".form-aviso").setWarning({
-                                        msg: "Erro: ($$codigo)".render({
+                                        msg: "Erro: ($$codigo)".render2({
                                             codigo: $.trataErro(data)
                                         })
                                     });
@@ -1581,7 +1581,7 @@ $(document).ready(function () {
                                 data: args,
                                 success: function (data, status, jqXHR) {
                                     $("#aviso").setWarning({
-                                        msg: "Operação efetuada com sucesso.".render({
+                                        msg: "Operação efetuada com sucesso.".render2({
                                             codigo: jqXHR.status
                                         })
                                     });
@@ -1591,7 +1591,7 @@ $(document).ready(function () {
                                     switch (data.status) {
                                     case 400:
                                         $("#aviso").setWarning({
-                                            msg: "Erro ao $$operacao. ($$codigo)".render({
+                                            msg: "Erro ao $$operacao. ($$codigo)".render2({
                                                 operacao: txtOption,
                                                 codigo: $.trataErro(data)
                                             })
@@ -1631,7 +1631,7 @@ $(document).ready(function () {
                             switch (data.status) {
                             case 400:
                                 $("#aviso").setWarning({
-                                    msg: "Erro ao apagar. ($$codigo)".render({
+                                    msg: "Erro ao apagar. ($$codigo)".render2({
                                         codigo: $.trataErro(data)
                                     })
                                 });
@@ -1790,7 +1790,7 @@ $(document).ready(function () {
                                 switch (data.status) {
                                 case 400:
                                     $(".form-aviso").setWarning({
-                                        msg: "Erro: ($$codigo)".render({
+                                        msg: "Erro: ($$codigo)".render2({
                                             codigo: $.trataErro(data)
                                         })
                                     });
@@ -1888,7 +1888,7 @@ $(document).ready(function () {
                                 data: args,
                                 success: function (data, status, jqXHR) {
                                     $("#aviso").setWarning({
-                                        msg: "Operação efetuada com sucesso.".render({
+                                        msg: "Operação efetuada com sucesso.".render2({
                                             codigo: jqXHR.status
                                         })
                                     });
@@ -1896,7 +1896,7 @@ $(document).ready(function () {
                                 },
                                 error: function (data) {
                                     $("#aviso").setWarning({
-                                        msg: "Erro ao $$operacao. ($$erro)".render({
+                                        msg: "Erro ao $$operacao. ($$erro)".render2({
                                             operacao: txtOption,
                                             erro: $.trataErro(data)
                                         })
@@ -2090,7 +2090,7 @@ $(document).ready(function () {
                                 switch (data.status) {
                                 case 400:
                                     $(".form-aviso").setWarning({
-                                        msg: "Erro: ($$codigo)".render({
+                                        msg: "Erro: ($$codigo)".render2({
                                             codigo: $.trataErro(data)
                                         })
                                     });
@@ -2158,7 +2158,7 @@ $(document).ready(function () {
                                 data: args,
                                 success: function (data, status, jqXHR) {
                                     $("#aviso").setWarning({
-                                        msg: "Operação efetuada com sucesso.".render({
+                                        msg: "Operação efetuada com sucesso.".render2({
                                             codigo: jqXHR.status
                                         })
                                     });
@@ -2168,7 +2168,7 @@ $(document).ready(function () {
                                     switch (data.status) {
                                     case 400:
                                         $("#aviso").setWarning({
-                                            msg: "Erro ao $$operacao. ($$codigo)".render({
+                                            msg: "Erro ao $$operacao. ($$codigo)".render2({
                                                 operacao: txtOption,
                                                 codigo: $.trataErro(data)
                                             })
@@ -2298,7 +2298,7 @@ $(document).ready(function () {
                                 switch (data.status) {
                                 case 400:
                                     $(".form-aviso").setWarning({
-                                        msg: "Erro: ($$codigo)".render({
+                                        msg: "Erro: ($$codigo)".render2({
                                             codigo: $.trataErro(data)
                                         })
                                     });
@@ -2358,7 +2358,7 @@ $(document).ready(function () {
                                 data: args,
                                 success: function (data, status, jqXHR) {
                                     $("#aviso").setWarning({
-                                        msg: "Operação efetuada com sucesso.".render({
+                                        msg: "Operação efetuada com sucesso.".render2({
                                             codigo: jqXHR.status
                                         })
                                     });
@@ -2368,7 +2368,7 @@ $(document).ready(function () {
                                     switch (data.status) {
                                     case 400:
                                         $("#aviso").setWarning({
-                                            msg: "Erro ao $$operacao. ($$codigo)".render({
+                                            msg: "Erro ao $$operacao. ($$codigo)".render2({
                                                 operacao: txtOption,
                                                 codigo: $.trataErro(data)
                                             })
@@ -2468,7 +2468,7 @@ $(document).ready(function () {
                                 switch (data.status) {
                                 case 400:
                                     $(".form-aviso").setWarning({
-                                        msg: "Erro: ($$codigo)".render({
+                                        msg: "Erro: ($$codigo)".render2({
                                             codigo: $.trataErro(data)
                                         })
                                     });
@@ -2514,7 +2514,7 @@ $(document).ready(function () {
                                 data: args,
                                 success: function (data, status, jqXHR) {
                                     $("#aviso").setWarning({
-                                        msg: "Operação efetuada com sucesso.".render({
+                                        msg: "Operação efetuada com sucesso.".render2({
                                             codigo: jqXHR.status
                                         })
                                     });
@@ -2524,7 +2524,7 @@ $(document).ready(function () {
                                     switch (data.status) {
                                     case 400:
                                         $("#aviso").setWarning({
-                                            msg: "Erro ao $$operacao. ($$codigo)".render({
+                                            msg: "Erro ao $$operacao. ($$codigo)".render2({
                                                 operacao: txtOption,
                                                 codigo: $.trataErro(data)
                                             })
@@ -2654,7 +2654,7 @@ $(document).ready(function () {
                                 switch (data.status) {
                                 case 400:
                                     $(".form-aviso").setWarning({
-                                        msg: "Erro: ($$codigo)".render({
+                                        msg: "Erro: ($$codigo)".render2({
                                             codigo: $.trataErro(data)
                                         })
                                     });
@@ -2714,7 +2714,7 @@ $(document).ready(function () {
                                 data: args,
                                 success: function (data, status, jqXHR) {
                                     $("#aviso").setWarning({
-                                        msg: "Operação efetuada com sucesso.".render({
+                                        msg: "Operação efetuada com sucesso.".render2({
                                             codigo: jqXHR.status
                                         })
                                     });
@@ -2724,7 +2724,7 @@ $(document).ready(function () {
                                     switch (data.status) {
                                     case 400:
                                         $("#aviso").setWarning({
-                                            msg: "Erro ao $$operacao. ($$codigo)".render({
+                                            msg: "Erro ao $$operacao. ($$codigo)".render2({
                                                 operacao: txtOption,
                                                 codigo: $.trataErro(data)
                                             })
@@ -2827,7 +2827,7 @@ $(document).ready(function () {
                                 switch (data.status) {
                                 case 400:
                                     $(".form-aviso").setWarning({
-                                        msg: "Erro: ($$codigo)".render({
+                                        msg: "Erro: ($$codigo)".render2({
                                             codigo: $.trataErro(data)
                                         })
                                     });
@@ -2877,7 +2877,7 @@ $(document).ready(function () {
                                 data: args,
                                 success: function (data, status, jqXHR) {
                                     $("#aviso").setWarning({
-                                        msg: "Operação efetuada com sucesso.".render({
+                                        msg: "Operação efetuada com sucesso.".render2({
                                             codigo: jqXHR.status
                                         })
                                     });
@@ -2887,7 +2887,7 @@ $(document).ready(function () {
                                     switch (data.status) {
                                     case 400:
                                         $("#aviso").setWarning({
-                                            msg: "Erro ao $$operacao. ($$codigo)".render({
+                                            msg: "Erro ao $$operacao. ($$codigo)".render2({
                                                 codigo: $.trataErro(data),
                                                 operacao: txtOption
                                             })
@@ -3066,7 +3066,7 @@ $(document).ready(function () {
                                     },
                                     error: function (data) {
                                         $("#aviso").setWarning({
-                                            msg: "Erro ao atualizar configuração. ($$codigo)".render({
+                                            msg: "Erro ao atualizar configuração. ($$codigo)".render2({
                                                 codigo: $.trataErro(data)
                                             })
                                         });
@@ -3190,7 +3190,7 @@ $(document).ready(function () {
                                 switch (data.status) {
                                 case 400:
                                     $(".form-aviso").setWarning({
-                                        msg: "Erro: ($$codigo)".render({
+                                        msg: "Erro: ($$codigo)".render2({
                                             codigo: $.trataErro(data)
                                         })
                                     });
@@ -3275,7 +3275,7 @@ $(document).ready(function () {
                                 data: args,
                                 success: function (data, status, jqXHR) {
                                     $("#aviso").setWarning({
-                                        msg: "Operação efetuada com sucesso.".render({
+                                        msg: "Operação efetuada com sucesso.".render2({
                                             codigo: jqXHR.status
                                         })
                                     });
@@ -3285,7 +3285,7 @@ $(document).ready(function () {
                                     switch (data.status) {
                                     case 400:
                                         $("#aviso").setWarning({
-                                            msg: "Erro ao $$operacao. ($$codigo)".render({
+                                            msg: "Erro ao $$operacao. ($$codigo)".render2({
                                                 codigo: $.trataErro(data),
                                                 operacao: txtOption
                                             })
@@ -3483,7 +3483,7 @@ $(document).ready(function () {
                                                         },
                                                         error: function (data) {
                                                             $("#aviso").setWarning({
-                                                                msg: "Erro ao atualizar configuração. ($$codigo)".render({
+                                                                msg: "Erro ao atualizar configuração. ($$codigo)".render2({
                                                                     codigo: $.trataErro(data)
                                                                 })
                                                             });
@@ -3500,7 +3500,7 @@ $(document).ready(function () {
                                     },
                                     error: function (data) {
                                         $("#aviso").setWarning({
-                                            msg: "Erro ao carregar ($$codigo)".render({
+                                            msg: "Erro ao carregar ($$codigo)".render2({
                                                 codigo: $.trataErro(data)
                                             })
                                         });
@@ -3748,7 +3748,7 @@ $(document).ready(function () {
                                             success: function (data, textStatus, jqXHR) {
                                                 resetWarnings();
                                                 $("#aviso").setWarning({
-                                                    msg: "Cadastro editado com sucesso.".render({
+                                                    msg: "Cadastro editado com sucesso.".render2({
                                                         codigo: jqXHR.status
                                                     })
                                                 });
@@ -3763,7 +3763,7 @@ $(document).ready(function () {
                                             },
                                             error: function (data) {
                                                 $(".form-aviso").setWarning({
-                                                    msg: "Erro ao editar. Já existe valor para esse Período".render({
+                                                    msg: "Erro ao editar. Já existe valor para esse Período".render2({
                                                         erro: $.trataErro(data)
                                                     })
                                                 });
@@ -3800,7 +3800,7 @@ $(document).ready(function () {
                             switch (data.status) {
                             case 400:
                                 $(".form-aviso").setWarning({
-                                    msg: "Erro: ($$codigo)".render({
+                                    msg: "Erro: ($$codigo)".render2({
                                         codigo: $.trataErro(data)
                                     })
                                 });
@@ -3979,7 +3979,7 @@ $(document).ready(function () {
                                     $(clickedButton).attr("is-disabled", 0);
                                 } else {
                                     $(".value_via_file .form-aviso").setWarning({
-                                        msg: "Erro ao enviar arquivo $$_file ($$err)".render({
+                                        msg: "Erro ao enviar arquivo $$_file ($$err)".render2({
                                             err: retorno.error,
                                             _file: file
                                         })
@@ -4139,7 +4139,7 @@ $(document).ready(function () {
                                         data: args,
                                         success: function (data, status, jqXHR) {
                                             $("#aviso").setWarning({
-                                                msg: "Registro atualizado com sucesso.".render({
+                                                msg: "Registro atualizado com sucesso.".render2({
                                                     codigo: jqXHR.status
                                                 })
                                             });
@@ -4148,7 +4148,7 @@ $(document).ready(function () {
                                             switch (data.status) {
                                             case 400:
                                                 $("#aviso").setWarning({
-                                                    msg: "Erro ao atualizar. ($$codigo)".render({
+                                                    msg: "Erro ao atualizar. ($$codigo)".render2({
                                                         codigo: $.trataErro(data)
                                                     })
                                                 });
@@ -4162,7 +4162,7 @@ $(document).ready(function () {
                             },
                             error: function (data) {
                                 $("#aviso").setWarning({
-                                    msg: "Erro ao carregar ($$codigo)".render({
+                                    msg: "Erro ao carregar ($$codigo)".render2({
                                         codigo: $.trataErro(data)
                                     })
                                 });
@@ -4252,7 +4252,7 @@ $(document).ready(function () {
                             },
                             error: function (data) {
                                 $("#aviso").setWarning({
-                                    msg: "Erro ao carregar ($$codigo)".render({
+                                    msg: "Erro ao carregar ($$codigo)".render2({
                                         codigo: $.trataErro(data)
                                     })
                                 });
@@ -4513,7 +4513,7 @@ $(document).ready(function () {
                             },
                             error: function (data) {
                                 $("#aviso").setWarning({
-                                    msg: "Erro ao enviar. ($$codigo)".render({
+                                    msg: "Erro ao enviar. ($$codigo)".render2({
                                         codigo: $.trataErro(data)
                                     })
                                 });
@@ -4603,7 +4603,7 @@ $(document).ready(function () {
                                 switch (data.status) {
                                 case 400:
                                     $(".form-aviso").setWarning({
-                                        msg: "Erro: ($$codigo)".render({
+                                        msg: "Erro: ($$codigo)".render2({
                                             codigo: $.trataErro(data)
                                         })
                                     });
@@ -4647,7 +4647,7 @@ $(document).ready(function () {
                                 data: args,
                                 success: function (data, status, jqXHR) {
                                     $("#aviso").setWarning({
-                                        msg: "Cadastro efetuado com sucesso.".render({
+                                        msg: "Cadastro efetuado com sucesso.".render2({
                                             codigo: jqXHR.status
                                         })
                                     });
@@ -4657,7 +4657,7 @@ $(document).ready(function () {
                                     switch (data.status) {
                                     case 400:
                                         $("#aviso").setWarning({
-                                            msg: "Erro ao cadastrar. ($$codigo)".render({
+                                            msg: "Erro ao cadastrar. ($$codigo)".render2({
                                                 codigo: $.trataErro(data)
                                             })
                                         });
@@ -4908,7 +4908,7 @@ $(document).ready(function () {
                         },
                         error: function (data) {
                             $("#aviso").setWarning({
-                                msg: "Erro ao carregar ($$codigo)".render({
+                                msg: "Erro ao carregar ($$codigo)".render2({
                                     codigo: $.trataErro(data)
                                 })
                             });
@@ -5719,7 +5719,7 @@ $(document).ready(function () {
                                         });
 
                                         $("#aviso").setWarning({
-                                            msg: "Cadastro efetuado com sucesso.".render({
+                                            msg: "Cadastro efetuado com sucesso.".render2({
                                                 codigo: jqXHR.status
                                             })
                                         });
@@ -5729,7 +5729,7 @@ $(document).ready(function () {
                                         switch (data.status) {
                                         case 400:
                                             $("#aviso").setWarning({
-                                                msg: "Erro ao cadastrar. ($$codigo)".render({
+                                                msg: "Erro ao cadastrar. ($$codigo)".render2({
                                                     codigo: $.trataErro(data)
                                                 })
                                             });
@@ -5897,7 +5897,7 @@ $(document).ready(function () {
                                             },
                                             error: function (data) {
                                                 $("#aviso").setWarning({
-                                                    msg: "Erro ao carregar ($$codigo)".render({
+                                                    msg: "Erro ao carregar ($$codigo)".render2({
                                                         codigo: $.trataErro(data)
                                                     })
                                                 });
@@ -5912,7 +5912,7 @@ $(document).ready(function () {
                                 switch (data.status) {
                                 case 400:
                                     $(".form-aviso").setWarning({
-                                        msg: "Erro: ($$codigo)".render({
+                                        msg: "Erro: ($$codigo)".render2({
                                             codigo: $.trataErro(data)
                                         })
                                     });
@@ -6218,7 +6218,7 @@ $(document).ready(function () {
                                             data: args
                                         });
                                         $("#aviso").setWarning({
-                                            msg: "Cadastro editado com sucesso.".render({
+                                            msg: "Cadastro editado com sucesso.".render2({
                                                 codigo: jqXHR.status
                                             })
                                         });
@@ -6227,7 +6227,7 @@ $(document).ready(function () {
                                     },
                                     error: function (data) {
                                         $(".form-aviso").setWarning({
-                                            msg: "Erro ao editar. ($$erro)".render({
+                                            msg: "Erro ao editar. ($$erro)".render2({
                                                 erro: $.trataErro(data)
                                             })
                                         });
@@ -7528,7 +7528,7 @@ $(document).ready(function () {
                                                                 },
                                                                 error: function (data) {
                                                                     $(".filter_result .form-aviso").setWarning({
-                                                                        msg: "Erro ao editar. ($$erro)".render({
+                                                                        msg: "Erro ao editar. ($$erro)".render2({
                                                                             erro: data.statusText
                                                                         })
                                                                     });
@@ -7600,7 +7600,7 @@ $(document).ready(function () {
                                                                         },
                                                                         error: function (data) {
                                                                             $(".filter_result .form-aviso").setWarning({
-                                                                                msg: "Erro ao editar. ($$erro)".render({
+                                                                                msg: "Erro ao editar. ($$erro)".render2({
                                                                                     erro: $.trataErro(data)
                                                                                 })
                                                                             });
@@ -7665,7 +7665,7 @@ $(document).ready(function () {
                                                                 data: args,
                                                                 success: function (data, textStatus, jqXHR) {
                                                                     $("#aviso").setWarning({
-                                                                        msg: "Cadastro editado com sucesso.".render({
+                                                                        msg: "Cadastro editado com sucesso.".render2({
                                                                             codigo: jqXHR.status
                                                                         })
                                                                     });
@@ -7680,7 +7680,7 @@ $(document).ready(function () {
                                                                 },
                                                                 error: function (data) {
                                                                     $(".filter_result .form-aviso").setWarning({
-                                                                        msg: "Valores enviados, mas ocorreu um erro ao enviar Justificativa/Meta. ($$erro)".render({
+                                                                        msg: "Valores enviados, mas ocorreu um erro ao enviar Justificativa/Meta. ($$erro)".render2({
                                                                             erro: $.trataErro(data)
                                                                         })
                                                                     });
@@ -7690,7 +7690,7 @@ $(document).ready(function () {
                                                         } else {
 
                                                             $("#aviso").setWarning({
-                                                                msg: "Cadastro editado com sucesso.".render({
+                                                                msg: "Cadastro editado com sucesso.".render2({
                                                                     codigo: jqXHR.status
                                                                 })
                                                             });
@@ -7716,7 +7716,7 @@ $(document).ready(function () {
                                     },
                                     error: function (data) {
                                         $("#aviso").setWarning({
-                                            msg: "Erro ao carregar ($$codigo)".render({
+                                            msg: "Erro ao carregar ($$codigo)".render2({
                                                 codigo: $.trataErro(data)
                                             })
                                         });
@@ -7750,7 +7750,7 @@ $(document).ready(function () {
                         data: args,
                         success: function (data, textStatus, jqXHR) {
                             $("#aviso").setWarning({
-                                msg: "Informação salva com sucesso.".render({
+                                msg: "Informação salva com sucesso.".render2({
                                     codigo: jqXHR.status
                                 })
                             });
@@ -7759,7 +7759,7 @@ $(document).ready(function () {
                         },
                         error: function (data) {
                             $("#aviso").setWarning({
-                                msg: "Erro ao salvar. ($$erro)".render({
+                                msg: "Erro ao salvar. ($$erro)".render2({
                                     erro: $.trataErro(data)
                                 })
                             });
@@ -7855,7 +7855,7 @@ $(document).ready(function () {
                         },
                         error: function (data) {
                             $("#aviso").setWarning({
-                                msg: "Erro ao carregar ($$codigo)".render({
+                                msg: "Erro ao carregar ($$codigo)".render2({
                                     codigo: $.trataErro(data)
                                 })
                             });
@@ -7989,7 +7989,7 @@ $(document).ready(function () {
                                 switch (data.status) {
                                 case 400:
                                     $(".form-aviso").setWarning({
-                                        msg: "Erro: ($$codigo)".render({
+                                        msg: "Erro: ($$codigo)".render2({
                                             codigo: $.trataErro(data)
                                         })
                                     });
@@ -8087,7 +8087,7 @@ $(document).ready(function () {
                                 },
                                 error: function (data) {
                                     $(".form-aviso").setWarning({
-                                        msg: "Erro ao editar. ($$erro)".render({
+                                        msg: "Erro ao editar. ($$erro)".render2({
                                             erro: $.trataErro(data)
                                         })
                                     });
@@ -8371,7 +8371,7 @@ $(document).ready(function () {
                                 switch (data.status) {
                                 case 400:
                                     $(".form-aviso").setWarning({
-                                        msg: "Erro: ($$codigo)".render({
+                                        msg: "Erro: ($$codigo)".render2({
                                             codigo: $.trataErro(data)
                                         })
                                     });
@@ -8423,7 +8423,7 @@ $(document).ready(function () {
                                 data: args,
                                 success: function (data, status, jqXHR) {
                                     $("#aviso").setWarning({
-                                        msg: "Operação efetuada com sucesso.".render({
+                                        msg: "Operação efetuada com sucesso.".render2({
                                             codigo: jqXHR.status
                                         })
                                     });
@@ -8433,7 +8433,7 @@ $(document).ready(function () {
                                     switch (data.status) {
                                     case 400:
                                         $("#aviso").setWarning({
-                                            msg: "Erro ao $$operacao. ($$codigo)".render({
+                                            msg: "Erro ao $$operacao. ($$codigo)".render2({
                                                 operacao: txtOption,
                                                 codigo: $.trataErro(data)
                                             })
@@ -8540,7 +8540,7 @@ $(document).ready(function () {
                                 switch (data.status) {
                                 case 400:
                                     $(".form-aviso").setWarning({
-                                        msg: "Erro: ($$codigo)".render({
+                                        msg: "Erro: ($$codigo)".render2({
                                             codigo: $.trataErro(data)
                                         })
                                     });
@@ -8620,7 +8620,7 @@ $(document).ready(function () {
                                 data: args,
                                 success: function (data, status, jqXHR) {
                                     $("#aviso").setWarning({
-                                        msg: "Operação efetuada com sucesso.".render({
+                                        msg: "Operação efetuada com sucesso.".render2({
                                             codigo: jqXHR.status
                                         })
                                     });
@@ -8630,7 +8630,7 @@ $(document).ready(function () {
                                     switch (data.status) {
                                     case 400:
                                         $("#aviso").setWarning({
-                                            msg: "Erro ao $$operacao. ($$codigo)".render({
+                                            msg: "Erro ao $$operacao. ($$codigo)".render2({
                                                 operacao: txtOption,
                                                 codigo: $.trataErro(data)
                                             })
@@ -8768,7 +8768,7 @@ $(document).ready(function () {
                         },
                         error: function (data) {
                             $("#aviso").setWarning({
-                                msg: "Erro ao carregar ($$codigo)".render({
+                                msg: "Erro ao carregar ($$codigo)".render2({
                                     codigo: $.trataErro(data)
                                 })
                             });
@@ -8804,7 +8804,7 @@ $(document).ready(function () {
                                 switch (data.status) {
                                 case 400:
                                     $(".form-aviso").setWarning({
-                                        msg: "Erro: ($$codigo)".render({
+                                        msg: "Erro: ($$codigo)".render2({
                                             codigo: $.trataErro(data)
                                         })
                                     });
@@ -8943,7 +8943,7 @@ $(document).ready(function () {
                                 data: args,
                                 success: function (data, status, jqXHR) {
                                     $("#aviso").setWarning({
-                                        msg: "Operação efetuada com sucesso.".render({
+                                        msg: "Operação efetuada com sucesso.".render2({
                                             codigo: jqXHR.status
                                         })
                                     });
@@ -8953,7 +8953,7 @@ $(document).ready(function () {
                                     switch (data.status) {
                                     case 400:
                                         $("#aviso").setWarning({
-                                            msg: "Erro ao $$operacao. ($$codigo)".render({
+                                            msg: "Erro ao $$operacao. ($$codigo)".render2({
                                                 operacao: txtOption,
                                                 codigo: $.trataErro(data)
                                             })
@@ -9137,7 +9137,7 @@ $(document).ready(function () {
                                 switch (data.status) {
                                 case 400:
                                     $(".form-aviso").setWarning({
-                                        msg: "Erro: ($$codigo)".render({
+                                        msg: "Erro: ($$codigo)".render2({
                                             codigo: $.trataErro(data)
                                         })
                                     });
@@ -9241,7 +9241,7 @@ $(document).ready(function () {
                                 data: args,
                                 success: function (data, status, jqXHR) {
                                     $("#aviso").setWarning({
-                                        msg: "Operação efetuada com sucesso.".render({
+                                        msg: "Operação efetuada com sucesso.".render2({
                                             codigo: jqXHR.status
                                         })
                                     });
@@ -9251,7 +9251,7 @@ $(document).ready(function () {
                                     switch (data.status) {
                                     case 400:
                                         $("#aviso").setWarning({
-                                            msg: "Erro ao $$operacao. ($$codigo)".render({
+                                            msg: "Erro ao $$operacao. ($$codigo)".render2({
                                                 operacao: txtOption,
                                                 codigo: $.trataErro(data)
                                             })
@@ -9802,7 +9802,7 @@ $(document).ready(function () {
                         switch (data.status) {
                         case 400:
                             $(".form-aviso").setWarning({
-                                msg: "Erro: ($$codigo)".render({
+                                msg: "Erro: ($$codigo)".render2({
                                     codigo: $.trataErro(data)
                                 })
                             });
@@ -9931,7 +9931,7 @@ $(document).ready(function () {
                                     $(clickedButton).html("Salvar");
                                     $(clickedButton).attr("is-disabled", 0);
                                     $("#aviso").setWarning({
-                                        msg: "Preferências salvas.".render({
+                                        msg: "Preferências salvas.".render2({
                                             codigo: jqXHR.status
                                         })
                                     });
@@ -9939,7 +9939,7 @@ $(document).ready(function () {
                                 },
                                 error: function (data) {
                                     $(".form-aviso").setWarning({
-                                        msg: "Erro ao editar. ($$erro)".render({
+                                        msg: "Erro ao editar. ($$erro)".render2({
                                             erro: $.trataErro(data)
                                         })
                                     });

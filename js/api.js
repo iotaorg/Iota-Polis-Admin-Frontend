@@ -3403,7 +3403,7 @@ $(document).ready(function () {
                                     }),
                                     success: function (data, textStatus, jqXHR) {
                                         $.each(data.variables, function (index, value) {
-                                            $("#dashboard-content .content #results tbody").append($("<tr><td>$$nome</td><td>$$_id</td><td>$$url</td></tr>".render({
+                                            $("#dashboard-content .content #results tbody").append($("<tr><td>$$nome</td><td>$$_id</td><td>$$_id</td></tr>".render({
                                                 nome: data.variables[index].name,
                                                 apelido: data.variables[index].cognomen,
                                                 _id: data.variables[index].variable_id

@@ -108,7 +108,7 @@ $(document).ready(function () {
                 if (data.responseText) {
                     $("#aviso").setWarning({
                         msg: "$$error".render({
-                            error: $.trataErro($.parseJSON(data.responseText).error)
+                            error: $.trataErro($.trataErro(data))
                         })
                     });
                 } else {
@@ -199,7 +199,7 @@ $(document).ready(function () {
                     case 400:
                         $("#aviso").setWarning({
                             msg: "Erro: ($$codigo)".render2({
-                                codigo: $.parseJSON(data.responseText).error
+                                codigo: $.trataErro(data)
                             })
                         });
                         break;
@@ -640,7 +640,7 @@ $(document).ready(function () {
                     error: function (data) {
                         $("#aviso").setWarning({
                             msg: "Erro na operação. ($$codigo)".render2({
-                                codigo: $.parseJSON(data.responseText).error
+                                codigo: $.trataErro(data)
                             })
                         });
                     }
@@ -1042,7 +1042,7 @@ $(document).ready(function () {
                                         error: function (data) {
                                             $("#aviso").setWarning({
                                                 msg: "Erro ao carregar ($$codigo)".render2({
-                                                    codigo: $.parseJSON(data.responseText).error
+                                                    codigo: $.trataErro(data)
                                                 })
                                             });
                                         }
@@ -1302,7 +1302,7 @@ $(document).ready(function () {
                                                 error: function (data) {
                                                     $(".form-aviso").setWarning({
                                                         msg: "Erro ao editar. Já existe valor para esse Período".render({
-                                                            erro: $.parseJSON(data.responseText).error
+                                                            erro: $.trataErro(data)
                                                         })
                                                     });
                                                     $("#dashboard-content .content .botao-form[ref='cancelar']").html("Voltar");
@@ -1340,7 +1340,7 @@ $(document).ready(function () {
                                 case 400:
                                     $(".form-aviso").setWarning({
                                         msg: "Erro: ($$codigo)".render({
-                                            codigo: $.parseJSON(data.responseText).error
+                                            codigo: $.trataErro(data)
                                         })
                                     });
                                     break;
@@ -1495,7 +1495,7 @@ $(document).ready(function () {
                                 case 400:
                                     $(".form-aviso").setWarning({
                                         msg: "Erro: ($$codigo)".render({
-                                            codigo: $.parseJSON(data.responseText).error
+                                            codigo: $.trataErro(data)
                                         })
                                     });
                                     break;
@@ -1588,7 +1588,7 @@ $(document).ready(function () {
                                         $("#aviso").setWarning({
                                             msg: "Erro ao $$operacao. ($$codigo)".render({
                                                 operacao: txtOption,
-                                                codigo: $.parseJSON(data.responseText).error
+                                                codigo: $.trataErro(data)
                                             })
                                         });
                                         break;
@@ -1627,7 +1627,7 @@ $(document).ready(function () {
                             case 400:
                                 $("#aviso").setWarning({
                                     msg: "Erro ao apagar. ($$codigo)".render({
-                                        codigo: $.parseJSON(data.responseText).error
+                                        codigo: $.trataErro(data)
                                     })
                                 });
                                 break;
@@ -1786,7 +1786,7 @@ $(document).ready(function () {
                                 case 400:
                                     $(".form-aviso").setWarning({
                                         msg: "Erro: ($$codigo)".render({
-                                            codigo: $.parseJSON(data.responseText).error
+                                            codigo: $.trataErro(data)
                                         })
                                     });
                                     break;
@@ -2086,7 +2086,7 @@ $(document).ready(function () {
                                 case 400:
                                     $(".form-aviso").setWarning({
                                         msg: "Erro: ($$codigo)".render({
-                                            codigo: $.parseJSON(data.responseText).error
+                                            codigo: $.trataErro(data)
                                         })
                                     });
                                     break;
@@ -2165,7 +2165,7 @@ $(document).ready(function () {
                                         $("#aviso").setWarning({
                                             msg: "Erro ao $$operacao. ($$codigo)".render({
                                                 operacao: txtOption,
-                                                codigo: $.parseJSON(data.responseText).error
+                                                codigo: $.trataErro(data)
                                             })
                                         });
                                         break;
@@ -2294,7 +2294,7 @@ $(document).ready(function () {
                                 case 400:
                                     $(".form-aviso").setWarning({
                                         msg: "Erro: ($$codigo)".render({
-                                            codigo: $.parseJSON(data.responseText).error
+                                            codigo: $.trataErro(data)
                                         })
                                     });
                                     break;
@@ -2365,7 +2365,7 @@ $(document).ready(function () {
                                         $("#aviso").setWarning({
                                             msg: "Erro ao $$operacao. ($$codigo)".render({
                                                 operacao: txtOption,
-                                                codigo: $.parseJSON(data.responseText).error
+                                                codigo: $.trataErro(data)
                                             })
                                         });
                                         break;
@@ -2464,7 +2464,7 @@ $(document).ready(function () {
                                 case 400:
                                     $(".form-aviso").setWarning({
                                         msg: "Erro: ($$codigo)".render({
-                                            codigo: $.parseJSON(data.responseText).error
+                                            codigo: $.trataErro(data)
                                         })
                                     });
                                     break;
@@ -2521,7 +2521,7 @@ $(document).ready(function () {
                                         $("#aviso").setWarning({
                                             msg: "Erro ao $$operacao. ($$codigo)".render({
                                                 operacao: txtOption,
-                                                codigo: $.parseJSON(data.responseText).error
+                                                codigo: $.trataErro(data)
                                             })
                                         });
                                         break;
@@ -2650,7 +2650,7 @@ $(document).ready(function () {
                                 case 400:
                                     $(".form-aviso").setWarning({
                                         msg: "Erro: ($$codigo)".render({
-                                            codigo: $.parseJSON(data.responseText).error
+                                            codigo: $.trataErro(data)
                                         })
                                     });
                                     break;
@@ -2721,7 +2721,7 @@ $(document).ready(function () {
                                         $("#aviso").setWarning({
                                             msg: "Erro ao $$operacao. ($$codigo)".render({
                                                 operacao: txtOption,
-                                                codigo: $.parseJSON(data.responseText).error
+                                                codigo: $.trataErro(data)
                                             })
                                         });
                                         break;
@@ -2823,7 +2823,7 @@ $(document).ready(function () {
                                 case 400:
                                     $(".form-aviso").setWarning({
                                         msg: "Erro: ($$codigo)".render({
-                                            codigo: $.parseJSON(data.responseText).error
+                                            codigo: $.trataErro(data)
                                         })
                                     });
                                     break;
@@ -2883,7 +2883,7 @@ $(document).ready(function () {
                                     case 400:
                                         $("#aviso").setWarning({
                                             msg: "Erro ao $$operacao. ($$codigo)".render({
-                                                codigo: $.parseJSON(data.responseText).error,
+                                                codigo: $.trataErro(data),
                                                 operacao: txtOption
                                             })
                                         });
@@ -3062,7 +3062,7 @@ $(document).ready(function () {
                                     error: function (data) {
                                         $("#aviso").setWarning({
                                             msg: "Erro ao atualizar configuração. ($$codigo)".render({
-                                                codigo: $.parseJSON(data.responseText).error
+                                                codigo: $.trataErro(data)
                                             })
                                         });
                                     }
@@ -3186,7 +3186,7 @@ $(document).ready(function () {
                                 case 400:
                                     $(".form-aviso").setWarning({
                                         msg: "Erro: ($$codigo)".render({
-                                            codigo: $.parseJSON(data.responseText).error
+                                            codigo: $.trataErro(data)
                                         })
                                     });
                                     break;
@@ -3281,7 +3281,7 @@ $(document).ready(function () {
                                     case 400:
                                         $("#aviso").setWarning({
                                             msg: "Erro ao $$operacao. ($$codigo)".render({
-                                                codigo: $.parseJSON(data.responseText).error,
+                                                codigo: $.trataErro(data),
                                                 operacao: txtOption
                                             })
                                         });
@@ -3398,10 +3398,10 @@ $(document).ready(function () {
                                     }),
                                     success: function (data, textStatus, jqXHR) {
                                         $.each(data.variables, function (index, value) {
-                                            $("#dashboard-content .content #results tbody").append($("<tr><td>$$nome</td><td>$$url</td><td>$$url</td></tr>".render({
+                                            $("#dashboard-content .content #results tbody").append($("<tr><td>$$nome</td><td>$$_id</td><td>$$url</td></tr>".render({
                                                 nome: data.variables[index].name,
                                                 apelido: data.variables[index].cognomen,
-                                                url: data.variables[index].variable_id
+                                                _id: data.variables[index].variable_id
                                             })));
                                         });
 
@@ -3479,7 +3479,7 @@ $(document).ready(function () {
                                                         error: function (data) {
                                                             $("#aviso").setWarning({
                                                                 msg: "Erro ao atualizar configuração. ($$codigo)".render({
-                                                                    codigo: $.parseJSON(data.responseText).error
+                                                                    codigo: $.trataErro(data)
                                                                 })
                                                             });
                                                             toggleAllCheckboxes();
@@ -3496,7 +3496,7 @@ $(document).ready(function () {
                                     error: function (data) {
                                         $("#aviso").setWarning({
                                             msg: "Erro ao carregar ($$codigo)".render({
-                                                codigo: $.parseJSON(data.responseText).error
+                                                codigo: $.trataErro(data)
                                             })
                                         });
                                     }
@@ -3756,7 +3756,7 @@ $(document).ready(function () {
                                             error: function (data) {
                                                 $(".form-aviso").setWarning({
                                                     msg: "Erro ao editar. Já existe valor para esse Período".render({
-                                                        erro: $.parseJSON(data.responseText).error
+                                                        erro: $.trataErro(data)
                                                     })
                                                 });
                                                 $("#dashboard-content .content .botao-form[ref='cancelar']").html("Voltar");
@@ -3793,7 +3793,7 @@ $(document).ready(function () {
                             case 400:
                                 $(".form-aviso").setWarning({
                                     msg: "Erro: ($$codigo)".render({
-                                        codigo: $.parseJSON(data.responseText).error
+                                        codigo: $.trataErro(data)
                                     })
                                 });
                                 break;
@@ -4138,7 +4138,7 @@ $(document).ready(function () {
                                             case 400:
                                                 $("#aviso").setWarning({
                                                     msg: "Erro ao atualizar. ($$codigo)".render({
-                                                        codigo: $.parseJSON(data.responseText).error
+                                                        codigo: $.trataErro(data)
                                                     })
                                                 });
                                                 break;
@@ -4152,7 +4152,7 @@ $(document).ready(function () {
                             error: function (data) {
                                 $("#aviso").setWarning({
                                     msg: "Erro ao carregar ($$codigo)".render({
-                                        codigo: $.parseJSON(data.responseText).error
+                                        codigo: $.trataErro(data)
                                     })
                                 });
                             }
@@ -4242,7 +4242,7 @@ $(document).ready(function () {
                             error: function (data) {
                                 $("#aviso").setWarning({
                                     msg: "Erro ao carregar ($$codigo)".render({
-                                        codigo: $.parseJSON(data.responseText).error
+                                        codigo: $.trataErro(data)
                                     })
                                 });
                             }
@@ -4503,7 +4503,7 @@ $(document).ready(function () {
                             error: function (data) {
                                 $("#aviso").setWarning({
                                     msg: "Erro ao enviar. ($$codigo)".render({
-                                        codigo: $.parseJSON(data.responseText).error
+                                        codigo: $.trataErro(data)
                                     })
                                 });
                                 $("#steps-years").fadeIn();
@@ -4593,7 +4593,7 @@ $(document).ready(function () {
                                 case 400:
                                     $(".form-aviso").setWarning({
                                         msg: "Erro: ($$codigo)".render({
-                                            codigo: $.parseJSON(data.responseText).error
+                                            codigo: $.trataErro(data)
                                         })
                                     });
                                     break;
@@ -4647,7 +4647,7 @@ $(document).ready(function () {
                                     case 400:
                                         $("#aviso").setWarning({
                                             msg: "Erro ao cadastrar. ($$codigo)".render({
-                                                codigo: $.parseJSON(data.responseText).error
+                                                codigo: $.trataErro(data)
                                             })
                                         });
                                         break;
@@ -4897,7 +4897,7 @@ $(document).ready(function () {
                         error: function (data) {
                             $("#aviso").setWarning({
                                 msg: "Erro ao carregar ($$codigo)".render({
-                                    codigo: $.parseJSON(data.responseText).error
+                                    codigo: $.trataErro(data)
                                 })
                             });
                         }
@@ -5168,7 +5168,7 @@ $(document).ready(function () {
                         error: function (data) {
                             $("#aviso").setWarning({
                                 msg: "Erro ao carregar ($$codigo)".render({
-                                    codigo: $.parseJSON(data.responseText).error
+                                    codigo: $.trataErro(data)
                                 })
                             });
                         }
@@ -5718,7 +5718,7 @@ $(document).ready(function () {
                                         case 400:
                                             $("#aviso").setWarning({
                                                 msg: "Erro ao cadastrar. ($$codigo)".render({
-                                                    codigo: $.parseJSON(data.responseText).error
+                                                    codigo: $.trataErro(data)
                                                 })
                                             });
                                             break;
@@ -5886,7 +5886,7 @@ $(document).ready(function () {
                                             error: function (data) {
                                                 $("#aviso").setWarning({
                                                     msg: "Erro ao carregar ($$codigo)".render({
-                                                        codigo: $.parseJSON(data.responseText).error
+                                                        codigo: $.trataErro(data)
                                                     })
                                                 });
                                             }
@@ -5901,7 +5901,7 @@ $(document).ready(function () {
                                 case 400:
                                     $(".form-aviso").setWarning({
                                         msg: "Erro: ($$codigo)".render({
-                                            codigo: $.parseJSON(data.responseText).error
+                                            codigo: $.trataErro(data)
                                         })
                                     });
                                     break;
@@ -6216,7 +6216,7 @@ $(document).ready(function () {
                                     error: function (data) {
                                         $(".form-aviso").setWarning({
                                             msg: "Erro ao editar. ($$erro)".render({
-                                                erro: $.parseJSON(data.responseText).error
+                                                erro: $.trataErro(data)
                                             })
                                         });
                                         $("#dashboard-content .content .botao-form[ref='enviar']").show();
@@ -6358,16 +6358,18 @@ $(document).ready(function () {
                                                         tr_class = "unfolded";
                                                     }
                                                 });
-                                                indicators_table += "<div class='variable $$tr_class' indicator-id='$$indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$id' period='$$period'>detalhes</a><a href='$$hash?option=edit&url=$$url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
+
+                                                indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$_id' period='$$period'>detalhes</a><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
                                                     name: data_indicators[i].name,
                                                     formula: formula,
-                                                    hash: "#!/" + getUrlSub(),
-                                                    url: api_path + "/api/indicator/" + data_indicators[i].id,
-                                                    indicator_id: data_indicators[i].id,
                                                     period: data_indicators[i].period,
-                                                    id: data_indicators[i].id,
-                                                    tr_class: tr_class
+                                                    _hash: "#!/" + getUrlSub(),
+                                                    _url: api_path + "/api/indicator/" + data_indicators[i].id,
+                                                    _indicator_id: data_indicators[i].id,
+                                                    _id: data_indicators[i].id,
+                                                    _tr_class: tr_class
                                                 });
+
                                                 indicators_table += "<div class='clear'></div>";
                                                 indicators_in_groups.push(data_indicators[i].id);
                                             }
@@ -6401,15 +6403,15 @@ $(document).ready(function () {
                                         tr_class = "unfolded";
                                     }
                                 });
-                                indicators_table += "<div class='variable $$tr_class' indicator-id='$$indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$id' period='$$period'>detalhes</a><a href='$$hash?option=edit&url=$$url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
+                                indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$_id' period='$$period'>detalhes</a><a href='$$hash?option=edit&url=$$_url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
                                     name: data_indicators[i].name,
                                     formula: formula,
                                     hash: "#!/" + getUrlSub(),
-                                    url: api_path + "/api/indicator/" + data_indicators[i].id,
-                                    indicator_id: data_indicators[i].id,
+                                    _url: api_path + "/api/indicator/" + data_indicators[i].id,
+                                    _indicator_id: data_indicators[i].id,
                                     period: data_indicators[i].period,
-                                    id: data_indicators[i].id,
-                                    tr_class: tr_class
+                                    _id: data_indicators[i].id,
+                                    _tr_class: tr_class
                                 });
                                 indicators_table += "<div class='clear'></div>";
                                 count_i++;
@@ -6531,7 +6533,7 @@ $(document).ready(function () {
                                                 } else {
                                                     history_table = history_table.replace("#theader_valor", "<th class='formula_valor'>Valor da Fórmula</th>");
                                                     if (data.rows[index].formula_value != "-") {
-                                                        history_table += "<td class='formula_valor' variation-index='0'>$$formula_valor</td>".render({
+                                                        history_table += "<td class='formula_valor' variation-index='0'>$$formula_valor</td>".render2({
                                                             formula_valor: $.formatNumber(data.rows[index].formula_value, {
                                                                 format: "#,##0.###",
                                                                 locale: "br"
@@ -6602,13 +6604,13 @@ $(document).ready(function () {
                                         } else if (dataStatus[index].has_data) {
                                             statusClass = "last-period";
                                         }
-                                        $(".indicadores_list .variable[indicator-id='$$indicator_id']".render({
+                                        $(".indicadores_list .variable[indicator-id='$$indicator_id']".render2({
                                             indicator_id: data.status[index].id
                                         })).addClass(statusClass);
                                         if (dataStatus[index].justification_count) {
-                                            $(".indicadores_list .variable[indicator-id='$$indicator_id'] .link".render({
+                                            $(".indicadores_list .variable[indicator-id='$$indicator_id'] .link".render2({
                                                 indicator_id: data.status[index].id
-                                            })).append("<a href='javascript: void(0);' class='icone justification' title='valores não preenchidos (justificados)' alt='valores não preenchidos (justificados)'>$$justification_count</a>".render({
+                                            })).append("<a href='javascript: void(0);' class='icone justification' title='valores não preenchidos (justificados)' alt='valores não preenchidos (justificados)'>$$justification_count</a>".render2({
                                                 justification_count: dataStatus[index].justification_count
                                             }));
                                         }
@@ -6624,8 +6626,8 @@ $(document).ready(function () {
                         },
                         error: function (data) {
                             $("#aviso").setWarning({
-                                msg: "Erro ao carregar ($$codigo)".render({
-                                    codigo: $.parseJSON(data.responseText).error
+                                msg: "Erro ao carregar ($$codigo)".render2({
+                                    codigo: $.trataErro(data)
                                 })
                             });
                         }
@@ -6708,7 +6710,7 @@ $(document).ready(function () {
                                 }
                                 if (!validation) {
                                     $(".tech_info .form-aviso").setWarning({
-                                        msg: "Por favor informe a informação a ser salva.".render({
+                                        msg: "Por favor informe a informação a ser salva.".render2({
                                             codigo: jqXHR.status
                                         })
                                     });
@@ -6751,7 +6753,7 @@ $(document).ready(function () {
                                         data: args,
                                         success: function (data, textStatus, jqXHR) {
                                             $(".tech_info .form-aviso").setWarning({
-                                                msg: "Informação salva com sucesso.".render({
+                                                msg: "Informação salva com sucesso.".render2({
                                                     codigo: jqXHR.status
                                                 })
                                             });
@@ -6759,8 +6761,8 @@ $(document).ready(function () {
                                         },
                                         error: function (data) {
                                             $(".tech_info .form-aviso").setWarning({
-                                                msg: "Erro ao salvar. ($$erro)".render({
-                                                    erro: $.parseJSON(data.responseText).error
+                                                msg: "Erro ao salvar. ($$erro)".render2({
+                                                    erro: $.trataErro(data)
                                                 })
                                             });
                                             $.loading.hide();
@@ -6948,9 +6950,9 @@ $(document).ready(function () {
                                     }),
                                     success: function (data, textStatus, jqXHR) {
                                         $.each(data.options, function (index, value) {
-                                            $("#dashboard-content .content .filter_indicator select#date_filter").append("<option value='$$value'>$$text</option>".render({
+                                            $("#dashboard-content .content .filter_indicator select#date_filter").append("<option value='$$_value'>$$text</option>".render({
                                                 text: data.options[index].text,
-                                                value: data.options[index].value
+                                                _value: data.options[index].value
                                             }));
                                         });
                                     }
@@ -6967,9 +6969,9 @@ $(document).ready(function () {
                                         $("#dashboard-content .content .filter_indicator select#date_filter_year option").remove();
                                         $("#dashboard-content .content .filter_indicator select#date_filter_year").append("<option value=''>Selecione o ano</option>");
                                         $.each(data.options, function (index, value) {
-                                            $("#dashboard-content .content .filter_indicator select#date_filter_year").append("<option value='$$value'>$$text</option>".render({
+                                            $("#dashboard-content .content .filter_indicator select#date_filter_year").append("<option value='$$_value'>$$text</option>".render({
                                                 text: data.options[index].text,
-                                                value: data.options[index].value
+                                                _value: data.options[index].value
                                             }));
                                         });
                                         $("#dashboard-content .content .filter_indicator select#date_filter option:last").attr("selected", "selected");
@@ -7038,35 +7040,35 @@ $(document).ready(function () {
                                             if (item.type == "str") {
                                                 newform.push({
                                                     label: "<b>" + item.name + "</b>",
-                                                    input: ["textarea,var_$$id,itext".render({
+                                                    input: ["textarea,var_$$id,itext".render2({
                                                         id: item.id
                                                     })]
                                                 });
                                             } else {
                                                 newform.push({
                                                     label: "<b>" + item.name + "</b>",
-                                                    input: ["text,var_$$id,itext".render({
+                                                    input: ["text,var_$$id,itext".render2({
                                                         id: item.id
                                                     })]
                                                 });
                                             }
                                             newform.push({
                                                 label: "Descrição",
-                                                input: ["textlabel,textlabel_explanation_$$id,ilabel".render({
+                                                input: ["textlabel,textlabel_explanation_$$id,ilabel".render2({
                                                     id: item.id
                                                 })]
                                             });
                                             newform.push({
                                                 label: "Fonte",
-                                                input: ["select,source_$$id,iselect source".render({
+                                                input: ["select,source_$$id,iselect source".render2({
                                                     id: item.id
-                                                }), "text,source_$$id_new,itext300px".render({
+                                                }), "text,source_$$id_new,itext300px".render2({
                                                     id: item.id
                                                 })]
                                             });
                                             newform.push({
                                                 label: "Observações",
-                                                input: ["text,observations_$$id,itext".render({
+                                                input: ["text,observations_$$id,itext".render2({
                                                     id: item.id
                                                 })]
                                             });
@@ -7101,14 +7103,14 @@ $(document).ready(function () {
                                                 $.each(data_variations, function (index_variation, item_variation) {
                                                     newform.push({
                                                         label: "Faixa",
-                                                        input: ["textlabel,textlabel_variation_$$id,ilabel".render({
+                                                        input: ["textlabel,textlabel_variation_$$id,ilabel".render2({
                                                             id: item_variation.id
                                                         })]
                                                     });
                                                     $.each(data_vvariables, function (index_vvariables, item_vvariables) {
                                                         newform.push({
                                                             label: "<b>" + item_vvariables.name + "</b>",
-                                                            input: ["text,v_$$var_id_var_$$id,itext".render({
+                                                            input: ["text,v_$$var_id_var_$$id,itext".render2({
                                                                 id: item_vvariables.id,
                                                                 var_id: item_variation.id
                                                             })]
@@ -7214,14 +7216,15 @@ $(document).ready(function () {
                                                         addNewVariation();
                                                     });
                                                     //Adiciona nova variação na tela
-                                                    var newformVariation = '<div class="field "><div class="label">Faixa:</div><div class="input"><div class="ilabel" id="textlabel_variation_$$var_id">$$nome</div></div><div class="clear"></div></div>'.render({
-                                                        var_id: variation_id,
+                                                    var newformVariation = '<div class="field "><div class="label">Faixa:</div><div class="input"><div class="ilabel" id="textlabel_variation_$$_var_id">$$nome</div></div><div class="clear"></div></div>'.render({
+                                                        _var_id: variation_id,
                                                         nome: $(formbuild).find("div.field.nova_variacao .input input").val()
                                                     });
                                                     $.each(data_vvariables, function (index_vvariables, item_vvariables) {
-                                                        newformVariation += '<div class="field  odd"><div class="label"><b>' + item_vvariables.name + '</b>:</div><div class="input"><input name="v_$$var_id_var_$$id" id="v_$$var_id_var_$$id" class="itext" type="text"></div><div class="clear"></div></div>'.render({
-                                                            id: item_vvariables.id,
-                                                            var_id: variation_id
+                                                        newformVariation += '<div class="field  odd"><div class="label"><b>$$name</b>:</div><div class="input"><input name="v_$$_var_id_var_$$_id" id="v_$$_var_id_var_$$_id" class="itext" type="text"></div><div class="clear"></div></div>'.render({
+                                                            _id: item_vvariables.id,
+                                                            name: item_vvariables.name,
+                                                            _var_id: variation_id
                                                         });
                                                     });
                                                     newformVariation += '<div class="div div_variacoes"></div>';
@@ -7233,8 +7236,8 @@ $(document).ready(function () {
                                                 },
                                                 error: function (data) {
                                                     $(".filter_result .form-aviso").setWarning({
-                                                        msg: "Erro ao enviar. ($$erro)".render({
-                                                            erro: $.parseJSON(data.responseText).error
+                                                        msg: "Erro ao enviar. ($$erro)".render2({
+                                                            erro: $.trataErro(data)
                                                         })
                                                     });
                                                     $(formbuild).find("#new_variation_add").html("Adicionar");
@@ -7583,7 +7586,7 @@ $(document).ready(function () {
                                                                         error: function (data) {
                                                                             $(".filter_result .form-aviso").setWarning({
                                                                                 msg: "Erro ao editar. ($$erro)".render({
-                                                                                    erro: $.parseJSON(data.responseText).error
+                                                                                    erro: $.trataErro(data)
                                                                                 })
                                                                             });
                                                                             $("#dashboard-content .content .filter_result .botao-form[ref='enviar']").show();
@@ -7663,7 +7666,7 @@ $(document).ready(function () {
                                                                 error: function (data) {
                                                                     $(".filter_result .form-aviso").setWarning({
                                                                         msg: "Valores enviados, mas ocorreu um erro ao enviar Justificativa/Meta. ($$erro)".render({
-                                                                            erro: $.parseJSON(data.responseText).error
+                                                                            erro: $.trataErro(data)
                                                                         })
                                                                     });
                                                                     $("#dashboard-content .content .filter_result .botao-form[ref='enviar']").show();
@@ -7699,7 +7702,7 @@ $(document).ready(function () {
                                     error: function (data) {
                                         $("#aviso").setWarning({
                                             msg: "Erro ao carregar ($$codigo)".render({
-                                                codigo: $.parseJSON(data.responseText).error
+                                                codigo: $.trataErro(data)
                                             })
                                         });
                                     }
@@ -7742,7 +7745,7 @@ $(document).ready(function () {
                         error: function (data) {
                             $("#aviso").setWarning({
                                 msg: "Erro ao salvar. ($$erro)".render({
-                                    erro: $.parseJSON(data.responseText).error
+                                    erro: $.trataErro(data)
                                 })
                             });
                             $.loading.hide();
@@ -7838,7 +7841,7 @@ $(document).ready(function () {
                         error: function (data) {
                             $("#aviso").setWarning({
                                 msg: "Erro ao carregar ($$codigo)".render({
-                                    codigo: $.parseJSON(data.responseText).error
+                                    codigo: $.trataErro(data)
                                 })
                             });
                         }
@@ -7972,7 +7975,7 @@ $(document).ready(function () {
                                 case 400:
                                     $(".form-aviso").setWarning({
                                         msg: "Erro: ($$codigo)".render({
-                                            codigo: $.parseJSON(data.responseText).error
+                                            codigo: $.trataErro(data)
                                         })
                                     });
                                     break;
@@ -8070,7 +8073,7 @@ $(document).ready(function () {
                                 error: function (data) {
                                     $(".form-aviso").setWarning({
                                         msg: "Erro ao editar. ($$erro)".render({
-                                            erro: $.parseJSON(data.responseText).error
+                                            erro: $.trataErro(data)
                                         })
                                     });
                                     $("#dashboard-content .content .botao-form[ref='enviar']").show();
@@ -8354,7 +8357,7 @@ $(document).ready(function () {
                                 case 400:
                                     $(".form-aviso").setWarning({
                                         msg: "Erro: ($$codigo)".render({
-                                            codigo: $.parseJSON(data.responseText).error
+                                            codigo: $.trataErro(data)
                                         })
                                     });
                                     break;
@@ -8417,7 +8420,7 @@ $(document).ready(function () {
                                         $("#aviso").setWarning({
                                             msg: "Erro ao $$operacao. ($$codigo)".render({
                                                 operacao: txtOption,
-                                                codigo: $.parseJSON(data.responseText).error
+                                                codigo: $.trataErro(data)
                                             })
                                         });
                                         break;
@@ -8523,7 +8526,7 @@ $(document).ready(function () {
                                 case 400:
                                     $(".form-aviso").setWarning({
                                         msg: "Erro: ($$codigo)".render({
-                                            codigo: $.parseJSON(data.responseText).error
+                                            codigo: $.trataErro(data)
                                         })
                                     });
                                     break;
@@ -8614,7 +8617,7 @@ $(document).ready(function () {
                                         $("#aviso").setWarning({
                                             msg: "Erro ao $$operacao. ($$codigo)".render({
                                                 operacao: txtOption,
-                                                codigo: $.parseJSON(data.responseText).error
+                                                codigo: $.trataErro(data)
                                             })
                                         });
                                         break;
@@ -8751,7 +8754,7 @@ $(document).ready(function () {
                         error: function (data) {
                             $("#aviso").setWarning({
                                 msg: "Erro ao carregar ($$codigo)".render({
-                                    codigo: $.parseJSON(data.responseText).error
+                                    codigo: $.trataErro(data)
                                 })
                             });
                         }
@@ -8787,7 +8790,7 @@ $(document).ready(function () {
                                 case 400:
                                     $(".form-aviso").setWarning({
                                         msg: "Erro: ($$codigo)".render({
-                                            codigo: $.parseJSON(data.responseText).error
+                                            codigo: $.trataErro(data)
                                         })
                                     });
                                     break;
@@ -8937,7 +8940,7 @@ $(document).ready(function () {
                                         $("#aviso").setWarning({
                                             msg: "Erro ao $$operacao. ($$codigo)".render({
                                                 operacao: txtOption,
-                                                codigo: $.parseJSON(data.responseText).error
+                                                codigo: $.trataErro(data)
                                             })
                                         });
                                         break;
@@ -9120,7 +9123,7 @@ $(document).ready(function () {
                                 case 400:
                                     $(".form-aviso").setWarning({
                                         msg: "Erro: ($$codigo)".render({
-                                            codigo: $.parseJSON(data.responseText).error
+                                            codigo: $.trataErro(data)
                                         })
                                     });
                                     break;
@@ -9235,7 +9238,7 @@ $(document).ready(function () {
                                         $("#aviso").setWarning({
                                             msg: "Erro ao $$operacao. ($$codigo)".render({
                                                 operacao: txtOption,
-                                                codigo: $.parseJSON(data.responseText).error
+                                                codigo: $.trataErro(data)
                                             })
                                         });
                                         break;
@@ -9785,7 +9788,7 @@ $(document).ready(function () {
                         case 400:
                             $(".form-aviso").setWarning({
                                 msg: "Erro: ($$codigo)".render({
-                                    codigo: $.parseJSON(data.responseText).error
+                                    codigo: $.trataErro(data)
                                 })
                             });
                             break;
@@ -9922,7 +9925,7 @@ $(document).ready(function () {
                                 error: function (data) {
                                     $(".form-aviso").setWarning({
                                         msg: "Erro ao editar. ($$erro)".render({
-                                            erro: $.parseJSON(data.responseText).error
+                                            erro: $.trataErro(data)
                                         })
                                     });
                                     $(clickedButton).html("Salvar");

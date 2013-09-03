@@ -50,6 +50,7 @@ if (!String.prototype.render) {
                     k.match(/password/) ||
                     k.match(/email/) ||
                     k.match(/formula/) ||
+                    k.match(/^_/) ||
                     k == 'key' ||
                     k == 'arquivo'
                 )) n = 1;

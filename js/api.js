@@ -417,9 +417,10 @@ $(document).ready(function () {
                 var submenu_item = "";
             }
 
-            menu_item += ("<li class='$$_class' ref='$$_url_sub'><a href='#!/$$_value' class='$$a_class'>$$menu_label</a>" + submenu_item + "</li>").render({
+            menu_item += "<li class='$$_class' ref='$$_url_sub'><a href='#!/$$_value' class='$$_a_class'>$$menu_label</a>$$_sub</li>".render({
                 _value: value,
                 menu_label: menu_label[value],
+                _sub: submenu_item,
                 _url_sub: value,
                 _class: menu_class,
                 _a_class: a_class

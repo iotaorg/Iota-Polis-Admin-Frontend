@@ -3,7 +3,7 @@ if (window.location.href.indexOf("localhost") >= 0) {
     api_path = "http://indicadores.cidadessustentaveis.org.br";
 }
 
-var cur_lang = 'pt-br',
+var cur_lang = 'es',
     lexicon, default_lang, langs, lexiconconf,
     lexicon_untranslated = {}, untranslated_temp = {};
 
@@ -551,14 +551,14 @@ var setTitleBar = function () {
     $("#header-title .title").empty();;
     $("#header-title .description").empty();
     if (titleBarContent[pagina + "," + option]) {
-        $("#header-title .title").html(titleBarContent[pagina + "," + option]["title"]);
+        $("#header-title .title").html("$$a".render({a: titleBarContent[pagina + "," + option]["title"] } ));
         if (titleBarContent[pagina + "," + option]["tip"] != "") {
-            $("#header-title .description").html(titleBarContent[pagina + "," + option]["tip"]);
+            $("#header-title .description").html("$$a".render({a:titleBarContent[pagina + "," + option]["tip"]}));
         }
     } else if (titleBarContent[pagina]) {
-        $("#header-title .title").html(titleBarContent[pagina]["title"]);
+        $("#header-title .title").html("$$a".render({a: titleBarContent[pagina]["title"]}));
         if (titleBarContent[pagina]["tip"] != "") {
-            $("#header-title .description").html(titleBarContent[pagina]["tip"]);
+            $("#header-title .description").html("$$a".render({a:titleBarContent[pagina]["tip"]}));
         }
     }
     if ($("#header-title .title").html() != "") {
@@ -1543,9 +1543,9 @@ $.loading = function (params) {
 
 };
 $.loading.hide = function () {
-    $('#dialog-overlay').fadeOut(function () {
+    $('#dialog-overlay').fadeOut(1000,function () {
         $(this).remove();
-    });
+    } );
 }
 
 

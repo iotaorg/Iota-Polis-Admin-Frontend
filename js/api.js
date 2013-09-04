@@ -1,3 +1,4 @@
+var _is_updating_lexicon = 0;
 $(document).ready(function () {
 
     /*MONTA TELAS*/
@@ -13,13 +14,10 @@ $(document).ready(function () {
         sendLogin();
     });
 
-
-    var _updating = 0,
-        __update_lexicon = function () {
-
+        var __update_lexicon_id = setInterval(function(){
             var count = $.assocArraySize(lexicon_untranslated);
-            if (_updating == 0 && count > 0 && $.cookie("key") != null && $.cookie("key") != "") {
-                _updating = 1;
+            if (_is_updating_lexicon == 0 && count > 0 && $.cookie("key") != null && $.cookie("key") != "") {
+                _is_updating_lexicon = 1;
 
                 var args = [{
                     name: "api_key",
@@ -38,7 +36,6 @@ $(document).ready(function () {
 
                 lexicon_untranslated = {};
 
-                _updating = 1;
                 $.ajax({
                     type: 'POST',
                     beforeSend: function () {},
@@ -48,7 +45,7 @@ $(document).ready(function () {
                     success: function (data, status, jqXHR) {
                         $.jStorage.set("lexicon", 0);
                         load_lexicon(true);
-                        _updating = 0;
+                        _is_updating_lexicon = 0;
                     },
                     error: function (data) {
                         for (var x in untranslated_temp) {
@@ -56,14 +53,12 @@ $(document).ready(function () {
                                 lexicon_untranslated[x] = 1;
                             }
                         }
-                        _updating = 0;
+                        _is_updating_lexicon = 0;
                     }
                 });
-            }
 
-        }, __update_lexicon_id = 0;
-    clearInterval(__update_lexicon_id);
-    __update_lexicon_id = setInterval(__update_lexicon, 10000);
+        }
+    }, 5000);
 
     var sendLogin = function () {
         args = [{
@@ -8160,8 +8155,7 @@ $(document).ready(function () {
                                 if ($(this).contents()[0].body) {
                                     if ($(this).contents()[0].body.outerHTML) {
                                         var retorno = $(this).contents()[0].body.outerHTML;
-                                        retorno = retorno.replace("<body><pre>", "");
-                                        retorno = retorno.replace("</pre></body>", "");
+                                        retorno = $(retorno).text();
                                         retorno = $.parseJSON(retorno);
                                     } else {
                                         erro = 1;
@@ -9510,9 +9504,7 @@ $(document).ready(function () {
                                             if ($(this).contents()[0].body) {
                                                 if ($(this).contents()[0].body.outerHTML) {
                                                     var retorno = $(this).contents()[0].body.outerHTML;
-                                                    retorno = retorno.replace('<body><pre>', "");
-                                                    retorno = retorno.replace('<body><pre style="word-wrap: break-word; white-space: pre-wrap;">', "");
-                                                    retorno = retorno.replace('</pre></body>', "");
+                                                    retorno = $(retorno).text();
                                                     retorno = $.parseJSON(retorno);
                                                 } else {
                                                     erro = 1;
@@ -9932,8 +9924,8 @@ $(document).ready(function () {
                                     $(clickedButton).html("Salvar");
                                     $(clickedButton).attr("is-disabled", 0);
                                     $("#aviso").setWarning({
-                                        msg: "Preferências salvas.".render2({
-                                            codigo: jqXHR.status
+                                        msg: "$$a.".render({
+                                            a: Preferências salvas
                                         })
                                     });
                                     location.hash = "#!/" + getUrlSub();

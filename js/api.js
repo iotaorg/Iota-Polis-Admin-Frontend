@@ -154,7 +154,7 @@ $(document).ready(function () {
 
                         if (user_info.role != "") {
 
-                            var info_content = "Usuário: " + user_info.name;
+                            var info_content = "$$e: ".render({e:'Usuário'}) + user_info.name;
                             if ($("#user-info").length == 0) {
                                 $("#top .top-right .info").append("<div id='user-info'>" + info_content + "</div>");
                             } else {
@@ -3811,8 +3811,8 @@ $(document).ready(function () {
 
                     $("#dashboard-content .content").append("<div class='variable-filter'><div class='form-pesquisa'></div></div><div class='clear'></div>");
                     if (user_info.roles[0] == "admin") {
-                        $("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='user'>Usuário: <select id='user-id'></select></div>");
-                        $("#dashboard-content .content #user-id").append($("<option value=''>Selecione...</option>"));
+                        $("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='user'>$$u: <select id='user-id'></select></div>".render({u: 'Usuário'}));
+                        $("#dashboard-content .content #user-id").append($("<option value=''>$$se...</option>".render({se: 'Selecione'})));
                         $.ajax({
                             type: 'GET',
                             dataType: 'json',
@@ -3839,11 +3839,13 @@ $(document).ready(function () {
                         });
                     }
 
-                    $("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='variable'>Variável: <select id='variable_id'></select></div>");
+                    $("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='variable'>$$v: <select id='variable_id'></select></div>".render({
+                        v: 'Variável'
+                    }));
 
                     function carregaVariaveisEdit() {
                         $("#dashboard-content .content #variable_id option").remove();
-                        $("#dashboard-content .content #variable_id").append($("<option value=''>Todas</option>"));
+                        $("#dashboard-content .content #variable_id").append($("<option value=''>$$t</option>".render({t: 'Todas'})));
                         $.loading();
                         $.ajax({
                             type: 'GET',
@@ -3869,8 +3871,13 @@ $(document).ready(function () {
                         });
                     }
 
-                    $("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='data'>de <input id='data_ini'> até <input id='data_fim'></div>");
-                    $("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='botao'><input type='button' id='botao-pesquisar' value='Pesquisar'></div><div class='clear'></div>");
+                    $("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='data'>$$d <input id='data_ini'> $$ate <input id='data_fim'></div>".render({
+                        d: 'de',
+                        ate: 'até'
+                    }));
+                    $("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='botao'><input type='button' id='botao-pesquisar' value='$$e'></div><div class='clear'></div>".render({
+                        e: 'Pesquisar'
+                    }));
 
                     $("#dashboard-content .content .variable-filter #botao-pesquisar").click(function () {
                         carregaTabelaVariaveisEdit();
@@ -4760,6 +4767,7 @@ $(document).ready(function () {
                             "aTargets": [2]
                         }, {
                             "fnRender": function (oObj, sVal) {
+
                                 return formataFormula(sVal, data_variables, data_vvariables);
                             },
                             "aTargets": [1]
@@ -5187,8 +5195,13 @@ $(document).ready(function () {
                     variacoes_list = [];
                     variacoes_id_temp = 0;
 
-                    $("#dashboard-content .content input#variacoes_placeholder").after("<div id='variacoes-form'><div class='variacoes-list'><table><thead><tr><th>Nome</th><th></th><th></th><th></th><th></th></tr></thead><tbody></tbody></table></div><div class='variacoes-add'></div></div>");
-                    $("#variacoes-form .variacoes-add").append("<input type='text' id='variacoes-input' placeholder=''><input type='button' value='adicionar' id='variacoes-button-add'><input type='button' style='display: none;' value='salvar' id='variacoes-button-edit'>");
+                    $("#dashboard-content .content input#variacoes_placeholder").after("<div id='variacoes-form'><div class='variacoes-list'><table><thead><tr><th>$$nome</th><th></th><th></th><th></th><th></th></tr></thead><tbody></tbody></table></div><div class='variacoes-add'></div></div>".render({
+                        nome: 'Nome'
+                    }));
+                    $("#variacoes-form .variacoes-add").append("<input type='text' id='variacoes-input' placeholder=''><input type='button' value='$$a' id='variacoes-button-add'><input type='button' style='display: none;' value='$$d' id='variacoes-button-edit'>".render({
+                            a: 'adicionar',
+                            d: 'salvar'
+                    }));
                     $("#dashboard-content .content input#variacoes_placeholder").hide();
 
                     function updateVariacoesTable() {
@@ -5200,8 +5213,11 @@ $(document).ready(function () {
                             });
                             $("#variacoes-form .variacoes-list table tbody").empty();
                             $.each(variacoes_list, function (index, item) {
-                                $("#variacoes-form .variacoes-list table tbody").append("<tr id='$$_id' order='$$_order' temp='$$_temp' delete='$$_delete'><td>$$name</td><td class='edit'><a href='#'>editar</a></td><td class='delete'><a href='#'>remover</a></td><td class='up'><a href='#'>subir</a></td><td class='down'><a href='#'>descer</a></td></tr>".render({
+                                $("#variacoes-form .variacoes-list table tbody").append("<tr id='$$_id' order='$$_order' temp='$$_temp' delete='$$_delete'><td>$$name</td><td class='edit'><a href='#'>editar</a></td><td class='delete'><a href='#'>$$r</a></td><td class='up'><a href='#'>$$s</a></td><td class='down'><a href='#'>$$d</a></td></tr>".render({
                                     name: item.name,
+                                    d: 'descer',
+                                    s: 'subir',
+                                    r: 'remover',
                                     _id: item.id,
                                     _order: item.order,
                                     _temp: item.temp,
@@ -5238,7 +5254,7 @@ $(document).ready(function () {
 
                         } else {
                             $("#variacoes-form .variacoes-list table tbody").empty();
-                            $("#variacoes-form .variacoes-list table tbody").append("<tr><td colspan='4' align='center'>Nenhuma faixa adicionada</td></tr>");
+                            $("#variacoes-form .variacoes-list table tbody").append("<tr><td colspan='4' align='center'>$$e</td></tr>".render({e:'Nenhuma faixa adicionada'}));
                         }
                     }
 
@@ -5351,9 +5367,10 @@ $(document).ready(function () {
                             });
                             $("#vvariacoes-form .vvariacoes-list table tbody").empty();
                             $.each(vvariacoes_list, function (index, item) {
-                                $("#vvariacoes-form .vvariacoes-list table tbody").append("<tr id='$$id' temp='$$temp' delete='$$delete'><td>$$name</td><td class='edit'><a href='#'>editar</a></td><<td class='delete'><a href='#'>remover</a></td></tr>".render({
+                                $("#vvariacoes-form .vvariacoes-list table tbody").append("<tr id='$$_id' temp='$$temp' delete='$$delete'><td>$$name</td><td class='edit'><a href='#'>$$e</a></td><<td class='delete'><a href='#'>remover</a></td></tr>".render({
                                     name: item.name,
-                                    id: item.id,
+                                    e: 'editar',
+                                    _id: item.id,
                                     temp: item.temp,
                                     delete: item.delete
                                 }));
@@ -5380,7 +5397,7 @@ $(document).ready(function () {
 
                         } else {
                             $("#vvariacoes-form .vvariacoes-list table tbody").empty();
-                            $("#vvariacoes-form .vvariacoes-list table tbody").append("<tr><td colspan='4' align='center'>Nenhuma variável adicionada</td></tr>");
+                            $("#vvariacoes-form .vvariacoes-list table tbody").append("<tr><td colspan='4' align='center'>$$aa</td></tr>".render({aa:'Nenhuma variável adicionada'}));
                         }
                     }
 
@@ -6335,9 +6352,9 @@ $(document).ready(function () {
                             var indicators_status = "";
 
                             indicators_legend = "<div class='indicadores_legend'><div class='fillContent'>";
-                            indicators_legend += "<div class='item'><div class='color no-data'></div><div class='label'>Nenhum dado preenchido</div><div class='clear'></div></div>";
-                            indicators_legend += "<div class='item'><div class='color last-period'></div><div class='label'>Preenchido</div><div class='clear'></div></div>";
-                            indicators_legend += "<div class='item'><div class='color full'></div><div class='label'>Período corrente preenchido</div><div class='clear'></div></div>";
+                            indicators_legend += "<div class='item'><div class='color no-data'></div><div class='label'>$$x</div><div class='clear'></div></div>".render({x:'Nenhum dado preenchido'});
+                            indicators_legend += "<div class='item'><div class='color last-period'></div><div class='label'>$$a</div><div class='clear'></div></div>".render({a:'Preenchido'});
+                            indicators_legend += "<div class='item'><div class='color full'></div><div class='label'>$$a</div><div class='clear'></div></div>".render({a:'Período corrente preenchido'});
                             indicators_legend += "</div></div><div class='clear'></div>";
 
                             indicators_status = "<div class='indicadores-status'></div>";
@@ -6347,7 +6364,7 @@ $(document).ready(function () {
                             //carrega grupos
                             var indicators_in_groups = [];
                             if (data_groups && data_groups.length > 0) {
-                                indicators_table += "<div class='grupos_list'>Grupos";
+                                indicators_table += "<div class='grupos_list'>$$e".render({e:'Grupos'});
                                 $.each(data_groups, function (index_group, group) {
                                     indicators_table += "<div class='eixos collapse group'><div class='title'>$$axis</div><div class='clear'></div>".render({
                                         axis: group.name
@@ -6367,9 +6384,9 @@ $(document).ready(function () {
                                                     }
                                                 });
 
-                                                indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$_id' period='$$period'>detalhes</a><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
+                                                indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$_id' period='$$period'>detalhes</a><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
                                                     name: data_indicators[i].name,
-                                                    formula: formula,
+                                                    fxormula: formula,
                                                     period: data_indicators[i].period,
                                                     _hash: "#!/" + getUrlSub(),
                                                     _url: api_path + "/api/indicator/" + data_indicators[i].id,
@@ -6405,15 +6422,16 @@ $(document).ready(function () {
                                     axis_ant = data_indicators[i].axis_id;
                                 }
                                 var formula = formataFormula(data_indicators[i].formula, data_variables, data_vvariables);
+
                                 var tr_class = "folded";
                                 $.each(data_indicators[i].network_configs, function (index_config, item_config) {
                                     if (item_config.network_id == user_info.network && item_config.unfolded_in_home == 1) {
                                         tr_class = "unfolded";
                                     }
                                 });
-                                indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$_id' period='$$_period'>detalhes</a><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
+                                indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$_id' period='$$_period'>detalhes</a><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
                                     name: data_indicators[i].name,
-                                    formula: formula,
+                                    fxormula: formula,
                                     _hash: "#!/" + getUrlSub(),
                                     _url: api_path + "/api/indicator/" + data_indicators[i].id,
                                     _indicator_id: data_indicators[i].id,
@@ -6429,14 +6447,16 @@ $(document).ready(function () {
                             if (user_info.institute.id == 2) {
                                 //carrega indicadores ocultos
                                 indicators_table += "</div>";
-                                indicators_table += "<div class='eixos hidden collapse'><div class='title'>Indicadores Ocultos</div><div class='clear'></div>";
+                                indicators_table += "<div class='eixos hidden collapse'><div class='title'>$$e</div><div class='clear'></div>".render({e: 'Indicadores Ocultos'});
                                 for (i = 0; i < data_indicators.length; i++) {
                                     if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1) {
                                         var formula = formataFormula(data_indicators[i].formula, data_variables, data_vvariables);
                                         var tr_class = "folded";
-                                        indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$formula</div><div class='link'><a href='$$_hash?option=unhide&url=$$_url&config_id=$$_config_id' class='icone unhide' title='remover da lista de ocultos' alt='remover da lista de ocultos'>mostrar</a></div><div class='clear'></div></div>".render({
+                                        indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='$$_hash?option=unhide&url=$$_url&config_id=$$_config_id' class='icone unhide' title='$$e' alt='$$e'>$$m</a></div><div class='clear'></div></div>".render({
                                             name: data_indicators[i].name,
-                                            formula: formula,
+                                            m: 'mostrar',
+                                            e: 'remover da lista de ocultos',
+                                            fxormula: formula,
                                             _hash: "#!/" + getUrlSub(),
                                             _url: api_path + "/api/indicator/" + data_indicators[i].id,
                                             _indicator_id: data_indicators[i].id,
@@ -6456,7 +6476,7 @@ $(document).ready(function () {
 
                             $("#dashboard-content .content .indicadores_list .eixos").each(function (index, item) {
                                 if ($(item).find(".variable").length <= 0) {
-                                    $(item).append("<div class='empty'>Nenhum indicador encontrado</div>");
+                                    $(item).append("<div class='empty'>$$e</div>".render({e: 'Nenhum indicador encontrado'}));
                                 }
                             });
 
@@ -6672,11 +6692,11 @@ $(document).ready(function () {
                             $(formbuild).find("div .field:odd").addClass("odd");
                             $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 
-                            $("#dashboard-content .content .tech_info .botao-form[ref='enviar']").html("Salvar");
+                            $("#dashboard-content .content .tech_info .botao-form[ref='enviar']").html("$$save".render({save: 'Salvar'}));
                             $("#dashboard-content .content .tech_info .botao-form[ref='cancelar']").hide();
 
                             var tech_info_id;
-                            $("#hide_indicator").after("Ocultar esse indicador");
+                            $("#hide_indicator").after("$$e".render({e: "Ocultar esse indicador"}));
 
                             $.ajax({
                                 type: 'GET',
@@ -6937,7 +6957,9 @@ $(document).ready(function () {
                                 }
                             });
 
-                            $("#dashboard-content .content .filter_indicator #textlabel_formula").html(formataFormula(data_indicator.formula, data_variables, data_vvariables));
+                            $("#dashboard-content .content .filter_indicator #textlabel_formula").html("$$e".render({
+                                e: formataFormula(data_indicator.formula, data_variables, data_vvariables)
+                            }));
 
                             $("#dashboard-content .content .filter_indicator #textlabel_periodo").html(variable_periods[data_indicator.period]);
 
@@ -9518,7 +9540,7 @@ $(document).ready(function () {
                                         if (erro == 0) {
                                             if (!retorno.error) {
                                                 $(".upload_via_file .form-aviso").setWarning({
-                                                    msg: "Arquivo recebido com sucesso"
+                                                    msg: "$$a".render({a: 'Arquivo recebido com sucesso'})
                                                 });
                                                 $(clickedButton).html("Enviar");
                                                 $(clickedButton).attr("is-disabled", 0);
@@ -9538,7 +9560,7 @@ $(document).ready(function () {
                                                 }
                                             } else {
                                                 $(".upload_via_file .form-aviso").setWarning({
-                                                    msg: "Erro ao enviar arquivo " + file + " (" + retorno.error + ")"
+                                                    msg: "$$aa ".render({aa: 'Erro ao enviar arquivo'}) + file + " (" + retorno.error + ")"
                                                 });
                                                 $(clickedButton).html("Enviar");
                                                 $(clickedButton).attr("is-disabled", 0);
@@ -9546,7 +9568,7 @@ $(document).ready(function () {
                                             }
                                         } else {
                                             $(".upload_via_file .form-aviso").setWarning({
-                                                msg: "Erro ao enviar arquivo " + file
+                                                msg: "$$aa ".render({aa: 'Erro ao enviar arquivo'}) + file
                                             });
                                             $(clickedButton).html("Enviar");
                                             $(clickedButton).attr("is-disabled", 0);
@@ -9804,7 +9826,7 @@ $(document).ready(function () {
                     }
                 });
 
-                $("#dashboard-content .content .botao-form[ref='enviar']").html("Salvar");
+                $("#dashboard-content .content .botao-form[ref='enviar']").html("$$save".render({save: 'Salvar'}));
 
                 $("#dashboard-content .content .botao-form[ref='enviar']").click(function () {
                     if ($(this).attr("is-disabled") == 1) return false;
@@ -9921,11 +9943,11 @@ $(document).ready(function () {
                                         });
                                     }
 
-                                    $(clickedButton).html("Salvar");
+                                    $(clickedButton).html("$$save".render({save: 'Salvar'}));
                                     $(clickedButton).attr("is-disabled", 0);
                                     $("#aviso").setWarning({
                                         msg: "$$a.".render({
-                                            a: Preferências salvas
+                                            a: 'Preferências salvas'
                                         })
                                     });
                                     location.hash = "#!/" + getUrlSub();
@@ -9936,7 +9958,7 @@ $(document).ready(function () {
                                             erro: $.trataErro(data)
                                         })
                                     });
-                                    $(clickedButton).html("Salvar");
+                                    $(clickedButton).html("$$save".render({save: 'Salvar'}));
                                     $(clickedButton).attr("is-disabled", 0);
                                 }
                             });
@@ -9997,19 +10019,19 @@ $(document).ready(function () {
                                             }
                                         } else {
                                             $(".form-aviso").setWarning({
-                                                msg: "Erro ao enviar arquivo " + file + " (" + retorno.error + ")"
+                                                msg: "$$aa ".render({aa: 'Erro ao enviar arquivo'}) + file + " (" + retorno.error + ")"
                                             });
-                                            $(clickedButton).html("Salvar");
+                                            $(clickedButton).html("$$save".render({save: 'Salvar'}));
                                             $(clickedButton).attr("is-disabled", 0);
                                             cont_files_sent = files_sent.length;
                                             return;
                                         }
                                     } else {
-                                        console.log("Erro ao enviar arquivo " + file);
+                                        console.log("$$aa ".render({aa: 'Erro ao enviar arquivo'}) + file);
                                         $(".form-aviso").setWarning({
-                                            msg: "Erro ao enviar arquivo " + file
+                                            msg: "$$aa ".render({aa: 'Erro ao enviar arquivo'}) + file
                                         });
-                                        $(clickedButton).html("Salvar");
+                                        $(clickedButton).html("$$save".render({save: 'Salvar'}));
                                         $(clickedButton).attr("is-disabled", 0);
                                         cont_files_sent = files_sent.length;
                                         return;

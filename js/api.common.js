@@ -76,7 +76,8 @@ if (!String.prototype.render) {
                         lexicon_untranslated[v] = 1;
                         v = '? ' + v;
                     }
-                } /*else {
+                }
+                /*else {
                     if (n == 2) {
                         console.log(k, v);
                     }
@@ -162,8 +163,8 @@ $.extend({
             return date.split("-")[0];
         } else if (period == "monthly") {
             return date.split("-")[1] + "/" + date.split("-")[0];
-        }else{
-            return date + ' '+ period;
+        } else {
+            return date + ' ' + period;
         }
     },
     convertNumberToBd: function (number) {
@@ -198,14 +199,14 @@ $.extend({
             var erro;
             if (data.responseText && data.responseText.substr(0, 1) == '{') {
                 var obj = $.parseJSON(data.responseText);
-                if (obj.error && obj.error.substr(0,1) == '{'){
+                if (obj.error && obj.error.substr(0, 1) == '{') {
                     erro = $.parseJSON(obj.error);
-                }else if (obj.error){
+                } else if (obj.error) {
                     erro = {};
                     erro[obj.error] = 1;
                 }
 
-            }else{
+            } else {
                 erro = {};
                 erro[data.responseText.substr(0, 120)] = 1;
             }
@@ -223,7 +224,7 @@ $.extend({
                         }
                     }
                 }
-            }else{
+            } else {
                 msg = 'erro fatal' + data.status;
             }
             return msg;
@@ -473,7 +474,9 @@ $.fn.setWarning = function () {
     var args = arguments[0];
     $(this).hide();
     $(this).empty();
-    $(this).html("<div>$$e</div>".render({e: args.msg}));
+    $(this).html("<div>$$e</div>".render({
+        e: args.msg
+    }));
     $(this).show("slow");
 };
 $.fn.clearWarning = function () {
@@ -552,14 +555,22 @@ var setTitleBar = function () {
     $("#header-title .title").empty();;
     $("#header-title .description").empty();
     if (titleBarContent[pagina + "," + option]) {
-        $("#header-title .title").html("$$a".render({a: titleBarContent[pagina + "," + option]["title"] } ));
+        $("#header-title .title").html("$$a".render({
+            a: titleBarContent[pagina + "," + option]["title"]
+        }));
         if (titleBarContent[pagina + "," + option]["tip"] != "") {
-            $("#header-title .description").html("$$a".render({a:titleBarContent[pagina + "," + option]["tip"]}));
+            $("#header-title .description").html("$$a".render({
+                a: titleBarContent[pagina + "," + option]["tip"]
+            }));
         }
     } else if (titleBarContent[pagina]) {
-        $("#header-title .title").html("$$a".render({a: titleBarContent[pagina]["title"]}));
+        $("#header-title .title").html("$$a".render({
+            a: titleBarContent[pagina]["title"]
+        }));
         if (titleBarContent[pagina]["tip"] != "") {
-            $("#header-title .description").html("$$a".render({a:titleBarContent[pagina]["tip"]}));
+            $("#header-title .description").html("$$a".render({
+                a: titleBarContent[pagina]["tip"]
+            }));
         }
     }
     if ($("#header-title .title").html() != "") {
@@ -980,7 +991,9 @@ var buildIndicatorHistory = function (args) {
         success: function (data, textStatus, jqXHR) {
             if (data.header && data.rows != undefined) {
                 var history_table = "";
-                history_table += "<table class='history'><thead><tr><th>$$e</th>".render({e: 'Período'});
+                history_table += "<table class='history'><thead><tr><th>$$e</th>".render({
+                    e: 'Período'
+                });
 
                 var headers = []; //corrige ordem do header
                 $.each(data.header, function (titulo, index) {
@@ -1479,7 +1492,9 @@ $.confirm = function (params) {
 
     var buttonHTML = '';
     $.each(params.buttons, function (name, obj) {
-        buttonHTML += '<a href="javascript:;" class="button-default ' + obj['class'] + '">' + "$$a".render({a:name}) + '</a>';
+        buttonHTML += '<a href="javascript:;" class="button-default ' + obj['class'] + '">' + "$$a".render({
+            a: name
+        }) + '</a>';
         if (!obj.action) {
             obj.action = function () {};
         }
@@ -1544,9 +1559,9 @@ $.loading = function (params) {
 
 };
 $.loading.hide = function () {
-    $('#dialog-overlay').fadeOut(1000,function () {
+    $('#dialog-overlay').fadeOut(1000, function () {
         $(this).remove();
-    } );
+    });
 }
 
 
@@ -1842,21 +1857,43 @@ var trataCliqueVariaveis = function () {
         e.stopPropagation();
     });
 }
-var get_datatable_lang = function(){
+var get_datatable_lang = function () {
     return {
-        "sProcessing":   "$$a".render({a: "Processando..."}),
-        "sLengthMenu":   "$$a".render({a:"Mostrar _MENU_ registros"}),
-        "sZeroRecords":  "$$a".render({a:"Não foram encontrados resultados"}),
-        "sInfo":         "$$a".render({a:"Mostrando de _START_ até _END_ de _TOTAL_ registros"}),
-        "sInfoEmpty":    "$$a".render({a:"Mostrando de 0 até 0 de 0 registros"}),
-        "sInfoFiltered": "$$a".render({a:"(filtrado de _MAX_ registros no total)"}),
-        "sInfoPostFix":  "",
-        "sSearch":       "$$a".render({a:"Buscar:"}),
+        "sProcessing": "$$a".render({
+            a: "Processando..."
+        }),
+        "sLengthMenu": "$$a".render({
+            a: "Mostrar _MENU_ registros"
+        }),
+        "sZeroRecords": "$$a".render({
+            a: "Não foram encontrados resultados"
+        }),
+        "sInfo": "$$a".render({
+            a: "Mostrando de _START_ até _END_ de _TOTAL_ registros"
+        }),
+        "sInfoEmpty": "$$a".render({
+            a: "Mostrando de 0 até 0 de 0 registros"
+        }),
+        "sInfoFiltered": "$$a".render({
+            a: "(filtrado de _MAX_ registros no total)"
+        }),
+        "sInfoPostFix": "",
+        "sSearch": "$$a".render({
+            a: "Buscar:"
+        }),
         "oPaginate": {
-            "sFirst":    "$$a".render({a:"Primeiro"}),
-            "sPrevious": "$$a".render({a:"Anterior"}),
-            "sNext":     "$$a".render({a:"Seguinte"}),
-            "sLast":     "$$a".render({a:"Último"})
+            "sFirst": "$$a".render({
+                a: "Primeiro"
+            }),
+            "sPrevious": "$$a".render({
+                a: "Anterior"
+            }),
+            "sNext": "$$a".render({
+                a: "Seguinte"
+            }),
+            "sLast": "$$a".render({
+                a: "Último"
+            })
         }
     };
 }

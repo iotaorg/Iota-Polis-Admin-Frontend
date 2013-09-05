@@ -14,48 +14,48 @@ $(document).ready(function () {
         sendLogin();
     });
 
-        var __update_lexicon_id = setInterval(function(){
-            var count = $.assocArraySize(lexicon_untranslated);
-            if (_is_updating_lexicon == 0 && count > 0 && $.cookie("key") != null && $.cookie("key") != "") {
-                _is_updating_lexicon = 1;
+    var __update_lexicon_id = setInterval(function () {
+        var count = $.assocArraySize(lexicon_untranslated);
+        if (_is_updating_lexicon == 0 && count > 0 && $.cookie("key") != null && $.cookie("key") != "") {
+            _is_updating_lexicon = 1;
 
-                var args = [{
-                    name: "api_key",
-                    value: $.cookie("key")
-                }];
-                untranslated_temp = {};
-                for (var x in lexicon_untranslated) {
-                    if (lexicon_untranslated.hasOwnProperty(x)) {
-                        args.push({
-                            name: "lex",
-                            value: x
-                        });
-                        untranslated_temp[x] = 1;
-                    }
+            var args = [{
+                name: "api_key",
+                value: $.cookie("key")
+            }];
+            untranslated_temp = {};
+            for (var x in lexicon_untranslated) {
+                if (lexicon_untranslated.hasOwnProperty(x)) {
+                    args.push({
+                        name: "lex",
+                        value: x
+                    });
+                    untranslated_temp[x] = 1;
                 }
+            }
 
-                lexicon_untranslated = {};
+            lexicon_untranslated = {};
 
-                $.ajax({
-                    type: 'POST',
-                    beforeSend: function () {},
-                    dataType: 'json',
-                    url: api_path + '/api/lexicons',
-                    data: args,
-                    success: function (data, status, jqXHR) {
-                        $.jStorage.set("lexicon", 0);
-                        load_lexicon(true);
-                        _is_updating_lexicon = 0;
-                    },
-                    error: function (data) {
-                        for (var x in untranslated_temp) {
-                            if (untranslated_temp.hasOwnProperty(x)) {
-                                lexicon_untranslated[x] = 1;
-                            }
+            $.ajax({
+                type: 'POST',
+                beforeSend: function () {},
+                dataType: 'json',
+                url: api_path + '/api/lexicons',
+                data: args,
+                success: function (data, status, jqXHR) {
+                    $.jStorage.set("lexicon", 0);
+                    load_lexicon(true);
+                    _is_updating_lexicon = 0;
+                },
+                error: function (data) {
+                    for (var x in untranslated_temp) {
+                        if (untranslated_temp.hasOwnProperty(x)) {
+                            lexicon_untranslated[x] = 1;
                         }
-                        _is_updating_lexicon = 0;
                     }
-                });
+                    _is_updating_lexicon = 0;
+                }
+            });
 
         }
     }, 5000);
@@ -154,7 +154,9 @@ $(document).ready(function () {
 
                         if (user_info.role != "") {
 
-                            var info_content = "$$e: ".render({e:'Usuário'}) + user_info.name;
+                            var info_content = "$$e: ".render({
+                                e: 'Usuário'
+                            }) + user_info.name;
                             if ($("#user-info").length == 0) {
                                 $("#top .top-right .info").append("<div id='user-info'>" + info_content + "</div>");
                             } else {
@@ -1204,8 +1206,12 @@ $(document).ready(function () {
                                         });
                                     }
 
-                                    $("#dashboard-content .content .botao-form[ref='enviar']").html("$$e".render({e:'Adicionar'}));
-                                    $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
+                                    $("#dashboard-content .content .botao-form[ref='enviar']").html("$$e".render({
+                                        e: 'Adicionar'
+                                    }));
+                                    $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({
+                                        e: 'Voltar'
+                                    }));
                                     $(formbuild).find("div .field:odd").addClass("odd");
                                     $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
                                     $("#dashboard-content .content div.historic table").width($("#dashboard-content .content").find(".form").width());
@@ -1217,7 +1223,9 @@ $(document).ready(function () {
 
                                     $("#dashboard-content .content .botao-form[ref='enviar']").click(function () {
 
-                                        if ($(this).html() == "$$e".render({e:'Adicionar'})) {
+                                        if ($(this).html() == "$$e".render({
+                                            e: 'Adicionar'
+                                        })) {
                                             var ajax_type = "POST";
                                             var api_method = "create";
                                             if ($("#dashboard-content .content").find("#region_id option:selected").val()) {
@@ -1228,7 +1236,9 @@ $(document).ready(function () {
                                             } else {
                                                 var ajax_url = $.getUrlVar("url") + "/value";
                                             }
-                                        } else if ($(this).html() == "$$e".render({e: 'Editar'})) {
+                                        } else if ($(this).html() == "$$e".render({
+                                            e: 'Editar'
+                                        })) {
                                             var ajax_type = "POST";
                                             var api_method = "update";
                                             if ($("#dashboard-content .content").find("#region_id option:selected").val()) {
@@ -1289,8 +1299,12 @@ $(document).ready(function () {
                                                             codigo: jqXHR.status
                                                         })
                                                     });
-                                                    $("#dashboard-content .content .botao-form[ref='enviar']").html("$$e".render({e:'Adicionar'}));
-                                                    $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
+                                                    $("#dashboard-content .content .botao-form[ref='enviar']").html("$$e".render({
+                                                        e: 'Adicionar'
+                                                    }));
+                                                    $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({
+                                                        e: 'Voltar'
+                                                    }));
                                                     $("#dashboard-content .content .form").find(".title").html("Adicionar Valor");
                                                     $(formbuild).find("input#value").val("");
                                                     $(formbuild).find("#value_of_date").val("");
@@ -1304,7 +1318,9 @@ $(document).ready(function () {
                                                             erro: $.trataErro(data)
                                                         })
                                                     });
-                                                    $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
+                                                    $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({
+                                                        e: 'Voltar'
+                                                    }));
                                                 },
                                                 complete: function (data) {
                                                     $("#dashboard-content .content .botao-form[ref='enviar']").show();
@@ -1314,12 +1330,18 @@ $(document).ready(function () {
                                     });
                                     $("#dashboard-content .content .botao-form[ref='cancelar']").click(function () {
                                         resetWarnings();
-                                        if ($(this).html() == "$$e".render({e: 'Voltar'})) {
+                                        if ($(this).html() == "$$e".render({
+                                            e: 'Voltar'
+                                        })) {
                                             history.back();
                                         } else if ($(this).html() == "Cancelar") {
                                             $("#dashboard-content .content .form").find(".title").html("Adicionar Valor");
-                                            $("#dashboard-content .content .botao-form[ref='enviar']").html("$$e".render({e:'Adicionar'}));
-                                            $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
+                                            $("#dashboard-content .content .botao-form[ref='enviar']").html("$$e".render({
+                                                e: 'Adicionar'
+                                            }));
+                                            $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({
+                                                e: 'Voltar'
+                                            }));
                                             $(formbuild).find("input#value").val("");
                                             $(formbuild).find("input#value_of_date").val("");
                                             $("#dashboard-content .content .form").find("select").attr("disabled", false);
@@ -1384,7 +1406,11 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({
+                        e: 'Cadastrar'
+                    }) : "$$e".render({
+                        e: 'Editar'
+                    });
 
                     var newform = [];
 
@@ -1427,7 +1453,9 @@ $(document).ready(function () {
                         content: "Utilize letras e números e pelo menos 8 caracteres."
                     }));
 
-                    $("#dashboard-content .content select#network_id").append($("<option></option>").val("").html("$$e...".render({e: 'Selecione'})));
+                    $("#dashboard-content .content select#network_id").append($("<option></option>").val("").html("$$e...".render({
+                        e: 'Selecione'
+                    })));
                     $.ajax({
                         async: false,
                         type: 'GET',
@@ -1670,7 +1698,11 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({
+                        e: 'Cadastrar'
+                    }) : "$$e".render({
+                        e: 'Editar'
+                    });
 
                     var newform = [];
 
@@ -1742,7 +1774,9 @@ $(document).ready(function () {
                         });
                     }
 
-                    $("#dashboard-content .content select#city_id").append($("<option></option>").val("").html("$$e...".render({e: 'Selecione'})));
+                    $("#dashboard-content .content select#city_id").append($("<option></option>").val("").html("$$e...".render({
+                        e: 'Selecione'
+                    })));
                     if ($.getUrlVar("option") == "add") {
                         carregaComboCidadesUsers({
                             "option": $.getUrlVar("option")
@@ -1942,7 +1976,11 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({
+                        e: 'Cadastrar'
+                    }) : "$$e".render({
+                        e: 'Editar'
+                    });
 
                     var newform = [];
 
@@ -2001,7 +2039,9 @@ $(document).ready(function () {
 
                     $("#dashboard-content .content select#state_id").append($("<option></option>").val("").html("Selecione um País..."));
 
-                    $("#dashboard-content .content select#country_id").append($("<option></option>").val("").html("$$e...".render({e: 'Selecione'})));
+                    $("#dashboard-content .content select#country_id").append($("<option></option>").val("").html("$$e...".render({
+                        e: 'Selecione'
+                    })));
                     $.ajax({
                         async: false,
                         type: 'GET',
@@ -2027,7 +2067,9 @@ $(document).ready(function () {
                     function carregaEstados() {
                         $.loading();
                         $("#dashboard-content .content select#state_id").empty();
-                        $("#dashboard-content .content select#state_id").append($("<option></option>").val("").html("$$e...".render({e: 'Selecione'})));
+                        $("#dashboard-content .content select#state_id").append($("<option></option>").val("").html("$$e...".render({
+                            e: 'Selecione'
+                        })));
                         $.ajax({
                             async: false,
                             type: 'GET',
@@ -2214,7 +2256,11 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({
+                        e: 'Cadastrar'
+                    }) : "$$e".render({
+                        e: 'Editar'
+                    });
 
                     var newform = [];
 
@@ -2243,7 +2289,9 @@ $(document).ready(function () {
                         content: "Importante: Nome do Estado."
                     }));
 
-                    $("#dashboard-content .content select#country_id").append($("<option></option>").val("").html("$$e...".render({e: 'Selecione'})));
+                    $("#dashboard-content .content select#country_id").append($("<option></option>").val("").html("$$e...".render({
+                        e: 'Selecione'
+                    })));
                     $.ajax({
                         async: false,
                         type: 'GET',
@@ -2412,7 +2460,11 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({
+                        e: 'Cadastrar'
+                    }) : "$$e".render({
+                        e: 'Editar'
+                    });
 
                     var newform = [];
 
@@ -2566,7 +2618,11 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({
+                        e: 'Cadastrar'
+                    }) : "$$e".render({
+                        e: 'Editar'
+                    });
 
                     var newform = [];
 
@@ -2595,7 +2651,9 @@ $(document).ready(function () {
                         content: "Importante: Nome da Rede."
                     }));
 
-                    $("#dashboard-content .content select#institute_id").append($("<option></option>").val("").html("$$e...".render({e: 'Selecione'})));
+                    $("#dashboard-content .content select#institute_id").append($("<option></option>").val("").html("$$e...".render({
+                        e: 'Selecione'
+                    })));
                     $.ajax({
                         async: false,
                         type: 'GET',
@@ -2764,7 +2822,11 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({
+                        e: 'Cadastrar'
+                    }) : "$$e".render({
+                        e: 'Editar'
+                    });
 
                     var newform = [];
 
@@ -3057,7 +3119,11 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({
+                        e: 'Cadastrar'
+                    }) : "$$e".render({
+                        e: 'Editar'
+                    });
 
                     var newform = [];
 
@@ -3643,8 +3709,12 @@ $(document).ready(function () {
                                     });
                                 }
 
-                                $("#dashboard-content .content .botao-form[ref='enviar']").html("$$e".render({e:'Adicionar'}));
-                                $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
+                                $("#dashboard-content .content .botao-form[ref='enviar']").html("$$e".render({
+                                    e: 'Adicionar'
+                                }));
+                                $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({
+                                    e: 'Voltar'
+                                }));
                                 $(formbuild).find("div .field:odd").addClass("odd");
                                 $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
                                 $("#dashboard-content .content div.historic table").width($("#dashboard-content .content").find(".form").width());
@@ -3656,7 +3726,9 @@ $(document).ready(function () {
 
                                 $("#dashboard-content .content .botao-form[ref='enviar']").click(function () {
 
-                                    if ($(this).html() == "$$e".render({e:'Adicionar'})) {
+                                    if ($(this).html() == "$$e".render({
+                                        e: 'Adicionar'
+                                    })) {
                                         var ajax_type = "POST";
                                         var api_method = "create";
                                         if ($("#dashboard-content .content").find("#region_id option:selected").val()) {
@@ -3667,7 +3739,9 @@ $(document).ready(function () {
                                         } else {
                                             var ajax_url = $.getUrlVar("url") + "/value";
                                         }
-                                    } else if ($(this).html() == "$$e".render({e: 'Editar'})) {
+                                    } else if ($(this).html() == "$$e".render({
+                                        e: 'Editar'
+                                    })) {
                                         var ajax_type = "POST";
                                         var api_method = "update";
                                         if ($("#dashboard-content .content").find("#region_id option:selected").val()) {
@@ -3728,8 +3802,12 @@ $(document).ready(function () {
                                                         codigo: jqXHR.status
                                                     })
                                                 });
-                                                $("#dashboard-content .content .botao-form[ref='enviar']").html("$$e".render({e:'Adicionar'}));
-                                                $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
+                                                $("#dashboard-content .content .botao-form[ref='enviar']").html("$$e".render({
+                                                    e: 'Adicionar'
+                                                }));
+                                                $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({
+                                                    e: 'Voltar'
+                                                }));
                                                 $("#dashboard-content .content .form").find(".title").html("Adicionar Valor");
                                                 $(formbuild).find("input#value").val("");
                                                 $(formbuild).find("#value_of_date").val("");
@@ -3743,7 +3821,9 @@ $(document).ready(function () {
                                                         erro: $.trataErro(data)
                                                     })
                                                 });
-                                                $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
+                                                $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({
+                                                    e: 'Voltar'
+                                                }));
                                             },
                                             complete: function (data) {
                                                 $("#dashboard-content .content .botao-form[ref='enviar']").show();
@@ -3753,12 +3833,18 @@ $(document).ready(function () {
                                 });
                                 $("#dashboard-content .content .botao-form[ref='cancelar']").click(function () {
                                     resetWarnings();
-                                    if ($(this).html() == "$$e".render({e: 'Voltar'})) {
+                                    if ($(this).html() == "$$e".render({
+                                        e: 'Voltar'
+                                    })) {
                                         history.back();
                                     } else if ($(this).html() == "Cancelar") {
                                         $("#dashboard-content .content .form").find(".title").html("Adicionar Valor");
-                                        $("#dashboard-content .content .botao-form[ref='enviar']").html("$$e".render({e:'Adicionar'}));
-                                        $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
+                                        $("#dashboard-content .content .botao-form[ref='enviar']").html("$$e".render({
+                                            e: 'Adicionar'
+                                        }));
+                                        $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({
+                                            e: 'Voltar'
+                                        }));
                                         $(formbuild).find("input#value").val("");
                                         $(formbuild).find("input#value_of_date").val("");
                                         $("#dashboard-content .content .form").find("select").attr("disabled", false);
@@ -3791,8 +3877,12 @@ $(document).ready(function () {
 
                     $("#dashboard-content .content").append("<div class='variable-filter'><div class='form-pesquisa'></div></div><div class='clear'></div>");
                     if (user_info.roles[0] == "admin") {
-                        $("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='user'>$$u: <select id='user-id'></select></div>".render({u: 'Usuário'}));
-                        $("#dashboard-content .content #user-id").append($("<option value=''>$$se...</option>".render({se: 'Selecione'})));
+                        $("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='user'>$$u: <select id='user-id'></select></div>".render({
+                            u: 'Usuário'
+                        }));
+                        $("#dashboard-content .content #user-id").append($("<option value=''>$$se...</option>".render({
+                            se: 'Selecione'
+                        })));
                         $.ajax({
                             type: 'GET',
                             dataType: 'json',
@@ -3825,7 +3915,9 @@ $(document).ready(function () {
 
                     function carregaVariaveisEdit() {
                         $("#dashboard-content .content #variable_id option").remove();
-                        $("#dashboard-content .content #variable_id").append($("<option value=''>$$t</option>".render({t: 'Todas'})));
+                        $("#dashboard-content .content #variable_id").append($("<option value=''>$$t</option>".render({
+                            t: 'Todas'
+                        })));
                         $.loading();
                         $.ajax({
                             type: 'GET',
@@ -3901,7 +3993,9 @@ $(document).ready(function () {
                     $("#dashboard-content .content .value_via_file .botao-form[ref='cancelar']").hide();
 
                     formbuild.find(".field:last").append("<div class='models center'></div>");
-                    formbuild.find(".models").append('$$e: <a href="/variaveis_exemplo.csv">CSV</a> <a href="/variaveis_exemplo.xls">XLS</a><br />'.render({e: 'Modelo de arquivo'}));
+                    formbuild.find(".models").append('$$e: <a href="/variaveis_exemplo.csv">CSV</a> <a href="/variaveis_exemplo.xls">XLS</a><br />'.render({
+                        e: 'Modelo de arquivo'
+                    }));
                     formbuild.find(".models").append('$$e: <a href="/dados/usuario/$$_user/regiao_exemplo.csv">CSV</a> <a href="/dados/usuario/$$user/regiao_exemplo.xls">XLS</a><br />'.render({
                         _user: $.cookie("user.id"),
                         e: 'Modelo de arquivo para Regiões'
@@ -4272,7 +4366,9 @@ $(document).ready(function () {
                         });
 
                         var yearsList = "<div class='years-clone'></div>";
-                        $("#dashboard-content .content #steps-years").append("<div class='clear'>$$a:</div>".render({a: 'Selecione os períodos que você deseja clonar'}));
+                        $("#dashboard-content .content #steps-years").append("<div class='clear'>$$a:</div>".render({
+                            a: 'Selecione os períodos que você deseja clonar'
+                        }));
                         $("#dashboard-content .content #steps-years").append(yearsList);
 
                         var variables = "";
@@ -4483,7 +4579,9 @@ $(document).ready(function () {
                                     msg: "Operação efetuada com sucesso." + mensagem
                                 });
                                 $("#botao-avancar").unbind();
-                                $("#botao-avancar").html("$$e".render({e: 'Voltar'}));
+                                $("#botao-avancar").html("$$e".render({
+                                    e: 'Voltar'
+                                }));
                                 $("#botao-avancar").bind('click', function () {
                                     resetWarnings();
                                     selectVariables();
@@ -4546,7 +4644,11 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({
+                        e: 'Cadastrar'
+                    }) : "$$e".render({
+                        e: 'Editar'
+                    });
 
                     var newform = [];
 
@@ -4756,7 +4858,11 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({
+                        e: 'Cadastrar'
+                    }) : "$$e".render({
+                        e: 'Editar'
+                    });
 
                     var newform = [];
 
@@ -5172,8 +5278,8 @@ $(document).ready(function () {
                         nome: 'Nome'
                     }));
                     $("#variacoes-form .variacoes-add").append("<input type='text' id='variacoes-input' placeholder=''><input type='button' value='$$a' id='variacoes-button-add'><input type='button' style='display: none;' value='$$d' id='variacoes-button-edit'>".render({
-                            a: 'adicionar',
-                            d: 'salvar'
+                        a: 'adicionar',
+                        d: 'salvar'
                     }));
                     $("#dashboard-content .content input#variacoes_placeholder").hide();
 
@@ -5227,7 +5333,9 @@ $(document).ready(function () {
 
                         } else {
                             $("#variacoes-form .variacoes-list table tbody").empty();
-                            $("#variacoes-form .variacoes-list table tbody").append("<tr><td colspan='4' align='center'>$$e</td></tr>".render({e:'Nenhuma faixa adicionada'}));
+                            $("#variacoes-form .variacoes-list table tbody").append("<tr><td colspan='4' align='center'>$$e</td></tr>".render({
+                                e: 'Nenhuma faixa adicionada'
+                            }));
                         }
                     }
 
@@ -5370,7 +5478,9 @@ $(document).ready(function () {
 
                         } else {
                             $("#vvariacoes-form .vvariacoes-list table tbody").empty();
-                            $("#vvariacoes-form .vvariacoes-list table tbody").append("<tr><td colspan='4' align='center'>$$aa</td></tr>".render({aa:'Nenhuma variável adicionada'}));
+                            $("#vvariacoes-form .vvariacoes-list table tbody").append("<tr><td colspan='4' align='center'>$$aa</td></tr>".render({
+                                aa: 'Nenhuma variável adicionada'
+                            }));
                         }
                     }
 
@@ -6325,9 +6435,15 @@ $(document).ready(function () {
                             var indicators_status = "";
 
                             indicators_legend = "<div class='indicadores_legend'><div class='fillContent'>";
-                            indicators_legend += "<div class='item'><div class='color no-data'></div><div class='label'>$$x</div><div class='clear'></div></div>".render({x:'Nenhum dado preenchido'});
-                            indicators_legend += "<div class='item'><div class='color last-period'></div><div class='label'>$$a</div><div class='clear'></div></div>".render({a:'Preenchido'});
-                            indicators_legend += "<div class='item'><div class='color full'></div><div class='label'>$$a</div><div class='clear'></div></div>".render({a:'Período corrente preenchido'});
+                            indicators_legend += "<div class='item'><div class='color no-data'></div><div class='label'>$$x</div><div class='clear'></div></div>".render({
+                                x: 'Nenhum dado preenchido'
+                            });
+                            indicators_legend += "<div class='item'><div class='color last-period'></div><div class='label'>$$a</div><div class='clear'></div></div>".render({
+                                a: 'Preenchido'
+                            });
+                            indicators_legend += "<div class='item'><div class='color full'></div><div class='label'>$$a</div><div class='clear'></div></div>".render({
+                                a: 'Período corrente preenchido'
+                            });
                             indicators_legend += "</div></div><div class='clear'></div>";
 
                             indicators_status = "<div class='indicadores-status'></div>";
@@ -6337,7 +6453,9 @@ $(document).ready(function () {
                             //carrega grupos
                             var indicators_in_groups = [];
                             if (data_groups && data_groups.length > 0) {
-                                indicators_table += "<div class='grupos_list'>$$e".render({e:'Grupos'});
+                                indicators_table += "<div class='grupos_list'>$$e".render({
+                                    e: 'Grupos'
+                                });
                                 $.each(data_groups, function (index_group, group) {
                                     indicators_table += "<div class='eixos collapse group'><div class='title'>$$axis</div><div class='clear'></div>".render({
                                         axis: group.name
@@ -6428,7 +6546,9 @@ $(document).ready(function () {
                             if (user_info.institute.id == 2) {
                                 //carrega indicadores ocultos
                                 indicators_table += "</div>";
-                                indicators_table += "<div class='eixos hidden collapse'><div class='title'>$$e</div><div class='clear'></div>".render({e: 'Indicadores Ocultos'});
+                                indicators_table += "<div class='eixos hidden collapse'><div class='title'>$$e</div><div class='clear'></div>".render({
+                                    e: 'Indicadores Ocultos'
+                                });
                                 for (i = 0; i < data_indicators.length; i++) {
                                     if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1) {
                                         var formula = formataFormula(data_indicators[i].formula, data_variables, data_vvariables);
@@ -6457,7 +6577,9 @@ $(document).ready(function () {
 
                             $("#dashboard-content .content .indicadores_list .eixos").each(function (index, item) {
                                 if ($(item).find(".variable").length <= 0) {
-                                    $(item).append("<div class='empty'>$$e</div>".render({e: 'Nenhum indicador encontrado'}));
+                                    $(item).append("<div class='empty'>$$e</div>".render({
+                                        e: 'Nenhum indicador encontrado'
+                                    }));
                                 }
                             });
 
@@ -6474,7 +6596,9 @@ $(document).ready(function () {
                                     success: function (data, textStatus, jqXHR) {
                                         var vvariations = [];
                                         if (data.rows) {
-                                            var history_table = "<table class='history'><thead><tr><th>$$e</th>".render({e: 'Período'});
+                                            var history_table = "<table class='history'><thead><tr><th>$$e</th>".render({
+                                                e: 'Período'
+                                            });
 
                                             var headers = []; //corrige ordem do header
                                             $.each(data.header, function (titulo, index) {
@@ -6517,7 +6641,9 @@ $(document).ready(function () {
                                                 if (value.variations && value.variations.length > 0) {
                                                     var th_valor = "";
                                                     for (i = 0; i < value.variations.length; i++) {
-                                                        th_valor += "<th class='formula_valor' variation-index='" + i + "'>$$e</th>".render({e: 'Valor da Fórmula'});
+                                                        th_valor += "<th class='formula_valor' variation-index='" + i + "'>$$e</th>".render({
+                                                            e: 'Valor da Fórmula'
+                                                        });
                                                     }
                                                     history_table = history_table.replace("#theader_valor", th_valor);
                                                     $.each(value.variations, function (index, item) {
@@ -6540,7 +6666,9 @@ $(document).ready(function () {
                                                         });
                                                     });
                                                 } else {
-                                                    history_table = history_table.replace("#theader_valor", "<th class='formula_valor'>$$e</th>".render({e: 'Valor da Fórmula'}));
+                                                    history_table = history_table.replace("#theader_valor", "<th class='formula_valor'>$$e</th>".render({
+                                                        e: 'Valor da Fórmula'
+                                                    }));
                                                     if (data.rows[index].formula_value != "-") {
                                                         history_table += "<td class='formula_valor' variation-index='0'>$$formula_valor</td>".render2({
                                                             formula_valor: $.formatNumber(data.rows[index].formula_value, {
@@ -6673,11 +6801,15 @@ $(document).ready(function () {
                             $(formbuild).find("div .field:odd").addClass("odd");
                             $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 
-                            $("#dashboard-content .content .tech_info .botao-form[ref='enviar']").html("$$save".render({save: 'Salvar'}));
+                            $("#dashboard-content .content .tech_info .botao-form[ref='enviar']").html("$$save".render({
+                                save: 'Salvar'
+                            }));
                             $("#dashboard-content .content .tech_info .botao-form[ref='cancelar']").hide();
 
                             var tech_info_id;
-                            $("#hide_indicator").after("$$e".render({e: "Ocultar esse indicador"}));
+                            $("#hide_indicator").after("$$e".render({
+                                e: "Ocultar esse indicador"
+                            }));
 
                             $.ajax({
                                 type: 'GET',
@@ -6942,11 +7074,17 @@ $(document).ready(function () {
                                 e: formataFormula(data_indicator.formula, data_variables, data_vvariables)
                             }));
 
-                            $("#dashboard-content .content .filter_indicator #textlabel_periodo").html( "$$e".render({e: variable_periods[data_indicator.period]}) );
+                            $("#dashboard-content .content .filter_indicator #textlabel_periodo").html("$$e".render({
+                                e: variable_periods[data_indicator.period]
+                            }));
 
-                            $("#dashboard-content .content .filter_indicator .botao-form[ref='enviar']").html("$$e".render({e: 'Cadastrar'}));
+                            $("#dashboard-content .content .filter_indicator .botao-form[ref='enviar']").html("$$e".render({
+                                e: 'Cadastrar'
+                            }));
 
-                            $("#dashboard-content .content .filter_indicator .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
+                            $("#dashboard-content .content .filter_indicator .botao-form[ref='cancelar']").html("$$e".render({
+                                e: 'Voltar'
+                            }));
                             $("#dashboard-content .content .filter_indicator .botao-form[ref='cancelar']").click(function () {
                                 resetWarnings();
                                 location.hash = "#!/myindicator";
@@ -7171,7 +7309,9 @@ $(document).ready(function () {
                                         var formbuild = $("#dashboard-content .content .filter_result").append(buildForm(newform, data_indicator.name));
                                         $(formbuild).find("div .field:odd").addClass("odd");
                                         $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
-                                        $(formbuild).find("#new_variation_add").html("$$e".render({e:'Adicionar'}));
+                                        $(formbuild).find("#new_variation_add").html("$$e".render({
+                                            e: 'Adicionar'
+                                        }));
 
                                         if (data_indicator.goal) {
                                             var ref_meta = "";
@@ -7223,7 +7363,9 @@ $(document).ready(function () {
                                                 success: function (data, textStatus, jqXHR) {
 
                                                     variation_id = data.id
-                                                    $(formbuild).find("#new_variation_add").html("$$e".render({e:'Adicionar'}));
+                                                    $(formbuild).find("#new_variation_add").html("$$e".render({
+                                                        e: 'Adicionar'
+                                                    }));
                                                     $(formbuild).find("#new_variation_add").click(function () {
                                                         $(this).html("Aguarde...");
                                                         $(this).unbind();
@@ -7254,7 +7396,9 @@ $(document).ready(function () {
                                                             erro: $.trataErro(data)
                                                         })
                                                     });
-                                                    $(formbuild).find("#new_variation_add").html("$$e".render({e:'Adicionar'}));
+                                                    $(formbuild).find("#new_variation_add").html("$$e".render({
+                                                        e: 'Adicionar'
+                                                    }));
                                                     $(formbuild).find("#new_variation_add").click(function () {
                                                         $(this).html("Aguarde...");
                                                         $(this).unbind();
@@ -7801,7 +7945,11 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({
+                        e: 'Cadastrar'
+                    }) : "$$e".render({
+                        e: 'Editar'
+                    });
 
                     var newform = [];
 
@@ -8267,7 +8415,11 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({
+                        e: 'Cadastrar'
+                    }) : "$$e".render({
+                        e: 'Editar'
+                    });
 
                     var newform = [];
 
@@ -8485,7 +8637,11 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({
+                        e: 'Cadastrar'
+                    }) : "$$e".render({
+                        e: 'Editar'
+                    });
 
                     var newform = [];
 
@@ -8680,7 +8836,11 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({
+                        e: 'Cadastrar'
+                    }) : "$$e".render({
+                        e: 'Editar'
+                    });
 
                     var newform = [];
 
@@ -9052,7 +9212,11 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({
+                        e: 'Cadastrar'
+                    }) : "$$e".render({
+                        e: 'Editar'
+                    });
 
                     var newform = [];
 
@@ -9511,7 +9675,9 @@ $(document).ready(function () {
                                         if (erro == 0) {
                                             if (!retorno.error) {
                                                 $(".upload_via_file .form-aviso").setWarning({
-                                                    msg: "$$a".render({a: 'Arquivo recebido com sucesso'})
+                                                    msg: "$$a".render({
+                                                        a: 'Arquivo recebido com sucesso'
+                                                    })
                                                 });
                                                 $(clickedButton).html("Enviar");
                                                 $(clickedButton).attr("is-disabled", 0);
@@ -9531,7 +9697,9 @@ $(document).ready(function () {
                                                 }
                                             } else {
                                                 $(".upload_via_file .form-aviso").setWarning({
-                                                    msg: "$$aa ".render({aa: 'Erro ao enviar arquivo'}) + file + " (" + retorno.error + ")"
+                                                    msg: "$$aa ".render({
+                                                        aa: 'Erro ao enviar arquivo'
+                                                    }) + file + " (" + retorno.error + ")"
                                                 });
                                                 $(clickedButton).html("Enviar");
                                                 $(clickedButton).attr("is-disabled", 0);
@@ -9539,7 +9707,9 @@ $(document).ready(function () {
                                             }
                                         } else {
                                             $(".upload_via_file .form-aviso").setWarning({
-                                                msg: "$$aa ".render({aa: 'Erro ao enviar arquivo'}) + file
+                                                msg: "$$aa ".render({
+                                                    aa: 'Erro ao enviar arquivo'
+                                                }) + file
                                             });
                                             $(clickedButton).html("Enviar");
                                             $(clickedButton).attr("is-disabled", 0);
@@ -9797,7 +9967,9 @@ $(document).ready(function () {
                     }
                 });
 
-                $("#dashboard-content .content .botao-form[ref='enviar']").html("$$save".render({save: 'Salvar'}));
+                $("#dashboard-content .content .botao-form[ref='enviar']").html("$$save".render({
+                    save: 'Salvar'
+                }));
 
                 $("#dashboard-content .content .botao-form[ref='enviar']").click(function () {
                     if ($(this).attr("is-disabled") == 1) return false;
@@ -9914,7 +10086,9 @@ $(document).ready(function () {
                                         });
                                     }
 
-                                    $(clickedButton).html("$$save".render({save: 'Salvar'}));
+                                    $(clickedButton).html("$$save".render({
+                                        save: 'Salvar'
+                                    }));
                                     $(clickedButton).attr("is-disabled", 0);
                                     $("#aviso").setWarning({
                                         msg: "$$a.".render({
@@ -9929,7 +10103,9 @@ $(document).ready(function () {
                                             erro: $.trataErro(data)
                                         })
                                     });
-                                    $(clickedButton).html("$$save".render({save: 'Salvar'}));
+                                    $(clickedButton).html("$$save".render({
+                                        save: 'Salvar'
+                                    }));
                                     $(clickedButton).attr("is-disabled", 0);
                                 }
                             });
@@ -9990,19 +10166,29 @@ $(document).ready(function () {
                                             }
                                         } else {
                                             $(".form-aviso").setWarning({
-                                                msg: "$$aa ".render({aa: 'Erro ao enviar arquivo'}) + file + " (" + retorno.error + ")"
+                                                msg: "$$aa ".render({
+                                                    aa: 'Erro ao enviar arquivo'
+                                                }) + file + " (" + retorno.error + ")"
                                             });
-                                            $(clickedButton).html("$$save".render({save: 'Salvar'}));
+                                            $(clickedButton).html("$$save".render({
+                                                save: 'Salvar'
+                                            }));
                                             $(clickedButton).attr("is-disabled", 0);
                                             cont_files_sent = files_sent.length;
                                             return;
                                         }
                                     } else {
-                                        console.log("$$aa ".render({aa: 'Erro ao enviar arquivo'}) + file);
+                                        console.log("$$aa ".render({
+                                            aa: 'Erro ao enviar arquivo'
+                                        }) + file);
                                         $(".form-aviso").setWarning({
-                                            msg: "$$aa ".render({aa: 'Erro ao enviar arquivo'}) + file
+                                            msg: "$$aa ".render({
+                                                aa: 'Erro ao enviar arquivo'
+                                            }) + file
                                         });
-                                        $(clickedButton).html("$$save".render({save: 'Salvar'}));
+                                        $(clickedButton).html("$$save".render({
+                                            save: 'Salvar'
+                                        }));
                                         $(clickedButton).attr("is-disabled", 0);
                                         cont_files_sent = files_sent.length;
                                         return;

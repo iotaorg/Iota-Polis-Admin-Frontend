@@ -1094,7 +1094,7 @@ $(document).ready(function () {
 
                                     newform.push({
                                         label: "Período",
-                                        input: ["textlabel,textlabel_period,ilabel"]
+                                        input: ["textlabel,textlabel_pxe,ilabel"]
                                     });
                                     if (data.period == "yearly") {
                                         newform.push({
@@ -1205,14 +1205,14 @@ $(document).ready(function () {
                                     }
 
                                     $("#dashboard-content .content .botao-form[ref='enviar']").html("Adicionar");
-                                    $("#dashboard-content .content .botao-form[ref='cancelar']").html("Voltar");
+                                    $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
                                     $(formbuild).find("div .field:odd").addClass("odd");
                                     $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
                                     $("#dashboard-content .content div.historic table").width($("#dashboard-content .content").find(".form").width());
 
                                     $(formbuild).find("div#textlabel_variable").html(data.name);
                                     $(formbuild).find("div#textlabel_explanation").html(data.explanation);
-                                    $(formbuild).find("div#textlabel_period").html(variable_periods[data.period]);
+                                    $(formbuild).find("div#textlabel_pxe").html(variable_pxes[data.period]);
 
 
                                     $("#dashboard-content .content .botao-form[ref='enviar']").click(function () {
@@ -1228,7 +1228,7 @@ $(document).ready(function () {
                                             } else {
                                                 var ajax_url = $.getUrlVar("url") + "/value";
                                             }
-                                        } else if ($(this).html() == "Editar") {
+                                        } else if ($(this).html() == "$$e".render({e: 'Editar'})) {
                                             var ajax_type = "POST";
                                             var api_method = "update";
                                             if ($("#dashboard-content .content").find("#region_id option:selected").val()) {
@@ -1290,7 +1290,7 @@ $(document).ready(function () {
                                                         })
                                                     });
                                                     $("#dashboard-content .content .botao-form[ref='enviar']").html("Adicionar");
-                                                    $("#dashboard-content .content .botao-form[ref='cancelar']").html("Voltar");
+                                                    $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
                                                     $("#dashboard-content .content .form").find(".title").html("Adicionar Valor");
                                                     $(formbuild).find("input#value").val("");
                                                     $(formbuild).find("#value_of_date").val("");
@@ -1304,7 +1304,7 @@ $(document).ready(function () {
                                                             erro: $.trataErro(data)
                                                         })
                                                     });
-                                                    $("#dashboard-content .content .botao-form[ref='cancelar']").html("Voltar");
+                                                    $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
                                                 },
                                                 complete: function (data) {
                                                     $("#dashboard-content .content .botao-form[ref='enviar']").show();
@@ -1314,12 +1314,12 @@ $(document).ready(function () {
                                     });
                                     $("#dashboard-content .content .botao-form[ref='cancelar']").click(function () {
                                         resetWarnings();
-                                        if ($(this).html() == "Voltar") {
+                                        if ($(this).html() == "$$e".render({e: 'Voltar'})) {
                                             history.back();
                                         } else if ($(this).html() == "Cancelar") {
                                             $("#dashboard-content .content .form").find(".title").html("Adicionar Valor");
                                             $("#dashboard-content .content .botao-form[ref='enviar']").html("Adicionar");
-                                            $("#dashboard-content .content .botao-form[ref='cancelar']").html("Voltar");
+                                            $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
                                             $(formbuild).find("input#value").val("");
                                             $(formbuild).find("input#value_of_date").val("");
                                             $("#dashboard-content .content .form").find("select").attr("disabled", false);
@@ -1384,7 +1384,7 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
 
                     var newform = [];
 
@@ -1427,7 +1427,7 @@ $(document).ready(function () {
                         content: "Utilize letras e números e pelo menos 8 caracteres."
                     }));
 
-                    $("#dashboard-content .content select#network_id").append($("<option></option>").val("").html("Selecione..."));
+                    $("#dashboard-content .content select#network_id").append($("<option></option>").val("").html("$$e...".render({e: 'Selecione'})));
                     $.ajax({
                         async: false,
                         type: 'GET',
@@ -1670,7 +1670,7 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
 
                     var newform = [];
 
@@ -1742,7 +1742,7 @@ $(document).ready(function () {
                         });
                     }
 
-                    $("#dashboard-content .content select#city_id").append($("<option></option>").val("").html("Selecione..."));
+                    $("#dashboard-content .content select#city_id").append($("<option></option>").val("").html("$$e...".render({e: 'Selecione'})));
                     if ($.getUrlVar("option") == "add") {
                         carregaComboCidadesUsers({
                             "option": $.getUrlVar("option")
@@ -1942,7 +1942,7 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
 
                     var newform = [];
 
@@ -2001,7 +2001,7 @@ $(document).ready(function () {
 
                     $("#dashboard-content .content select#state_id").append($("<option></option>").val("").html("Selecione um País..."));
 
-                    $("#dashboard-content .content select#country_id").append($("<option></option>").val("").html("Selecione..."));
+                    $("#dashboard-content .content select#country_id").append($("<option></option>").val("").html("$$e...".render({e: 'Selecione'})));
                     $.ajax({
                         async: false,
                         type: 'GET',
@@ -2027,7 +2027,7 @@ $(document).ready(function () {
                     function carregaEstados() {
                         $.loading();
                         $("#dashboard-content .content select#state_id").empty();
-                        $("#dashboard-content .content select#state_id").append($("<option></option>").val("").html("Selecione..."));
+                        $("#dashboard-content .content select#state_id").append($("<option></option>").val("").html("$$e...".render({e: 'Selecione'})));
                         $.ajax({
                             async: false,
                             type: 'GET',
@@ -2214,7 +2214,7 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
 
                     var newform = [];
 
@@ -2243,7 +2243,7 @@ $(document).ready(function () {
                         content: "Importante: Nome do Estado."
                     }));
 
-                    $("#dashboard-content .content select#country_id").append($("<option></option>").val("").html("Selecione..."));
+                    $("#dashboard-content .content select#country_id").append($("<option></option>").val("").html("$$e...".render({e: 'Selecione'})));
                     $.ajax({
                         async: false,
                         type: 'GET',
@@ -2412,7 +2412,7 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
 
                     var newform = [];
 
@@ -2566,7 +2566,7 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
 
                     var newform = [];
 
@@ -2595,7 +2595,7 @@ $(document).ready(function () {
                         content: "Importante: Nome da Rede."
                     }));
 
-                    $("#dashboard-content .content select#institute_id").append($("<option></option>").val("").html("Selecione..."));
+                    $("#dashboard-content .content select#institute_id").append($("<option></option>").val("").html("$$e...".render({e: 'Selecione'})));
                     $.ajax({
                         async: false,
                         type: 'GET',
@@ -2764,7 +2764,7 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
 
                     var newform = [];
 
@@ -3057,7 +3057,7 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
 
                     var newform = [];
 
@@ -3129,7 +3129,7 @@ $(document).ready(function () {
 
                     loadComboSources(sources, $("#dashboard-content .content select#source"), $("#dashboard-content .content input#source_new"));
 
-                    $.each(variable_periods, function (key, value) {
+                    $.each(variable_pxes, function (key, value) {
                         $("#dashboard-content .content select#period").append($("<option></option>").val(key).html(value));
                     });
 
@@ -3533,7 +3533,7 @@ $(document).ready(function () {
 
                                 newform.push({
                                     label: "Período",
-                                    input: ["textlabel,textlabel_period,ilabel"]
+                                    input: ["textlabel,textlabel_pxe,ilabel"]
                                 });
                                 if (data.period == "yearly") {
                                     newform.push({
@@ -3644,14 +3644,14 @@ $(document).ready(function () {
                                 }
 
                                 $("#dashboard-content .content .botao-form[ref='enviar']").html("Adicionar");
-                                $("#dashboard-content .content .botao-form[ref='cancelar']").html("Voltar");
+                                $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
                                 $(formbuild).find("div .field:odd").addClass("odd");
                                 $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
                                 $("#dashboard-content .content div.historic table").width($("#dashboard-content .content").find(".form").width());
 
                                 $(formbuild).find("div#textlabel_variable").html(data.name);
                                 $(formbuild).find("div#textlabel_explanation").html(data.explanation);
-                                $(formbuild).find("div#textlabel_period").html(variable_periods[data.period]);
+                                $(formbuild).find("div#textlabel_pxe").html(variable_pxes[data.period]);
 
 
                                 $("#dashboard-content .content .botao-form[ref='enviar']").click(function () {
@@ -3667,7 +3667,7 @@ $(document).ready(function () {
                                         } else {
                                             var ajax_url = $.getUrlVar("url") + "/value";
                                         }
-                                    } else if ($(this).html() == "Editar") {
+                                    } else if ($(this).html() == "$$e".render({e: 'Editar'})) {
                                         var ajax_type = "POST";
                                         var api_method = "update";
                                         if ($("#dashboard-content .content").find("#region_id option:selected").val()) {
@@ -3729,7 +3729,7 @@ $(document).ready(function () {
                                                     })
                                                 });
                                                 $("#dashboard-content .content .botao-form[ref='enviar']").html("Adicionar");
-                                                $("#dashboard-content .content .botao-form[ref='cancelar']").html("Voltar");
+                                                $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
                                                 $("#dashboard-content .content .form").find(".title").html("Adicionar Valor");
                                                 $(formbuild).find("input#value").val("");
                                                 $(formbuild).find("#value_of_date").val("");
@@ -3743,7 +3743,7 @@ $(document).ready(function () {
                                                         erro: $.trataErro(data)
                                                     })
                                                 });
-                                                $("#dashboard-content .content .botao-form[ref='cancelar']").html("Voltar");
+                                                $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
                                             },
                                             complete: function (data) {
                                                 $("#dashboard-content .content .botao-form[ref='enviar']").show();
@@ -3753,12 +3753,12 @@ $(document).ready(function () {
                                 });
                                 $("#dashboard-content .content .botao-form[ref='cancelar']").click(function () {
                                     resetWarnings();
-                                    if ($(this).html() == "Voltar") {
+                                    if ($(this).html() == "$$e".render({e: 'Voltar'})) {
                                         history.back();
                                     } else if ($(this).html() == "Cancelar") {
                                         $("#dashboard-content .content .form").find(".title").html("Adicionar Valor");
                                         $("#dashboard-content .content .botao-form[ref='enviar']").html("Adicionar");
-                                        $("#dashboard-content .content .botao-form[ref='cancelar']").html("Voltar");
+                                        $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
                                         $(formbuild).find("input#value").val("");
                                         $(formbuild).find("input#value_of_date").val("");
                                         $("#dashboard-content .content .form").find("select").attr("disabled", false);
@@ -4272,7 +4272,7 @@ $(document).ready(function () {
                         });
 
                         var yearsList = "<div class='years-clone'></div>";
-                        $("#dashboard-content .content #steps-years").append("<div class='clear'>Selecione os períodos que você deseja clonar:</div>");
+                        $("#dashboard-content .content #steps-years").append("<div class='clear'>$$a:</div>".render({a: 'Selecione os períodos que você deseja clonar'}));
                         $("#dashboard-content .content #steps-years").append(yearsList);
 
                         var variables = "";
@@ -4483,7 +4483,7 @@ $(document).ready(function () {
                                     msg: "Operação efetuada com sucesso." + mensagem
                                 });
                                 $("#botao-avancar").unbind();
-                                $("#botao-avancar").html("Voltar");
+                                $("#botao-avancar").html("$$e".render({e: 'Voltar'}));
                                 $("#botao-avancar").bind('click', function () {
                                     resetWarnings();
                                     selectVariables();
@@ -4546,7 +4546,7 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
 
                     var newform = [];
 
@@ -4756,7 +4756,7 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
 
                     var newform = [];
 
@@ -6357,10 +6357,11 @@ $(document).ready(function () {
                                                     }
                                                 });
 
-                                                indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$_id' period='$$period'>detalhes</a><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
+                                                indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$_id' period='$$_pxe'>$$det</a><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
                                                     name: data_indicators[i].name,
                                                     fxormula: formula,
-                                                    period: data_indicators[i].period,
+                                                    det: 'detalhes',
+                                                    _pxe: data_indicators[i].period,
                                                     _hash: "#!/" + getUrlSub(),
                                                     _url: api_path + "/api/indicator/" + data_indicators[i].id,
                                                     _indicator_id: data_indicators[i].id,
@@ -6402,13 +6403,15 @@ $(document).ready(function () {
                                         tr_class = "unfolded";
                                     }
                                 });
-                                indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$_id' period='$$_period'>detalhes</a><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
+
+                                indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$_id' period='$$_pxe' aaa=123>$$det</a><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
                                     name: data_indicators[i].name,
                                     fxormula: formula,
                                     _hash: "#!/" + getUrlSub(),
                                     _url: api_path + "/api/indicator/" + data_indicators[i].id,
                                     _indicator_id: data_indicators[i].id,
-                                    _period: data_indicators[i].period,
+                                    det: 'detalhes',
+                                    _pxe: data_indicators[i].period,
                                     _id: data_indicators[i].id,
                                     _tr_class: tr_class
                                 });
@@ -6455,7 +6458,7 @@ $(document).ready(function () {
 
                             $("#dashboard-content .content .indicadores_list .zoom").click(function () {
                                 var target = $(this).parent().parent();
-                                var indicator_period = $(this).attr("period");
+                                var indicator_pxe = $(this).attr("period");
                                 $.ajax({
                                     type: 'GET',
                                     dataType: 'json',
@@ -6466,7 +6469,7 @@ $(document).ready(function () {
                                     success: function (data, textStatus, jqXHR) {
                                         var vvariations = [];
                                         if (data.rows) {
-                                            var history_table = "<table class='history'><thead><tr><th>Período</th>";
+                                            var history_table = "<table class='history'><thead><tr><th>$$e</th>".render({e: 'Período'});
 
                                             var headers = []; //corrige ordem do header
                                             $.each(data.header, function (titulo, index) {
@@ -6483,7 +6486,7 @@ $(document).ready(function () {
                                             history_table += "</tr><tbody>";
                                             $.each(data.rows, function (index, value) {
                                                 history_table += "<tr><td class='periodo'>$$periodo</td>".render2({
-                                                    periodo: $.convertDateToPeriod(data.rows[index].valid_from, indicator_period)
+                                                    periodo: $.convertDateToPeriod(data.rows[index].valid_from, indicator_pxe)
                                                 });
                                                 $.each(headers, function (index2, value2) {
                                                     if ((data.rows[index].valores[index2]) && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined && data.rows[index].valores[index2].value != "-") {
@@ -6509,7 +6512,7 @@ $(document).ready(function () {
                                                 if (value.variations && value.variations.length > 0) {
                                                     var th_valor = "";
                                                     for (i = 0; i < value.variations.length; i++) {
-                                                        th_valor += "<th class='formula_valor' variation-index='" + i + "'>Valor da Fórmula</th>";
+                                                        th_valor += "<th class='formula_valor' variation-index='" + i + "'>$$e</th>".render({e: 'Valor da Fórmula'});
                                                     }
                                                     history_table = history_table.replace("#theader_valor", th_valor);
                                                     $.each(value.variations, function (index, item) {
@@ -6532,7 +6535,7 @@ $(document).ready(function () {
                                                         });
                                                     });
                                                 } else {
-                                                    history_table = history_table.replace("#theader_valor", "<th class='formula_valor'>Valor da Fórmula</th>");
+                                                    history_table = history_table.replace("#theader_valor", "<th class='formula_valor'>$$e</th>".render({e: 'Valor da Fórmula'}));
                                                     if (data.rows[index].formula_value != "-") {
                                                         history_table += "<td class='formula_valor' variation-index='0'>$$formula_valor</td>".render2({
                                                             formula_valor: $.formatNumber(data.rows[index].formula_value, {
@@ -6809,7 +6812,7 @@ $(document).ready(function () {
                             });
                             newform.push({
                                 label: "Período",
-                                input: ["textlabel,textlabel_periodo,ilabel"]
+                                input: ["textlabel,textlabel_pxeo,ilabel"]
                             });
                             if (data_indicator.period == "yearly") {
                                 newform.push({
@@ -6934,11 +6937,11 @@ $(document).ready(function () {
                                 e: formataFormula(data_indicator.formula, data_variables, data_vvariables)
                             }));
 
-                            $("#dashboard-content .content .filter_indicator #textlabel_periodo").html(variable_periods[data_indicator.period]);
+                            $("#dashboard-content .content .filter_indicator #textlabel_pxeo").html( "$$e".render({e: variable_pxes[data_indicator.period]}) );
 
-                            $("#dashboard-content .content .filter_indicator .botao-form[ref='enviar']").html("Cadastrar");
+                            $("#dashboard-content .content .filter_indicator .botao-form[ref='enviar']").html("$$e".render({e: 'Cadastrar'}));
 
-                            $("#dashboard-content .content .filter_indicator .botao-form[ref='cancelar']").html("Voltar");
+                            $("#dashboard-content .content .filter_indicator .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
                             $("#dashboard-content .content .filter_indicator .botao-form[ref='cancelar']").click(function () {
                                 resetWarnings();
                                 location.hash = "#!/myindicator";
@@ -7793,7 +7796,7 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
 
                     var newform = [];
 
@@ -8259,7 +8262,7 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
 
                     var newform = [];
 
@@ -8477,7 +8480,7 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
 
                     var newform = [];
 
@@ -8672,7 +8675,7 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
 
                     var newform = [];
 
@@ -9044,7 +9047,7 @@ $(document).ready(function () {
 
                 } else if ($.getUrlVar("option") == "add" || $.getUrlVar("option") == "edit") {
 
-                    var txtOption = ($.getUrlVar("option") == "add") ? "Cadastrar" : "Editar";
+                    var txtOption = ($.getUrlVar("option") == "add") ? "$$e".render({e: 'Cadastrar'}) : "$$e".render({e: 'Editar'});
 
                     var newform = [];
 

@@ -36,8 +36,7 @@ if (!String.prototype.render) {
         for (var k in args) {
             v = args[k];
 
-
-            if (v && v in lexicon[cur_lang]) {
+            if (!k.match(/^_/) && v && v in lexicon[cur_lang]) {
                 v = lexicon[cur_lang][v];
             } else if (v) {
 
@@ -163,6 +162,8 @@ $.extend({
             return date.split("-")[0];
         } else if (period == "monthly") {
             return date.split("-")[1] + "/" + date.split("-")[0];
+        }else{
+            return date + ' '+ period;
         }
     },
     convertNumberToBd: function (number) {
@@ -979,7 +980,7 @@ var buildIndicatorHistory = function (args) {
         success: function (data, textStatus, jqXHR) {
             if (data.header && data.rows != undefined) {
                 var history_table = "";
-                history_table += "<table class='history'><thead><tr><th>Período</th>";
+                history_table += "<table class='history'><thead><tr><th>$$e</th>".render({e: 'Período'});
 
                 var headers = []; //corrige ordem do header
                 $.each(data.header, function (titulo, index) {

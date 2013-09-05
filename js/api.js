@@ -1022,9 +1022,7 @@ $(document).ready(function () {
                                             });
 
                                             $("#results").dataTable({
-                                                "oLanguage": {
-                                                    "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                                                },
+                                                "oLanguage": get_datatable_lang(),
                                                 "aoColumnDefs": [{
                                                     "bSearchable": false,
                                                     "bSortable": false,
@@ -1367,9 +1365,7 @@ $(document).ready(function () {
                     });
 
                     $("#results").dataTable({
-                        "oLanguage": {
-                            "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                        },
+                        "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/user?role=admin&api_key=$$key&content-type=application/json&columns=name,email,url,_,_'.render2({
                             key: $.cookie("key")
@@ -1654,9 +1650,7 @@ $(document).ready(function () {
                     });
 
                     $("#results").dataTable({
-                        "oLanguage": {
-                            "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                        },
+                        "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/user?role=user$$network_id&api_key=$$key&content-type=application/json&columns=name,email,url,_,_'.render2({
                             key: $.cookie("key"),
@@ -1929,9 +1923,7 @@ $(document).ready(function () {
                     });
 
                     $("#results").dataTable({
-                        "oLanguage": {
-                            "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                        },
+                        "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/city?api_key=$$key&content-type=application/json&columns=name,uf,url,_,_'.render2({
                             key: $.cookie("key")
@@ -2203,9 +2195,7 @@ $(document).ready(function () {
                     });
 
                     $("#results").dataTable({
-                        "oLanguage": {
-                            "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                        },
+                        "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/state?api_key=$$key&content-type=application/json&columns=name,uf,country_id,url,_,_'.render2({
                             key: $.cookie("key")
@@ -2403,9 +2393,7 @@ $(document).ready(function () {
                     });
 
                     $("#results").dataTable({
-                        "oLanguage": {
-                            "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                        },
+                        "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/country?api_key=$$key&content-type=application/json&columns=name,name_url,url,_,_'.render2({
                             key: $.cookie("key")
@@ -2559,9 +2547,7 @@ $(document).ready(function () {
                     });
 
                     $("#results").dataTable({
-                        "oLanguage": {
-                            "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                        },
+                        "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/network?api_key=$$key&content-type=application/json&columns=name,name_url,url,_,_'.render2({
                             key: $.cookie("key")
@@ -2759,9 +2745,7 @@ $(document).ready(function () {
                     });
 
                     $("#results").dataTable({
-                        "oLanguage": {
-                            "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                        },
+                        "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/measurement_unit?api_key=$$key&content-type=application/json&columns=name,short_name,url,_,_'.render2({
                             key: $.cookie("key")
@@ -2941,9 +2925,7 @@ $(document).ready(function () {
                     loadVariableConfig();
 
                     $("#results").dataTable({
-                        "oLanguage": {
-                            "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                        },
+                        "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/variable?api_key=$$key&content-type=application/json&columns=name,cognomen,type,created_at,is_basic,url,url,_,_'.render2({
                             key: $.cookie("key")
@@ -3407,9 +3389,7 @@ $(document).ready(function () {
                                         });
 
                                         var oTable = $("#results").dataTable({
-                                            "oLanguage": {
-                                                "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                                            },
+                                            "oLanguage": get_datatable_lang(),
                                             "aoColumnDefs": [{
                                                 "bSearchable": false,
                                                 "bSortable": false,
@@ -3921,9 +3901,10 @@ $(document).ready(function () {
                     $("#dashboard-content .content .value_via_file .botao-form[ref='cancelar']").hide();
 
                     formbuild.find(".field:last").append("<div class='models center'></div>");
-                    formbuild.find(".models").append('Modelo de arquivo: <a href="/variaveis_exemplo.csv">CSV</a> <a href="/variaveis_exemplo.xls">XLS</a><br />');
-                    formbuild.find(".models").append('Modelo de arquivo para Regiões: <a href="/dados/usuario/$$user/regiao_exemplo.csv">CSV</a> <a href="/dados/usuario/$$user/regiao_exemplo.xls">XLS</a><br />'.render2({
-                        user: $.cookie("user.id")
+                    formbuild.find(".models").append('$$e: <a href="/variaveis_exemplo.csv">CSV</a> <a href="/variaveis_exemplo.xls">XLS</a><br />'.render({e: 'Modelo de arquivo'}));
+                    formbuild.find(".models").append('$$e: <a href="/dados/usuario/$$_user/regiao_exemplo.csv">CSV</a> <a href="/dados/usuario/$$user/regiao_exemplo.xls">XLS</a><br />'.render({
+                        _user: $.cookie("user.id"),
+                        e: 'Modelo de arquivo para Regiões'
                     }));
 
                     $("#dashboard-content .content .value_via_file .botao-form[ref='enviar']").click(function () {
@@ -4069,9 +4050,7 @@ $(document).ready(function () {
                                 });
 
                                 $("#results").dataTable({
-                                    "oLanguage": {
-                                        "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                                    },
+                                    "oLanguage": get_datatable_lang(),
                                     "aoColumnDefs": [{
                                         "bSearchable": false,
                                         "bSortable": false,
@@ -4389,9 +4368,7 @@ $(document).ready(function () {
                                 });
 
                                 oTable = $("#results").dataTable({
-                                    "oLanguage": {
-                                        "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                                    },
+                                    "oLanguage": get_datatable_lang(),
                                     "aoColumnDefs": [{
                                         "bSortable": false,
                                         "sClass": "indexLeft",
@@ -4550,9 +4527,7 @@ $(document).ready(function () {
                     });
 
                     $("#results").dataTable({
-                        "oLanguage": {
-                            "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                        },
+                        "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/axis?api_key=$$key&content-type=application/json&columns=name,url,_,_'.render2({
                             key: $.cookie("key")
@@ -4740,9 +4715,7 @@ $(document).ready(function () {
                     });
 
                     $("#results").dataTable({
-                        "oLanguage": {
-                            "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                        },
+                        "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/indicator?api_key=$$key&content-type=application/json&columns=name,formula,created_at,url,_,_'.render2({
                             key: $.cookie("key")
@@ -7801,9 +7774,7 @@ $(document).ready(function () {
                     });
 
                     $("#results").dataTable({
-                        "oLanguage": {
-                            "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                        },
+                        "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/user_indicator_axis?api_key=$$key&content-type=application/json&columns=name,url,_,_'.render2({
                             key: $.cookie("key")
@@ -8252,9 +8223,7 @@ $(document).ready(function () {
                     });
 
                     $("#results").dataTable({
-                        "oLanguage": {
-                            "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                        },
+                        "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/menu?api_key=$$key&content-type=application/json&columns=title,menu_id,position,url,_,_'.render2({
                             key: $.cookie("key")
@@ -8489,9 +8458,7 @@ $(document).ready(function () {
                     });
 
                     $("#results").dataTable({
-                        "oLanguage": {
-                            "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                        },
+                        "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/page?api_key=$$key&content-type=application/json&columns=title,title_url,url,_,_'.render2({
                             key: $.cookie("key")
@@ -8686,9 +8653,7 @@ $(document).ready(function () {
                     });
 
                     $("#results").dataTable({
-                        "oLanguage": {
-                            "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                        },
+                        "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/best_pratice?api_key=$$key&content-type=application/json&columns=name,name_url,url,_,_'.render2({
                             key: $.cookie("key")
@@ -9059,9 +9024,7 @@ $(document).ready(function () {
                     });
 
                     $("#results").dataTable({
-                        "oLanguage": {
-                            "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                        },
+                        "oLanguage": get_datatable_lang(),
                         "aaData": results,
                         "bSort": false,
                         "aoColumnDefs": [{
@@ -10078,9 +10041,7 @@ $(document).ready(function () {
                 var url_log = api_path + '/api/log?api_key=' + $.cookie("key") + "&content-type=application/json&columns=user.nome,message,date";
 
                 $("#results").dataTable({
-                    "oLanguage": {
-                        "sUrl": api_path + "/frontend/js/dataTables.pt-br.txt"
-                    },
+                    "oLanguage": get_datatable_lang(),
                     "bProcessing": true,
                     "sAjaxSource": url_log,
                     "aaSorting": [

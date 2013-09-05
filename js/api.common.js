@@ -1841,6 +1841,24 @@ var trataCliqueVariaveis = function () {
         e.stopPropagation();
     });
 }
+var get_datatable_lang = function(){
+    return {
+        "sProcessing":   "$$a".render({a: "Processando..."}),
+        "sLengthMenu":   "$$a".render({a:"Mostrar _MENU_ registros"}),
+        "sZeroRecords":  "$$a".render({a:"Não foram encontrados resultados"}),
+        "sInfo":         "$$a".render({a:"Mostrando de _START_ até _END_ de _TOTAL_ registros"}),
+        "sInfoEmpty":    "$$a".render({a:"Mostrando de 0 até 0 de 0 registros"}),
+        "sInfoFiltered": "$$a".render({a:"(filtrado de _MAX_ registros no total)"}),
+        "sInfoPostFix":  "",
+        "sSearch":       "$$a".render({a:"Buscar:"}),
+        "oPaginate": {
+            "sFirst":    "$$a".render({a:"Primeiro"}),
+            "sPrevious": "$$a".render({a:"Anterior"}),
+            "sNext":     "$$a".render({a:"Seguinte"}),
+            "sLast":     "$$a".render({a:"Último"})
+        }
+    };
+}
 
 var carregaComboCidades = function (args) {
     $.ajax({

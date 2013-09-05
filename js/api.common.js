@@ -2037,8 +2037,8 @@ var convertFormulaToCss = function () {
     var formula_css = "";
     for (i = 0; i < formula.length; i++) {
         if ($.inArray(formula[i], operators) >= 0) {
-            formula_css += "<div class='f-operator' val='$$val'>$$caption</div>".render({
-                val: formula[i],
+            formula_css += "<div class='f-operator' val='$$_val'>$$caption</div>".render({
+                _val: formula[i],
                 caption: operators_caption[formula[i]]
             });
         } else if (formula[i] == "$") {
@@ -2054,8 +2054,8 @@ var convertFormulaToCss = function () {
                 }
             }
             var_caption = $("#formula-editor .variables .item[var_id='" + var_id + "'][type='normal']").html();
-            formula_css += "<div class='f-variable' var_id='$$var_id'>$$caption</div>".render({
-                var_id: var_id,
+            formula_css += "<div class='f-variable' var_id='$$_var_id'>$$caption</div>".render({
+                _var_id: var_id,
                 caption: var_caption
             });
         } else if (formula[i] == "#") {
@@ -2071,8 +2071,8 @@ var convertFormulaToCss = function () {
                 }
             }
             var_caption = $("#formula-editor .variables .item[var_id='" + var_id + "'][type='varied']").html();
-            formula_css += "<div class='f-vvariable' var_id='$$var_id'>$$caption</div>".render({
-                var_id: var_id,
+            formula_css += "<div class='f-vvariable' var_id='$$_var_id'>$$caption</div>".render({
+                _var_id: var_id,
                 caption: var_caption
             });
         } else {

@@ -738,7 +738,7 @@ $(document).ready(function () {
                 if ($("#precision-slider").slider("value")) {
                     _precisao = parseInt($("#precision-slider").slider("value"));
                 } else {
-                    _precisao = 20;
+                    _precisao = 0;
                 }
 
                 triangleCoords = GDouglasPeucker(triangleCoords, _precisao);
@@ -749,7 +749,8 @@ $(document).ready(function () {
             objTriangle.push(new google.maps.Polygon({
                 paths: triangleCoords,
                 fillColor: color['default'],
-                strokeWeight: 0,
+                strokeWeight: 1,
+                strokeOpacity: 0.45,
                 fillOpacity: 0.45,
                 editable: false,
                 region_index: index
@@ -872,7 +873,7 @@ $(document).ready(function () {
             // Creates a drawing manager attached to the map that allows the user to draw
             // markers, lines, and shapes.
             drawingManager = new google.maps.drawing.DrawingManager({
-                drawingMode: google.maps.drawing.OverlayType.POLYGON,
+                drawingMode: google.maps.drawing.OverlayType.NONE,
                 polygonOptions: polyOptions,
                 drawingControlOptions: {
                     drawingModes: [google.maps.drawing.OverlayType.POLYGON]
@@ -1126,7 +1127,9 @@ $(document).ready(function () {
                                         $("#dashboard-content .content select#region_id").change(function (e) {
                                             buildVariableHistory();
                                         });
-                                        $("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("Nenhuma"));
+                                        $("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("$$e".render({
+                                            e: 'Nenhuma'
+                                        })));
                                         $.each(data_region, function (index, item) {
                                             $("#dashboard-content .content select#region_id").append($("<option></option>").val(item.id).html(item.name));
                                         });
@@ -1389,7 +1392,8 @@ $(document).ready(function () {
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/user?role=admin&api_key=$$key&content-type=application/json&columns=name,email,url,_,_'.render2({
+                        "sAjaxSource": api_path + '/api/user?role=admin&api_key=$$key&content-type=application/json&lang=$$lang&columns=name,email,url,_,_'.render2({
+                            lang: cur_lang,
                             key: $.cookie("key")
                         }),
                         "aoColumnDefs": [{
@@ -1475,7 +1479,9 @@ $(document).ready(function () {
                         }
                     });
 
-                    $("#dashboard-content .content select#city_id").append($("<option></option>").val("").html("Nenhuma"));
+                    $("#dashboard-content .content select#city_id").append($("<option></option>").val("").html("$$e".render({
+                        e: 'Nenhuma'
+                    })));
                     $.ajax({
                         async: false,
                         type: 'GET',
@@ -1680,7 +1686,8 @@ $(document).ready(function () {
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/user?role=user$$network_id&api_key=$$key&content-type=application/json&columns=name,email,url,_,_'.render2({
+                        "sAjaxSource": api_path + '/api/user?role=user$$network_id&api_key=$$key&content-type=application/json&lang=$$lang&columns=name,email,url,_,_'.render2({
+                            lang: cur_lang,
                             key: $.cookie("key"),
                             network_id: (user_info.network) ? "&network_id=" + user_info.network : ""
                         }),
@@ -1959,7 +1966,8 @@ $(document).ready(function () {
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/city?api_key=$$key&content-type=application/json&columns=name,uf,url,_,_'.render2({
+                        "sAjaxSource": api_path + '/api/city?api_key=$$key&content-type=application/json&lang=$$lang&columns=name,uf,url,_,_'.render2({
+                            lang: cur_lang,
                             key: $.cookie("key")
                         }),
                         "aoColumnDefs": [{
@@ -2239,7 +2247,8 @@ $(document).ready(function () {
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/state?api_key=$$key&content-type=application/json&columns=name,uf,country_id,url,_,_'.render2({
+                        "sAjaxSource": api_path + '/api/state?api_key=$$key&content-type=application/json&lang=$$lang&columns=name,uf,country_id,url,_,_'.render2({
+                            lang: cur_lang,
                             key: $.cookie("key")
                         }),
                         "aoColumnDefs": [{
@@ -2443,7 +2452,8 @@ $(document).ready(function () {
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/country?api_key=$$key&content-type=application/json&columns=name,name_url,url,_,_'.render2({
+                        "sAjaxSource": api_path + '/api/country?api_key=$$key&content-type=application/json&lang=$$lang&columns=name,name_url,url,_,_'.render2({
+                            lang: cur_lang,
                             key: $.cookie("key")
                         }),
                         "aoColumnDefs": [{
@@ -2601,7 +2611,8 @@ $(document).ready(function () {
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/network?api_key=$$key&content-type=application/json&columns=name,name_url,url,_,_'.render2({
+                        "sAjaxSource": api_path + '/api/network?api_key=$$key&content-type=application/json&lang=$$lang&columns=name,name_url,url,_,_'.render2({
+                            lang: cur_lang,
                             key: $.cookie("key")
                         }),
                         "aoColumnDefs": [{
@@ -2805,7 +2816,8 @@ $(document).ready(function () {
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/measurement_unit?api_key=$$key&content-type=application/json&columns=name,short_name,url,_,_'.render2({
+                        "sAjaxSource": api_path + '/api/measurement_unit?api_key=$$key&content-type=application/json&lang=$$lang&columns=name,short_name,url,_,_'.render2({
+                            lang: cur_lang,
                             key: $.cookie("key")
                         }),
                         "aoColumnDefs": [{
@@ -2989,7 +3001,8 @@ $(document).ready(function () {
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/variable?api_key=$$key&content-type=application/json&columns=name,cognomen,type,created_at,is_basic,url,url,_,_'.render2({
+                        "sAjaxSource": api_path + '/api/variable?api_key=$$key&content-type=application/json&lang=$$lang&columns=name,cognomen,type,created_at,is_basic,url,url,_,_'.render2({
+                            lang: cur_lang,
                             key: $.cookie("key")
                         }),
                         "aoColumnDefs": [{
@@ -3629,7 +3642,9 @@ $(document).ready(function () {
                                     $("#dashboard-content .content select#region_id").change(function (e) {
                                         buildVariableHistory();
                                     });
-                                    $("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("Nenhuma"));
+                                    $("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("$$e".render({
+                                        e: 'Nenhuma'
+                                    })));
                                     $.each(data_region, function (index, item) {
                                         $("#dashboard-content .content select#region_id").append($("<option></option>").val(item.id).html(item.name));
                                     });
@@ -4627,7 +4642,8 @@ $(document).ready(function () {
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/axis?api_key=$$key&content-type=application/json&columns=name,url,_,_'.render2({
+                        "sAjaxSource": api_path + '/api/axis?api_key=$$key&content-type=application/json&lang=$$lang&columns=name,url,_,_'.render2({
+                            lang: cur_lang,
                             key: $.cookie("key")
                         }),
                         "aoColumnDefs": [{
@@ -4819,7 +4835,8 @@ $(document).ready(function () {
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/indicator?api_key=$$key&content-type=application/json&columns=name,formula,created_at,url,_,_'.render2({
+                        "sAjaxSource": api_path + '/api/indicator?api_key=$$key&content-type=application/json&lang=$$lang&columns=name,formula,created_at,url,_,_'.render2({
+                            lang: cur_lang,
                             key: $.cookie("key")
                         }),
                         "aoColumnDefs": [{
@@ -6990,7 +7007,9 @@ $(document).ready(function () {
                                         "target": $("#dashboard-content .content div.historico")
                                     });
                                 });
-                                $("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("Nenhuma"));
+                                $("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("$$e".render({
+                                    e: 'Nenhuma'
+                                })));
 
                                 var region = [];
                                 var district = [];
@@ -7022,10 +7041,14 @@ $(document).ready(function () {
                                     return a.localeCompare(b);
                                 });
                                 $.each(region, function (index, item) {
-                                    $("#dashboard-content .content select#region_id").append($("<option></option>").val(item.id).html(item.name));
+                                    $("#dashboard-content .content select#region_id").append($("<option></option>").val(item.id).html("$$e".render({
+                                        e: item.name
+                                    })));
                                     $.each(district, function (index2, item2) {
                                         if (item2.upper_region_id == item.id) {
-                                            $("#dashboard-content .content select#region_id").append($("<option></option>").val(item2.id).html("-- " + item2.name));
+                                            $("#dashboard-content .content select#region_id").append($("<option></option>").val(item2.id).html("-- $$e".render({
+                                                e: item2.name
+                                            })));
                                         }
                                     });
                                 });
@@ -7928,7 +7951,8 @@ $(document).ready(function () {
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/user_indicator_axis?api_key=$$key&content-type=application/json&columns=name,url,_,_'.render2({
+                        "sAjaxSource": api_path + '/api/user_indicator_axis?api_key=$$key&content-type=application/json&lang=$$lang&columns=name,url,_,_'.render2({
+                            lang: cur_lang,
                             key: $.cookie("key")
                         }),
                         "aoColumnDefs": [{
@@ -8381,7 +8405,8 @@ $(document).ready(function () {
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/menu?api_key=$$key&content-type=application/json&columns=title,menu_id,position,url,_,_'.render2({
+                        "sAjaxSource": api_path + '/api/menu?api_key=$$key&content-type=application/json&lang=$$lang&columns=title,menu_id,position,url,_,_'.render2({
+                            lang: cur_lang,
                             key: $.cookie("key")
                         }),
                         "aoColumnDefs": [{
@@ -8474,7 +8499,9 @@ $(document).ready(function () {
                         $("#dashboard-content .content select#position").append($("<option></option>").val(i).html(i));
                     }
 
-                    $("#dashboard-content .content select#page_id").append($("<option></option>").val("").html("Nenhuma"));
+                    $("#dashboard-content .content select#page_id").append($("<option></option>").val("").html("$$e".render({
+                        e: 'Nenhuma'
+                    })));
                     $.ajax({
                         async: false,
                         type: 'GET',
@@ -8620,7 +8647,8 @@ $(document).ready(function () {
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/page?api_key=$$key&content-type=application/json&columns=title,title_url,url,_,_'.render2({
+                        "sAjaxSource": api_path + '/api/page?api_key=$$key&content-type=application/json&lang=$$lang&columns=title,title_url,url,_,_'.render2({
+                            lang: cur_lang,
                             key: $.cookie("key")
                         }),
                         "aoColumnDefs": [{
@@ -8819,7 +8847,8 @@ $(document).ready(function () {
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/best_pratice?api_key=$$key&content-type=application/json&columns=name,name_url,url,_,_'.render2({
+                        "sAjaxSource": api_path + '/api/best_pratice?api_key=$$key&content-type=application/json&lang=$$lang&columns=name,name_url,url,_,_'.render2({
+                            lang: cur_lang,
                             key: $.cookie("key")
                         }),
                         "aoColumnDefs": [{
@@ -9251,7 +9280,9 @@ $(document).ready(function () {
                         }),
                         success: function (data, status, jqXHR) {
                             $("#dashboard-content .content select#region_id option").remove();
-                            $("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("Nenhuma"));
+                            $("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("$$e".render({
+                                e: 'Nenhuma'
+                            })));
                             data.regions.sort(function (a, b) {
                                 a = String(a.name),
                                 b = String(b.name);
@@ -9429,7 +9460,14 @@ $(document).ready(function () {
             } else if (getUrlSub() == "region-map") {
                 /*  Regiões Setando mapa */
 
-                $("#dashboard-content .content").append("<div id='panel-region'><div id='region-top'><div id='list-label'>Regiões:</div><div id='region-panel'><div class='contents'><div id='region-selected'>Região selecionada: <span class='selected'>Nenhuma</span></div></div></div></div><div id='region-list'><div class='contents'></div></div><div id='panel-map'><div id='panel'><button id='edit-button' class='disabled'>Editar forma</button><button id='delete-button' class='disabled'>Apagar forma</button><button id='save-button' class='disabled'>Associar forma à região selecionada</button></div><div id='map'></div></div></div>");
+                $("#dashboard-content .content").append("<div id='panel-region'><div id='region-top'><div id='list-label'>$$r:</div><div id='region-panel'><div class='contents'><div id='region-selected'>$$rr: <span class='selected'>$$ax</span></div></div></div></div><div id='region-list'><div class='contents'></div></div><div id='panel-map'><div id='panel'><button id='edit-button' class='disabled'>$$ex</button><button id='delete-button' class='disabled'>$$f</button><button id='save-button' class='disabled'>$$a</button></div><div id='map'></div></div></div>".render({
+                    ax: 'Nenhuma',
+                    ex: 'Editar forma',
+                    r: 'Regiões',
+                    f: 'Apagar forma',
+                    rr: 'Região selecionada',
+                    a: 'Associar forma à região selecionada'
+                }));
 
                 $("#dashboard-content .content").append("<div class='upload_via_file'></div>");
                 var newform = [];
@@ -9444,20 +9482,26 @@ $(document).ready(function () {
                 var formbuild = $("#dashboard-content .content .upload_via_file").append(buildForm(newform, "Importar KML"));
                 $(formbuild).find("div .field:odd").addClass("odd");
                 $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
-                $("#dashboard-content .content .upload_via_file .botao-form[ref='enviar']").after('<a href="javascript: void(0);" class="botao-form" ref="atualizar">Atualizar Precisão</a>');
-                $("#dashboard-content .content .upload_via_file .botao-form[ref='cancelar']").attr("ref", "re-enviar").text("Enviar outro arquivo");
+                $("#dashboard-content .content .upload_via_file .botao-form[ref='enviar']").after('<a href="javascript: void(0);" class="botao-form" ref="atualizar">$$e</a>'.render({
+                    e: 'Atualizar Precisão'
+                }));
+                $("#dashboard-content .content .upload_via_file .botao-form[ref='cancelar']").attr("ref", "re-enviar").text("$$e".render({
+                    e: 'Enviar outro arquivo'
+                }));
                 $("#dashboard-content .content .upload_via_file .botao-form[ref='re-enviar']").hide();
                 $("#dashboard-content .content .upload_via_file .botao-form[ref='atualizar']").hide();
 
-                $("#dashboard-content .content .upload_via_file #precision").after("<div class='aviso'>Quanto menor a escala de precisão, maior será o nível de processamento necessário. Utilize uma precisão menor caso seu navegador apresente travamentos.</div>");
+                $("#dashboard-content .content .upload_via_file #precision").after("<div class='aviso'>$$e.</div>".render({
+                    e: 'Quanto menor a escala de precisão, maior será o nível de detalhes e processamento necessário. Utilize uma precisão menor caso seu navegador apresente travamentos'
+                }));
 
-                $("#dashboard-content .content #precision").after("<div id='precision-value'>20</div><div id='precision-slider'></div>");
+                $("#dashboard-content .content #precision").after("<div id='precision-value'>0</div><div id='precision-slider'></div>");
                 $("#dashboard-content .content #precision").remove();
 
                 $("#precision-slider").slider({
-                    value: 20,
+                    value: 0,
                     min: 0,
-                    max: 500,
+                    max: 1000,
                     step: 10,
                     slide: function (event, ui) {
                         $("#precision-value").text(ui.value);
@@ -10232,7 +10276,8 @@ $(document).ready(function () {
 
                 $("#dashboard-content .content").append(logList);
 
-                var url_log = api_path + '/api/log?api_key=' + $.cookie("key") + "&content-type=application/json&columns=user.nome,message,date";
+                var url_log = api_path + '/api/log?api_key=' + $.cookie("key") + "&content-type=application/json&lang=$$lang&columns=user.nome,message,date";
+                lang: cur_lang,
 
                 $("#results").dataTable({
                     "oLanguage": get_datatable_lang(),

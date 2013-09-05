@@ -1375,7 +1375,6 @@ $(document).ready(function () {
                 }
             } else if (getUrlSub() == "admins") {
                 /*  Administradores  */
-                loadCidades();
                 if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined) {
 
                     var userList = buildDataTable({
@@ -1422,10 +1421,7 @@ $(document).ready(function () {
                         label: "Rede",
                         input: ["select,network_id,iselect"]
                     });
-                    newform.push({
-                        label: "Cidade",
-                        input: ["select,city_id,iselect"]
-                    });
+
                     newform.push({
                         label: "Nome",
                         input: ["text,name,itext"]
@@ -1479,28 +1475,6 @@ $(document).ready(function () {
                         }
                     });
 
-                    $("#dashboard-content .content select#city_id").append($("<option></option>").val("").html("$$e".render({
-                        e: 'Nenhuma'
-                    })));
-                    $.ajax({
-                        async: false,
-                        type: 'GET',
-                        dataType: 'json',
-                        url: api_path + "/api/city?api_key=$$key".render2({
-                            key: $.cookie("key")
-                        }),
-                        success: function (data, status, jqXHR) {
-                            data.cities.sort(function (a, b) {
-                                a = String(a.name),
-                                b = String(b.name);
-                                return a.localeCompare(b);
-                            });
-                            $.each(data.cities, function (index, item) {
-                                $("#dashboard-content .content select#city_id").append($("<option></option>").val(item.id).html(item.name));
-                            });
-                        }
-                    });
-
                     if ($.getUrlVar("option") == "edit") {
                         $.ajax({
                             type: 'GET',
@@ -1514,10 +1488,7 @@ $(document).ready(function () {
                                     $(formbuild).find("input#name").val(data.name);
                                     $(formbuild).find("input#email").val(data.email);
                                     $(formbuild).find("select#network_id").val(data.network.id);
-                                    carregaComboCidades({
-                                        "option": "edit",
-                                        "city": data.city_id
-                                    });
+
                                     break;
                                 }
                             },
@@ -1584,9 +1555,6 @@ $(document).ready(function () {
                             }, {
                                 name: "user." + action + ".network_id",
                                 value: $(this).parent().parent().find("#network_id option:selected").val()
-                            }, {
-                                name: "user." + action + ".city_id",
-                                value: $(this).parent().parent().find("#city_id option:selected").val()
                             }];
 
                             if ($(this).parent().parent().find("#password").val() != "") {

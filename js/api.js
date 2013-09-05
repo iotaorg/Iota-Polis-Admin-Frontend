@@ -1094,7 +1094,7 @@ $(document).ready(function () {
 
                                     newform.push({
                                         label: "Período",
-                                        input: ["textlabel,textlabel_pxe,ilabel"]
+                                        input: ["textlabel,textlabel_period,ilabel"]
                                     });
                                     if (data.period == "yearly") {
                                         newform.push({
@@ -1212,7 +1212,7 @@ $(document).ready(function () {
 
                                     $(formbuild).find("div#textlabel_variable").html(data.name);
                                     $(formbuild).find("div#textlabel_explanation").html(data.explanation);
-                                    $(formbuild).find("div#textlabel_pxe").html(variable_pxes[data.period]);
+                                    $(formbuild).find("div#textlabel_period").html(variable_periods[data.period]);
 
 
                                     $("#dashboard-content .content .botao-form[ref='enviar']").click(function () {
@@ -3129,7 +3129,7 @@ $(document).ready(function () {
 
                     loadComboSources(sources, $("#dashboard-content .content select#source"), $("#dashboard-content .content input#source_new"));
 
-                    $.each(variable_pxes, function (key, value) {
+                    $.each(variable_periods, function (key, value) {
                         $("#dashboard-content .content select#period").append($("<option></option>").val(key).html(value));
                     });
 
@@ -3533,7 +3533,7 @@ $(document).ready(function () {
 
                                 newform.push({
                                     label: "Período",
-                                    input: ["textlabel,textlabel_pxe,ilabel"]
+                                    input: ["textlabel,textlabel_period,ilabel"]
                                 });
                                 if (data.period == "yearly") {
                                     newform.push({
@@ -3651,7 +3651,7 @@ $(document).ready(function () {
 
                                 $(formbuild).find("div#textlabel_variable").html(data.name);
                                 $(formbuild).find("div#textlabel_explanation").html(data.explanation);
-                                $(formbuild).find("div#textlabel_pxe").html(variable_pxes[data.period]);
+                                $(formbuild).find("div#textlabel_period").html(variable_periods[data.period]);
 
 
                                 $("#dashboard-content .content .botao-form[ref='enviar']").click(function () {
@@ -6357,11 +6357,14 @@ $(document).ready(function () {
                                                     }
                                                 });
 
-                                                indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$_id' period='$$_pxe'>$$det</a><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
+                                                indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='$$ss' alt='$$ss' indicator-id='$$_id' period='$$_period'>$$det</a><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='$$e' alt='$$e'>$$a</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
                                                     name: data_indicators[i].name,
+                                                    e: 'adicionar valores',
+                                                    a: 'editar',
+                                                    ss: 'Série Histórica',
                                                     fxormula: formula,
                                                     det: 'detalhes',
-                                                    _pxe: data_indicators[i].period,
+                                                    _period: data_indicators[i].period,
                                                     _hash: "#!/" + getUrlSub(),
                                                     _url: api_path + "/api/indicator/" + data_indicators[i].id,
                                                     _indicator_id: data_indicators[i].id,
@@ -6404,14 +6407,16 @@ $(document).ready(function () {
                                     }
                                 });
 
-                                indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='Série Histórica' alt='Série Histórica' indicator-id='$$_id' period='$$_pxe' aaa=123>$$det</a><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='adicionar valores' alt='adicionar valores'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
+                                indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='$$ss' alt='$$ss' indicator-id='$$_id' period='$$_period' aaa=123>$$det</a><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='$$a' alt='$$a'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
                                     name: data_indicators[i].name,
+                                    a: 'adicionar valores',
+                                    ss: 'Série Histórica',
                                     fxormula: formula,
                                     _hash: "#!/" + getUrlSub(),
                                     _url: api_path + "/api/indicator/" + data_indicators[i].id,
                                     _indicator_id: data_indicators[i].id,
                                     det: 'detalhes',
-                                    _pxe: data_indicators[i].period,
+                                    _period: data_indicators[i].period,
                                     _id: data_indicators[i].id,
                                     _tr_class: tr_class
                                 });
@@ -6458,7 +6463,7 @@ $(document).ready(function () {
 
                             $("#dashboard-content .content .indicadores_list .zoom").click(function () {
                                 var target = $(this).parent().parent();
-                                var indicator_pxe = $(this).attr("period");
+                                var indicator_period = $(this).attr("period");
                                 $.ajax({
                                     type: 'GET',
                                     dataType: 'json',
@@ -6486,7 +6491,7 @@ $(document).ready(function () {
                                             history_table += "</tr><tbody>";
                                             $.each(data.rows, function (index, value) {
                                                 history_table += "<tr><td class='periodo'>$$periodo</td>".render2({
-                                                    periodo: $.convertDateToPeriod(data.rows[index].valid_from, indicator_pxe)
+                                                    periodo: $.convertDateToPeriod(data.rows[index].valid_from, indicator_period)
                                                 });
                                                 $.each(headers, function (index2, value2) {
                                                     if ((data.rows[index].valores[index2]) && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined && data.rows[index].valores[index2].value != "-") {
@@ -6812,7 +6817,7 @@ $(document).ready(function () {
                             });
                             newform.push({
                                 label: "Período",
-                                input: ["textlabel,textlabel_pxeo,ilabel"]
+                                input: ["textlabel,textlabel_periodo,ilabel"]
                             });
                             if (data_indicator.period == "yearly") {
                                 newform.push({
@@ -6937,7 +6942,7 @@ $(document).ready(function () {
                                 e: formataFormula(data_indicator.formula, data_variables, data_vvariables)
                             }));
 
-                            $("#dashboard-content .content .filter_indicator #textlabel_pxeo").html( "$$e".render({e: variable_pxes[data_indicator.period]}) );
+                            $("#dashboard-content .content .filter_indicator #textlabel_periodo").html( "$$e".render({e: variable_periods[data_indicator.period]}) );
 
                             $("#dashboard-content .content .filter_indicator .botao-form[ref='enviar']").html("$$e".render({e: 'Cadastrar'}));
 

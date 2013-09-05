@@ -1204,7 +1204,7 @@ $(document).ready(function () {
                                         });
                                     }
 
-                                    $("#dashboard-content .content .botao-form[ref='enviar']").html("Adicionar");
+                                    $("#dashboard-content .content .botao-form[ref='enviar']").html("$$e".render({e:'Adicionar'}));
                                     $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
                                     $(formbuild).find("div .field:odd").addClass("odd");
                                     $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
@@ -1217,7 +1217,7 @@ $(document).ready(function () {
 
                                     $("#dashboard-content .content .botao-form[ref='enviar']").click(function () {
 
-                                        if ($(this).html() == "Adicionar") {
+                                        if ($(this).html() == "$$e".render({e:'Adicionar'})) {
                                             var ajax_type = "POST";
                                             var api_method = "create";
                                             if ($("#dashboard-content .content").find("#region_id option:selected").val()) {
@@ -1289,7 +1289,7 @@ $(document).ready(function () {
                                                             codigo: jqXHR.status
                                                         })
                                                     });
-                                                    $("#dashboard-content .content .botao-form[ref='enviar']").html("Adicionar");
+                                                    $("#dashboard-content .content .botao-form[ref='enviar']").html("$$e".render({e:'Adicionar'}));
                                                     $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
                                                     $("#dashboard-content .content .form").find(".title").html("Adicionar Valor");
                                                     $(formbuild).find("input#value").val("");
@@ -1318,7 +1318,7 @@ $(document).ready(function () {
                                             history.back();
                                         } else if ($(this).html() == "Cancelar") {
                                             $("#dashboard-content .content .form").find(".title").html("Adicionar Valor");
-                                            $("#dashboard-content .content .botao-form[ref='enviar']").html("Adicionar");
+                                            $("#dashboard-content .content .botao-form[ref='enviar']").html("$$e".render({e:'Adicionar'}));
                                             $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
                                             $(formbuild).find("input#value").val("");
                                             $(formbuild).find("input#value_of_date").val("");
@@ -3643,7 +3643,7 @@ $(document).ready(function () {
                                     });
                                 }
 
-                                $("#dashboard-content .content .botao-form[ref='enviar']").html("Adicionar");
+                                $("#dashboard-content .content .botao-form[ref='enviar']").html("$$e".render({e:'Adicionar'}));
                                 $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
                                 $(formbuild).find("div .field:odd").addClass("odd");
                                 $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
@@ -3656,7 +3656,7 @@ $(document).ready(function () {
 
                                 $("#dashboard-content .content .botao-form[ref='enviar']").click(function () {
 
-                                    if ($(this).html() == "Adicionar") {
+                                    if ($(this).html() == "$$e".render({e:'Adicionar'})) {
                                         var ajax_type = "POST";
                                         var api_method = "create";
                                         if ($("#dashboard-content .content").find("#region_id option:selected").val()) {
@@ -3728,7 +3728,7 @@ $(document).ready(function () {
                                                         codigo: jqXHR.status
                                                     })
                                                 });
-                                                $("#dashboard-content .content .botao-form[ref='enviar']").html("Adicionar");
+                                                $("#dashboard-content .content .botao-form[ref='enviar']").html("$$e".render({e:'Adicionar'}));
                                                 $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
                                                 $("#dashboard-content .content .form").find(".title").html("Adicionar Valor");
                                                 $(formbuild).find("input#value").val("");
@@ -3757,7 +3757,7 @@ $(document).ready(function () {
                                         history.back();
                                     } else if ($(this).html() == "Cancelar") {
                                         $("#dashboard-content .content .form").find(".title").html("Adicionar Valor");
-                                        $("#dashboard-content .content .botao-form[ref='enviar']").html("Adicionar");
+                                        $("#dashboard-content .content .botao-form[ref='enviar']").html("$$e".render({e:'Adicionar'}));
                                         $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({e: 'Voltar'}));
                                         $(formbuild).find("input#value").val("");
                                         $(formbuild).find("input#value_of_date").val("");
@@ -7171,7 +7171,7 @@ $(document).ready(function () {
                                         var formbuild = $("#dashboard-content .content .filter_result").append(buildForm(newform, data_indicator.name));
                                         $(formbuild).find("div .field:odd").addClass("odd");
                                         $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
-                                        $(formbuild).find("#new_variation_add").html("Adicionar");
+                                        $(formbuild).find("#new_variation_add").html("$$e".render({e:'Adicionar'}));
 
                                         if (data_indicator.goal) {
                                             var ref_meta = "";
@@ -7223,7 +7223,7 @@ $(document).ready(function () {
                                                 success: function (data, textStatus, jqXHR) {
 
                                                     variation_id = data.id
-                                                    $(formbuild).find("#new_variation_add").html("Adicionar");
+                                                    $(formbuild).find("#new_variation_add").html("$$e".render({e:'Adicionar'}));
                                                     $(formbuild).find("#new_variation_add").click(function () {
                                                         $(this).html("Aguarde...");
                                                         $(this).unbind();
@@ -7254,7 +7254,7 @@ $(document).ready(function () {
                                                             erro: $.trataErro(data)
                                                         })
                                                     });
-                                                    $(formbuild).find("#new_variation_add").html("Adicionar");
+                                                    $(formbuild).find("#new_variation_add").html("$$e".render({e:'Adicionar'}));
                                                     $(formbuild).find("#new_variation_add").click(function () {
                                                         $(this).html("Aguarde...");
                                                         $(this).unbind();

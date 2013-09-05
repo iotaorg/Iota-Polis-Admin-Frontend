@@ -473,7 +473,7 @@ $.fn.setWarning = function () {
     var args = arguments[0];
     $(this).hide();
     $(this).empty();
-    $(this).html("<div>" + args.msg + "</div>");
+    $(this).html("<div>$$e</div>".render({e: args.msg}));
     $(this).show("slow");
 };
 $.fn.clearWarning = function () {
@@ -1571,7 +1571,7 @@ var loadCidades = function () {
         },
         error: function (data) {
             $("#aviso").setWarning({
-                msg: "Erro ao carregar ($$codigo)".render({
+                msg: "Erro ao carregar ($$codigo)".render2({
                     codigo: $.parseJSON(data.responseText).error
                 })
             });
@@ -1607,7 +1607,7 @@ var loadUnits = function () {
         },
         error: function (data) {
             $("#aviso").setWarning({
-                msg: "Erro ao carregar ($$codigo)".render({
+                msg: "Erro ao carregar ($$codigo)".render2({
                     codigo: $.parseJSON(data.responseText).error
                 })
             });

@@ -2734,7 +2734,7 @@ $(document).ready(function () {
                             if ($.getUrlVar("option") == "add") {
                                 var action = "create";
                                 var method = "POST";
-                                var url_action = api_path + "/api/state";
+                                var url_action = api_path + "/api/network";
                             } else {
                                 var action = "update";
                                 var method = "POST";
@@ -2745,16 +2745,16 @@ $(document).ready(function () {
                                 name: "api_key",
                                 value: $.cookie("key")
                             }, {
-                                name: "state." + action + ".domain_name",
+                                name: "network." + action + ".domain_name",
                                 value: $(this).parent().parent().find("#domain_name").val()
                             }, {
-                                name: "state." + action + ".name",
+                                name: "network." + action + ".name",
                                 value: $(this).parent().parent().find("#name").val()
                             }, {
-                                name: "state." + action + ".name_url",
+                                name: "network." + action + ".name_url",
                                 value: $(this).parent().parent().find("#name_url").val()
                             }, {
-                                name: "state." + action + ".institute_id",
+                                name: "network." + action + ".institute_id",
                                 value: $(this).parent().parent().find("#institute_id option:selected").val()
                             }];
                             $("#dashboard-content .content .botao-form[ref='enviar']").hide();
@@ -4859,8 +4859,7 @@ $(document).ready(function () {
                             "aTargets": [2]
                         }, {
                             "fnRender": function (oObj, sVal) {
-
-                                return formataFormula(sVal, data_variables, data_vvariables);
+                                return "$$x".render({x: formataFormula(sVal, data_variables, data_vvariables)});
                             },
                             "aTargets": [1]
                         }, ],

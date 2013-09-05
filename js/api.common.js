@@ -3,7 +3,7 @@ if (window.location.href.indexOf("localhost") >= 0) {
     api_path = "http://indicadores.cidadessustentaveis.org.br";
 }
 
-var cur_lang = 'es',
+var cur_lang = 'pt-br',
     lexicon, default_lang, langs, lexiconconf,
     lexicon_untranslated = {}, untranslated_temp = {};
 
@@ -1575,11 +1575,13 @@ var loadCidades = function () {
             key: $.cookie("key")
         }),
         success: function (data, textStatus, jqXHR) {
-            $.each(data.citys, function (index, value) {
+
+            $.each(data.cities, function (index, value) {
+
                 cidades_prefeitos.push({
-                    "id": data.citys[index].id,
-                    "prefeito_id": data.citys[index].prefeito_id,
-                    "movimento_id": data.citys[index].movimento_id
+                    "id": value.id,
+                    "prefeito_id": value.prefeito_id,
+                    "movimento_id": value.movimento_id
                 });
             });
 

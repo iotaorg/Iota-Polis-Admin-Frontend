@@ -11,7 +11,7 @@ $(document).ready(function () {
         var $me = $(this);
 
         cur_lang = $me.attr('data-href');
-        $.cookie("lang", cur_lang, {
+        $.cookie("cur_lang", cur_lang, {
             path: '/'
         });
         location.reload();

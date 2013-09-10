@@ -3,13 +3,13 @@ if (window.location.href.indexOf("localhost") >= 0) {
     api_path = "http://indicadores.cidadessustentaveis.org.br";
 }
 
-var cur_lang = $.cookie("lang"),
+var cur_lang = $.cookie("cur_lang"),
     lexicon, default_lang, langs, lexiconconf,
     lexicon_untranslated = {}, untranslated_temp = {};
 
 if (!cur_lang){
     cur_lang = 'pt-br';
-    $.cookie("lang", cur_lang, {
+    $.cookie("cur_lang", cur_lang, {
         path: "/"
     });
 }

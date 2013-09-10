@@ -1,10 +1,82 @@
 var _is_updating_lexicon = 0;
 $(document).ready(function () {
 
+    $('.top-left').append('<div style="float: left; margin-left: 5em"><a href="#" data-href="pt-br" title="português" style="padding-bottom: 1px;border-bottom: 2px solid $$pt;display: inline-block;"><img src="/frontend/images/br.png"> </a><a data-href="es" title="espanhol" style="border-bottom: 2px solid $$es;margin-left:4px;display: inline-block;padding-bottom: 1px;" href="#" ><img src="/frontend/images/es.png"> </a> </div>'.render2({
+        es: cur_lang == 'es' ? 'gray' : 'white',
+        pt: cur_lang == 'pt-br' ? 'gray': 'white'
+    }));
+
+    $('.top-left a').click(function(){
+
+        var $me = $(this);
+
+        cur_lang = $me.attr('data-href');
+        $.cookie("lang", cur_lang, {
+            path: '/'
+        });
+        location.reload();
+        return false;
+    });
+
     /*MONTA TELAS*/
+
+    var _add_trad = function(){
+        $("#dashboard-content .content").prepend('<div id="trad" style="border-bottom: 1px solid #666; margin-bottom: 4px"><a style="color: #736AFF" href="#">$$oo. $$b</a></div>'.render({
+            oo: 'Há textos pendentes para você traduzir',
+            b: 'Clique aqui para traduzi-los'
+        }));
+
+        $('#trad a').click(function(){
+
+        var height = 600;
+        var width = 600;
+
+        var left = 99;
+        var top = 99;
+
+        window.open(api_path + '/:lexicon/pending?api_key=$$key'.render2({
+            key: $.cookie("key"),
+        }),'janela', 'width='+width+', height='+height+', top='+top+', left='+left+', scrollbars=yes, status=no, toolbar=no, location=no, directories=no, menubar=no, resizable=yes, fullscreen=no');
+
+
+
+            return false;
+        });
+    }, _theres_trad=0, _trad_next_ajax;
+
+    function load_trad(){
+        if (_theres_trad == 0 && $.cookie("key")){
+
+            if (!_trad_next_ajax || new Date().getTime() > _trad_next_ajax){
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'json',
+                    url: api_path + '/:lexicon/pending/count?api_key=$$key'.render2({
+                        key: $.cookie("key"),
+                    }),
+                    success: function (data, textStatus, jqXHR) {
+                        $('#trad').remove();
+                        if (data.count > 0){
+                            _theres_trad = 1;
+                            _add_trad();
+                        }
+                    }
+                });
+
+                _trad_next_ajax = new Date().getTime() + 10*1000; // 10 segundos
+            }
+        }
+
+        if (_theres_trad==1){
+            _add_trad();
+        }
+    }
 
     $(window).hashchange(function () {
         $("#dashboard-content .content").empty();
+
+        load_trad();
+
         buildUserInterface();
     })
 
@@ -58,6 +130,17 @@ $(document).ready(function () {
             });
 
         }
+
+        if ($.cookie('reload_lex') == 1){
+
+            _theres_trad = 0;
+            _trad_next_ajax = null;
+            load_trad();
+
+            $.cookie('reload_lex', 0, {path: '/'});
+            $.jStorage.set("lexicon", 0);
+            load_lexicon(true);
+        }
     }, 5000);
 
     var sendLogin = function () {
@@ -96,8 +179,6 @@ $(document).ready(function () {
                     $("#dashboard #form-login").hide();
                     location.hash = "!/dashboard";
 
-
-
                     break;
                 }
             },
@@ -121,6 +202,7 @@ $(document).ready(function () {
 
     var buildUserInterface = function () {
         if ($.cookie("key") != null && $.cookie("key") != "") {
+
             $.ajax({
                 type: 'GET',
                 dataType: 'json',

@@ -2154,6 +2154,11 @@ var sortSelectBox = function (id) {
 
 load_lexicon(false);
 
+setTimeout(function(){
+    $.jStorage.set("lexicon", 0);
+    load_lexicon(true);
+}, 1000*60*3);
+
 
 var sys_messages = {
     "Login invalid(1)": "Login inválido",

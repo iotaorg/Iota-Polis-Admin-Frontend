@@ -21,7 +21,8 @@ $(document).ready(function () {
     /*MONTA TELAS*/
 
     var _add_trad = function(){
-        $("#dashboard-content .content").prepend('<div id="trad">$$t1. <a href="#">$$link</a> $$t2.</div>'.render({
+		$("#trad").remove();
+        $("#content").prepend('<div id="trad">$$t1. <a href="#">$$link</a> $$t2.</div>'.render({
             t1: 'Há textos pendentes para você traduzir',
             link: 'Clique aqui',
             t2: 'para traduzi-los'

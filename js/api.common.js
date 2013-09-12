@@ -286,6 +286,10 @@ var roles = {
     "user": "Prefeitura/Movimento da Rede",
     "app": "Aplicativos"
 }
+var languages_list = {
+    "pt-br": "Português",
+    "en": "Espanhol"
+};
 var indicator_roles = {
     "_prefeitura,_movimento": "Prefeituras e Movimentos",
     "_prefeitura": "Somente Prefeituras",

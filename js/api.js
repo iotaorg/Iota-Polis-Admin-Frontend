@@ -9869,6 +9869,10 @@ $(document).ready(function () {
                     label: "Confirmar Senha",
                     input: ["password,password_confirm,itext"]
                 });
+                newform.push({
+                    label: "Idioma",
+                    input: ["select,cur_lang,iselect"]
+                });
 
                 if (findInArray(user_info.roles, "user")) {
 
@@ -9991,6 +9995,10 @@ $(document).ready(function () {
                 $(formbuild).find("div .field:odd").addClass("odd");
                 $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 
+				$.each(languages_list, function (key, value) {
+					$("#dashboard-content .content select#cur_lang").append($("<option></option>").val(key).html(value));
+				});
+					
                 if (findInArray(user_info.roles, "superadmin")) {
                     $.each(data_institute.institute, function (index, item) {
                         if (item.users_can_edit_value == 1) $("input#users_can_edit_value_inst_" + item.id).attr("checked", true);
@@ -10012,6 +10020,7 @@ $(document).ready(function () {
                         case 200:
                             $(formbuild).find("input#name").val(data.name);
                             $(formbuild).find("input#email").val(data.email);
+                            $(formbuild).find("select#cur_lang option[value=" + data.cur_lang + "]").attr("selected","selected");
                             $(formbuild).find("input#endereco").val(data.endereco);
                             $(formbuild).find("input#cidade").val(data.cidade);
                             $(formbuild).find("input#estado").val(data.estado);
@@ -10095,6 +10104,9 @@ $(document).ready(function () {
                             }, {
                                 name: "user.update.email",
                                 value: $(".form").find("#email").val()
+                            }, {
+                                name: "user.update.cur_lang",
+                                value: $(".form").find("#cur_lang option:selected").val()
                             }, {
                                 name: "user.update.endereco",
                                 value: $(".form").find("#endereco").val()

@@ -21,9 +21,10 @@ $(document).ready(function () {
     /*MONTA TELAS*/
 
     var _add_trad = function(){
-        $("#dashboard-content .content").prepend('<div id="trad" style="border-bottom: 1px solid #666; margin-bottom: 4px"><a style="color: #736AFF" href="#">$$oo. $$b</a></div>'.render({
-            oo: 'Há textos pendentes para você traduzir',
-            b: 'Clique aqui para traduzi-los'
+        $("#dashboard-content .content").prepend('<div id="trad">$$t1. <a href="#">$$link</a> $$t2.</div>'.render({
+            t1: 'Há textos pendentes para você traduzir',
+            link: 'Clique aqui',
+            t2: 'para traduzi-los'
         }));
 
         $('#trad a').click(function(){

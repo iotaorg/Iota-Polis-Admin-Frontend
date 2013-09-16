@@ -9890,7 +9890,7 @@ $(document).ready(function () {
                     input: ["password,password_confirm,itext"]
                 });
                 newform.push({
-                    label: "Idioma",
+                    label: "Idioma da escrita",
                     input: ["select,cur_lang,iselect"]
                 });
 
@@ -10018,7 +10018,7 @@ $(document).ready(function () {
 				$.each(languages_list, function (key, value) {
 					$("#dashboard-content .content select#cur_lang").append($("<option></option>").val(key).html(value));
 				});
-					
+
                 if (findInArray(user_info.roles, "superadmin")) {
                     $.each(data_institute.institute, function (index, item) {
                         if (item.users_can_edit_value == 1) $("input#users_can_edit_value_inst_" + item.id).attr("checked", true);

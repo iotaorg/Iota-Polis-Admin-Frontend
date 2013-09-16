@@ -7867,6 +7867,24 @@ $(document).ready(function () {
                                                                 value: getIdFromUrl($.getUrlVar("url"))
                                                             }];
                                                             send_justification_meta = true;
+                                                        }else{
+                                                            args = [{
+                                                                name: "api_key",
+                                                                value: $.cookie("key")
+                                                            }, {
+                                                                name: acao + "goal",
+                                                                value: ''
+                                                            }, {
+                                                                name: acao + "justification_of_missing_field",
+                                                                value: ''
+                                                            }, {
+                                                                name: acao + "valid_from",
+                                                                value: data_formatada
+                                                            }, {
+                                                                name: acao + "indicator_id",
+                                                                value: getIdFromUrl($.getUrlVar("url"))
+                                                            }];
+                                                            send_justification_meta = true;
                                                         }
 
                                                         if (send_justification_meta) {

@@ -291,6 +291,23 @@ a.button-add:hover{
     text-align: center;
 }
 
+#trad{
+	font-size: 0.9em;
+	background-color: #FFFFDF;
+	padding: 10px 20px;
+	color: #a66c00;
+	margin-bottom: 15px;
+    border-radius:5px;
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+}
+#trad a, #trad a:visited{
+	color: #cab000;
+}
+#trad a:hover{
+	color: #000;
+}
+
 .form{
     padding: 0;
     margin: 0;
@@ -1779,3 +1796,4 @@ input.admin_checked{
 #steps-buttons{
 	margin-top: 20px;
 }
+

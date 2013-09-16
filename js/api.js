@@ -21,9 +21,11 @@ $(document).ready(function () {
     /*MONTA TELAS*/
 
     var _add_trad = function(){
-        $("#dashboard-content .content").prepend('<div id="trad" style="border-bottom: 1px solid #666; margin-bottom: 4px"><a style="color: #736AFF" href="#">$$oo. $$b</a></div>'.render({
-            oo: 'Há textos pendentes para você traduzir',
-            b: 'Clique aqui para traduzi-los'
+		$("#trad").remove();
+        $("#content").prepend('<div id="trad">$$t1. <a href="#">$$link</a> $$t2.</div>'.render({
+            t1: 'Há textos pendentes para você traduzir',
+            link: 'Clique aqui',
+            t2: 'para traduzi-los'
         }));
 
         $('#trad a').click(function(){
@@ -9887,6 +9889,10 @@ $(document).ready(function () {
                     label: "Confirmar Senha",
                     input: ["password,password_confirm,itext"]
                 });
+                newform.push({
+                    label: "Idioma",
+                    input: ["select,cur_lang,iselect"]
+                });
 
                 if (findInArray(user_info.roles, "user")) {
 
@@ -10009,6 +10015,10 @@ $(document).ready(function () {
                 $(formbuild).find("div .field:odd").addClass("odd");
                 $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 
+				$.each(languages_list, function (key, value) {
+					$("#dashboard-content .content select#cur_lang").append($("<option></option>").val(key).html(value));
+				});
+					
                 if (findInArray(user_info.roles, "superadmin")) {
                     $.each(data_institute.institute, function (index, item) {
                         if (item.users_can_edit_value == 1) $("input#users_can_edit_value_inst_" + item.id).attr("checked", true);
@@ -10030,6 +10040,7 @@ $(document).ready(function () {
                         case 200:
                             $(formbuild).find("input#name").val(data.name);
                             $(formbuild).find("input#email").val(data.email);
+                            $(formbuild).find("select#cur_lang option[value=" + data.cur_lang + "]").attr("selected","selected");
                             $(formbuild).find("input#endereco").val(data.endereco);
                             $(formbuild).find("input#cidade").val(data.cidade);
                             $(formbuild).find("input#estado").val(data.estado);
@@ -10113,6 +10124,9 @@ $(document).ready(function () {
                             }, {
                                 name: "user.update.email",
                                 value: $(".form").find("#email").val()
+                            }, {
+                                name: "user.update.cur_lang",
+                                value: $(".form").find("#cur_lang option:selected").val()
                             }, {
                                 name: "user.update.endereco",
                                 value: $(".form").find("#endereco").val()

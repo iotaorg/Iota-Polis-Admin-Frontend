@@ -7805,7 +7805,7 @@ $(document).ready(function () {
                                                                     });
 
                                                                     $.ajax({
-                                                                        async: false,
+                                                                        async: true,
                                                                         type: "POST",
                                                                         dataType: 'json',
                                                                         url: url,
@@ -7937,7 +7937,7 @@ $(document).ready(function () {
                                                             });
                                                         }
                                                     }
-                                                }, 500);
+                                                }, 10);
 
                                             }
                                         });

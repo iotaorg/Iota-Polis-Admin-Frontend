@@ -1996,15 +1996,6 @@ var carregaComboCidadesUsers = function (args) {
             var valid = true;
             $.each(data.cities, function (index, item) {
                 valid = true;
-                if (args.option == "edit" && item.id == getIdFromUrl(args.city)) {
-                    valid = true;
-                } else {
-                    $.each(item.current_users, function (user_index, user_item) {
-                        if (findInArray(user_item.user.roles, "user") && user_item.user.network_id == $.cookie("network.id")) {
-                            valid = false;
-                        }
-                    });
-                }
                 if (valid) {
                     $("#dashboard-content .content select#city_id").append($("<option></option>").val(item.id).html(item.name + " (" + item.uf + ")"));
                 }

@@ -880,8 +880,8 @@ var buildVariableHistory = function (var_id) {
 
             //mostra historico
 
-            var history_table = "<div class='title'>$$ss</div><div class='historic-content'>";
-            history_table += "<table class='history'><thead><tr><th>$$pe</th><th>$$val</th><th></th></tr></thead><tbody>".render({
+            var history_table = "";
+            history_table += "<div class='title'>$$ss</div><div class='historic-content'><table class='history'><thead><tr><th>$$pe</th><th>$$val</th><th></th></tr></thead><tbody>".render({
                 pe: 'Período',
                 val: 'Valor',
                 ss: 'Série Histórica'

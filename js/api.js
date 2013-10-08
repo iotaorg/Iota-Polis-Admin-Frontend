@@ -4259,6 +4259,7 @@ $(document).ready(function () {
                                     }
                                 });
 
+                                $("#results td.botoes a.save").die('click');
                                 $("#results td.botoes a.save").live('click', function (e) {
                                     e.preventDefault();
                                     var valor = $(this).parent().parent().find("td.input input.input").val();

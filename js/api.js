@@ -461,7 +461,7 @@ $(document).ready(function () {
 
             submenu_access["user"].push("myindicator");
 
-            if (user_info.institute.id == 2) {
+            if (user_info.regions_enabled) {
                 menu_access["user"].push("region");
                 submenu_access["user"].push("region-list")
                 submenu_access["user"].push("region-map")
@@ -4063,10 +4063,12 @@ $(document).ready(function () {
                     formbuild.find(".models").append('$$e: <a href="/variaveis_exemplo.csv">CSV</a> <a href="/variaveis_exemplo.xls">XLS</a><br />'.render({
                         e: 'Modelo de arquivo'
                     }));
-                    formbuild.find(".models").append('$$e: <a href="/dados/usuario/$$_user/regiao_exemplo.csv">CSV</a> <a href="/dados/usuario/$$user/regiao_exemplo.xls">XLS</a><br />'.render({
-                        _user: $.cookie("user.id"),
-                        e: 'Modelo de arquivo para Regiões'
-                    }));
+                    if (user_info.regions_enabled){
+                        formbuild.find(".models").append('$$e: <a href="/dados/usuario/$$_user/regiao_exemplo.csv">CSV</a> <a href="/dados/usuario/$$user/regiao_exemplo.xls">XLS</a><br />'.render({
+                            _user: $.cookie("user.id"),
+                            e: 'Modelo de arquivo para Regiões'
+                        }));
+                    }
 
                     $("#dashboard-content .content .value_via_file .botao-form[ref='enviar']").click(function () {
 
@@ -6989,18 +6991,20 @@ $(document).ready(function () {
 
 
                             var data_region;
-                            $.ajax({
-                                async: false,
-                                type: 'GET',
-                                dataType: 'json',
-                                url: api_path + '/api/city/$$city/region?api_key=$$key'.render2({
-                                    key: $.cookie("key"),
-                                    city: getIdFromUrl(user_info.city)
-                                }),
-                                success: function (data, textStatus, jqXHR) {
-                                    data_region = data.regions;
-                                }
-                            });
+                            if (user_info.regions_enabled){
+                                $.ajax({
+                                    async: false,
+                                    type: 'GET',
+                                    dataType: 'json',
+                                    url: api_path + '/api/city/$$city/region?api_key=$$key'.render2({
+                                        key: $.cookie("key"),
+                                        city: getIdFromUrl(user_info.city)
+                                    }),
+                                    success: function (data, textStatus, jqXHR) {
+                                        data_region = data.regions;
+                                    }
+                                });
+                            }
 
                             var newform = [];
 
@@ -7041,7 +7045,7 @@ $(document).ready(function () {
                                 });
                             }
 
-                            if (data_region && data_region.length > 0) {
+                            if ( user_info.regions_enabled && data_region && data_region.length > 0) {
                                 var formbuild = $("#dashboard-content .content .filter_indicator").append(buildForm(newform, "Informe a Região e o Período"));
                             } else {
                                 var formbuild = $("#dashboard-content .content .filter_indicator").append(buildForm(newform, "Informe o Período"));
@@ -7049,7 +7053,7 @@ $(document).ready(function () {
                             $(formbuild).find("div .field:odd").addClass("odd");
                             $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 
-                            if (data_region && data_region.length > 0) {
+                            if (user_info.regions_enabled && data_region && data_region.length > 0) {
 
                                 $("#dashboard-content .content select#region_id").change(function (e) {
                                     buildIndicatorHistory({

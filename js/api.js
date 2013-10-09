@@ -388,11 +388,9 @@ $(document).ready(function () {
 
         submenu_label["indicator_user"] = [];
         submenu_label["indicator_user"].push({
-            "myindicator": "Editar Indicadores"
-        });
 
-
-        submenu_label["indicator_user"].push({
+            "myindicator": "Editar Indicadores",
+            "indicator": "Meus Indicadores",
             "mygroup": "Grupos de Indicadores"
         });
 
@@ -413,18 +411,19 @@ $(document).ready(function () {
 
         submenu_label["region"] = [];
         submenu_label["region"].push({
-            "region-list": "Cadastro"
-        });
-        submenu_label["region"].push({
+            "region-list": "Cadastro",
             "region-map": "Definir Regiões no Mapa"
         });
 
         menu_access["superadmin"] = ["dashboard", "prefs", "parameters", "networks", "admins", "users", "indicator", "axis", "logs", "logout"];
         submenu_access["superadmin"] = ["countries", "states", "cities", "units"];
+
         menu_access["admin"] = ["dashboard", "prefs", "users", "parameters", "variable_user", "axis", "indicator", "logs"];
         submenu_access["admin"] = ["countries", "states", "cities", "units"];
+
         menu_access["admin"].push("logout");
         submenu_access["user"] = ["dashboard"];
+
         if (findInArray(user_info.roles, "user")) {
             menu_access["user"] = ["prefs"];
             if (user_info.institute) {
@@ -444,10 +443,12 @@ $(document).ready(function () {
                 menu_access["user"].push("content");
                 submenu_access["user"].push("best_pratice");
             }
+
             menu_access["user"].push("variable_user");
             if (user_info.institute.users_can_edit_value == 1) {
                 submenu_access["user"].push("myvariableedit");
             }
+
             menu_access["user"].push("indicator_user");
             if (user_info.institute.users_can_edit_groups == 1) {
                 submenu_access["user"].push("mygroup");
@@ -457,6 +458,10 @@ $(document).ready(function () {
 
             if (user_info.institute.id == 2) {
                 submenu_access["user"].push("myvariableclone");
+            }
+
+            if (user_info.can_create_indicators) {
+                submenu_access["user"].push("indicator");
             }
 
             submenu_access["user"].push("myindicator");
@@ -4890,7 +4895,7 @@ $(document).ready(function () {
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/indicator?api_key=$$key&content-type=application/json&lang=$$lang&columns=name,formula,created_at,url,_,_'.render2({
+                        "sAjaxSource": api_path + '/api/indicator?use=edit&api_key=$$key&content-type=application/json&lang=$$lang&columns=name,formula,created_at,url,_,_'.render2({
                             lang: cur_lang,
                             key: $.cookie("key")
                         }),
@@ -4941,10 +4946,14 @@ $(document).ready(function () {
                         label: "Nome",
                         input: ["text,name,itext"]
                     });
-                    newform.push({
-                        label: "Visibilidade",
-                        input: ["select,visibility_level,iselect"]
-                    });
+
+                    if (user_info.user_type != 'user') {
+                        newform.push({
+                            label: "Visibilidade",
+                            input: ["select,visibility_level,iselect"]
+                        });
+                    }
+
                     newform.push({
                         label: "Tipo",
                         input: ["select,indicator_type,iselect"]
@@ -5670,6 +5679,12 @@ $(document).ready(function () {
                         addVVariacao();
                     });
 
+                    if (user_info.institute.fixed_indicator_axis_id && user_info.user_type == 'user'){
+                        $("#axis_id option[value="+user_info.institute.fixed_indicator_axis_id+"]").prop('selected', true);
+                        $("#axis_id").attr('disabled', 'disabled');
+                        $("#axis_id").attr('title', '$$x'.render({x: 'Desabilitado'}));
+                    }
+
                     if ($.getUrlVar("option") == "add") {
                         $("#dashboard-content .content .botao-form[ref='enviar']").click(function () {
                             resetWarnings();
@@ -5727,10 +5742,18 @@ $(document).ready(function () {
                                     value: $(this).parent().parent().find("#observations").val()
                                 }];
 
-                                args.push({
-                                    name: "indicator.create.visibility_level",
-                                    value: $(this).parent().parent().find("#visibility_level").val()
-                                });
+                                if (user_info.user_type == 'user') {
+                                    args.push({
+                                        name: "indicator.create.visibility_level",
+                                        value: 'private'
+                                    });
+                                }else{
+
+                                    args.push({
+                                        name: "indicator.create.visibility_level",
+                                        value: $(this).parent().parent().find("#visibility_level").val()
+                                    });
+                                }
 
                                 if ($(this).parent().parent().find("#visibility_level").val() == "private") {
                                     if (user_info.roles[0] == "superadmin") {
@@ -5893,15 +5916,15 @@ $(document).ready(function () {
                                         location.hash = "#!/" + getUrlSub();
                                     },
                                     error: function (data) {
-                                        switch (data.status) {
-                                        case 400:
+                                        //switch (data.status) {
+                                        //case 400:
                                             $("#aviso").setWarning({
                                                 msg: "Erro ao cadastrar. ($$codigo)".render2({
                                                     codigo: $.trataErro(data)
                                                 })
                                             });
-                                            break;
-                                        }
+                                        //break;
+                                        //}
                                         $("#dashboard-content .content .botao-form[ref='enviar']").show();
                                     }
                                 });

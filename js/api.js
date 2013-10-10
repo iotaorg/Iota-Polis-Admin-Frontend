@@ -397,15 +397,9 @@ $(document).ready(function () {
 
         submenu_label["variable_user"] = [];
         submenu_label["variable_user"].push({
-            "myvariable": "Variáveis Básicas"
-        });
-        submenu_label["variable_user"].push({
-            "variable": "Variáveis"
-        });
-        submenu_label["variable_user"].push({
-            "myvariableedit": "Editar/Importar Valores"
-        });
-        submenu_label["variable_user"].push({
+            "myvariable": "Variáveis Básicas",
+            "variable": findInArray(user_info.roles, "user") ? "Minhas Variáveis" : "Variáveis",
+            "myvariableedit": "Editar/Importar Valores",
             "myvariableclone": "Clonar Valores"
         });
 
@@ -462,6 +456,7 @@ $(document).ready(function () {
 
             if (user_info.can_create_indicators) {
                 submenu_access["user"].push("indicator");
+                submenu_access["user"].push("variable");
             }
 
             submenu_access["user"].push("myindicator");
@@ -3058,7 +3053,7 @@ $(document).ready(function () {
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/variable?api_key=$$key&content-type=application/json&lang=$$lang&columns=name,cognomen,type,created_at,is_basic,url,url,_,_'.render2({
+                        "sAjaxSource": api_path + '/api/variable?use=edit&api_key=$$key&content-type=application/json&lang=$$lang&columns=name,cognomen,type,created_at,is_basic,url,url,_,_'.render2({
                             lang: cur_lang,
                             key: $.cookie("key")
                         }),

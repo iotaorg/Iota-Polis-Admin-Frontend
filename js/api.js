@@ -4549,7 +4549,7 @@ $(document).ready(function () {
                                     "sScrollX": "100%",
                                     "sScrollXInner": "900px",
                                     "fnInitComplete": function () {
-                                        new FixedColumns(oTable, {
+                                        new FixedColumns(this, {
                                             "iLeftWidth": 350
                                         });
                                     }

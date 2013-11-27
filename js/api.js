@@ -9384,9 +9384,9 @@ $(document).ready(function () {
 							form.attr("file", $('#arquivo').val());
 
 							form.find("input[type='hidden']").remove();
-							form.append("<input type='hidden' name='public_name' value='" + $(".form input#public_name").val() + "'>");
-							form.append("<input type='hidden' name='class_name' value='" + $(".form input#class_name").val() + "'>");
-							form.append("<input type='hidden' name='description' value='" + $(".form textarea#description").val() + "'>");
+							form.append("<input type='hidden' name='user.file.createpublic_name' id='user.file.createpublic_name' value='" + $(".form input#public_name").val() + "'>");
+							form.append("<input type='hidden' name='user.file.createclass_name' id='user.file.createclass_name' value='" + $(".form input#class_name").val() + "'>");
+							form.append("<input type='hidden' name='user.file.createdescription' id='user.file.createdescription' value='" + $(".form textarea#description").val() + "'>");
 
 							form.submit();
 							$('#arquivo').attr({

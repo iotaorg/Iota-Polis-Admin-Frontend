@@ -9353,14 +9353,14 @@ $(document).ready(function () {
                                 var method = "POST";
                                 var url_action = api_path + "/api/user/$$user/file?api_key=$$key&content-type=application/json".render2({
 									key: $.cookie("key"),
-									user_id: $.cookie("user.id")
+									user: $.cookie("user.id")
 								});
                             } else {
                                 var action = "update";
                                 var method = "POST";
                                 var url_action = $.getUrlVar("url") + "?api_key=$$key&content-type=application/json".render2({
 									key: $.cookie("key"),
-									user_id: $.cookie("user.id")
+									user: $.cookie("user.id")
 								});
                             }
 

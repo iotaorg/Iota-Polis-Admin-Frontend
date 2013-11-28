@@ -9431,11 +9431,14 @@ $(document).ready(function () {
 
 									if (erro == 0) {
 										if (!retorno.error) {
-											$(".upload_file .form-aviso").setWarning({
-												msg: "Arquivo enviado com sucesso"
-											});
 											$(clickedButton).html("Enviar");
 											$(clickedButton).attr("is-disabled", 0);
+											$("#aviso").setWarning({
+											msg: "Arquivo enviado com sucesso.".render2({
+													codigo: jqXHR.status
+												})
+											});
+											location.hash = "#!/" + getUrlSub();
 										} else {
 											$(".upload_file .form-aviso").setWarning({
 												msg: "Erro ao enviar arquivo (" + retorno.error + ")"

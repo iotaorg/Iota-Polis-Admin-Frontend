@@ -58,6 +58,9 @@ var titleBarContent = {
 					"logs":{
 							"title": "Relatórios do Sistema",
 							"tip": ""},
+					"files":{
+							"title": "Conteúdo - Arquivos",
+							"tip": ""},
 					"prefs":{
 							"title": "Preferências",
 							"tip": ""},

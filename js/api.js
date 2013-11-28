@@ -9254,7 +9254,7 @@ $(document).ready(function () {
                 if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined) {
 
                     var userList = buildDataTable({
-                        headers: ["Nome", "Url", "_"]
+                        headers: ["Nome", "Arquivo", "_"]
                     });
 
                     $("#dashboard-content .content").append(userList);
@@ -9267,7 +9267,7 @@ $(document).ready(function () {
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/user/$$user/file?api_key=$$key&hide_listing=0&content-type=application/json&lang=$$lang&columns=public_name,hide_listing,id,_,_'.render2({
+                        "sAjaxSource": api_path + '/api/user/$$user/file?api_key=$$key&hide_listing=0&content-type=application/json&lang=$$lang&columns=public_name,public_url,id'.render2({
 							user: $.cookie("user.id"),
                             lang: cur_lang,
                             key: $.cookie("key")
@@ -9278,8 +9278,23 @@ $(document).ready(function () {
                             "sClass": "botoes",
                             "sWidth": "60px",
                             "aTargets": [2]
+                        },{
+                            "sClass": "center",
+                            "aTargets": [1]
+                        },{
+                            "fnRender": function (oObj, sVal) {
+                                sVal = "<a href='$$url' target='_blank' title='$$url'>Link</a>".render2({
+										url: sVal
+									});
+                                return sVal;
+                            },
+                            "aTargets": [1]
                         }],
                         "fnDrawCallback": function () {
+							$("#results td.botoes").each(function () {
+								var id = $(this).html();
+								$(this).html(api_path + "/api/user/" + $.cookie("user.id") + "/file/" + id);
+							});
                             DTdesenhaBotoes();
                         }
                     });
@@ -9288,10 +9303,17 @@ $(document).ready(function () {
 
 					$("#dashboard-content .content").append("<div class='upload_file'></div>");
                     var newform = [];
-                    newform.push({
-                        label: "Arquivo",
-                        input: ["file,arquivo,itext"]
-                    });
+					if ($.getUrlVar("option") == "add"){
+						newform.push({
+							label: "Arquivo",
+							input: ["file,arquivo,itext"]
+						});
+					}else if ($.getUrlVar("option") == "edit"){
+						newform.push({
+							label: "Arquivo",
+							input: ["textlabel,textlabel_arquivo,ilabel"]
+						});
+					}
                     newform.push({
                         label: "Nome",
                         input: ["text,public_name,itext"]
@@ -9320,6 +9342,8 @@ $(document).ready(function () {
                             success: function (data, status, jqXHR) {
                                 switch (jqXHR.status) {
                                 case 200:
+									textlabel_arquivo
+                                    $(formbuild).find("div#textlabel_arquivo").html(data.public_url);
                                     $(formbuild).find("input#public_name").val(data.public_name);
                                     $(formbuild).find("input#class_name").val(data.class_name);
                                     $(formbuild).find("textarea#description").val(data.description);
@@ -9355,89 +9379,129 @@ $(document).ready(function () {
 									key: $.cookie("key"),
 									user: $.cookie("user.id")
 								});
-                            } else {
-                                var action = "update";
-                                var method = "POST";
-                                var url_action = $.getUrlVar("url") + "?api_key=$$key&content-type=application/json".render2({
-									key: $.cookie("key"),
-									user: $.cookie("user.id")
+
+								var clickedButton = $(this);
+
+								var file = "arquivo";
+								var form = $("#formFileUpload_" + file);
+
+								original_id = $('#arquivo_' + file).attr("original-id");
+
+								$('#arquivo_' + file).attr({
+									name: "arquivo",
+									id: "arquivo"
 								});
-                            }
 
-							var clickedButton = $(this);
+								form.attr("action",url_action);
+								form.attr("method", "post");
+								form.attr("enctype", "multipart/form-data");
+								form.attr("encoding", "multipart/form-data");
+								form.attr("target", "iframe_" + file);
+								form.attr("file", $('#arquivo').val());
 
-							var file = "arquivo";
-							var form = $("#formFileUpload_" + file);
+								form.find("input[type='hidden']").remove();
+								form.append("<input type='hidden' name='user.file.create.public_name' id='user.file.createpublic_name' value='" + $(".form input#public_name").val() + "'>");
+								form.append("<input type='hidden' name='user.file.create.class_name' id='user.file.createclass_name' value='" + $(".form input#class_name").val() + "'>");
+								form.append("<input type='hidden' name='user.file.create.description' id='user.file.createdescription' value='" + $(".form textarea#description").val() + "'>");
 
-							original_id = $('#arquivo_' + file).attr("original-id");
+								form.submit();
+								$('#arquivo').attr({
+									name: original_id,
+									id: original_id
+								});
 
-							$('#arquivo_' + file).attr({
-								name: "arquivo",
-								id: "arquivo"
-							});
+								$("#iframe_" + file).load(function () {
 
-							form.attr("action",url_action);
-							form.attr("method", "post");
-							form.attr("enctype", "multipart/form-data");
-							form.attr("encoding", "multipart/form-data");
-							form.attr("target", "iframe_" + file);
-							form.attr("file", $('#arquivo').val());
-
-							form.find("input[type='hidden']").remove();
-							form.append("<input type='hidden' name='user.file.create.public_name' id='user.file.createpublic_name' value='" + $(".form input#public_name").val() + "'>");
-							form.append("<input type='hidden' name='user.file.create.class_name' id='user.file.createclass_name' value='" + $(".form input#class_name").val() + "'>");
-							form.append("<input type='hidden' name='user.file.create.description' id='user.file.createdescription' value='" + $(".form textarea#description").val() + "'>");
-
-							form.submit();
-							$('#arquivo').attr({
-								name: original_id,
-								id: original_id
-							});
-
-							$("#iframe_" + file).load(function () {
-
-								var erro = 0;
-								if ($(this).contents()) {
-									if ($(this).contents()[0].body) {
-										if ($(this).contents()[0].body.outerHTML) {
-											var retorno = $(this).contents()[0].body.outerHTML;
-											retorno = $(retorno).text();
-											retorno = $.parseJSON(retorno);
+									var erro = 0;
+									if ($(this).contents()) {
+										if ($(this).contents()[0].body) {
+											if ($(this).contents()[0].body.outerHTML) {
+												var retorno = $(this).contents()[0].body.outerHTML;
+												retorno = $(retorno).text();
+												retorno = $.parseJSON(retorno);
+											} else {
+												erro = 1;
+											}
 										} else {
 											erro = 1;
 										}
 									} else {
 										erro = 1;
 									}
-								} else {
-									erro = 1;
-								}
 
-								if (erro == 0) {
-									if (!retorno.error) {
-										$(".upload_file .form-aviso").setWarning({
-											msg: "Arquivo enviado com sucesso"
-										});
-										$(clickedButton).html("Enviar");
-										$(clickedButton).attr("is-disabled", 0);
+									if (erro == 0) {
+										if (!retorno.error) {
+											$(".upload_file .form-aviso").setWarning({
+												msg: "Arquivo enviado com sucesso"
+											});
+											$(clickedButton).html("Enviar");
+											$(clickedButton).attr("is-disabled", 0);
+										} else {
+											$(".upload_file .form-aviso").setWarning({
+												msg: "Erro ao enviar arquivo (" + retorno.error + ")"
+											});
+											$(clickedButton).html("Enviar");
+											$(clickedButton).attr("is-disabled", 0);
+											return;
+										}
 									} else {
-										$(".upload_file .form-aviso").setWarning({
-											msg: "Erro ao enviar arquivo (" + retorno.error + ")"
+										console.log("Erro ao enviar arquivo");
+										$(".value_via_file .form-aviso").setWarning({
+											msg: "Erro ao enviar arquivo"
 										});
 										$(clickedButton).html("Enviar");
 										$(clickedButton).attr("is-disabled", 0);
 										return;
 									}
-								} else {
-									console.log("Erro ao enviar arquivo");
-									$(".value_via_file .form-aviso").setWarning({
-										msg: "Erro ao enviar arquivo"
-									});
-									$(clickedButton).html("Enviar");
-									$(clickedButton).attr("is-disabled", 0);
-									return;
-								}
-							});
+								});
+                            } else {
+                                var action = "update";
+                                var method = "POST";
+                                var url_action = $.getUrlVar("url");
+								
+								args = [{
+									name: "api_key",
+									value: $.cookie("key")
+								}, {
+									name: "user.file." + action + ".class_name",
+									value: $(this).parent().parent().find("#class_name").val()
+								}, {
+									name: "user.file." + action + ".description",
+									value: $(this).parent().parent().find("#description").val()
+								}, {
+									name: "user.file." + action + ".public_name",
+									value: $(this).parent().parent().find("#public_name").val()
+								}];
+								$("#dashboard-content .content .botao-form[ref='enviar']").hide();
+								$.ajax({
+									type: method,
+									dataType: 'json',
+									url: url_action,
+									data: args,
+									success: function (data, status, jqXHR) {
+										$("#aviso").setWarning({
+											msg: "Operação efetuada com sucesso.".render2({
+												codigo: jqXHR.status
+											})
+										});
+										location.hash = "#!/" + getUrlSub();
+									},
+									error: function (data) {
+										switch (data.status) {
+										case 400:
+											$("#aviso").setWarning({
+												msg: "Erro ao $$operacao. ($$codigo)".render2({
+													operacao: txtOption,
+													codigo: $.trataErro(data)
+												})
+											});
+											break;
+										}
+										$("#dashboard-content .content .botao-form[ref='enviar']").show();
+									}
+								});
+								
+                            }
                         }
                     });
                     $("#dashboard-content .content .botao-form[ref='cancelar']").click(function () {

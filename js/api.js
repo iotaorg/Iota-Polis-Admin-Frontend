@@ -9349,8 +9349,10 @@ $(document).ready(function () {
 							});
 							$.each(data.files, function(index,item){
 								if (item.hide_listing == 0){
-									if (!findInArray(classes,item.class_name)){
-										classes.push(item.class_name);
+									if (item.class_name){
+										if (!findInArray(classes,item.class_name)){
+											classes.push(item.class_name);
+										}
 									}
 								}
 							});

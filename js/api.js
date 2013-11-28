@@ -9320,7 +9320,7 @@ $(document).ready(function () {
                     });
                     newform.push({
                         label: "Classe",
-                        input: ["text,class_name,itext"]
+                        input: ["select,class_name,iselect source","text,class_name_new,itext300px add_new"]
                     });
                     newform.push({
                         label: "Descrição",
@@ -9331,6 +9331,56 @@ $(document).ready(function () {
                     $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
                     $("#dashboard-content .content .upload_css .botao-form[ref='cancelar']").hide()
 
+					$.ajax({
+						async: false,
+						type: 'GET',
+						dataType: 'json',
+						url: api_path + "/api/user/$$user/file?api_key=$$key".render2({
+							key: $.cookie("key"),
+							user: $.cookie("user.id")
+						}),
+						success: function (data, status, jqXHR) {
+							var classes = [];
+							data.files.sort(function (a, b) {
+								a = a.class_name,
+								b = b.class_name;
+
+								return a.localeCompare(b);
+							});
+							$.each(data.files, function(index,item){
+								if (item.hide_listing == 0){
+									if (!findInArray(classes,item.class_name)){
+										classes.push(item.class_name);
+									}
+								}
+							});
+							$("select#class_name").empty();
+							$.each(classes, function (index, item) {
+								$("select#class_name").append($("<option></option>").val(item).html(item));
+							});
+							$("select#class_name").append($("<option></option>").val("_new").html("- nova classe"));
+							$("select#class_name").change(function (e) {
+								if ($(this).val() == "_new") {
+									$("input#class_name_new").show();
+								} else if ($(this).val() != "") {
+									$("input#class_name_new").hide();
+								}
+							});
+						},
+						error: function (data) {
+							switch (data.status) {
+							case 400:
+								$(".form-aviso").setWarning({
+									msg: "Erro: ($$codigo)".render2({
+										codigo: $.trataErro(data)
+									})
+								});
+								break;
+							}
+						}
+					});
+					
+					
                     if ($.getUrlVar("option") == "edit") {
                         $.ajax({
                             async: false,
@@ -9345,7 +9395,7 @@ $(document).ready(function () {
 									textlabel_arquivo
                                     $(formbuild).find("div#textlabel_arquivo").html(data.public_url);
                                     $(formbuild).find("input#public_name").val(data.public_name);
-                                    $(formbuild).find("input#class_name").val(data.class_name);
+                                    $(formbuild).find("select#class_name").val(data.class_name);
                                     $(formbuild).find("textarea#description").val(data.description);
                                     break;
                                 }
@@ -9398,10 +9448,15 @@ $(document).ready(function () {
 								form.attr("encoding", "multipart/form-data");
 								form.attr("target", "iframe_" + file);
 								form.attr("file", $('#arquivo').val());
-
+								
+								var sClass = $(".form select#class_name").val();
+								if (sClass == "_new"){
+									sClass = $(".form input#class_name_new").val();
+								}
+								
 								form.find("input[type='hidden']").remove();
 								form.append("<input type='hidden' name='user.file.create.public_name' id='user.file.createpublic_name' value='" + $(".form input#public_name").val() + "'>");
-								form.append("<input type='hidden' name='user.file.create.class_name' id='user.file.createclass_name' value='" + $(".form input#class_name").val() + "'>");
+								form.append("<input type='hidden' name='user.file.create.class_name' id='user.file.createclass_name' value='" + sClass + "'>");
 								form.append("<input type='hidden' name='user.file.create.description' id='user.file.createdescription' value='" + $(".form textarea#description").val() + "'>");
 
 								form.submit();
@@ -9459,13 +9514,18 @@ $(document).ready(function () {
                                 var action = "update";
                                 var method = "POST";
                                 var url_action = $.getUrlVar("url");
+
+								var sClass = $(this).parent().parent().find("#class_name").val();
+								if (sClass == "_new"){
+									sClass = $(this).parent().parent().find("#class_name_new").val();
+								}
 								
 								args = [{
 									name: "api_key",
 									value: $.cookie("key")
 								}, {
 									name: "user.file." + action + ".class_name",
-									value: $(this).parent().parent().find("#class_name").val()
+									value: sClass
 								}, {
 									name: "user.file." + action + ".description",
 									value: $(this).parent().parent().find("#description").val()

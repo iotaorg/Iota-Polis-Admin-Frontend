@@ -1796,4 +1796,6 @@ input.admin_checked{
 #steps-buttons{
 	margin-top: 20px;
 }
-
+input.add_new{
+	display: none;
+}

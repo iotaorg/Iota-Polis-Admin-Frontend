@@ -9434,9 +9434,7 @@ $(document).ready(function () {
 											$(clickedButton).html("Enviar");
 											$(clickedButton).attr("is-disabled", 0);
 											$("#aviso").setWarning({
-											msg: "Arquivo enviado com sucesso.".render2({
-													codigo: jqXHR.status
-												})
+												msg: "Arquivo enviado com sucesso."
 											});
 											location.hash = "#!/" + getUrlSub();
 										} else {

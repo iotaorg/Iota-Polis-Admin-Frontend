@@ -412,8 +412,9 @@ $(document).ready(function () {
         menu_access["superadmin"] = ["dashboard", "prefs", "parameters", "networks", "admins", "users", "indicator", "axis", "logs", "logout"];
         submenu_access["superadmin"] = ["countries", "states", "cities", "units"];
 
-        menu_access["admin"] = ["dashboard", "prefs", "users", "parameters", "variable_user", "axis", "indicator", "logs"];
-        submenu_access["admin"] = ["countries", "states", "cities", "units"];
+        menu_access["admin"] = ["dashboard", "prefs", "users", "parameters", "variable_user", "axis", "indicator", "customize", "logs"];
+        submenu_access["admin"] = ["countries", "states", "cities", "units", "css"];
+
 
         menu_access["admin"].push("logout");
         submenu_access["user"] = ["dashboard"];

@@ -1,6 +1,6 @@
 var api_path = "";
 if (window.location.href.indexOf("localhost") >= 0) {
-    api_path = "http://indicadores.cidadessustentaveis.org.br";
+    api_path = "http://rnsp.aware.com.br";
 }
 
 var cur_lang = $.cookie("cur_lang"),

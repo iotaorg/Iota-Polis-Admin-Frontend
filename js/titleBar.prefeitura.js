@@ -88,6 +88,9 @@ var titleBarContent = {
 					"css":{
 							"title": "Customização - CSS",
 							"tip": ""},
+					"files":{
+							"title": "Conteúdo - Arquivos",
+							"tip": ""},
 					"prefs":{
 							"title": "Preferências",
 							"tip": "Nas preferências, você deve preencher os dados básicos da  prefeitura – endereço, telefone, email etc. Não se esqueça de mudar a senha  inicial do sistema e preencher o nome da pessoa que será responsável pelo  cadastro/inclusão de dados. Você deve anexar o arquivo em pdf com seu Programa  de Metas."}

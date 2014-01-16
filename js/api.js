@@ -2059,10 +2059,7 @@ $(document).ready(function () {
                         label: "Nome",
                         input: ["text,name,itext"]
                     });
-                    newform.push({
-                        label: "Texto URL amigável",
-                        input: ["text,name_url,itext"]
-                    });
+
                     newform.push({
                         type: "subtitle",
                         title: "Dados da Prefeitura"
@@ -2340,10 +2337,7 @@ $(document).ready(function () {
                         label: "UF",
                         input: ["text,uf,itext"]
                     });
-                    newform.push({
-                        label: "Texto URL amigável",
-                        input: ["text,name_url,itext"]
-                    });
+
 
                     var formbuild = $("#dashboard-content .content").append(buildForm(newform, txtOption));
                     $(formbuild).find("div .field:odd").addClass("odd");
@@ -2387,7 +2381,7 @@ $(document).ready(function () {
                                 case 200:
                                     $(formbuild).find("select#country_id").val(data.country_id);
                                     $(formbuild).find("input#name").val(data.name);
-                                    $(formbuild).find("input#name_url").val(data.name_url);
+
                                     $(formbuild).find("input#uf").val(data.uf);
                                     break;
                                 }
@@ -2441,10 +2435,7 @@ $(document).ready(function () {
                             }, {
                                 name: "state." + action + ".uf",
                                 value: $(this).parent().parent().find("#uf").val()
-                            }, {
-                                name: "state." + action + ".name_url",
-                                value: $(this).parent().parent().find("#name_url").val()
-                            }, {
+                            },{
                                 name: "state." + action + ".country_id",
                                 value: $(this).parent().parent().find("#country_id option:selected").val()
                             }];
@@ -2537,10 +2528,6 @@ $(document).ready(function () {
                         label: "Nome",
                         input: ["text,name,itext"]
                     });
-                    newform.push({
-                        label: "Texto URL amigável",
-                        input: ["text,name_url,itext"]
-                    });
 
                     var formbuild = $("#dashboard-content .content").append(buildForm(newform, txtOption));
                     $(formbuild).find("div .field:odd").addClass("odd");
@@ -2561,7 +2548,6 @@ $(document).ready(function () {
                                 switch (jqXHR.status) {
                                 case 200:
                                     $(formbuild).find("input#name").val(data.name);
-                                    $(formbuild).find("input#name_url").val(data.name_url);
                                     break;
                                 }
                             },
@@ -2603,10 +2589,7 @@ $(document).ready(function () {
                             }, {
                                 name: "country." + action + ".name",
                                 value: $(this).parent().parent().find("#name").val()
-                            }, {
-                                name: "country." + action + ".name_url",
-                                value: $(this).parent().parent().find("#name_url").val()
-                            }, ];
+                            },];
                             $("#dashboard-content .content .botao-form[ref='enviar']").hide();
                             $.ajax({
                                 type: method,
@@ -2704,10 +2687,6 @@ $(document).ready(function () {
                         label: "Nome da Rede",
                         input: ["text,name,itext"]
                     });
-                    newform.push({
-                        label: "Texto URL amigável",
-                        input: ["text,name_url,itext"]
-                    });
 
                     var formbuild = $("#dashboard-content .content").append(buildForm(newform, txtOption));
                     $(formbuild).find("div .field:odd").addClass("odd");
@@ -2752,7 +2731,7 @@ $(document).ready(function () {
                                     $(formbuild).find("select#institute_id").val(data.institute_id);
                                     $(formbuild).find("input#domain_name").val(data.domain_name);
                                     $(formbuild).find("input#name").val(data.name);
-                                    $(formbuild).find("input#name_url").val(data.name_url);
+
                                     break;
                                 }
                             },
@@ -2805,10 +2784,7 @@ $(document).ready(function () {
                             }, {
                                 name: "network." + action + ".name",
                                 value: $(this).parent().parent().find("#name").val()
-                            }, {
-                                name: "network." + action + ".name_url",
-                                value: $(this).parent().parent().find("#name_url").val()
-                            }, {
+                            },{
                                 name: "network." + action + ".institute_id",
                                 value: $(this).parent().parent().find("#institute_id option:selected").val()
                             }];
@@ -9057,7 +9033,7 @@ $(document).ready(function () {
                                 switch (jqXHR.status) {
                                 case 200:
                                     $(formbuild).find("input#name").val(data.name);
-                                    $(formbuild).find("input#name_url").val(data.name_url);
+
                                     $(formbuild).find("textarea#description").val(data.description);
                                     $(formbuild).find("textarea#goals").val(data.goals);
                                     $(formbuild).find("textarea#schedule").val(data.schedule);
@@ -9173,10 +9149,7 @@ $(document).ready(function () {
                             }, {
                                 name: "best_pratice." + action + ".name",
                                 value: $(this).parent().parent().find("#name").val()
-                            }, {
-                                name: "best_pratice." + action + ".name_url",
-                                value: $(this).parent().parent().find("#name_url").val()
-                            }, {
+                            },{
                                 name: "best_pratice." + action + ".description",
                                 value: $(this).parent().parent().find("#description").val()
                             }, {

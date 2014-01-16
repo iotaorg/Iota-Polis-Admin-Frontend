@@ -2060,7 +2060,7 @@ $(document).ready(function () {
                         input: ["text,name,itext"]
                     });
                     newform.push({
-                        label: "Url",
+                        label: "Texto URL amigável",
                         input: ["text,name_url,itext"]
                     });
                     newform.push({
@@ -2341,7 +2341,7 @@ $(document).ready(function () {
                         input: ["text,uf,itext"]
                     });
                     newform.push({
-                        label: "Url",
+                        label: "Texto URL amigável",
                         input: ["text,name_url,itext"]
                     });
 
@@ -2538,7 +2538,7 @@ $(document).ready(function () {
                         input: ["text,name,itext"]
                     });
                     newform.push({
-                        label: "Url",
+                        label: "Texto URL amigável",
                         input: ["text,name_url,itext"]
                     });
 
@@ -2705,7 +2705,7 @@ $(document).ready(function () {
                         input: ["text,name,itext"]
                     });
                     newform.push({
-                        label: "Url",
+                        label: "Texto URL amigável",
                         input: ["text,name_url,itext"]
                     });
 
@@ -8977,10 +8977,6 @@ $(document).ready(function () {
                         input: ["text,name,itext"]
                     });
                     newform.push({
-                        label: "Url",
-                        input: ["text,name_url,itext"]
-                    });
-                    newform.push({
                         label: "Descrição",
                         input: ["textarea,description"]
                     });
@@ -9382,8 +9378,8 @@ $(document).ready(function () {
 							}
 						}
 					});
-					
-					
+
+
                     if ($.getUrlVar("option") == "edit") {
                         $.ajax({
                             async: false,
@@ -9451,12 +9447,12 @@ $(document).ready(function () {
 								form.attr("encoding", "multipart/form-data");
 								form.attr("target", "iframe_" + file);
 								form.attr("file", $('#arquivo').val());
-								
+
 								var sClass = $(".form select#class_name").val();
 								if (sClass == "_new"){
 									sClass = $(".form input#class_name_new").val();
 								}
-								
+
 								form.find("input[type='hidden']").remove();
 								form.append("<input type='hidden' name='user.file.create.public_name' id='user.file.createpublic_name' value='" + $(".form input#public_name").val() + "'>");
 								form.append("<input type='hidden' name='user.file.create.class_name' id='user.file.createclass_name' value='" + sClass + "'>");
@@ -9522,7 +9518,7 @@ $(document).ready(function () {
 								if (sClass == "_new"){
 									sClass = $(this).parent().parent().find("#class_name_new").val();
 								}
-								
+
 								args = [{
 									name: "api_key",
 									value: $.cookie("key")
@@ -9564,7 +9560,7 @@ $(document).ready(function () {
 										$("#dashboard-content .content .botao-form[ref='enviar']").show();
 									}
 								});
-								
+
                             }
                         }
                     });

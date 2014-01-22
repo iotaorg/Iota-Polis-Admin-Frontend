@@ -4043,7 +4043,7 @@ $(document).ready(function () {
                         e: 'Modelo de arquivo'
                     }));
                     if (user_info.regions_enabled){
-                        formbuild.find(".models").append('$$e: <a href="/dados/usuario/$$_user/regiao_exemplo.csv">CSV</a> <a href="/dados/usuario/$$user/regiao_exemplo.xls">XLS</a><br />'.render({
+                        formbuild.find(".models").append('$$e: <a href="/dados/usuario/$$_user/regiao_exemplo.csv">CSV</a> <a href="/dados/usuario/$$_user/regiao_exemplo.xls">XLS</a><br />'.render({
                             _user: $.cookie("user.id"),
                             e: 'Modelo de arquivo para Regiões'
                         }));

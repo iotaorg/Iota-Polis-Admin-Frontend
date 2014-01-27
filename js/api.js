@@ -9289,7 +9289,7 @@ $(document).ready(function () {
                         input: ["text,public_name,itext"]
                     });
                     newform.push({
-                        label: "Classe",
+                        label: "Grupo do arquivo",
                         input: ["select,class_name,iselect source","text,class_name_new,itext300px add_new"]
                     });
                     newform.push({
@@ -9327,6 +9327,7 @@ $(document).ready(function () {
 								}
 							});
 							$("select#class_name").empty();
+							$("select#class_name").append($("<option></option>").val("").html("Selecione"));
 							$.each(classes, function (index, item) {
 								$("select#class_name").append($("<option></option>").val(item).html(item));
 							});

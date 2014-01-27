@@ -94,8 +94,8 @@ var removeAccents = (function() {
    // probably more to come
   };
   return function(s) {
-	return ( s.replace(translate_re, function(match) { 
-	  return translate[match]; 
+	return ( s.replace(translate_re, function(match) {
+	  return translate[match];
 	}) );
   }
 })();
@@ -139,7 +139,7 @@ $(document).ready(function(){
 	var oDataTable;
 	var iDisplayLength = 100;
 	var arr_posicoes = [];
-	
+
 	var url = [];
 	var count_rows = 0;
 	var total_rows = 0;
@@ -147,18 +147,18 @@ $(document).ready(function(){
 	var markers = [];
 	var zoom_padrao = 9;
 	var graficos = [];
-	
+
 	function loadMap(){
-		
+
 		var mapOptions = {
 				center: mapDefaultLocation,
 				zoom: 4,
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 			};
-	
+
 		var map = new google.maps.Map(document.getElementById("mapa"),mapOptions);
 	}
-	
+
 	function findInArray(obj,value){
 		if (value == "") return true;
 		var retorno = false;
@@ -167,12 +167,12 @@ $(document).ready(function(){
 		}
 		return retorno;
 	}
-	
+
 	function fillCombo(combo,source){
 		var first = $(combo).find("option:first");
 		$(combo).empty();
 		$(combo).append(first);
-		
+
 		$.each(source.sort(),function(index,value){
 			$(combo).append("<option value='" + value + "'>"+value+"</option>");
 		});
@@ -182,7 +182,7 @@ $(document).ready(function(){
 		$(combo).empty();
 		$(combo).append(first);
 	}
-	
+
 	function carregaIndicadores(){
 		$.getJSON("json/indicadores.json",
 		{
@@ -223,7 +223,7 @@ $(document).ready(function(){
 			table_content += "<table>";
 			table_content += "<thead><tr><th>Cidade</th><th>2009</th><th>2010</th><th>2011</th><th>2012</th><th></th></tr></thead>";
 			table_content += "<tbody>";
-			
+
 			$.each(data.dados, function(i,item){
 				table_content += "<tr><td class='cidade'>$$cidade</td>".render({cidade: item.cidade});
 				for (j = 0; j < item.valores.length; j++){
@@ -234,14 +234,14 @@ $(document).ready(function(){
 			});
 
 			table_content += "</tbody></table>";
-			
+
 			$(".data-content .table .content-fill").append(table_content);
-			
+
 			geraGraficos();
 
 		});
   	}
-	
+
 	function carregaGraficos(){
 		var indicador = $(".indicators div.selected").attr("indicator-id");
 		$.getJSON("json/indicador." + indicador + ".json",
@@ -249,13 +249,13 @@ $(document).ready(function(){
 			format: "json"
 		},
 		function(data) {
-			
+
 			var colors = ['#124646','#238080','#3cd3d3','#00a5d4','#015b75','#013342'];
 
 			RGraph.Clear(document.getElementById("main-graph"));
-			
+
 			var legendas = [];
-			
+
 			$.each(data.dados, function(i,item){
 				console.log(item.valores);
 				var line = new RGraph.Line('main-graph', item.valores);
@@ -272,23 +272,23 @@ $(document).ready(function(){
 				line.Draw();
 				legendas.push({name: item.cidade, color: colors[i]});
 			});
-			
+
 			montaLegenda(legendas);
 
 		});
 	}
-	
+
 	function montaLegenda(legendas){
 		$(".graph .legend").empty();
-		
+
 		var legenda = "";
 		for (i = 0; i < legendas.length; i++){
 			legenda += "<div class='item'><div class='quad' style='background-color: $$color'></div><div class='label' style='color: $$color'>$$label</div></div>".render({label:legendas[i].name, color: legendas[i].color});
 		}
 		$(".graph .legend").append(legenda);
-		
+
 	}
-	
+
 	function geraGraficos(){
 		for (i = 0; i < graficos.length; i++){
 			var line = new RGraph.Line('graph-'+i, graficos[i]);
@@ -326,5 +326,5 @@ $(document).ready(function(){
 	});
 
 	carregaIndicadores();
-	
+
 });

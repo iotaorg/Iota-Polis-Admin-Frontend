@@ -289,7 +289,7 @@ var roles = {
 }
 var languages_list = {
     "pt-br": "Português",
-    "en": "Espanhol"
+    "es": "Espanhol"
 };
 var indicator_roles = {
     "_prefeitura,_movimento": "Prefeituras e Movimentos",

@@ -4045,8 +4045,9 @@ $(document).ready(function () {
                     $("#dashboard-content .content .value_via_file .botao-form[ref='cancelar']").hide();
 
                     formbuild.find(".field:last").append("<div class='models center'></div>");
-                    formbuild.find(".models").append('$$e: <a href="/variaveis_exemplo.csv">CSV</a> <a href="/variaveis_exemplo.xls">XLS</a><br />'.render({
-                        e: 'Modelo de arquivo'
+                    formbuild.find(".models").append('$$e: <a href="/variaveis_exemplo.csv?user_id=$$user&from_indicators=1">CSV</a> <a href="/variaveis_exemplo.xls?user_id=$$user&from_indicators=1">XLS</a><br />'.render({
+                        e: 'Modelo de arquivo',
+                        user: user_info.id
                     }));
                     if (user_info.regions_enabled){
                         formbuild.find(".models").append('$$e: <a href="/dados/usuario/$$_user/regiao_exemplo.csv">CSV</a> <a href="/dados/usuario/$$_user/regiao_exemplo.xls">XLS</a><br />'.render({

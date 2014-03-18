@@ -1504,10 +1504,12 @@ $(document).ready(function () {
 
                     var newform = [];
 
-                    newform.push({
-                        label: "Rede",
-                        input: ["select,network_id,iselect"]
-                    });
+                    if ($.getUrlVar("option") == "add"){
+                        newform.push({
+                            label: "Rede",
+                            input: ["select,network_id,iselect"]
+                        });
+                    }
 
                     newform.push({
                         label: "Nome",

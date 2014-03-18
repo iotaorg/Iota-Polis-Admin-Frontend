@@ -1641,10 +1641,14 @@ $(document).ready(function () {
                             }, {
                                 name: "user." + action + ".role",
                                 value: "admin"
-                            }, {
-                                name: "user." + action + ".network_id",
-                                value: $(this).parent().parent().find("#network_id option:selected").val()
                             }];
+
+                            if ($.getUrlVar("option") == "add"){
+                                args.push({
+                                    name: "user." + action + ".network_id",
+                                    value: $(this).parent().parent().find("#network_id option:selected").val()
+                                });
+                            }
 
                             if ($(this).parent().parent().find("#password").val() != "") {
                                 args.push({

@@ -5133,6 +5133,30 @@ $(document).ready(function () {
                                         if (args) args.callBack();
                                     }
                                 });
+                            } else if ($("#visibility_level").val() == "network") {
+                                $("#visibility-options").append("<label class='visibility'>Selecione uma rede:</label><select id='visibility_networks_id' class='iselect'><option value=''>carregando...</option></select>");
+                                $.ajax({
+                                    type: 'GET',
+                                    dataType: 'json',
+                                    url: api_path + "/api/network?api_key=$$key".render2({
+                                        key: $.cookie("key")
+                                    }),
+                                    success: function (data, textStatus, jqXHR) {
+                                        data.network.sort(function (a, b) {
+                                            a = a.name,
+                                            b = b.name;
+                                            return a.localeCompare(b);
+                                        });
+                                        $("#dashboard-content .content #visibility_networks_id option").remove();
+                                        $.each(data.network, function (index, item) {
+                                            $("#dashboard-content .content #visibility_networks_id").append($("<option value='$$id'>$$nome</option>".render({
+                                                id: getIdFromUrl(item.url),
+                                                nome: item.name
+                                            })));
+                                        });
+                                        if (args) args.callBack();
+                                    }
+                                });
                             } else if ($("#visibility_level").val() == "restrict") {
                                 $("#visibility-options").before("<div class='clear'></div>");
                                 $("#visibility-options").addClass("inline");
@@ -5753,6 +5777,11 @@ $(document).ready(function () {
                                         name: "indicator.create.visibility_country_id",
                                         value: $(this).parent().parent().find("#visibility_country_id").val()
                                     });
+                                } else if ($(this).parent().parent().find("#visibility_level").val() == "network") {
+                                    args.push({
+                                        name: "indicator.create.visibility_networks_id",
+                                        value: $(this).parent().parent().find("#visibility_networks_id").val()
+                                    });
                                 } else if ($(this).parent().parent().find("#visibility_level").val() == "restrict") {
                                     var users = "";
                                     $(this).parent().parent().find("#visibility_users_id option").each(function (index, item) {
@@ -5993,6 +6022,10 @@ $(document).ready(function () {
                                                 if (data.visibility_country_id) {
                                                     $(formbuild).find("select#visibility_country_id").val(data.visibility_country_id)
                                                 }
+                                            } else if (data.visibility_level == "network") {
+                                                if (data.visibility_networks_id) {
+                                                    $(formbuild).find("select#visibility_networks_id").val(data.visibility_networks_id)
+                                                }
                                             } else if (data.visibility_level == "restrict") {
                                                 if (data.restrict_to_users) {
                                                     var users = data.restrict_to_users;
@@ -6169,6 +6202,11 @@ $(document).ready(function () {
                                     args.push({
                                         name: "indicator.update.visibility_country_id",
                                         value: $(this).parent().parent().find("#visibility_country_id").val()
+                                    });
+                                } else if ($(this).parent().parent().find("#visibility_level").val() == "network") {
+                                    args.push({
+                                        name: "indicator.update.visibility_networks_id",
+                                        value: $(this).parent().parent().find("#visibility_networks_id").val()
                                     });
                                 } else if ($(this).parent().parent().find("#visibility_level").val() == "restrict") {
                                     var users = "";

@@ -299,8 +299,9 @@ var indicator_roles = {
 var visibility_level = {
     "public": "Público",
     "private": "Privado",
-    "country": "por País",
-    "restrict": "por Usuário"
+//    "country": "por País",
+//    "restrict": "por Usuário"
+    "network": "por Rede"
 };
 var indicator_types = {
     "normal": "normal",

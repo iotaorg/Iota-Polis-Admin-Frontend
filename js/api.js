@@ -738,7 +738,7 @@ $(document).ready(function () {
         function editSelectedShape() {
             if ($("#save-button").length > 0) {
                 if ($("#save-button").hasClass("disabled")) {
-                    return;
+                    //return;
                 }
             }
             if (selectedShape) {
@@ -934,8 +934,8 @@ $(document).ready(function () {
             }
         }
 
-        function initialize(params) {
-
+        function initialize(params) {			
+		
             if (typeof params.on_selection_unavaiable == 'function')
                 _binds.on_selection_unavaiable = params.on_selection_unavaiable;
 
@@ -1006,7 +1006,9 @@ $(document).ready(function () {
             google.maps.event.addListener(map, 'click', clearSelection);
             google.maps.event.addDomListener(document.getElementById('edit-button'), 'click', editSelectedShape);
             google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', deleteSelectedShape);
-            google.maps.event.addDomListener(document.getElementById('save-button'), 'click', saveSelectedShape);
+            if ($("#save-button").length > 0) {
+				google.maps.event.addDomListener(document.getElementById('save-button'), 'click', saveSelectedShape);
+			}
 
             selectColor();
 
@@ -9745,6 +9747,10 @@ $(document).ready(function () {
 							key: $.cookie("key")
 						}),
 						success: function (data, textStatus, jqXHR) {
+							$("#dashboard-content .content select#subregions_valid_after").append("<option value='$$_value'>$$_text</option>".render({
+								_text: "Nenhuma",
+								_value: ""
+							}));
 							$.each(data.options, function (index, value) {
 								$("#dashboard-content .content select#subregions_valid_after").append("<option value='$$_value'>$$_text</option>".render({
 									_text: data.options[index].text,
@@ -9833,9 +9839,7 @@ $(document).ready(function () {
                     google.load("maps", "3", {
                         other_params: 'sensor=false&libraries=drawing,geometry',
                         callback: function () {
-                            $("#dashboard-content .content div.form").after("<div id='panel-map'><div id='panel'><button id='edit-button'>Editar forma</button><button id='delete-button'>Apagar forma</button><button id='save-button'>Associar forma a região selecionada</button></div><div id='map'></div></div>");
-
-                            $("#save-button").hide();
+                            $("#dashboard-content .content div.form").after("<div id='panel-map'><div id='panel'><button id='edit-button'>Editar forma</button><button id='delete-button'>Apagar forma</button></div><div id='map'></div></div>");
 
                             if (!google.maps.Polygon.prototype.getBounds) {
 
@@ -9871,6 +9875,9 @@ $(document).ready(function () {
                                 "focus": true,
                                 "select": true
                             });
+							if ($.getUrlVar("option") == "add") {
+								$map.deleteAllShapes();
+							}
 
                         }
                     });
@@ -9966,10 +9973,10 @@ $(document).ready(function () {
             } else if (getUrlSub() == "region-map") {
                 /*  Regiões Setando mapa */
 
-                $("#dashboard-content .content").append("<div id='panel-region'><div id='region-top'><div id='list-label'>$$r:</div><div id='region-panel'><div class='contents'><div id='region-selected'>$$rr: <span class='selected'>$$ax</span></div></div></div></div><div id='region-list'><div class='contents'></div></div><div id='panel-map'><div id='panel'><button id='edit-button' class='disabled'>$$ex</button><button id='delete-button' class='disabled'>$$f</button><button id='save-button' class='disabled'>$$a</button></div><div id='map'></div></div></div>".render({
+                $("#dashboard-content .content").append("<div id='panel-region'><div id='region-top'><div id='list-label'>$$re:</div><div id='region-panel'><div class='contents'><div id='region-selected'>$$rr: <span class='selected'>$$ax</span></div></div></div></div><div id='region-list'><div class='contents'></div></div><div id='panel-map'><div id='panel'><button id='edit-button' class='disabled'>$$ex</button><button id='delete-button' class='disabled'>$$f</button><button id='save-button' class='disabled'>$$a</button></div><div id='map'></div></div></div>".render({
                     ax: 'Nenhuma',
                     ex: 'Editar forma',
-                    r: 'Regiões',
+                    re: 'Regiões',
                     f: 'Apagar forma',
                     rr: 'Região selecionada',
                     a: 'Associar forma à região selecionada'

@@ -9688,6 +9688,11 @@ $(document).ready(function () {
 
                     var newform = [];
 
+					newform.push({
+						label: "Tipo",
+						input: ["radio,region_type,iradio"]
+					});
+
                     newform.push({
                         label: "Distrito de",
                         input: ["select,region_id,iselect"]
@@ -9700,15 +9705,58 @@ $(document).ready(function () {
                         label: "Descrição",
                         input: ["textarea,description,itext"]
                     });
+                    newform.push({
+                        label: "Data",
+                        input: ["select,subregions_valid_after,iselect"]
+                    });
 
                     var formbuild = $("#dashboard-content .content").append(buildForm(newform, txtOption));
                     $(formbuild).find("div .field:odd").addClass("odd");
                     $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 
+					var newradio = $("#dashboard-content .content input#region_type").clone().attr("value","1");
+					$("#dashboard-content .content input#region_type").attr("value","0").after("Região&nbsp;&nbsp;",newradio,"Sub-região&nbsp;&nbsp;");
+					$("#dashboard-content .content input#region_type:first").attr("checked",true);
+
+					$("#dashboard-content .content .form .field:eq(1)").hide();
+
+					$("#dashboard-content .content input#region_type").change(function(e){
+						if ($(this).val() == 0){
+							$("#dashboard-content .content .form .field:eq(1)").hide();
+							$("#dashboard-content .content .form .field:eq(4)").show();
+						}else{
+							$("#dashboard-content .content .form .field:eq(1)").show();
+							$("#dashboard-content .content .form .field:eq(4)").hide();
+						}
+					});
+
+                    $(formbuild).find("#subregions_valid_after").qtip($.extend(true, {}, qtip_input, {
+                        content: "Ano em que as sub-regiões começam a possuir dados."
+                    }));
+					
                     $(formbuild).find("#name").qtip($.extend(true, {}, qtip_input, {
                         content: "Nome da Subprefeitura."
                     }));
 
+					$.ajax({
+						type: 'GET',
+						dataType: 'json',
+						url: api_path + '/api/period/year?api_key=$$key'.render2({
+							key: $.cookie("key")
+						}),
+						success: function (data, textStatus, jqXHR) {
+							$.each(data.options, function (index, value) {
+								$("#dashboard-content .content select#subregions_valid_after").append("<option value='$$_value'>$$_text</option>".render({
+									_text: data.options[index].text,
+									_value: data.options[index].value
+								}));
+							});
+							if ($("#dashboard-content .content select#subregions_valid_after").attr("initial-value")){
+								$("#dashboard-content .content select#subregions_valid_after").val($("#dashboard-content .content select#subregions_valid_after").attr("initial-value"));
+							}
+						}
+					});
+					
                     $("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("Carregando..."));
                     $.ajax({
                         type: 'GET',
@@ -9719,9 +9767,6 @@ $(document).ready(function () {
                         }),
                         success: function (data, status, jqXHR) {
                             $("#dashboard-content .content select#region_id option").remove();
-                            $("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("$$e".render({
-                                e: 'Nenhuma'
-                            })));
                             data.regions.sort(function (a, b) {
                                 a = String(a.name),
                                 b = String(b.name);
@@ -9732,6 +9777,9 @@ $(document).ready(function () {
                                     $("#dashboard-content .content select#region_id").append($("<option></option>").val(item.id).html(item.name));
                                 }
                             });
+							if ($("#dashboard-content .content select#region_id").attr("initial-id")){
+								$("#dashboard-content .content select#region_id").val($("#dashboard-content .content select#region_id").attr("initial-id"));
+							}
                         }
                     });
 
@@ -9748,8 +9796,21 @@ $(document).ready(function () {
                                 case 200:
                                     if (data.upper_region) {
                                         $(formbuild).find("select#region_id").val(data.upper_region.id);
-                                    }
+                                        $(formbuild).find("select#region_id").attr("initial-id",data.upper_region.id);
+										$(formbuild).find("#region_type").eq(1).attr("checked","checked");
+										$("#dashboard-content .content .form .field:eq(1)").show();
+										$("#dashboard-content .content .form .field:eq(4)").hide();
+                                    }else{
+										$(formbuild).find("#region_type").eq(0).attr("checked","checked");
+										$("#dashboard-content .content .form .field:eq(1)").hide();
+										$("#dashboard-content .content .form .field:eq(4)").show();
+									}
                                     $(formbuild).find("input#name").val(data.name);
+									if (data.subregions_valid_after){
+										var data_tmp = data.subregions_valid_after.split(" ");
+										$(formbuild).find("select#subregions_valid_after").attr("initial-value",data_tmp[0]);
+										$(formbuild).find("select#subregions_valid_after").val(data_tmp[0]);
+									}
                                     $(formbuild).find("textarea#description").val(data.description);
                                     current_map_string = data.polygon_path;
                                     break;
@@ -9848,12 +9909,18 @@ $(document).ready(function () {
                                 value: current_map_string
                             }];
 
-                            if ($(this).parent().parent().find("#region_id option:selected").val() != "") {
+                            if ($(this).parent().parent().find("#region_id option:selected").val() != "" 
+								&& $(this).parent().parent().find("#region_type").val() == 1) {
                                 args.push({
                                     name: "city.region." + action + ".upper_region",
                                     value: $(this).parent().parent().find("#region_id option:selected").val()
                                 });
-                            }
+                            }else{
+                                args.push({
+                                    name: "city.region." + action + ".subregions_valid_after",
+                                    value: $(this).parent().parent().find("#subregions_valid_after option:selected").val()
+                                });
+							}
 
                             $("#dashboard-content .content .botao-form[ref='enviar']").hide();
                             $.ajax({

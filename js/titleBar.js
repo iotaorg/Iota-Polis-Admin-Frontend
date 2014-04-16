@@ -17,13 +17,13 @@ var titleBarContent = {
 							"title": "Cidades",
 							"tip": ""},
 					"region":{
-							"title": "Sub-Prefeituras/Distritos",
+							"title": "Regiões/Sub-regiões",
 							"tip": ""},
 					"region-list":{
-							"title": "Sub-Prefeituras/Distritos",
+							"title": "Regiões/Sub-regiões",
 							"tip": ""},
 					"region-map":{
-							"title": "Sub-Prefeituras/Distritos",
+							"title": "Regiões/Sub-regiões",
 							"tip": ""},
 					"variable":{
 							"title": "Variáveis",

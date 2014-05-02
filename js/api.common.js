@@ -893,8 +893,9 @@ var buildVariableHistory = function (var_id) {
                     periodo: $.convertDateToPeriod(data_variables[0].values[index].valid_from, data_variables[0].period),
                     value_id: data_variables[0].values[index].id
                 });
-                history_table += "<td class='valor'>$$_valor</td><td class='edit'><a href='javascript: void(0);' value-id='$$_value_id' class='edit'>$$ee</a>&nbsp;<a href='javascript: void(0);' value-id='$$_value_id' class='delete'>apagar</a></td>".render({
+                history_table += "<td class='valor'>$$_valor</td><td class='edit'><a href='javascript: void(0);' value-id='$$_value_id' class='edit'>$$ee</a>&nbsp;<a href='javascript: void(0);' value-id='$$_value_id' class='delete'>$$ff</a></td>".render({
                     ee: 'editar',
+                    ff: 'apagar',
                     _valor: $.formatNumber(data_variables[0].values[index].value, {
                         format: "#,##0.###",
                         locale: "br"

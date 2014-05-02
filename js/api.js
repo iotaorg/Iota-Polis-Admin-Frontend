@@ -3773,9 +3773,15 @@ $(document).ready(function () {
                                 $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
                                 $("#dashboard-content .content div.historic table").width($("#dashboard-content .content").find(".form").width());
 
-                                $(formbuild).find("div#textlabel_variable").html(data.name);
-                                $(formbuild).find("div#textlabel_explanation").html(data.explanation);
-                                $(formbuild).find("div#textlabel_period").html(variable_periods[data.period]);
+                                $(formbuild).find("div#textlabel_variable").html("$$e".render({
+									e: data.name
+								}));
+                                $(formbuild).find("div#textlabel_explanation").html("$$e".render({
+									e: data.explanation
+								}));
+                                $(formbuild).find("div#textlabel_period").html("$$e".render({
+									e: variable_periods[data.period]
+								}));
 
 
                                 $("#dashboard-content .content .botao-form[ref='enviar']").click(function () {

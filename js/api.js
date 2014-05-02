@@ -9886,7 +9886,7 @@ $(document).ready(function () {
                         resetWarnings();
                         if ($(this).parent().parent().find("#name").val() == "") {
                             $(".form-aviso").setWarning({
-                                msg: "Por favor informe o Nome da Subprefeitura"
+                                msg: "Por favor informe o Nome"
                             });
                         } else {
 
@@ -9900,8 +9900,8 @@ $(document).ready(function () {
                                 var action = "update";
                                 var method = "POST";
                                 var url_action = $.getUrlVar("url");
-                            }
 
+                            }
                             args = [{
                                 name: "api_key",
                                 value: $.cookie("key")
@@ -9917,7 +9917,7 @@ $(document).ready(function () {
                             }];
 
                             if ($(this).parent().parent().find("#region_id option:selected").val() != "" 
-								&& $(this).parent().parent().find("#region_type").val() == 1) {
+								&& $(this).parent().parent().find("#region_type:checked").val() == 1) {
                                 args.push({
                                     name: "city.region." + action + ".upper_region",
                                     value: $(this).parent().parent().find("#region_id option:selected").val()

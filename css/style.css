@@ -1231,6 +1231,12 @@ table.history tbody tr td.edit a.delete{
     color: #900;
     padding: 2px 5px;
 }
+table.history tbody tr td a.delete-item{
+    background-color: #900;
+	color: #fff;
+	padding: 1px 3px;
+	font-size: 0.6em;
+}
 table.history tbody tr td.edit a:hover{
     color: #ccc;
 }

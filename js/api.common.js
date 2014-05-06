@@ -1037,14 +1037,16 @@ var buildIndicatorHistory = function (args) {
 
                     $.each(headers, function (index2, value2) {
                         if (data.rows[index].valores[index2] && data.rows[index].valores[index2].value != "-" && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined) {
-                            history_table += "<td class='valor' title='$$data' value-id='$$id' variable-id='$$variable_id'>$$valor</td>".render2({
+                            history_table += "<td class='valor' title='$$data' value-id='$$id' variable-id='$$variable_id'>$$valor <a href='javascript: void(0);' class='delete delete-item' title='$$title' alt='$$title'>$$e</a></td>".render2({
                                 valor: $.formatNumber(data.rows[index].valores[index2].value, {
                                     format: "#,##0.###",
-                                    locale: "br"
+                                    locale: "br",
                                 }),
                                 data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T"),
                                 id: data.rows[index].valores[index2].id,
-                                variable_id: data.rows[index].valores[index2].variable_id
+                                variable_id: data.rows[index].valores[index2].variable_id,
+                                title: "Apagar valor",
+								e: "X"
                             });
 
                         } else {
@@ -1109,9 +1111,9 @@ var buildIndicatorHistory = function (args) {
                             history_table += "<td class='formula_valor' variation-index='0'>-</td>";
                         }
                     }
-                    history_table += "<td class='edit'><a href='javascript: void(0);' row-id='$$_row' class='delete'>$$f</a></td>".render({
+                    history_table += "<td class='edit'><a href='javascript: void(0);' row-id='$$_row' class='delete delete-all'>$$f</a></td>".render({
                         _row: rows,
-                        f: 'apagar'
+                        f: 'apagar todos'
                     });
                     history_table += "</tr>";
                     rows++;
@@ -1170,48 +1172,83 @@ var buildIndicatorHistory = function (args) {
                                 var row = $("table.history tbody tr[row-id='$$row_id']".render({
                                     row_id: $(link_delete).attr("row-id")
                                 }));
+								
+								if ($(link_delete).hasClass("delete-all")){
 
-                                var tds = $(row).find("td[variable-id]");
+									var tds = $(row).find("td[variable-id]");
 
-                                var total_values = tds.length;
+									var total_values = tds.length;
 
-                                var total_values_enviados = 0;
+									var total_values_enviados = 0;
 
-                                $(tds).each(function (index, element) {
-                                    var url = api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
-                                        key: $.cookie("key"),
-                                        var_id: $(element).attr("variable-id"),
-                                        value_id: $(element).attr("value-id")
-                                    });
-                                    if ($("#dashboard-content .content select#region_id").length > 0 && ($("#dashboard-content .content select#region_id option:selected").val())) {
-                                        url = api_path + '/api/city/$$city/region/$$region/value/$$value_id?api_key=$$key'.render({
-                                            key: $.cookie("key"),
-                                            city: getIdFromUrl(user_info.city),
-                                            region: $("#dashboard-content .content select#region_id option:selected").val(),
-                                            value_id: $(element).attr("value-id")
-                                        });
-                                    }
-                                    $.ajax({
-                                        type: 'DELETE',
-                                        dataType: 'json',
-                                        url: url,
-                                        success: function (data, status, jqXHR) {
-                                            switch (jqXHR.status) {
-                                            case 204:
-                                                total_values_enviados++;
-                                                if (total_values_enviados >= total_values) {
-                                                    resetWarnings();
-                                                    $("#aviso").setWarning({
-                                                        msg: "Cadastro apagado com sucesso."
-                                                    });
-                                                    buildIndicatorHistory(args);
-                                                }
-                                                break;
-                                            }
-                                        }
-                                    });
-                                });
-
+									$(tds).each(function (index, element) {
+										var url = api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
+											key: $.cookie("key"),
+											var_id: $(element).attr("variable-id"),
+											value_id: $(element).attr("value-id")
+										});
+										if ($("#dashboard-content .content select#region_id").length > 0 && ($("#dashboard-content .content select#region_id option:selected").val())) {
+											url = api_path + '/api/city/$$city/region/$$region/value/$$value_id?api_key=$$key'.render({
+												key: $.cookie("key"),
+												city: getIdFromUrl(user_info.city),
+												region: $("#dashboard-content .content select#region_id option:selected").val(),
+												value_id: $(element).attr("value-id")
+											});
+										}
+										$.ajax({
+											type: 'DELETE',
+											dataType: 'json',
+											url: url,
+											success: function (data, status, jqXHR) {
+												switch (jqXHR.status) {
+												case 204:
+													total_values_enviados++;
+													if (total_values_enviados >= total_values) {
+														resetWarnings();
+														$("#aviso").setWarning({
+															msg: "Cadastro apagado com sucesso."
+														});
+														buildIndicatorHistory(args);
+													}
+													break;
+												}
+											}
+										});
+									});
+								}else{
+									var url = api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
+										key: $.cookie("key"),
+										var_id: $(link_delete).parent().attr("variable-id"),
+										value_id: $(link_delete).parent().attr("value-id")
+									});
+									if ($("#dashboard-content .content select#region_id").length > 0 && ($("#dashboard-content .content select#region_id option:selected").val())) {
+										url = api_path + '/api/city/$$city/region/$$region/value/$$value_id?api_key=$$key'.render({
+											key: $.cookie("key"),
+											city: getIdFromUrl(user_info.city),
+											region: $("#dashboard-content .content select#region_id option:selected").val(),
+											value_id: $(link_delete).parent().attr("value-id")
+										});
+									}
+									$.ajax({
+										type: 'DELETE',
+										dataType: 'json',
+										url: url,
+										success: function (data, status, jqXHR) {
+											switch (jqXHR.status) {
+											case 204:
+												total_values_enviados++;
+												if (total_values_enviados >= total_values) {
+													resetWarnings();
+													$("#aviso").setWarning({
+														msg: "Cadastro apagado com sucesso."
+													});
+													buildIndicatorHistory(args);
+												}
+												break;
+											}
+										}
+									});
+								}
                             }
                         },
                         'Não': {

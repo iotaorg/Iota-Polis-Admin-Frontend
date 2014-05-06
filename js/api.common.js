@@ -1026,6 +1026,16 @@ var buildIndicatorHistory = function (args) {
                 history_table += "#theader_valor";
                 history_table += "</tr></thead><tbody>";
                 var rows = 0;
+				var variables_variations = [],
+					th_valor = "",
+					num_var = numKeys(data.variable_variations);
+				
+				if (data.variables_variations){
+					$.each(data.variables_variations, function(indexv,itemv){
+						variables_variations[itemv.id] = itemv.name;
+					});
+				}
+				
                 $.each(data.rows, function (index, value) {
                     history_table += "<tr row-id='$$row'><td class='periodo'>$$periodo</td>".render2({
                         periodo: $.convertDateToPeriod(data.rows[index].valid_from, args.period),
@@ -1067,31 +1077,73 @@ var buildIndicatorHistory = function (args) {
                         history_table += "<td class='valor'>-</td>";
                     }
                     if (value.variations && value.variations.length > 0) {
-                        var th_valor = "";
+						var th_valor = "",
+							num_var = numKeys(data.variable_variations);
+												
                         for (i = 0; i < value.variations.length; i++) {
-                            th_valor += "<th class='formula_valor' variation-index='" + i + "'>$$e</th>".render({
+							$.each(variables_variations, function(indexv,itemv){
+								if (itemv){
+									th_valor += "<th class='variavel' variation-id='" + value.variations[i].id + "' variation-index='" + i + "' variable-id='" + indexv + "'>$$variavel</th>".render({
+										variavel: itemv
+									});
+								}
+							});
+                            th_valor += "<th class='formula_valor' variation-id='" + value.variations[i].id + "' variation-index='" + i + "'>$$e</th>".render({
                                 e: 'Valor da Fórmula'
                             });
                         }
                         history_table = history_table.replace("#theader_valor", th_valor + "<th></th>");
-                        $.each(value.variations, function (index, item) {
-                            if (item.value != "-") {
+                        $.each(value.variations, function (indexv, itemv) {
+							var cont = 0;
+							$.each(itemv.variations_values, function(indexv2, itemv2){
+								if (itemv2.value != "-"){
+									history_table += "<td class='variavel valor' variation-id='$$variation_id' variation-index='$$index' variable-id='$$variable_id' value-id='$$value_id'>$$valor  <a href='javascript: void(0);' class='delete delete-item' title='$$title' alt='$$title'>$$e</a></td>".render2({
+																		valor: $.formatNumber(itemv2.value, {
+																			format: "#,##0.###",
+																			locale: "br"
+																		}),
+																		variable_id: indexv2,
+																		variation_id: itemv.id,
+																		value_id: itemv2.id,
+																		index: indexv,
+																		title: "Apagar valor",
+																		e: "X"
+																	});								
+								}else{
+									history_table += "<td class='variavel valor' variation-id='$$variation_id' variation-index='$$index' variable-id='$$variable_id' value-id='$$value_id'>-</td>".render2({
+																		valor: $.formatNumber(itemv2.value, {
+																			format: "#,##0.###",
+																			locale: "br"
+																		}),
+																		variation_id: itemv.id,
+																		variable_id: indexv2,
+																		value_id: itemv2.id,
+																		index: indexv
+																	});								
+								}
+								cont++;
+							});
+							for (i = cont; i < num_var; i++) {
+								history_table += "<td class='valor'>-</td>";
+							}
+                            if (itemv.value != "-") {
                                 history_table += "<td class='formula_valor' variation-index='$$index'>$$formula_valor</td>".render2({
-                                    formula_valor: $.formatNumber(item.value, {
+                                    formula_valor: $.formatNumber(itemv.value, {
                                         format: "#,##0.###",
                                         locale: "br"
                                     }),
-                                    index: index
+                                    index: indexv
                                 });
                             } else {
                                 history_table += "<td class='formula_valor' variation-index='$$index'>-</td>".render({
-                                    index: index
+                                    index: indexv
                                 });
                             }
                             if (seta_vvariacoes) {
                                 vvariations.push({
-                                    name: item.name,
-                                    index: index
+                                    name: itemv.name,
+                                    index: indexv,
+									id: itemv.id
                                 });
                             }
                         });
@@ -1131,9 +1183,10 @@ var buildIndicatorHistory = function (args) {
                     f: 'Faixa'
                 });
                 $.each(vvariations, function (index, item) {
-                    variation_filter += "<option value='$$index'>$$name".render({
-                        index: item.index,
-                        name: item.name
+                    variation_filter += "<option value='$$id' $$selected>$$name".render({
+                        id: item.id,
+                        name: item.name,
+						selected: (index == 0) ? "selected" : ""
                     });
                 });
                 variation_filter += "</select></div>";
@@ -1147,15 +1200,14 @@ var buildIndicatorHistory = function (args) {
             $(args.target).find(".title").click(function () {
                 $(this).parent().find(".historic-content").toggle();
             });
-
-
+			
             if (vvariations.length > 0) {
-                $(args.target).find("table .formula_valor[variation-index!=0]").hide();
+                $(args.target).find("table .formula_valor[variation-id!=" + $("select.variation-filter option:selected").val() + "],table .variavel[variation-id!=" + $("select.variation-filter option:selected").val() + "]").hide();
 
                 $("select.variation-filter").change(function () {
                     var obj = $(this);
-                    $(obj).parent().next("table").find(".formula_valor").fadeOut("fast", function () {
-                        $(obj).parent().next("table").find(".formula_valor[variation-index='" + $(obj).val() + "']").show();
+                    $(obj).parent().next("table").find(".formula_valor,.variavel").fadeOut("fast", function () {
+                        $(obj).parent().next("table").find(".formula_valor[variation-id='" + $(obj).val() + "'],.variavel[variation-id='" + $(obj).val() + "']").show();
                     });
                 });
             }
@@ -1175,7 +1227,7 @@ var buildIndicatorHistory = function (args) {
 								
 								if ($(link_delete).hasClass("delete-all")){
 
-									var tds = $(row).find("td[variable-id]");
+									var tds = $(row).find("td[variable-id]:visible");
 
 									var total_values = tds.length;
 
@@ -1187,6 +1239,14 @@ var buildIndicatorHistory = function (args) {
 											var_id: $(element).attr("variable-id"),
 											value_id: $(element).attr("value-id")
 										});
+										if ($(element).attr("variation-id")){
+											url = api_path + '/api/indicator/$$indicator_id/variables_variation/$$variable_id/values/$$value_id?api_key=$$key'.render({
+												key: $.cookie("key"),
+												variable_id: $(element).attr("variable-id"),
+												indicator_id: getIdFromUrl($.getUrlVar("url")),
+												value_id: $(element).attr("value-id")
+											});
+										}
 										if ($("#dashboard-content .content select#region_id").length > 0 && ($("#dashboard-content .content select#region_id option:selected").val())) {
 											url = api_path + '/api/city/$$city/region/$$region/value/$$value_id?api_key=$$key'.render({
 												key: $.cookie("key"),
@@ -1221,6 +1281,14 @@ var buildIndicatorHistory = function (args) {
 										var_id: $(link_delete).parent().attr("variable-id"),
 										value_id: $(link_delete).parent().attr("value-id")
 									});
+									if ($(link_delete).parent().attr("variation-id")){
+										url = api_path + '/api/indicator/$$indicator_id/variables_variation/$$variable_id/values/$$value_id?api_key=$$key'.render({
+											key: $.cookie("key"),
+											variable_id: $(link_delete).parent().attr("variable-id"),
+											indicator_id:getIdFromUrl($.getUrlVar("url")),
+											value_id: $(link_delete).parent().attr("value-id")
+										});
+									}
 									if ($("#dashboard-content .content select#region_id").length > 0 && ($("#dashboard-content .content select#region_id option:selected").val())) {
 										url = api_path + '/api/city/$$city/region/$$region/value/$$value_id?api_key=$$key'.render({
 											key: $.cookie("key"),

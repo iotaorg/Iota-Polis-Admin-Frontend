@@ -1078,7 +1078,7 @@ var buildIndicatorHistory = function (args) {
                     }
                     if (value.variations && value.variations.length > 0) {
 						var th_valor = "",
-							num_var = numKeys(data.variable_variations);
+							num_var = numKeys(data.variables_variations);
 												
                         for (i = 0; i < value.variations.length; i++) {
 							$.each(variables_variations, function(indexv,itemv){
@@ -1095,36 +1095,40 @@ var buildIndicatorHistory = function (args) {
                         history_table = history_table.replace("#theader_valor", th_valor + "<th></th>");
                         $.each(value.variations, function (indexv, itemv) {
 							var cont = 0;
-							$.each(itemv.variations_values, function(indexv2, itemv2){
-								if (itemv2.value != "-"){
-									history_table += "<td class='variavel valor' variation-id='$$variation_id' variation-index='$$index' variable-id='$$variable_id' value-id='$$value_id'>$$valor  <a href='javascript: void(0);' class='delete delete-item' title='$$title' alt='$$title'>$$e</a></td>".render2({
-																		valor: $.formatNumber(itemv2.value, {
-																			format: "#,##0.###",
-																			locale: "br"
-																		}),
-																		variable_id: indexv2,
-																		variation_id: itemv.id,
-																		value_id: itemv2.id,
-																		index: indexv,
-																		title: "Apagar valor",
-																		e: "X"
-																	});								
-								}else{
-									history_table += "<td class='variavel valor' variation-id='$$variation_id' variation-index='$$index' variable-id='$$variable_id' value-id='$$value_id'>-</td>".render2({
-																		valor: $.formatNumber(itemv2.value, {
-																			format: "#,##0.###",
-																			locale: "br"
-																		}),
-																		variation_id: itemv.id,
-																		variable_id: indexv2,
-																		value_id: itemv2.id,
-																		index: indexv
-																	});								
-								}
-								cont++;
-							});
+							if (itemv.variations_values){
+								$.each(itemv.variations_values, function(indexv2, itemv2){
+									if (itemv2.value != "-"){
+										history_table += "<td class='variavel valor' variation-id='$$variation_id' variation-index='$$index' variable-id='$$variable_id' value-id='$$value_id'>$$valor  <a href='javascript: void(0);' class='delete delete-item' title='$$title' alt='$$title'>$$e</a></td>".render2({
+																			valor: $.formatNumber(itemv2.value, {
+																				format: "#,##0.###",
+																				locale: "br"
+																			}),
+																			variable_id: indexv2,
+																			variation_id: itemv.id,
+																			value_id: itemv2.id,
+																			index: indexv,
+																			title: "Apagar valor",
+																			e: "X"
+																		});								
+									}else{
+										history_table += "<td class='variavel valor' variation-id='$$variation_id' variation-index='$$index' variable-id='$$variable_id' value-id='$$value_id'>-</td>".render2({
+																			valor: $.formatNumber(itemv2.value, {
+																				format: "#,##0.###",
+																				locale: "br"
+																			}),
+																			variation_id: itemv.id,
+																			variable_id: indexv2,
+																			value_id: itemv2.id,
+																			index: indexv
+																		});								
+									}
+									cont++;
+								});
+							}
 							for (i = cont; i < num_var; i++) {
-								history_table += "<td class='valor'>-</td>";
+								history_table += "<td class='variavel valor' variation-id='$$variation_id'>-</td>".render({
+									variation_id: itemv.id
+								});
 							}
                             if (itemv.value != "-") {
                                 history_table += "<td class='formula_valor' variation-index='$$index'>$$formula_valor</td>".render2({

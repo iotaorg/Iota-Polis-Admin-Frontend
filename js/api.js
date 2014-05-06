@@ -6707,135 +6707,139 @@ $(document).ready(function () {
                             $("#dashboard-content .content .indicadores_list .zoom").click(function () {
                                 var target = $(this).parent().parent();
                                 var indicator_period = $(this).attr("period");
-                                $.ajax({
-                                    type: 'GET',
-                                    dataType: 'json',
-                                    url: api_path + '/api/indicator/$$id/variable/value?api_key=$$key'.render2({
-                                        key: $.cookie("key"),
-                                        id: $(this).attr("indicator-id")
-                                    }),
-                                    success: function (data, textStatus, jqXHR) {
-                                        var vvariations = [];
-                                        if (data.rows) {
-                                            var history_table = "<table class='history'><thead><tr><th>$$e</th>".render({
-                                                e: 'Período'
-                                            });
+								if ($(target).find(".historico-popup").is(":visible")){
+									$(target).find(".historico-popup").hide();
+								}else{
+									$.ajax({
+										type: 'GET',
+										dataType: 'json',
+										url: api_path + '/api/indicator/$$id/variable/value?api_key=$$key'.render2({
+											key: $.cookie("key"),
+											id: $(this).attr("indicator-id")
+										}),
+										success: function (data, textStatus, jqXHR) {
+											var vvariations = [];
+											if (data.rows) {
+												var history_table = "<table class='history'><thead><tr><th>$$e</th>".render({
+													e: 'Período'
+												});
 
-                                            var headers = []; //corrige ordem do header
-                                            $.each(data.header, function (titulo, index) {
-                                                headers[index] = titulo;
-                                            });
+												var headers = []; //corrige ordem do header
+												$.each(data.header, function (titulo, index) {
+													headers[index] = titulo;
+												});
 
 
-                                            $.each(headers, function (index, value) {
-                                                history_table += "<th class='variavel'>$$variavel</th>".render({
-                                                    variavel: value
-                                                });
-                                            });
-                                            history_table += "#theader_valor";
-                                            history_table += "</tr><tbody>";
-                                            $.each(data.rows, function (index, value) {
-                                                history_table += "<tr><td class='periodo'>$$periodo</td>".render2({
-                                                    periodo: $.convertDateToPeriod(data.rows[index].valid_from, indicator_period)
-                                                });
-                                                $.each(headers, function (index2, value2) {
-                                                    if ((data.rows[index].valores[index2]) && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined && data.rows[index].valores[index2].value != "-") {
-                                                        history_table += "<td class='valor' title='$$data'>$$valor</td>".render2({
-                                                            valor: $.formatNumber(data.rows[index].valores[index2].value, {
-                                                                format: "#,##0.###",
-                                                                locale: "br"
-                                                            }),
-                                                            data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T")
-                                                        });
-                                                    } else {
-                                                        if ((data.rows[index].valores[index2])) {
-                                                            history_table += "<td class='valor' title='$$data'>-</td>".render({
-                                                                data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T")
-                                                            });
-                                                        } else {
-                                                            history_table += "<td class='valor' title='$$data'>-</td>".render({
-                                                                data: $.convertDate(data.rows[index].valid_from, "T")
-                                                            });
-                                                        }
-                                                    }
-                                                });
-                                                if (value.variations && value.variations.length > 0) {
-                                                    var th_valor = "";
-                                                    for (i = 0; i < value.variations.length; i++) {
-                                                        th_valor += "<th class='formula_valor' variation-index='" + i + "'>$$e</th>".render({
-                                                            e: 'Valor da Fórmula'
-                                                        });
-                                                    }
-                                                    history_table = history_table.replace("#theader_valor", th_valor);
-                                                    $.each(value.variations, function (index, item) {
-                                                        if (item.value != "-") {
-                                                            history_table += "<td class='formula_valor' variation-index='$$index'>$$formula_valor</td>".render2({
-                                                                formula_valor: $.formatNumber(item.value, {
-                                                                    format: "#,##0.###",
-                                                                    locale: "br"
-                                                                }),
-                                                                index: index
-                                                            });
-                                                        } else {
-                                                            history_table += "<td class='formula_valor' variation-index='$$index'>-</td>".render2({
-                                                                index: index
-                                                            });
-                                                        }
-                                                        vvariations.push({
-                                                            name: item.name,
-                                                            index: index
-                                                        });
-                                                    });
-                                                } else {
-                                                    history_table = history_table.replace("#theader_valor", "<th class='formula_valor'>$$e</th>".render({
-                                                        e: 'Valor da Fórmula'
-                                                    }));
-                                                    if (data.rows[index].formula_value != "-") {
-                                                        history_table += "<td class='formula_valor' variation-index='0'>$$formula_valor</td>".render2({
-                                                            formula_valor: $.formatNumber(data.rows[index].formula_value, {
-                                                                format: "#,##0.###",
-                                                                locale: "br"
-                                                            })
-                                                        });
-                                                    } else {
-                                                        history_table += "<td class='formula_valor' variation-index='0'>-</td>";
-                                                    }
-                                                }
-                                                history_table += "</tr></tbody>";
-                                            });
-                                            history_table += "</table>";
-                                        } else {
-                                            var history_table = "<table class='history'><thead><tr><th>nenhum registro encontrado</th></tr></thead></table>";
-                                        }
+												$.each(headers, function (index, value) {
+													history_table += "<th class='variavel'>$$variavel</th>".render({
+														variavel: value
+													});
+												});
+												history_table += "#theader_valor";
+												history_table += "</tr><tbody>";
+												$.each(data.rows, function (index, value) {
+													history_table += "<tr><td class='periodo'>$$periodo</td>".render2({
+														periodo: $.convertDateToPeriod(data.rows[index].valid_from, indicator_period)
+													});
+													$.each(headers, function (index2, value2) {
+														if ((data.rows[index].valores[index2]) && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined && data.rows[index].valores[index2].value != "-") {
+															history_table += "<td class='valor' title='$$data'>$$valor</td>".render2({
+																valor: $.formatNumber(data.rows[index].valores[index2].value, {
+																	format: "#,##0.###",
+																	locale: "br"
+																}),
+																data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T")
+															});
+														} else {
+															if ((data.rows[index].valores[index2])) {
+																history_table += "<td class='valor' title='$$data'>-</td>".render({
+																	data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T")
+																});
+															} else {
+																history_table += "<td class='valor' title='$$data'>-</td>".render({
+																	data: $.convertDate(data.rows[index].valid_from, "T")
+																});
+															}
+														}
+													});
+													if (value.variations && value.variations.length > 0) {
+														var th_valor = "";
+														for (i = 0; i < value.variations.length; i++) {
+															th_valor += "<th class='formula_valor' variation-index='" + i + "'>$$e</th>".render({
+																e: 'Valor da Fórmula'
+															});
+														}
+														history_table = history_table.replace("#theader_valor", th_valor);
+														$.each(value.variations, function (index, item) {
+															if (item.value != "-") {
+																history_table += "<td class='formula_valor' variation-index='$$index'>$$formula_valor</td>".render2({
+																	formula_valor: $.formatNumber(item.value, {
+																		format: "#,##0.###",
+																		locale: "br"
+																	}),
+																	index: index
+																});
+															} else {
+																history_table += "<td class='formula_valor' variation-index='$$index'>-</td>".render2({
+																	index: index
+																});
+															}
+															vvariations.push({
+																name: item.name,
+																index: index
+															});
+														});
+													} else {
+														history_table = history_table.replace("#theader_valor", "<th class='formula_valor'>$$e</th>".render({
+															e: 'Valor da Fórmula'
+														}));
+														if (data.rows[index].formula_value != "-") {
+															history_table += "<td class='formula_valor' variation-index='0'>$$formula_valor</td>".render2({
+																formula_valor: $.formatNumber(data.rows[index].formula_value, {
+																	format: "#,##0.###",
+																	locale: "br"
+																})
+															});
+														} else {
+															history_table += "<td class='formula_valor' variation-index='0'>-</td>";
+														}
+													}
+													history_table += "</tr></tbody>";
+												});
+												history_table += "</table>";
+											} else {
+												var history_table = "<table class='history'><thead><tr><th>nenhum registro encontrado</th></tr></thead></table>";
+											}
 
-                                        var variation_filter = "";
-                                        if (vvariations.length > 0) {
-                                            variation_filter += "<div class='variation-filter'><span class='variation-filter'>Faixa: </span><select class='variation-filter'>";
-                                            $.each(vvariations, function (index, item) {
-                                                variation_filter += "<option value='$$index'>$$name".render({
-                                                    index: item.index,
-                                                    name: item.name
-                                                });
-                                            });
-                                            variation_filter += "</select></div>";
-                                        }
+											var variation_filter = "";
+											if (vvariations.length > 0) {
+												variation_filter += "<div class='variation-filter'><span class='variation-filter'>Faixa: </span><select class='variation-filter'>";
+												$.each(vvariations, function (index, item) {
+													variation_filter += "<option value='$$index'>$$name".render({
+														index: item.index,
+														name: item.name
+													});
+												});
+												variation_filter += "</select></div>";
+											}
 
-                                        $(target).find(".historico-popup").html(variation_filter + history_table);
-                                        $(target).find(".historico-popup").toggle();
+											$(target).find(".historico-popup").html(variation_filter + history_table);
+											$(target).find(".historico-popup").toggle();
 
-                                        if (vvariations.length > 0) {
-                                            $(target).find(".historico-popup table .formula_valor[variation-index!=0]").hide();
+											if (vvariations.length > 0) {
+												$(target).find(".historico-popup table .formula_valor[variation-index!=0]").hide();
 
-                                            $("select.variation-filter").change(function () {
-                                                var obj = $(this);
-                                                $(obj).parent().next("table").find(".formula_valor").fadeOut("fast", function () {
-                                                    $(obj).parent().next("table").find(".formula_valor[variation-index='" + $(obj).val() + "']").show();
-                                                });
-                                            });
-                                        }
+												$("select.variation-filter").change(function () {
+													var obj = $(this);
+													$(obj).parent().next("table").find(".formula_valor").fadeOut("fast", function () {
+														$(obj).parent().next("table").find(".formula_valor[variation-index='" + $(obj).val() + "']").show();
+													});
+												});
+											}
 
-                                    }
-                                });
+										}
+									});
+								}
                             });
 
                             $("div.indicadores_list .eixos .title").click(function () {

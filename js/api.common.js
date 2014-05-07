@@ -1308,14 +1308,11 @@ var buildIndicatorHistory = function (args) {
 										success: function (data, status, jqXHR) {
 											switch (jqXHR.status) {
 											case 204:
-												total_values_enviados++;
-												if (total_values_enviados >= total_values) {
-													resetWarnings();
-													$("#aviso").setWarning({
-														msg: "Cadastro apagado com sucesso."
-													});
-													buildIndicatorHistory(args);
-												}
+												resetWarnings();
+												$("#aviso").setWarning({
+													msg: "Cadastro apagado com sucesso."
+												});
+												buildIndicatorHistory(args);
 												break;
 											}
 										}

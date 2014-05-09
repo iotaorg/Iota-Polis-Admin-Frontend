@@ -4865,7 +4865,7 @@ $(document).ready(function () {
                         async: false,
                         type: 'GET',
                         dataType: 'json',
-                        url: api_path + '/api/indicator/variable?api_key=$$key'.render2({
+                        url: api_path + '/api/indicator/variable?api_key=$$key&all_variables=1'.render2({
                             key: $.cookie("key"),
                             userid: $.cookie("user.id")
                         }),
@@ -5331,10 +5331,11 @@ $(document).ready(function () {
                         async: false,
                         type: 'GET',
                         dataType: 'json',
-                        url: api_path + '/api/variable?api_key=$$key'.render2({
+                        url: api_path + '/api/variable?api_key=$$key&all_variables=1'.render2({
                             key: $.cookie("key")
                         }),
                         success: function (data, textStatus, jqXHR) {
+							console.log(data.variables.length);
                             // ordena variaveis pelo nome
                             data.variables.sort(function (a, b) {
                                 a = a.name,

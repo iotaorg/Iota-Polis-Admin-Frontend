@@ -3452,6 +3452,13 @@ $(document).ready(function () {
 								}else{
 									$(this).prop("checked",false);
 								}
+							}else if(data_config_admin[$(this).attr("var-id")]){
+								if (data_config_admin[$(this).attr("var-id")].display_in_home == 1){
+									$(this).prop("checked",true);								
+									$(this).addClass("admin_checked");								
+								}else{
+									$(this).prop("checked",false);
+								}
 							}
                         });
                     }

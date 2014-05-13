@@ -3446,6 +3446,13 @@ $(document).ready(function () {
                             } else {
                                 $(this).attr("disabled", "true");
                             }
+							if (data_config[$(this).attr("var-id")]){
+								if (data_config[$(this).attr("var-id")].display_in_home == 1){
+									$(this).prop("checked",true);
+								}else{
+									$(this).prop("checked",false);
+								}
+							}
                         });
                     }
 
@@ -3536,9 +3543,15 @@ $(document).ready(function () {
                                             }],
                                             "fnDrawCallback": function () {
                                                 DTdesenhaBotaoVariavel();
-                                                $("#results td.checkbox input").change(function () {
+												$("#results td.checkbox input").unbind();
+                                                $("#results td.checkbox input").bind("click",function () {
                                                     toggleAllCheckboxes();
-                                                    var display_in_home = ($(this).attr("checked")) ? 1 : 0;
+													if ($(this).hasClass("admin_checked")){
+														var display_in_home = 1;
+														$(this).removeClass("admin_checked");
+													}else{
+														var display_in_home = ($(this).attr("checked")) ? 0 : 1;													
+													}
 
                                                     if (!data_config[$(this).attr("var-id")]) {
                                                         var action = "create";
@@ -3547,25 +3560,38 @@ $(document).ready(function () {
                                                             user: $.cookie("user.id")
                                                         });
                                                     } else {
-                                                        var action = "update";
-                                                        var method = "POST";
-                                                        var url_action = api_path + "/api/user/$$user/variable_config/$$id".render2({
-                                                            user: $.cookie("user.id"),
-                                                            id: data_config[$(this).attr("var-id")].id
-                                                        });
+														if (display_in_home == 0 && $(this).hasClass("admin_checked") == false){
+															var action = "delete";
+															var method = "DELETE";
+															var url_action = api_path + "/api/user/$$user/variable_config/$$id".render2({
+																user: $.cookie("user.id"),
+																id: data_config[$(this).attr("var-id")].id
+															});
+														}else{
+															var action = "update";
+															var method = "POST";
+															var url_action = api_path + "/api/user/$$user/variable_config/$$id".render2({
+																user: $.cookie("user.id"),
+																id: data_config[$(this).attr("var-id")].id
+															});
+														}
 
                                                     }
-
-                                                    args = [{
-                                                        name: "api_key",
-                                                        value: $.cookie("key")
-                                                    }, {
-                                                        name: "user.variable_config." + action + ".display_in_home",
-                                                        value: display_in_home
-                                                    }, {
-                                                        name: "user.variable_config." + action + ".variable_id",
-                                                        value: $(this).attr("var-id")
-                                                    }];
+													
+													if ($(this).hasClass("admin_checked")){
+														args = null;
+													}else{
+														args = [{
+															name: "api_key",
+															value: $.cookie("key")
+														}, {
+															name: "user.variable_config." + action + ".display_in_home",
+															value: display_in_home
+														}, {
+															name: "user.variable_config." + action + ".variable_id",
+															value: $(this).attr("var-id")
+														}];
+													}
 
                                                     $.ajax({
                                                         type: method,

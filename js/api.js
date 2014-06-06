@@ -1138,6 +1138,11 @@ $(document).ready(function () {
                                 });
                             });
                         });
+						
+						if(findInArray(user_info.roles, "_prefeitura")){
+							$("#dashboard-content .content").append("<br /><br /><div id='form-inscricao'></div>");
+							$("#form-inscricao").append('<iframe src="https://docs.google.com/forms/d/19xK-8pz_3vQwDfxnj5rfgxDSezuSLrxUqQImvCxFc4g/viewform?embedded=true" width="760" height="500" frameborder="0" marginheight="0" marginwidth="0">Carregando...</iframe>');
+						}
 
                     } else if ($.getUrlVar("option") == "edit") {
 

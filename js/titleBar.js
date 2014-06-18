@@ -63,7 +63,7 @@ var titleBarContent = {
 							"tip": ""},
 					"premio":{
 							"title": "Prêmio Cidades Sustentáveis",
-							"tip": "Preencha o formulário abaixo"},
+							"tip": "Preencha o formulário abaixo para fazer sua inscrição"},
 					"prefs":{
 							"title": "Preferências",
 							"tip": ""},

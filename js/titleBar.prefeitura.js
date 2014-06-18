@@ -93,7 +93,7 @@ var titleBarContent = {
 							"tip": ""},
 					"premio":{
 							"title": "Prêmio Cidades Sustentáveis",
-							"tip": "Preencha o formulário abaixo"},
+							"tip": "Preencha o formulário abaixo para fazer sua inscrição"},
 					"prefs":{
 							"title": "Preferências",
 							"tip": "Nas preferências, você deve preencher os dados básicos da  prefeitura – endereço, telefone, email etc. Não se esqueça de mudar a senha  inicial do sistema e preencher o nome da pessoa que será responsável pelo  cadastro/inclusão de dados. Você deve anexar o arquivo em pdf com seu Programa  de Metas."}

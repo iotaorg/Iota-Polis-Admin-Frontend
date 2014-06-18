@@ -354,7 +354,7 @@ $(document).ready(function () {
         menu_label["prefs"] = "Preferências";
         menu_label["reports"] = "Relatórios";
         menu_label["tokens"] = "Tokens";
-        menu_label["premio"] = "Prêmio";
+        menu_label["premio"] = "Inscrição para o Prêmio";
         menu_label["logout"] = "Sair";
 
         submenu_label["parameters"] = [];
@@ -422,7 +422,11 @@ $(document).ready(function () {
         submenu_access["user"] = ["dashboard"];
 
         if (findInArray(user_info.roles, "user")) {
-            menu_access["user"] = ["premio","prefs"];
+			if (findInArray(user_info.roles, "_prefeitura")) {
+				menu_access["user"] = ["premio","prefs"];			
+			}else{
+				menu_access["user"] = ["prefs"];
+			}
             if (user_info.institute) {
                 if (user_info.institute.can_use_custom_pages == 1) {
                     if (!findInArray(menu_access["user"], "customize")) {

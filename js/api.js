@@ -354,6 +354,7 @@ $(document).ready(function () {
         menu_label["prefs"] = "Preferências";
         menu_label["reports"] = "Relatórios";
         menu_label["tokens"] = "Tokens";
+        menu_label["premio"] = "Prêmio";
         menu_label["logout"] = "Sair";
 
         submenu_label["parameters"] = [];
@@ -421,7 +422,7 @@ $(document).ready(function () {
         submenu_access["user"] = ["dashboard"];
 
         if (findInArray(user_info.roles, "user")) {
-            menu_access["user"] = ["prefs"];
+            menu_access["user"] = ["premio","prefs"];
             if (user_info.institute) {
                 if (user_info.institute.can_use_custom_pages == 1) {
                     if (!findInArray(menu_access["user"], "customize")) {
@@ -1139,11 +1140,6 @@ $(document).ready(function () {
                             });
                         });
 						
-						if(findInArray(user_info.roles, "_prefeitura") || findInArray(user_info.roles, "_movimento")){
-							$("#dashboard-content .content").append("<br /><br /><div id='form-inscricao'></div>");
-							$("#form-inscricao").append('<iframe src="https://docs.google.com/forms/d/19xK-8pz_3vQwDfxnj5rfgxDSezuSLrxUqQImvCxFc4g/viewform?embedded=true" width="760" height="500" frameborder="0" marginheight="0" marginwidth="0">Carregando...</iframe>');
-						}
-
                     } else if ($.getUrlVar("option") == "edit") {
 
                         var txtOption = "Adicionar Valor";
@@ -10843,6 +10839,12 @@ $(document).ready(function () {
                     resetWarnings();
                     location.hash = "#!/dashboard";
                 });
+				
+			} else if (getUrlSub() == "premio") {
+			
+				$("#dashboard-content .content").append("<br /><br /><div id='form-inscricao'></div>");
+				$("#form-inscricao").append('<iframe src="https://docs.google.com/forms/d/19xK-8pz_3vQwDfxnj5rfgxDSezuSLrxUqQImvCxFc4g/viewform?embedded=true" width="760" height="500" frameborder="0" marginheight="0" marginwidth="0" style="border: 2px solid #e0e0e0;">Carregando...</iframe>');
+			
             } else if (getUrlSub() == "logs") {
 
                 var logList = buildDataTable({

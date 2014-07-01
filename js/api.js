@@ -934,8 +934,8 @@ $(document).ready(function () {
             }
         }
 
-        function initialize(params) {			
-		
+        function initialize(params) {
+
             if (typeof params.on_selection_unavaiable == 'function')
                 _binds.on_selection_unavaiable = params.on_selection_unavaiable;
 
@@ -3455,8 +3455,8 @@ $(document).ready(function () {
 							}else if(data_config_admin[$(this).attr("var-id")]){
 								$(this).prop("checked",false);
 								if (data_config_admin[$(this).attr("var-id")].display_in_home == 1){
-									$(this).prop("checked",true);								
-									$(this).addClass("admin_checked");								
+									$(this).prop("checked",true);
+									$(this).addClass("admin_checked");
 								}
 							}else{
 								$(this).prop("checked",false);
@@ -3558,7 +3558,7 @@ $(document).ready(function () {
 														var display_in_home = 1;
 														$(this).removeClass("admin_checked");
 													}else{
-														var display_in_home = ($(this).attr("checked")) ? 0 : 1;													
+														var display_in_home = ($(this).attr("checked")) ? 0 : 1;
 													}
 
                                                     if (!data_config[$(this).attr("var-id")]) {
@@ -3585,7 +3585,7 @@ $(document).ready(function () {
 														}
 
                                                     }
-													
+
 													if ($(this).hasClass("admin_checked")){
 														args = null;
 													}else{
@@ -9780,7 +9780,7 @@ $(document).ready(function () {
                     $(formbuild).find("#subregions_valid_after").qtip($.extend(true, {}, qtip_input, {
                         content: "Ano em que as sub-regiões começam a possuir dados."
                     }));
-					
+
                     $(formbuild).find("#name").qtip($.extend(true, {}, qtip_input, {
                         content: "Nome da Subprefeitura."
                     }));
@@ -9807,7 +9807,7 @@ $(document).ready(function () {
 							}
 						}
 					});
-					
+
                     $("#dashboard-content .content select#region_id").append($("<option></option>").val("").html("Carregando..."));
                     $.ajax({
                         type: 'GET',
@@ -9961,7 +9961,7 @@ $(document).ready(function () {
                                 value: current_map_string
                             }];
 
-                            if ($(this).parent().parent().find("#region_id option:selected").val() != "" 
+                            if ($(this).parent().parent().find("#region_id option:selected").val() != ""
 								&& $(this).parent().parent().find("#region_type:checked").val() == 1) {
                                 args.push({
                                     name: "city.region." + action + ".upper_region",

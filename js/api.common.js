@@ -1029,13 +1029,13 @@ var buildIndicatorHistory = function (args) {
 				var variables_variations = [],
 					th_valor = "",
 					num_var = numKeys(data.variable_variations);
-				
+
 				if (data.variables_variations){
 					$.each(data.variables_variations, function(indexv,itemv){
 						variables_variations[itemv.id] = itemv.name;
 					});
 				}
-				
+
                 $.each(data.rows, function (index, value) {
                     history_table += "<tr row-id='$$row'><td class='periodo'>$$periodo</td>".render2({
                         periodo: $.convertDateToPeriod(data.rows[index].valid_from, args.period),
@@ -1079,7 +1079,7 @@ var buildIndicatorHistory = function (args) {
                     if (value.variations && value.variations.length > 0) {
 						var th_valor = "",
 							num_var = numKeys(data.variables_variations);
-												
+
                         for (i = 0; i < value.variations.length; i++) {
 							$.each(variables_variations, function(indexv,itemv){
 								if (itemv){
@@ -1109,7 +1109,7 @@ var buildIndicatorHistory = function (args) {
 																			index: indexv,
 																			title: "Apagar valor",
 																			e: "X"
-																		});								
+																		});
 									}else{
 										history_table += "<td class='variavel valor' variation-id='$$variation_id' variation-index='$$index' variable-id='$$variable_id' value-id='$$value_id'>-</td>".render2({
 																			valor: $.formatNumber(itemv2.value, {
@@ -1120,7 +1120,7 @@ var buildIndicatorHistory = function (args) {
 																			variable_id: indexv2,
 																			value_id: itemv2.id,
 																			index: indexv
-																		});								
+																		});
 									}
 									cont++;
 								});
@@ -1204,7 +1204,7 @@ var buildIndicatorHistory = function (args) {
             $(args.target).find(".title").click(function () {
                 $(this).parent().find(".historic-content").toggle();
             });
-			
+
             if (vvariations.length > 0) {
                 $(args.target).find("table .formula_valor[variation-id!=" + $("select.variation-filter option:selected").val() + "],table .variavel[variation-id!=" + $("select.variation-filter option:selected").val() + "]").hide();
 
@@ -1228,7 +1228,7 @@ var buildIndicatorHistory = function (args) {
                                 var row = $("table.history tbody tr[row-id='$$row_id']".render({
                                     row_id: $(link_delete).attr("row-id")
                                 }));
-								
+
 								if ($(link_delete).hasClass("delete-all")){
 
 									var tds = $(row).find("td[variable-id]:visible");

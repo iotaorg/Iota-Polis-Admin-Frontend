@@ -91,6 +91,9 @@ var titleBarContent = {
 					"files":{
 							"title": "Conteúdo - Arquivos",
 							"tip": ""},
+					"premio":{
+							"title": "Prêmio Cidades Sustentáveis",
+							"tip": "Preencha o formulário abaixo para fazer sua inscrição"},
 					"prefs":{
 							"title": "Preferências",
 							"tip": ""}

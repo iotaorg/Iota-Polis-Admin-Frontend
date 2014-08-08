@@ -5181,11 +5181,13 @@ $(document).ready(function () {
                                     }
                                 });
                             } else if ($("#visibility_level").val() == "network") {
-                                $("#visibility-options").append("<label class='visibility'>Selecione uma rede:</label><select id='visibility_networks_id' class='iselect'><option value=''>carregando...</option></select>");
+                                $("#visibility-options").before("<div class='clear'></div>");
+                                $("#visibility-options").addClass("inline");
+                                $("#visibility-options").append("<label class='visibility'>Selecione uma ou mais redes:</label><br /><select multiple id='visibility_networks_select' class='iselect multiselect'><option value=''>carregando...</option></select><div class='buttons'><button id='button-add'>>></button><button id='button-remove'><<</button></div><select multiple id='visibility_networks_id' class='iselect multiselect'></select>");
                                 $.ajax({
                                     type: 'GET',
                                     dataType: 'json',
-                                    url: api_path + "/api/network?api_key=$$key".render2({
+                                    url: api_path + '/api/network?api_key=$$key'.render2({
                                         key: $.cookie("key")
                                     }),
                                     success: function (data, textStatus, jqXHR) {
@@ -5194,12 +5196,24 @@ $(document).ready(function () {
                                             b = b.name;
                                             return a.localeCompare(b);
                                         });
-                                        $("#dashboard-content .content #visibility_networks_id option").remove();
+                                        $("#dashboard-content .content #visibility_networks_select option").remove();
                                         $.each(data.network, function (index, item) {
-                                            $("#dashboard-content .content #visibility_networks_id").append($("<option value='$$id'>$$nome</option>".render({
+                                            $("#dashboard-content .content #visibility_networks_select").append($("<option value='$$id'>$$nome</option>".render2({
                                                 id: getIdFromUrl(item.url),
                                                 nome: item.name
                                             })));
+                                        });
+                                        $("#visibility-options #button-add").click(function () {
+                                            if ($("#visibility_networks_select option:selected").length > 0) {
+                                                $("#visibility_networks_select option:selected").appendTo("#visibility_networks_id");
+                                                sortSelectBox("#visibility_networks_id");
+                                            }
+                                        });
+                                        $("#visibility-options #button-remove").click(function () {
+                                            if ($("#visibility_networks_id option:selected").length > 0) {
+                                                $("#visibility_networks_id option:selected").appendTo("#visibility_networks_select");
+                                                sortSelectBox("#visibility_networks_select");
+                                            }
                                         });
                                         if (args) args.callBack();
                                     }
@@ -6071,8 +6085,11 @@ $(document).ready(function () {
                                                     $(formbuild).find("select#visibility_country_id").val(data.visibility_country_id)
                                                 }
                                             } else if (data.visibility_level == "network") {
-                                                if (data.visibility_networks_id) {
-                                                    $(formbuild).find("select#visibility_networks_id").val(data.visibility_networks_id)
+                                                if (data.restrict_to_networks) {
+                                                    var networks = data.restrict_to_networks;
+                                                    $.each(networks, function (index, value) {
+                                                        $("#visibility_networks_select option[value=" + value + "]").appendTo("#visibility_networks_id");
+                                                    });
                                                 }
                                             } else if (data.visibility_level == "restrict") {
                                                 if (data.restrict_to_users) {
@@ -6252,9 +6269,14 @@ $(document).ready(function () {
                                         value: $(this).parent().parent().find("#visibility_country_id").val()
                                     });
                                 } else if ($(this).parent().parent().find("#visibility_level").val() == "network") {
+                                    var networks = "";
+                                    $("#visibility_networks_id option").each(function (index, item) {
+                                        if (networks != "") networks += ",";
+                                        networks += item.value;
+                                    });
                                     args.push({
                                         name: "indicator.update.visibility_networks_id",
-                                        value: $(this).parent().parent().find("#visibility_networks_id").val()
+                                        value: networks
                                     });
                                 } else if ($(this).parent().parent().find("#visibility_level").val() == "restrict") {
                                     var users = "";

@@ -3037,11 +3037,22 @@ $(document).ready(function () {
                             success: function (data, textStatus, jqXHR) {
                                 data_config = data;
                             }
-                        });
-                    }
+						}).done(function () {
+                            toggleAllCheckboxesVariable();
+                        });                    }
 
                     loadVariableConfig();
 
+                    function toggleAllCheckboxesVariable() {
+                        $("table input[type=checkbox]").each(function (index, item) {
+                            if ($(this).attr("disabled") == "disabled") {
+                                $(this).removeAttr("disabled");
+                            } else {
+                                $(this).attr("disabled", "true");
+                            }
+                        });
+                    }
+					
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
@@ -3098,7 +3109,7 @@ $(document).ready(function () {
                                 if (oObj.aData[4] == 1) {
                                     var checked = "";
                                     if (data_config[getIdFromUrl(sVal)] && data_config[getIdFromUrl(sVal)].display_in_home == 1) {
-                                        checked = "checked=checked";
+                                        checked = "checked";
                                     }
                                     return "<input type='checkbox' name='chk_home' var-id='" + getIdFromUrl(sVal) + "' $$checked>".render({
                                         checked: checked
@@ -3123,8 +3134,9 @@ $(document).ready(function () {
                                     $(this).html("Não");
                                 }
                             });
-                            $("#results td.checkbox input").change(function () {
-                                var display_in_home = ($(this).attr("checked")) ? 1 : 0;
+                            $("#results td.checkbox input[type=checkbox]").unbind();
+                            $("#results td.checkbox input[type=checkbox]").change(function () {
+                                var display_in_home = ($(this).prop("checked")) ? 1 : 0;
 
                                 if (!data_config[$(this).attr("var-id")]) {
                                     var action = "create";
@@ -3152,6 +3164,8 @@ $(document).ready(function () {
                                     name: "user.variable_config." + action + ".variable_id",
                                     value: $(this).attr("var-id")
                                 }];
+								
+								toggleAllCheckboxesVariable();
 
                                 $.ajax({
                                     type: method,
@@ -3426,7 +3440,7 @@ $(document).ready(function () {
                         location.hash = "#!/" + getUrlSub() + "?option=add";
                     });
 
-                    function loadVariableConfig() {
+                    function loadMyVariableConfig() {
                         //carrega config do usuario
                         $.ajax({
                             async: "false",
@@ -3612,7 +3626,7 @@ $(document).ready(function () {
                                                         url: url_action,
                                                         data: args,
                                                         success: function (data) {
-                                                            loadVariableConfig();
+                                                            loadMyVariableConfig();
                                                         },
                                                         error: function (data) {
                                                             $("#aviso").setWarning({
@@ -5388,7 +5402,6 @@ $(document).ready(function () {
                             key: $.cookie("key")
                         }),
                         success: function (data, textStatus, jqXHR) {
-							console.log(data.variables.length);
                             // ordena variaveis pelo nome
                             data.variables.sort(function (a, b) {
                                 a = a.name,

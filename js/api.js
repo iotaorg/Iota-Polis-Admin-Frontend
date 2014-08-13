@@ -3025,6 +3025,16 @@ $(document).ready(function () {
 
                     var data_config;
 
+                    function toggleAllCheckboxesVariable() {
+                        $("table input[type=checkbox]").each(function (index, item) {
+                            if ($(this).attr("disabled") == "disabled") {
+                                $(this).removeAttr("disabled");
+                            } else {
+                                $(this).attr("disabled", "true");
+                            }
+                        });
+                    }
+
                     function loadVariableConfig() {
                         $.ajax({
                             async: false,
@@ -3039,19 +3049,10 @@ $(document).ready(function () {
                             }
 						}).done(function () {
                             toggleAllCheckboxesVariable();
-                        });                    }
+                        });
+					}
 
                     loadVariableConfig();
-
-                    function toggleAllCheckboxesVariable() {
-                        $("table input[type=checkbox]").each(function (index, item) {
-                            if ($(this).attr("disabled") == "disabled") {
-                                $(this).removeAttr("disabled");
-                            } else {
-                                $(this).attr("disabled", "true");
-                            }
-                        });
-                    }
 					
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
@@ -3134,7 +3135,7 @@ $(document).ready(function () {
                                     $(this).html("Não");
                                 }
                             });
-                            $("#results td.checkbox input[type=checkbox]").unbind();
+
                             $("#results td.checkbox input[type=checkbox]").change(function () {
                                 var display_in_home = ($(this).prop("checked")) ? 1 : 0;
 

@@ -9143,6 +9143,10 @@ $(document).ready(function () {
                             $.each(data.axis, function (index, item) {
                                 $("#dashboard-content .content select#axis_id").append($("<option></option>").val(item.id).html(item.name));
                             });
+							if ($("#dashboard-content .content select#axis_id").attr("selected-id")){
+								$("#dashboard-content .content select#axis_id").val($("#dashboard-content .content select#axis_id").attr("selected-id"));
+								$("#dashboard-content .content select#axis_id").attr("selected-id","")
+							}
 
                         },
                         error: function (data) {
@@ -9176,6 +9180,7 @@ $(document).ready(function () {
                                     $(formbuild).find("textarea#sources").val(data.sources);
                                     $(formbuild).find("input#tags").val(data.tags);
                                     $(formbuild).find("select#axis_id").val(data.axis_id);
+                                    $(formbuild).find("select#axis_id").attr("selected-id",data.axis_id);
                                     break;
                                 }
                             },

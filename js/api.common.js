@@ -2234,6 +2234,7 @@ var sortSelectBox = function (id) {
                 async: async,
                 beforeSend: function () {},
                 dataType: 'json',
+                cache: async ? false : true,
                 url: api_path + '/api/public/lexicons',
                 success: function (data, status, jqXHR) {
 

@@ -3,11 +3,18 @@ if (window.location.href.indexOf("localhost") >= 0) {
     api_path = "http://rnsp.aware.com.br";
 }
 
+var do_not_use_lex = (window.location.href.indexOf("indicadores.cidadessustentaveis.org.br") >= 0) ||
+ (window.location.href.indexOf("www.redesocialdecidades.org.br") >= 0) ||
+ (window.location.href.indexOf("rnsp.org") >= 0) ||
+ (window.location.href.indexOf("prefeitura.gov") >= 0);
+
+
+
 var cur_lang = $.cookie("cur_lang"),
     lexicon, default_lang, langs, lexiconconf,
     lexicon_untranslated = {}, untranslated_temp = {};
 
-if (!cur_lang){
+if (!cur_lang || do_not_use_lex){
     cur_lang = 'pt-br';
     $.cookie("cur_lang", cur_lang, {
         path: "/"
@@ -39,59 +46,64 @@ if (!String.prototype.render) {
     String.prototype.render = function (args) {
         var copy = this + '',
             v, n;
-        if (lexicon[cur_lang] === undefined)
-            lexicon[cur_lang] = [];
+
+		if (do_not_use_lex == false){
+			if (lexicon[cur_lang] === undefined)
+				lexicon[cur_lang] = [];
+		}
 
         for (var k in args) {
             v = args[k];
 
-            if (!k.match(/^_/) && v && v in lexicon[cur_lang]) {
-                v = lexicon[cur_lang][v];
-            } else if (v) {
+            if (do_not_use_lex == false){
+				if (!k.match(/^_/) && v && v in lexicon[cur_lang]) {
+					v = lexicon[cur_lang][v];
+				} else if (v) {
 
-                n = 1;
-                if (typeof v == 'string') {
-                    n = 0;
-                }
+					n = 1;
+					if (typeof v == 'string') {
+						n = 0;
+					}
 
-                if (n == 0 && (
-                    k.match(/password/) ||
-                    k.match(/email/) ||
-                    k.match(/formula/) ||
-                    k.match(/^_/) ||
-                    k == 'key' ||
-                    k == 'arquivo'
-                )) n = 1;
-                /*
-                if (n==0 && v.match(/^\</)) {
-                    console.log(k);
-                }
-    */
-                if (n == 0 && (!v ||
-                    v == '&nbsp;' ||
-                    v.match(/^\s*$/) ||
-                    v.match(/^\/api\//) || !v.match(/[a-z]/i) ||
-                    v.match(/^\s*[0-9]+\s*$/) ||
-                    v.match(/\:\/\//) ||
-                    v.match(/^#/)
-                )) n = 2;
+					if (n == 0 && (
+						k.match(/password/) ||
+						k.match(/email/) ||
+						k.match(/formula/) ||
+						k.match(/^_/) ||
+						k == 'key' ||
+						k == 'arquivo'
+					)) n = 1;
+					/*
+					if (n==0 && v.match(/^\</)) {
+						console.log(k);
+					}
+		*/
+					if (n == 0 && (!v ||
+						v == '&nbsp;' ||
+						v.match(/^\s*$/) ||
+						v.match(/^\/api\//) || !v.match(/[a-z]/i) ||
+						v.match(/^\s*[0-9]+\s*$/) ||
+						v.match(/\:\/\//) ||
+						v.match(/^#/)
+					)) n = 2;
 
-                if (n == 0) {
-                    if (cur_lang == default_lang) {
-                        lexicon[cur_lang][v] = v;
-                        // precisa mandar pro servidor ter as outras versoes dessa e fazer a traducao
-                        lexicon_untranslated[v] = 1;
-                    } else {
-                        lexicon_untranslated[v] = 1;
-                        v = '? ' + v;
-                    }
-                }
-                /*else {
-                    if (n == 2) {
-                        console.log(k, v);
-                    }
-                }*/
-            }
+					if (n == 0) {
+						if (cur_lang == default_lang) {
+							lexicon[cur_lang][v] = v;
+							// precisa mandar pro servidor ter as outras versoes dessa e fazer a traducao
+							lexicon_untranslated[v] = 1;
+						} else {
+							lexicon_untranslated[v] = 1;
+							v = '? ' + v;
+						}
+					}
+					/*else {
+						if (n == 2) {
+							console.log(k, v);
+						}
+					}*/
+				}
+			}
             copy = copy.replace(RegExp('\\$\\$' + k, 'g'), v);
         }
         return copy;
@@ -2227,6 +2239,10 @@ var sortSelectBox = function (id) {
 }
 
     function load_lexicon(async) {
+
+		if (do_not_use_lex)
+			return true;
+
         lexiconconf = $.jStorage.get("lexicon");
         if (!lexiconconf) {
 

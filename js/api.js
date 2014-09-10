@@ -1,10 +1,12 @@
 var _is_updating_lexicon = 0;
 $(document).ready(function () {
 
-    $('.top-left').append('<div style="float: left; margin-left: 5em"><a href="#" data-href="pt-br" title="português" style="padding-bottom: 1px;border-bottom: 2px solid $$pt;display: inline-block;"><img src="/frontend/images/br.png"> </a><a data-href="es" title="espanhol" style="border-bottom: 2px solid $$es;margin-left:4px;display: inline-block;padding-bottom: 1px;" href="#" ><img src="/frontend/images/es.png"> </a> </div>'.render2({
-        es: cur_lang == 'es' ? 'gray' : 'white',
-        pt: cur_lang == 'pt-br' ? 'gray': 'white'
-    }));
+	if (do_not_use_lex == false){
+		$('.top-left').append('<div style="float: left; margin-left: 5em"><a href="#" data-href="pt-br" title="português" style="padding-bottom: 1px;border-bottom: 2px solid $$pt;display: inline-block;"><img src="/frontend/images/br.png"> </a><a data-href="es" title="espanhol" style="border-bottom: 2px solid $$es;margin-left:4px;display: inline-block;padding-bottom: 1px;" href="#" ><img src="/frontend/images/es.png"> </a> </div>'.render2({
+			es: cur_lang == 'es' ? 'gray' : 'white',
+			pt: cur_lang == 'pt-br' ? 'gray': 'white'
+		}));
+	}
 
     $('.top-left a').click(function(){
 
@@ -423,7 +425,7 @@ $(document).ready(function () {
 
         if (findInArray(user_info.roles, "user")) {
 			if ((user_info.institute) && (user_info.institute.id) && user_info.institute.id == "1") {
-				menu_access["user"] = ["premio","prefs"];			
+				menu_access["user"] = ["premio","prefs"];
 			}else{
 				menu_access["user"] = ["prefs"];
 			}
@@ -1143,7 +1145,7 @@ $(document).ready(function () {
                                 });
                             });
                         });
-						
+
                     } else if ($.getUrlVar("option") == "edit") {
 
                         var txtOption = "Adicionar Valor";
@@ -3053,7 +3055,7 @@ $(document).ready(function () {
 					}
 
                     loadVariableConfig();
-					
+
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
@@ -3165,7 +3167,7 @@ $(document).ready(function () {
                                     name: "user.variable_config." + action + ".variable_id",
                                     value: $(this).attr("var-id")
                                 }];
-								
+
 								toggleAllCheckboxesVariable();
 
                                 $.ajax({
@@ -10884,12 +10886,12 @@ $(document).ready(function () {
                     resetWarnings();
                     location.hash = "#!/dashboard";
                 });
-				
+
 			} else if (getUrlSub() == "premio") {
-			
+
 				$("#dashboard-content .content").append("<br /><br /><div id='form-inscricao'></div>");
 				$("#form-inscricao").append('<iframe src="https://docs.google.com/forms/d/19xK-8pz_3vQwDfxnj5rfgxDSezuSLrxUqQImvCxFc4g/viewform?embedded=true" width="760" height="500" frameborder="0" marginheight="0" marginwidth="0" style="border: 2px solid #e0e0e0;">Carregando...</iframe>');
-			
+
             } else if (getUrlSub() == "logs") {
 
                 var logList = buildDataTable({

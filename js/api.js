@@ -425,7 +425,7 @@ $(document).ready(function () {
 
         if (findInArray(user_info.roles, "user")) {
 			if ((user_info.institute) && (user_info.institute.id) && user_info.institute.id == "1") {
-				menu_access["user"] = ["premio","prefs"];
+				menu_access["user"] = ["prefs"];
 			}else{
 				menu_access["user"] = ["prefs"];
 			}

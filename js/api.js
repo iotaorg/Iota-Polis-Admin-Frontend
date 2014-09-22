@@ -58,6 +58,7 @@ $(document).ready(function () {
                     url: api_path + '/:lexicon/pending/count?api_key=$$key'.render2({
                         key: $.cookie("key"),
                     }),
+                    beforeSend: function(){},
                     success: function (data, textStatus, jqXHR) {
                         $('#trad').remove();
                         if (data.count > 0){

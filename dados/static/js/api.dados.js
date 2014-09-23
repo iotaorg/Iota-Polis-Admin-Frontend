@@ -45,7 +45,7 @@ $(document).ready(function(){
 	var oDataTable;
 	var iDisplayLength = 100;
 	var arr_posicoes = [];
-	
+
 	var url = [];
 	var count_rows = 0;
 	var total_rows = 0;
@@ -53,23 +53,23 @@ $(document).ready(function(){
 	var markers = [];
 	var zoom_padrao = 9;
 	var graficos = [];
-	
+
 	function loadMap(){
-		
+
 		var mapOptions = {
 				center: mapDefaultLocation,
 				zoom: 4,
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 			};
-	
+
 		var map = new google.maps.Map(document.getElementById("mapa"),mapOptions);
 	}
-	
+
 	function fillCombo(combo,source){
 		var first = $(combo).find("option:first");
 		$(combo).empty();
 		$(combo).append(first);
-		
+
 		$.each(source.sort(),function(index,value){
 			$(combo).append("<option value='" + value + "'>"+value+"</option>");
 		});
@@ -79,9 +79,9 @@ $(document).ready(function(){
 		$(combo).empty();
 		$(combo).append(first);
 	}
-	
+
 	function carregaIndicadoresCidades(){
-		
+
 		$.ajax({
 			type: 'GET',
 			dataType: 'json',
@@ -89,13 +89,13 @@ $(document).ready(function(){
 			success: function(data, textStatus, jqXHR){
 				users_list = data.users;
 				indicadores_list = data.indicators;
-				
+
 				$(indicadores_list).each(function(index,value){
 					if (!findInJson(eixos_list.dados,"id",value.axis.id).found){
-						eixos_list["dados"].push({id: value.axis.id, name: value.axis.name});	
+						eixos_list["dados"].push({id: value.axis.id, name: value.axis.name});
 					}
 				});
-				
+
 				carregaIndicadores();
 			},
 			error: function(data){
@@ -107,7 +107,7 @@ $(document).ready(function(){
 	function carregaIndicadores(){
 
 		$("#axis_list").empty();
-		
+
 		$(eixos_list.dados).each(function(index,value){
 			if (index == 0){
 				$("#axis_list").append("<div class='select' axis-id='0'><div class='content-fill'>Categoria</div></div>");
@@ -118,7 +118,7 @@ $(document).ready(function(){
 							nome: value.name
 				}));
 		});
-		
+
 		$("#axis_list .select").click(function(){
 			$("#axis_list .options").toggle();
 		});
@@ -131,14 +131,14 @@ $(document).ready(function(){
 		});
 		$("#axis_list .options").hover(function(){
 			if (t_categorias){
-				clearTimeout(t_categorias);	
+				clearTimeout(t_categorias);
 			}
 		},function(){
 			t_categorias = setTimeout(function(){
 				$("#axis_list .options").hide();
 			},2000)	;
 		});
-		
+
 		$(".indicators").empty();
 		$.each(indicadores_list, function(i,item){
 			$(".indicators").append("<div class='item' indicator-id='$$id' axis-id='$$axis_id' name-uri='$$uri'>$$name</div>".render({
@@ -156,13 +156,13 @@ $(document).ready(function(){
 
 		$(".indicators .item").click( function (){
 			indicadorID = $(this).attr("indicator-id");
-			
+
 			$(indicadores_list).each(function(index,item){
 				if (item.id == indicadorID){
-					indicadorDATA = item;	
+					indicadorDATA = item;
 				}
 			});
-			
+
 			dadosGrafico = {"dados": []};
 			$(".indicators .item").removeClass("selected");
 			$(this).addClass("selected");
@@ -180,7 +180,7 @@ $(document).ready(function(){
   	}
 
 	function carregaTabela(){
-		
+
 		var indicador = indicadorID;
 		var indicador_uri = $(".indicators div.selected").attr("name-uri");
 
@@ -196,9 +196,9 @@ $(document).ready(function(){
 
 		var total_users = users_list.length;
 		var users_ready = 0;
-		
+
 		$(users_list).each(function(index,item){
-			
+
 			$.ajax({
 				type: 'GET',
 				dataType: 'json',
@@ -215,20 +215,20 @@ $(document).ready(function(){
 								city_uri: item.city.name_uri,
 								indicador_uri: indicador_uri
 							});
-					
+
 					if (data.series.length < 4){
 						for (j = 0; j < (4 - data.series.length); j++){
 							row_content += "<td class='valor'>-</td>";
 							valores.push(0);
 						}
 					}
-					
+
 					if (data.series.length > 4){
-						var j_ini = data.series.length - 4;	
+						var j_ini = data.series.length - 4;
 					}else{
-						var j_ini = 0;	
+						var j_ini = 0;
 					}
-					
+
 					for (j = j_ini; j < data.series.length; j++){
 						row_content += "<td class='valor'>$$valor</td>".render({valor: $.formatNumber(data.series[j].avg, {format:"#,##0.###", locale:"br"})});
 						valores.push(data.series[j].avg);
@@ -237,23 +237,23 @@ $(document).ready(function(){
 					graficos[index] = valores;
 					dadosGrafico.dados.push({id: item.city.id, nome: item.city.name, valores: valores});
 					$(".data-content .table .content-fill tbody").append(row_content);
-					
+
 					users_ready++;
-					
+
 					if (users_ready >= total_users){
 						geraGraficos();
 						carregaGraficoAba();
 					}
-					
+
 				},
 				error: function(data){
 					console.log("erro ao carregar informações do indicador");
 				}
 			});
-			
+
 		});
   	}
-	
+
 	function carregaGraficoAba(){
 		var indicador = indicadorID;
 
@@ -261,16 +261,16 @@ $(document).ready(function(){
 		var color_meta = '#ff0000';
 
 		RGraph.Clear(document.getElementById("main-graph"));
-		
+
 		var legendas = [];
-		
+
 		var linhas = [];
 		if (indicadorDATA.goal){
 			linhas.push([ indicadorDATA.goal, indicadorDATA.goal, indicadorDATA.goal, indicadorDATA.goal ]);
 			legendas.push({name: "Meta", color: color_meta});
 			var colors = ['#ff0000','#124646','#238080','#3cd3d3','#00a5d4','#015b75','#013342'];
 		}
-		
+
 		$.each(dadosGrafico.dados, function(i,item){
 			linhas.push(item.valores);
 			if (indicadorDATA.goal){
@@ -289,21 +289,21 @@ $(document).ready(function(){
 		line.Set('chart.colors', colors);
 		line.Set('chart.tickmarks', 'circle');
 		line.Draw();
-		
+
 		montaLegenda(legendas);
 	}
-	
+
 	function montaLegenda(legendas){
 		$(".graph .legend").empty();
-		
+
 		var legenda = "";
 		for (i = 0; i < legendas.length; i++){
 			legenda += "<div class='item'><div class='quad' style='background-color: $$color'></div><div class='label' style='color: $$color'>$$label</div></div>".render({label:legendas[i].name, color: legendas[i].color});
 		}
 		$(".graph .legend").append(legenda);
-		
+
 	}
-	
+
 	function geraGraficos(){
 		for (i = 0; i < graficos.length; i++){
 			var line = new RGraph.Line('graph-'+i, graficos[i]);
@@ -339,7 +339,7 @@ $(document).ready(function(){
 			$(".data-content .map").show();
 		}
 	});
-	
+
 	carregaIndicadoresCidades();
-	
+
 });

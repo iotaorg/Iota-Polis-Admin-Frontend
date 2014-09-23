@@ -190,7 +190,7 @@ $.extend({
         }
     },
     convertNumberToBd: function (number) {
-        var new_number = number.replace(".", "").replace(",", ".");
+        var new_number = number.replace(",", ".");
 
         return new_number;
     },
@@ -202,7 +202,7 @@ $.extend({
         } else if (number == 0) {
             var new_number = 0;
         } else {
-            var new_number = number.replace(",", "").replace(".", ",");
+            var new_number = number.replace(".", ",");
         }
         return new_number;
     },
@@ -714,6 +714,77 @@ var DTdesenhaBotaoVariavel = function () {
             }));
         }
     });
+}
+
+function setup_jStepper(elm, is_num){
+
+    if (is_num){
+        $(elm).jStepper({
+            maxDecimals: 6,
+            minDecimals: 2,
+            defaultValue: ''
+        });
+
+        $(elm).bind('blur', function() {
+
+            var numValue = $(this).val();
+            var me = $(this);
+            numValue = numValue.replace(/,/g, '.');
+            numValue = numValue.replace(',', '.');
+
+            numValue = numValue + '';
+            if (numValue.indexOf('.') != -1) {
+                numValue = numValue.match(new RegExp('-{0,1}[0-9]+[\\.][0-9]*'));
+            }
+
+            numValue = numValue + '';
+            if (numValue.indexOf('-') != -1) {
+                numValue = numValue.match(new RegExp('-{0,1}[0-9]+[\\.]*[0-9]*'));
+            }
+
+            numValue = numValue + '';
+            numValue = numValue.match(new RegExp('-{0,1}[0-9]+[\\.]*[0-9]*'));
+
+            if (numValue === '' || numValue == '-' || numValue === null) {
+                numValue = '0';
+            }
+            numValue = numValue + '';
+            me.val(numValue.replace('.', ','))
+        });
+    }else{
+        $(elm).jStepper({
+            allowDecimals: false,
+            defaultValue: ''
+        });
+
+        $(elm).bind('blur', function() {
+            var numValue = $(this).val();
+            var me = $(this);
+            numValue = numValue.replace(/,/g, '.');
+            numValue = numValue.replace(',', '.');
+
+            numValue = numValue + '';
+            if (numValue.indexOf('.') != -1) {
+                numValue = numValue.match(new RegExp('-{0,1}[0-9]+[\\.][0-9]*'));
+            }
+
+            numValue = numValue + '';
+            if (numValue.indexOf('-') != -1) {
+                numValue = numValue.match(new RegExp('-{0,1}[0-9]+[\\.]*[0-9]*'));
+            }
+
+            numValue = numValue + '';
+            numValue = numValue.match(new RegExp('-{0,1}[0-9]+[\\.]*[0-9]*'));
+
+            if (numValue === '' || numValue == '-' || numValue === null) {
+                numValue = '0';
+            }
+            numValue = parseInt(numValue, 10);
+            numValue = numValue + '';
+            me.val(numValue)
+        });
+
+    }
 }
 
 var buildForm = function (form_args, title) {

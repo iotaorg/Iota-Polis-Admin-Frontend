@@ -1321,6 +1321,11 @@ $(document).ready(function () {
                                     $(formbuild).find("div#textlabel_period").html(variable_periods[data.period]);
 
 
+                                    //console.log(data);
+                                    //if (data.period)
+                                    //setup_jStepper
+
+
                                     $("#dashboard-content .content .botao-form[ref='enviar']").click(function () {
 
                                         if ($(this).html() == "$$e".render({
@@ -7411,7 +7416,7 @@ $(document).ready(function () {
                                                 newform.push({
                                                     label: item.name,
                                                     bold: 1,
-                                                    input: ["text,var_$$id,itext".render2({
+                                                    input: ["text,var_$$id,itext ivar".render2({
                                                         id: item.id
                                                     })]
                                                 });
@@ -7524,6 +7529,13 @@ $(document).ready(function () {
                                         $(formbuild).find("#new_variation_add").html("$$e".render({
                                             e: 'Adicionar'
                                         }));
+
+
+                                        if (data_indicator.variable_type == 'int' || data_indicator.variable_type == 'num'){
+                                            $(formbuild).find('.ivar').each(function(i, o){
+                                                setup_jStepper(o, data_indicator.variable_type == 'num');
+                                            })
+                                        }
 
                                         if (data_indicator.goal) {
                                             var ref_meta = "";
@@ -7649,7 +7661,7 @@ $(document).ready(function () {
                                             if (data_variables[index].value != null && data_variables[index].value != undefined && data_variables[index].value != "") {
                                                 $("#var_$$id".render({
                                                     id: data_variables[index].id
-                                                })).val(data_variables[index].value);
+                                                })).val( $.convertNumberFromBd( data_variables[index].value ) );
 
                                             } else {
                                                 $("#var_$$id".render({
@@ -7698,7 +7710,8 @@ $(document).ready(function () {
                                                             id: item_vvariables.id,
                                                             var_id: item_value.indicator_variation_id
                                                         });
-                                                        $(obj).val(item_value.value);
+                                                        setup_jStepper($(obj), 1);
+                                                        $(obj).val($.convertNumberFromBd(item_value.value));
                                                         $(obj).attr("update", "true");
                                                         $(obj).attr("item-id", item_value.id);
                                                     });

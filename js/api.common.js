@@ -501,7 +501,7 @@ $.fn.setWarning = function () {
     var args = arguments[0];
     $(this).hide();
     $(this).empty();
-    $(this).html("<div>$$e</div>".render({
+    $(this).html("<div>$$e</div>".render2({
         e: args.msg
     }));
     $(this).show("slow");

@@ -7310,6 +7310,7 @@ $(document).ready(function () {
                             if (data_indicator.period == "yearly") {
                                 $.ajax({
                                     type: 'GET',
+                                    cache:true,
                                     dataType: 'json',
                                     url: api_path + '/api/period/year?api_key=$$key'.render2({
                                         key: $.cookie("key")
@@ -7324,6 +7325,7 @@ $(document).ready(function () {
                                     }
                                 });
                             } else if (data_indicator.period == "monthly") {
+
                                 $.ajax({
                                     type: 'GET',
                                     dataType: 'json',
@@ -7352,6 +7354,7 @@ $(document).ready(function () {
                                                 $.ajax({
                                                     type: 'GET',
                                                     dataType: 'json',
+                                                    cache:true,
                                                     url: api_path + '/api/period/year/$$year/month?api_key=$$key'.render2({
                                                         key: $.cookie("key"),
                                                         year: $("#dashboard-content .content .filter_indicator select#date_filter_year option:selected").html()
@@ -7370,6 +7373,7 @@ $(document).ready(function () {
                                     }
                                 });
                             } else if (data_indicator.period == "daily") {
+
                                 $.each(data_variables, function (index, value) {
                                     $("#dashboard-content .content .filter_indicator input#date_filter").datepicker({
                                         dateFormat: 'dd/mm/yy',

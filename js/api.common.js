@@ -1489,8 +1489,11 @@ var loadComboSources = function (arr, objSelect, objText) {
     $(objSelect).empty();
     $(objSelect).append($("<option></option>").val("").html("nenhuma"));
     $(objSelect).append($("<option></option>").val("_new").html("- nova fonte"));
+
     $.each(arr, function (index, item) {
-        $(objSelect).append($("<option></option>").val(item.name).html(item.name).attr("source-id", item.id));
+        if (user_info.id == item.user_id){
+            $(objSelect).append($("<option></option>").val(item.name).html(item.name).attr("source-id", item.id));
+        }
     });
 
     $(objSelect).val(old_selected);
@@ -1966,6 +1969,7 @@ var loadSources = function () {
             $.each(data.sources, function (index, item) {
                 sources.push({
                     "name": item.name,
+                    "user_id": item.user_id,
                     "id": item.id
                 });
             });

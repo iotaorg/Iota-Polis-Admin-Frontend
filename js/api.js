@@ -2385,7 +2385,7 @@ $(document).ready(function () {
                                 return a.localeCompare(b);
                             });
                             $.each(data.countries, function (index, item) {
-                                $("#dashboard-content .content select#country_id").append($("<option></option>").val(item.id).html(item.name));
+                                $("#dashboard-content .content select#country_id").append($(" ").val(item.id).html(item.name));
                             });
                         }
                     });
@@ -3279,6 +3279,7 @@ $(document).ready(function () {
                         $("#dashboard-content .content select#period").append($("<option></option>").val(key).html(value));
                     });
 
+                    console.log($.getUrlVar("url"));
                     if ($.getUrlVar("option") == "edit") {
                         $.ajax({
                             type: 'GET',
@@ -3297,7 +3298,13 @@ $(document).ready(function () {
                                         $(formbuild).find("select#measurement_unit").val(data.measurement_unit.id);
                                     }
                                     $(formbuild).find("select#period").val(data.period);
+
                                     $(formbuild).find("select#source").val(data.source);
+                                    console.log(data);
+                                    if (!($(formbuild).find("select#source").val() == data.source) ){
+                                        $(formbuild).find("select#source").append($("<option></option>").val(data.source).html(data.source).attr("source-id", '?'));
+                                        $(formbuild).find("select#source").val(data.source);
+                                    }
                                     if ($(formbuild).find("select#source option:selected").val() != "") {
                                         $("#dashboard-content .content a#delete-source").show();
                                     }
@@ -7655,9 +7662,16 @@ $(document).ready(function () {
                                                 id: data_variables[index].id
                                             })).html(data_variables[index].explanation)
 
-                                            $("#source_$$id".render({
+                                            var $select = $("#source_$$id".render({
                                                 id: data_variables[index].id
-                                            })).val(data_variables[index].source);
+                                            }));
+                                            /* sources */
+                                            $select.val(data_variables[index].source);
+                                            if (!($select.val() == data_variables[index].source)){
+                                                $select.append($("<option></option>").val(data_variables[index].source).html(data_variables[index].source).attr("source-id", '?'));
+                                                $select.val(data_variables[index].source);
+                                            }
+
                                             $("#observations_$$id".render2({
                                                 id: data_variables[index].id
                                             })).val(data_variables[index].observations);
@@ -9198,6 +9212,11 @@ $(document).ready(function () {
                                     $(formbuild).find("textarea#institutions_involved").val(data.institutions_involved);
                                     $(formbuild).find("textarea#contacts").val(data.contatcts);
                                     $(formbuild).find("textarea#sources").val(data.sources);
+                                    if (!($(formbuild).find("textarea#sources").val() == data.sources)){
+                                        $(formbuild).find("textarea#sources").append($("<option></option>").val(data.sources).html(data.sources).attr("source-id", '?'));
+                                        $(formbuild).find("textarea#sources").val(data.sources);
+                                    }
+
                                     $(formbuild).find("input#tags").val(data.tags);
                                     $(formbuild).find("select#axis_id").val(data.axis_id);
                                     $(formbuild).find("select#axis_id").attr("selected-id",data.axis_id);

@@ -1428,13 +1428,29 @@ var setNewSource = function (objSelect, objText) {
     $(objSelect).next("a#delete-source").click(function (e) {
         e.preventDefault();
         if ($(objSelect).find("option:selected").val() != "") {
-            deleteSource({
-                url: api_path + "/api/source/" + $(objSelect).find("option:selected").attr("source-id") + "?api_key=$$key".render2({
-                    key: $.cookie("key")
-                }),
-                element: $(objSelect),
-                resetElement: true
-            });
+            if ($(objSelect).find("option:selected").attr("source-id") == '?'){
+                resetWarnings();
+                $("#aviso").setWarning({
+                    msg: "Fonte removida com sucesso."
+                });
+
+                loadSources();
+                $("select.source").each(function (i, item) {
+                    var _objSelect = $("select#" + $(item).attr("id"));
+                    var _objText = $("input#" + $(item).attr("id") + "_new");
+                    loadComboSources(sources, _objSelect, _objText);
+                })
+                $(params.element).val("");
+
+            }else{
+                deleteSource({
+                    url: api_path + "/api/source/" + $(objSelect).find("option:selected").attr("source-id") + "?api_key=$$key".render2({
+                        key: $.cookie("key")
+                    }),
+                    element: $(objSelect),
+                    resetElement: true
+                });
+            }
         }
     });
     $(objText).next("a#add-source").click(function (e) {

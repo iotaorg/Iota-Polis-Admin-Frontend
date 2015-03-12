@@ -7976,7 +7976,7 @@ $(document).ready(function () {
                                                                     });
 
                                                                     $.ajax({
-                                                                        async: true,
+                                                                        async: false,
                                                                         type: "POST",
                                                                         dataType: 'json',
                                                                         url: url,

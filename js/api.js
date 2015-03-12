@@ -7814,189 +7814,198 @@ $(document).ready(function () {
                                                 var cont_sent = 0;
                                                 var cont_returned = 0;
 
-                                                var to_indicator = setInterval(function () {
-                                                    if (cont_sent < cont_total) {
-                                                        if ($("#dashboard-content .content .filter_result").find("#var_" + data_variables[cont_sent].id).attr("disabled") == "disabled") {
-                                                            cont_sent++;
-                                                            cont_returned++;
+                                                console.log(cont_sent, cont_total);
+                                                while (cont_sent < cont_total){
+                                                    if ($("#dashboard-content .content .filter_result").find("#var_" + data_variables[cont_sent].id).attr("disabled") == "disabled") {
+                                                        cont_sent++;
+                                                        cont_returned++;
+                                                    } else {
+                                                        var data_formatada = "";
+                                                        if (data_indicator.period == "yearly" || data_indicator.period == "monthly") {
+                                                            data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter option:selected").val();
+                                                        } else if (data_indicator.period == "daily") {
+                                                            data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter").val();
+                                                        }
+
+                                                        if ($("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()) {
+                                                            var url = api_path + '/api/city/$$city/region/$$region/value'.render2({
+                                                                city: getIdFromUrl(user_info.city),
+                                                                region: $("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()
+                                                            });
+                                                            var prefix = "region.";
                                                         } else {
-                                                            var data_formatada = "";
-                                                            if (data_indicator.period == "yearly" || data_indicator.period == "monthly") {
-                                                                data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter option:selected").val();
-                                                            } else if (data_indicator.period == "daily") {
-                                                                data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter").val();
-                                                            }
-
-                                                            if ($("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()) {
-                                                                var url = api_path + '/api/city/$$city/region/$$region/value'.render2({
-                                                                    city: getIdFromUrl(user_info.city),
-                                                                    region: $("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()
-                                                                });
-                                                                var prefix = "region.";
-                                                            } else {
-                                                                var url = api_path + '/api/variable/$$var_id/value'.render2({
-                                                                    var_id: data_variables[cont_sent].id
-                                                                });
-                                                                var prefix = "";
-                                                            }
-
-                                                            if (!$("#dashboard-content .content input#no_data").attr("checked")) {
-                                                                args = [{
-                                                                    name: "api_key",
-                                                                    value: $.cookie("key")
-                                                                }, {
-                                                                    name: prefix + "variable.value.put.value",
-                                                                    value: $.convertNumberToBd($("#dashboard-content .content .filter_result").find("#var_" + data_variables[cont_sent].id).val())
-                                                                }, {
-                                                                    name: prefix + "variable.value.put.source",
-                                                                    value: $("#dashboard-content .content .filter_result").find("#source_" + data_variables[cont_sent].id).val()
-                                                                }, {
-                                                                    name: prefix + "variable.value.put.observations",
-                                                                    value: $("#dashboard-content .content .filter_result").find("#observations_" + data_variables[cont_sent].id).val()
-                                                                }, {
-                                                                    name: prefix + "variable.value.put.value_of_date",
-                                                                    value: data_formatada
-                                                                }];
-                                                            } else if ($("#dashboard-content .content .filter_result").find("#var_" + data_variables[cont_sent].id).val() == "") {
-                                                                args = [{
-                                                                    name: "api_key",
-                                                                    value: $.cookie("key")
-                                                                }, {
-                                                                    name: prefix + "variable.value.put.value",
-                                                                    value: ""
-                                                                }, {
-                                                                    name: prefix + "variable.value.put.source",
-                                                                    value: ""
-                                                                }, {
-                                                                    name: prefix + "variable.value.put.observations",
-                                                                    value: $("#dashboard-content .content .filter_result").find("#observations_" + data_variables[cont_sent].id).val()
-                                                                }, {
-                                                                    name: prefix + "variable.value.put.value_of_date",
-                                                                    value: data_formatada
-                                                                }];
-                                                            } else {
-                                                                args = [{
-                                                                    name: "api_key",
-                                                                    value: $.cookie("key")
-                                                                }, {
-                                                                    name: prefix + "variable.value.put.value",
-                                                                    value: $.convertNumberToBd($("#dashboard-content .content .filter_result").find("#var_" + data_variables[cont_sent].id).val())
-                                                                }, {
-                                                                    name: prefix + "variable.value.put.source",
-                                                                    value: $("#dashboard-content .content .filter_result").find("#source_" + data_variables[cont_sent].id).val()
-                                                                }, {
-                                                                    name: prefix + "variable.value.put.observations",
-                                                                    value: $("#dashboard-content .content .filter_result").find("#observations_" + data_variables[cont_sent].id).val()
-                                                                }, {
-                                                                    name: prefix + "variable.value.put.value_of_date",
-                                                                    value: data_formatada
-                                                                }];
-                                                            }
-
-                                                            if ($("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()) {
-                                                                args.push({
-                                                                    name: prefix + "variable.value.put.variable_id",
-                                                                    value: data_variables[cont_sent].id
-                                                                });
-                                                                args.push({
-                                                                    name: prefix + "variable.value.put.user_id",
-                                                                    value: $.cookie("user.id")
-                                                                });
-                                                            }
-
-                                                            $.ajax({
-                                                                type: 'PUT',
-                                                                dataType: 'json',
-                                                                url: url,
-                                                                data: args,
-                                                                success: function (data, textStatus, jqXHR) {
-                                                                    cont_returned++;
-                                                                },
-                                                                error: function (data) {
-                                                                    $(".filter_result .form-aviso").setWarning({
-                                                                        msg: "Erro ao editar. ($$erro)".render2({
-                                                                            erro: data.statusText
-                                                                        })
-                                                                    });
-                                                                    $("#dashboard-content .content .filter_result .botao-form[ref='enviar']").show();
-                                                                }
+                                                            var url = api_path + '/api/variable/$$var_id/value'.render2({
+                                                                var_id: data_variables[cont_sent].id
                                                             });
-                                                            cont_sent++;
+                                                            var prefix = "";
                                                         }
+
+                                                        if (!$("#dashboard-content .content input#no_data").attr("checked")) {
+                                                            args = [{
+                                                                name: "api_key",
+                                                                value: $.cookie("key")
+                                                            }, {
+                                                                name: prefix + "variable.value.put.value",
+                                                                value: $.convertNumberToBd($("#dashboard-content .content .filter_result").find("#var_" + data_variables[cont_sent].id).val())
+                                                            }, {
+                                                                name: prefix + "variable.value.put.source",
+                                                                value: $("#dashboard-content .content .filter_result").find("#source_" + data_variables[cont_sent].id).val()
+                                                            }, {
+                                                                name: prefix + "variable.value.put.observations",
+                                                                value: $("#dashboard-content .content .filter_result").find("#observations_" + data_variables[cont_sent].id).val()
+                                                            }, {
+                                                                name: prefix + "variable.value.put.value_of_date",
+                                                                value: data_formatada
+                                                            }];
+                                                        } else if ($("#dashboard-content .content .filter_result").find("#var_" + data_variables[cont_sent].id).val() == "") {
+                                                            args = [{
+                                                                name: "api_key",
+                                                                value: $.cookie("key")
+                                                            }, {
+                                                                name: prefix + "variable.value.put.value",
+                                                                value: ""
+                                                            }, {
+                                                                name: prefix + "variable.value.put.source",
+                                                                value: ""
+                                                            }, {
+                                                                name: prefix + "variable.value.put.observations",
+                                                                value: $("#dashboard-content .content .filter_result").find("#observations_" + data_variables[cont_sent].id).val()
+                                                            }, {
+                                                                name: prefix + "variable.value.put.value_of_date",
+                                                                value: data_formatada
+                                                            }];
+                                                        } else {
+                                                            args = [{
+                                                                name: "api_key",
+                                                                value: $.cookie("key")
+                                                            }, {
+                                                                name: prefix + "variable.value.put.value",
+                                                                value: $.convertNumberToBd($("#dashboard-content .content .filter_result").find("#var_" + data_variables[cont_sent].id).val())
+                                                            }, {
+                                                                name: prefix + "variable.value.put.source",
+                                                                value: $("#dashboard-content .content .filter_result").find("#source_" + data_variables[cont_sent].id).val()
+                                                            }, {
+                                                                name: prefix + "variable.value.put.observations",
+                                                                value: $("#dashboard-content .content .filter_result").find("#observations_" + data_variables[cont_sent].id).val()
+                                                            }, {
+                                                                name: prefix + "variable.value.put.value_of_date",
+                                                                value: data_formatada
+                                                            }];
+                                                        }
+
+                                                        if ($("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()) {
+                                                            args.push({
+                                                                name: prefix + "variable.value.put.variable_id",
+                                                                value: data_variables[cont_sent].id
+                                                            });
+                                                            args.push({
+                                                                name: prefix + "variable.value.put.user_id",
+                                                                value: $.cookie("user.id")
+                                                            });
+                                                        }
+
+                                                        $.ajax({
+                                                            type: 'PUT',
+                                                            dataType: 'json',
+                                                            url: url,
+                                                            data: args,
+                                                            success: function (data, textStatus, jqXHR) {
+                                                                cont_returned++;
+                                                            },
+                                                            error: function (data) {
+                                                                $(".filter_result .form-aviso").setWarning({
+                                                                    msg: "Erro ao editar. ($$erro)".render2({
+                                                                        erro: data.statusText
+                                                                    })
+                                                                });
+                                                                $("#dashboard-content .content .filter_result .botao-form[ref='enviar']").show();
+                                                                cont_sent     = 999999999999;
+                                                                cont_returned = 0;
+                                                            }
+                                                        });
+                                                        cont_sent++;
                                                     }
-                                                    if (cont_returned >= cont_total) {
-                                                        clearInterval(to_indicator);
+                                                }
 
-                                                        if (data_vvariables.length > 0) {
-                                                            $.each(data_variations, function (index_variation, item_variation) {
-                                                                $.each(data_vvariables, function (index_variables, item_variables) {
-                                                                    var data_formatada = "";
-                                                                    if (data_indicator.period == "yearly" || data_indicator.period == "monthly") {
-                                                                        data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter option:selected").val();
-                                                                    } else if (data_indicator.period == "daily") {
-                                                                        data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter").val();
-                                                                    }
+                                                // se deu sucesso
+                                                if (cont_sent == cont_total) {
 
-                                                                    var ajax_id;
-                                                                    if ($("#dashboard-content .content .filter_result").find("#v_" + item_variation.id + "_var_" + item_variables.id).attr("update") != undefined) {
+                                                    var deu_erro = 0;
+                                                    if (data_vvariables.length > 0) {
+                                                        $.each(data_variations, function (index_variation, item_variation) {
+                                                            $.each(data_vvariables, function (index_variables, item_variables) {
+                                                                var data_formatada = "";
+                                                                if (data_indicator.period == "yearly" || data_indicator.period == "monthly") {
+                                                                    data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter option:selected").val();
+                                                                } else if (data_indicator.period == "daily") {
+                                                                    data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter").val();
+                                                                }
 
-                                                                        ajax_option = "update";
-                                                                        ajax_id = $("#dashboard-content .content .filter_result").find("#v_" + item_variation.id + "_var_" + item_variables.id).attr("item-id");
-                                                                    } else {
+                                                                var ajax_id;
+                                                                if ($("#dashboard-content .content .filter_result").find("#v_" + item_variation.id + "_var_" + item_variables.id).attr("update") != undefined) {
 
-                                                                        ajax_option = "create";
-                                                                        ajax_id = "";
-                                                                    }
+                                                                    ajax_option = "update";
+                                                                    ajax_id = $("#dashboard-content .content .filter_result").find("#v_" + item_variation.id + "_var_" + item_variables.id).attr("item-id");
+                                                                } else {
 
-                                                                    args = [{
-                                                                        name: "api_key",
-                                                                        value: $.cookie("key")
-                                                                    }, {
-                                                                        name: "indicator.variation_value." + ajax_option + ".value",
-                                                                        value: $.convertNumberToBd($("#dashboard-content .content .filter_result").find("#v_" + item_variation.id + "_var_" + item_variables.id).val())
-                                                                    }, {
-                                                                        name: "indicator.variation_value." + ajax_option + ".value_of_date",
-                                                                        value: data_formatada
-                                                                    }, {
-                                                                        name: "indicator.variation_value." + ajax_option + ".indicator_variation_id",
-                                                                        value: item_variation.id
-                                                                    }];
+                                                                    ajax_option = "create";
+                                                                    ajax_id = "";
+                                                                }
 
-                                                                    if ($("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()) {
-                                                                        args = {
-                                                                            name: "indicator.variation_value." + ajax_option + ".region_id",
-                                                                            value: $("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()
-                                                                        };
-                                                                    }
+                                                                args = [{
+                                                                    name: "api_key",
+                                                                    value: $.cookie("key")
+                                                                }, {
+                                                                    name: "indicator.variation_value." + ajax_option + ".value",
+                                                                    value: $.convertNumberToBd($("#dashboard-content .content .filter_result").find("#v_" + item_variation.id + "_var_" + item_variables.id).val())
+                                                                }, {
+                                                                    name: "indicator.variation_value." + ajax_option + ".value_of_date",
+                                                                    value: data_formatada
+                                                                }, {
+                                                                    name: "indicator.variation_value." + ajax_option + ".indicator_variation_id",
+                                                                    value: item_variation.id
+                                                                }];
 
-                                                                    var url = api_path + '/api/indicator/$$indicator_id/variables_variation/$$var_id/values/$$ajax_id'.render2({
-                                                                        indicator_id: getIdFromUrl($.getUrlVar("url")),
-                                                                        var_id: item_variables.id,
-                                                                        ajax_id: ajax_id
-                                                                    });
+                                                                if ($("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()) {
+                                                                    args = {
+                                                                        name: "indicator.variation_value." + ajax_option + ".region_id",
+                                                                        value: $("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()
+                                                                    };
+                                                                }
 
-                                                                    $.ajax({
-                                                                        async: false,
-                                                                        type: "POST",
-                                                                        dataType: 'json',
-                                                                        url: url,
-                                                                        data: args,
-                                                                        success: function (data, textStatus, jqXHR) {
-                                                                            cont_returned++;
-                                                                        },
-                                                                        error: function (data) {
-                                                                            $(".filter_result .form-aviso").setWarning({
-                                                                                msg: "Erro ao editar. ($$erro)".render2({
-                                                                                    erro: $.trataErro(data)
-                                                                                })
-                                                                            });
-                                                                            $("#dashboard-content .content .filter_result .botao-form[ref='enviar']").show();
-                                                                        }
-                                                                    });
+                                                                var url = api_path + '/api/indicator/$$indicator_id/variables_variation/$$var_id/values/$$ajax_id'.render2({
+                                                                    indicator_id: getIdFromUrl($.getUrlVar("url")),
+                                                                    var_id: item_variables.id,
+                                                                    ajax_id: ajax_id
                                                                 });
-                                                            });
-                                                        }
 
+                                                                $.ajax({
+                                                                    async: false,
+                                                                    type: "POST",
+                                                                    dataType: 'json',
+                                                                    url: url,
+                                                                    data: args,
+                                                                    success: function (data, textStatus, jqXHR) {
+                                                                        cont_returned++;
+                                                                    },
+                                                                    error: function (data) {
+                                                                        $(".filter_result .form-aviso").setWarning({
+                                                                            msg: "Erro ao editar. ($$erro)".render2({
+                                                                                erro: $.trataErro(data)
+                                                                            })
+                                                                        });
+                                                                        $("#dashboard-content .content .filter_result .botao-form[ref='enviar']").show();
+                                                                        deu_erro = 1;
+                                                                        console.log(deu_erro);
+                                                                    }
+                                                                });
+                                                                if (deu_erro == 1) { return false }
+                                                            });
+                                                            if (deu_erro == 1) { return false }
+                                                        });
+                                                    }
+
+                                                    if (deu_erro == 0){
                                                         var send_justification_meta = false;
 
                                                         var data_formatada = "";
@@ -8107,11 +8116,15 @@ $(document).ready(function () {
                                                                 "target": $("#dashboard-content .content div.historico")
                                                             });
                                                         }
+
                                                     }
-                                                }, 10);
+                                                }
+
+
 
                                             }
                                         });
+
                                         $("#dashboard-content .content .botao-form[ref='cancelar']").click(function () {
                                             resetWarnings();
                                             $("#dashboard-content .content .filter_result").empty();

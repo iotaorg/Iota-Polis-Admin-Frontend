@@ -635,7 +635,7 @@ $(document).ready(function () {
         }
 
         function getSelection() {
-            console.log(current_map_string);
+
         }
 
         function saveSelectedShape() {
@@ -1321,7 +1321,6 @@ $(document).ready(function () {
                                     $(formbuild).find("div#textlabel_period").html(variable_periods[data.period]);
 
 
-                                    //console.log(data);
                                     //if (data.period)
                                     //setup_jStepper
 
@@ -3280,7 +3279,7 @@ $(document).ready(function () {
                         $("#dashboard-content .content select#period").append($("<option></option>").val(key).html(value));
                     });
 
-                    console.log($.getUrlVar("url"));
+
                     if ($.getUrlVar("option") == "edit") {
                         $.ajax({
                             type: 'GET',
@@ -3301,7 +3300,7 @@ $(document).ready(function () {
                                     $(formbuild).find("select#period").val(data.period);
 
                                     $(formbuild).find("select#source").val(data.source);
-                                    console.log(data);
+
                                     if (!($(formbuild).find("select#source").val() == data.source) ){
                                         $(formbuild).find("select#source").append($("<option></option>").val(data.source).html(data.source).attr("source-id", '?'));
                                         $(formbuild).find("select#source").val(data.source);
@@ -7491,7 +7490,7 @@ $(document).ready(function () {
                                                     $.each(data_vvariables, function (index_vvariables, item_vvariables) {
                                                         newform.push({
                                                             label: "<b>" + item_vvariables.name + "</b>",
-                                                            input: ["text,v_$$var_id_var_$$id,itext".render2({
+                                                            input: ["text,v_$$var_id_var_$$id,itext ivar".render2({
                                                                 id: item_vvariables.id,
                                                                 var_id: item_variation.id
                                                             })]
@@ -7545,7 +7544,12 @@ $(document).ready(function () {
 
                                         if (data_indicator.variable_type == 'int' || data_indicator.variable_type == 'num'){
                                             $(formbuild).find('.ivar').each(function(i, o){
-                                                setup_jStepper(o, data_indicator.variable_type == 'num');
+                                                // se o tipo do input for variado, usa numeric
+                                                if (/_var_/.test(o.name)) {
+                                                    setup_jStepper(o, 'num');
+                                                }else{
+                                                    setup_jStepper(o, data_indicator.variable_type == 'num');
+                                                }
                                             })
                                         }
 
@@ -7815,7 +7819,6 @@ $(document).ready(function () {
                                                 var cont_sent = 0;
                                                 var cont_returned = 0;
 
-                                                console.log(cont_sent, cont_total);
                                                 while (cont_sent < cont_total){
                                                     if ($("#dashboard-content .content .filter_result").find("#var_" + data_variables[cont_sent].id).attr("disabled") == "disabled") {
                                                         cont_sent++;
@@ -7997,7 +8000,7 @@ $(document).ready(function () {
                                                                         });
                                                                         $("#dashboard-content .content .filter_result .botao-form[ref='enviar']").show();
                                                                         deu_erro = 1;
-                                                                        console.log(deu_erro);
+
                                                                     }
                                                                 });
                                                                 if (deu_erro == 1) { return false }
@@ -8608,7 +8611,7 @@ $(document).ready(function () {
                                     return;
                                 }
                             } else {
-                                console.log("Erro ao enviar arquivo");
+
                                 $(".value_via_file .form-aviso").setWarning({
                                     msg: "Erro ao enviar arquivo"
                                 });
@@ -9665,7 +9668,7 @@ $(document).ready(function () {
 											return;
 										}
 									} else {
-										console.log("Erro ao enviar arquivo");
+
 										$(".value_via_file .form-aviso").setWarning({
 											msg: "Erro ao enviar arquivo"
 										});
@@ -10891,9 +10894,8 @@ $(document).ready(function () {
                                             return;
                                         }
                                     } else {
-                                        console.log("$$aa ".render({
-                                            aa: 'Erro ao enviar arquivo'
-                                        }) + file);
+
+
                                         $(".form-aviso").setWarning({
                                             msg: "$$aa ".render({
                                                 aa: 'Erro ao enviar arquivo'

@@ -2371,6 +2371,7 @@ $(document).ready(function () {
                     $("#dashboard-content .content select#country_id").append($("<option></option>").val("").html("$$e...".render({
                         e: 'Selecione'
                     })));
+
                     $.ajax({
                         async: false,
                         type: 'GET',
@@ -2385,7 +2386,7 @@ $(document).ready(function () {
                                 return a.localeCompare(b);
                             });
                             $.each(data.countries, function (index, item) {
-                                $("#dashboard-content .content select#country_id").append($(" ").val(item.id).html(item.name));
+                                $("#dashboard-content .content select#country_id").append($("<option>").val(item.id).html(item.name));
                             });
                         }
                     });

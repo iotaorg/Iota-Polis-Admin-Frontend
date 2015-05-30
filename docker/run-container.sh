@@ -1,16 +1,8 @@
 #!/bin/bash
 
 export GIT_DIR=$(git rev-parse --show-toplevel)
-getMyIP() {
-    local _ip _myip _line _nl=$'\n'
-    while IFS=$': \t' read -a _line ;do
-        [ -z "${_line%inet}" ] &&
-           _ip=${_line[${#_line[1]}>4?1:2]} &&
-           [ "${_ip#127.0.0.1}" ] && _myip=$_ip
-      done< <(LANG=C /sbin/ifconfig)
-    printf ${1+-v} $1 "%s${_nl:0:$[${#1}>0?0:1]}" $_myip
-}
-export MYIP=$(getMyIP)
+export MYIP=$(ip route get 8.8.8.8 | head -1 | cut -d' ' -f8)
+
 echo "Make sure API is listening on $MYIP:5000 ";
 (sleep 1; export X=`docker inspect --format '{{ .NetworkSettings.IPAddress }}' iota-frontend 2>&1`; echo "http://$X/frontend" ) &
 

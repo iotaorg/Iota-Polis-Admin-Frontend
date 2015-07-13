@@ -3,10 +3,7 @@ if (window.location.href.indexOf("localhost") >= 0) {
     api_path = "http://rnsp.aware.com.br";
 }
 
-var do_not_use_lex = (window.location.href.indexOf("indicadores.cidadessustentaveis.org.br") >= 0) ||
- (window.location.href.indexOf("www.redesocialdecidades.org.br") >= 0) ||
- (window.location.href.indexOf("rnsp.org") >= 0) ||
- (window.location.href.indexOf("prefeitura.gov") >= 0);
+var do_not_use_lex = !(window.location.href.indexOf("http://indicadores.redciudades.net") >= 0);
 
 
 

@@ -52,7 +52,18 @@
 	<div id="top">
     	<div class="content">
         	<div class="top-left">
-	        	<div class="logo"><a href="#"><img src="../images/logo.png" border="0" alt="Programa Cidades Sustentáveis" /></a></div>
+	        	<div class="logo"><a href="#">
+
+                    <!-- nao me bata, estou fazendo isso por motivos maiores! -->
+                    <script>
+                    if (window.location.href.indexOf("atletaspelobrasil.org.br")){
+                         document.write('<img src="/static/images/logo-cidades-do-esporte.jpeg" alt="Cidades do Esporte" border="0"/>');
+                     }else{
+                         document.write('<img src="../images/logo.png" border="0" alt="Programa Cidades Sustentáveis" /></a>')
+                     }
+                    </script>
+
+                </div>
             </div>
         	<div class="top-right">
 	        	<div class="logo"></div>

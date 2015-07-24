@@ -6590,7 +6590,7 @@ $(document).ready(function () {
 		    
                     $("#dashboard-content .content").append(userList);
 
-                    console.log($.getUrlVar("url"));
+                    
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
@@ -6643,7 +6643,7 @@ $(document).ready(function () {
 			  $.loading.hide();
 		      }
 		   });
-		   console.log(getUrlSub());
+		   
 		   location.hash = "#!/" + getUrlSub();
 		}
 		
@@ -6656,7 +6656,7 @@ $(document).ready(function () {
 			    if ($.getUrlVar("redeid") != ""){
 			      redeid = $.getUrlVar("redeid");
 			    }
-		    console.log(redeid);
+		   
                     $.ajax({
                         type: 'GET',
                         dataType: 'json',
@@ -6818,15 +6818,19 @@ $(document).ready(function () {
 
                             var count_i = 0;
                             //carrega indicadores por eixo
-			    console.log(data_groups);
-			    console.log(data_indicators);
+			    data_indicators.sort(function (a, b) {
+                                    a = a.name,
+                                    b = b.name;
+
+                                    return a.localeCompare(b);
+                                });
 			    if (data_indicators != ""){
 			      for (i = 0; i < data_indicators.length; i++) {
 				  if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1) {
 				      continue;
 				  }
 				  //if (!findInArray(indicators_in_groups,data_indicators[i].id)){ oculta indicadores já listados nos grupos
-				  console.log(data_indicators);
+				  
 				  if (data_indicators[i].axis_id != axis_ant) {
 				      if (count_i > 0) {
 					  indicators_table += "</div>";
@@ -6876,6 +6880,7 @@ $(document).ready(function () {
                                 indicators_table += "<div class='eixos hidden collapse'><div class='title'>$$e</div><div class='clear'></div>".render({
                                     e: 'Indicadores Ocultos'
                                 });
+				
                                 for (i = 0; i < data_indicators.length; i++) {
                                     if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1) {
                                         var formula = formataFormula(data_indicators[i].formula, data_variables, data_vvariables);
@@ -6948,7 +6953,7 @@ $(document).ready(function () {
                             }
                         });
                     }
-                    console.log($.getUrlVar("redeid"));
+                    
                     $("#dashboard-content .content .variable-filter #botao-pesquisar").click(function () {
 		           
                         location.hash = "#!/" + getUrlSub() + "?redeid=$$rede_id".render2({

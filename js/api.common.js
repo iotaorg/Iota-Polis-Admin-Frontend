@@ -2,8 +2,6 @@ var api_path = "";
 
 var do_not_use_lex = !(window.location.href.indexOf("http://indicadores.redciudades.net") >= 0);
 
-
-
 var cur_lang = $.cookie("cur_lang"),
     lexicon, default_lang, langs, lexiconconf,
     lexicon_untranslated = {}, untranslated_temp = {};
@@ -722,19 +720,19 @@ var DTdesenhaBotoes = function () {
         }
     });
 }
- 
+
 var DTdesenhaBtEntrar = function () {
     $("#results td.botoes").each(function () {
         if ($(this).find("a").length <= 0) {
             var url = $(this).html();
-	               
+
 	    $(this).html("<a href='$$_hash?option=save&url=$$_url' class='botao-form' title='$$ee' alt='$$ee'>$$ee</a>".render({
                 _hash: "#!/" + getUrlSub(),
                 ee: 'Participar',
                 _url: url
             }));
-	    
-	    
+
+
         }
     });
 }
@@ -1673,7 +1671,7 @@ var deleteRegister = function (params) {
                                     msg: "Cadastro apagado com sucesso."
                                 });
                                 if (params.redirect == undefined || params.redirect == true) {
-                                    
+
 				  location.hash = "#!/" + getUrlSub();
                                 }
                                 if (params.call != undefined) {

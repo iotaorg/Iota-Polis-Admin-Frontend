@@ -1,7 +1,4 @@
 var api_path = "";
-if (window.location.href.indexOf("localhost") >= 0) {
-    api_path = "http://rnsp.aware.com.br";
-}
 
 var do_not_use_lex = !(window.location.href.indexOf("http://indicadores.redciudades.net") >= 0);
 
@@ -682,6 +679,35 @@ var buildDataTable = function (args, table_id, button_add, add_class) {
     return newlist;
 
 };
+var buildDTWithButton = function (args, table_id, button_add, add_class) {
+    var headers = args.headers;
+
+    var newlist = "";
+
+    if (add_class == undefined || add_class == null) {
+    	  add_class = "";
+    }
+    if (table_id == undefined || table_id == null) {
+        table_id = "results";
+    }
+
+    newlist += "<table id='" + table_id + "' class='" + add_class + "'>";
+    newlist += "<thead>";
+    newlist += "<tr>";
+    for (var key in headers) {
+        newlist += "<th>$$x</th>".render({
+            x: headers[key].replace("_", "&nbsp;")
+        });
+    }
+    newlist += "</tr>";
+    newlist += "</thead>";
+
+    newlist += "<tbody>";
+    newlist += "</tbody>";
+    newlist += "</table>";
+    return newlist;
+
+};
 
 var DTdesenhaBotoes = function () {
     $("#results td.botoes").each(function () {
@@ -696,7 +722,22 @@ var DTdesenhaBotoes = function () {
         }
     });
 }
-
+ 
+var DTdesenhaBtEntrar = function () {
+    $("#results td.botoes").each(function () {
+        if ($(this).find("a").length <= 0) {
+            var url = $(this).html();
+	               
+	    $(this).html("<a href='$$_hash?option=save&url=$$_url' class='botao-form' title='$$ee' alt='$$ee'>$$ee</a>".render({
+                _hash: "#!/" + getUrlSub(),
+                ee: 'Participar',
+                _url: url
+            }));
+	    
+	    
+        }
+    });
+}
 var DTdesenhaBotaoVariavel = function () {
     $("#results td.botoes").each(function () {
         if ($(this).find("a").length <= 0) {
@@ -1632,7 +1673,8 @@ var deleteRegister = function (params) {
                                     msg: "Cadastro apagado com sucesso."
                                 });
                                 if (params.redirect == undefined || params.redirect == true) {
-                                    location.hash = "#!/" + getUrlSub();
+                                    
+				  location.hash = "#!/" + getUrlSub();
                                 }
                                 if (params.call != undefined) {
                                     eval(params.call + "();");

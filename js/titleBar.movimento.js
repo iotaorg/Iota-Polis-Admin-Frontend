@@ -91,6 +91,10 @@ var titleBarContent = {
 					"best_pratice":{
 							"title": "Conteúdo - Boas Práticas",
 							"tip": ""},
+					"topic":{
+							"title": "Temas",
+							"tip": ""},
+
 					"files":{
 							"title": "Conteúdo - Arquivos",
 							"tip": ""},

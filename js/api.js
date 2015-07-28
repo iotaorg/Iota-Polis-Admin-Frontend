@@ -348,6 +348,7 @@ $(document).ready(function () {
         menu_label["content"] = "Conteúdo";
         menu_label["axis"] = "Eixos";
         menu_label["indicator"] = "Indicadores";
+        menu_label["topic"] = "Temas";
         menu_label["indicator_user"] = "Indicadores";
         menu_label["variable_user"] = "Variáveis";
         menu_label["region"] = "Regiões";
@@ -448,6 +449,8 @@ $(document).ready(function () {
                 submenu_access["user"].push("best_pratice");
                 submenu_access["user"].push("files");
             }
+
+            menu_access["user"].push("topic");
 
             menu_access["user"].push("variable_user");
             if (user_info.institute.users_can_edit_value == 1) {
@@ -2708,6 +2711,10 @@ $(document).ready(function () {
                         label: "Nome da Rede",
                         input: ["text,name,itext"]
                     });
+                    newform.push({
+                        label: "Tema",
+                        input: ["select,topic,iselect"]
+                    });
 
                     var formbuild = $("#dashboard-content .content").append(buildForm(newform, txtOption));
                     $(formbuild).find("div .field:odd").addClass("odd");
@@ -2720,6 +2727,16 @@ $(document).ready(function () {
                     $("#dashboard-content .content select#institute_id").append($("<option></option>").val("").html("$$e...".render({
                         e: 'Selecione'
                     })));
+                    $("#dashboard-content .content select#topic").append($("<option></option>").val("").html("$$e...".render({
+                        e: 'Selecione'
+                    })));
+                    $("#dashboard-content .content select#topic").append($("<option></option>").val("0").html("$$e".render({
+                        e: 'Não'
+                    })));
+                    $("#dashboard-content .content select#topic").append($("<option></option>").val("1").html("$$e".render({
+                        e: 'Sim'
+                    })));
+
                     $.ajax({
                         async: false,
                         type: 'GET',
@@ -2784,6 +2801,7 @@ $(document).ready(function () {
                             $(".form-aviso").setWarning({
                                 msg: "Por favor informe o Nome"
                             });
+
                         } else {
 
                             if ($.getUrlVar("option") == "add") {
@@ -2808,7 +2826,11 @@ $(document).ready(function () {
                             },{
                                 name: "network." + action + ".institute_id",
                                 value: $(this).parent().parent().find("#institute_id option:selected").val()
+						    },{
+                                name: "network." + action + ".topic",
+                                value: $(this).parent().parent().find("#topic option:selected").val()
                             }];
+
                             $("#dashboard-content .content .botao-form[ref='enviar']").hide();
                             $.ajax({
                                 type: method,
@@ -6557,9 +6579,84 @@ $(document).ready(function () {
                         })
                     });
                 }
+
+            } else if (getUrlSub() == "topic") {
+	      
+		if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined) {
+
+                    var userList = buildDTWithButton({
+                        headers: ["Nome", "Url", "_"]
+                    });
+		    
+                    $("#dashboard-content .content").append(userList);
+
+                    
+                    $("#results").dataTable({
+                        "oLanguage": get_datatable_lang(),
+                        "bProcessing": true,
+                        "sAjaxSource": api_path + '/api/network?api_key=$$key&topic=1&content-type=application/json&user_id=$$user_id&lang=$$lang&columns=name,name_url,url,_,_'.render2({
+                            lang: cur_lang,
+                            key: $.cookie("key"),
+			    user_id: user_info.id
+                        }),
+                        "aoColumnDefs": [{
+                            "bSearchable": false,
+                            "bSortable": false,
+                            "sClass": "botoes",
+                            "sWidth": "60px",
+                            "aTargets": [2]
+                        }],
+                        "fnDrawCallback": function () {
+                            DTdesenhaBtEntrar();
+                        }
+                        
+                    });
+		    
+		  
+		} else if ($.getUrlVar("option") == "save") {
+		  // var network_id = $.getUrlVar("url").split('/')[5];
+		  
+		   
+		   $.ajax({
+		      type: "POST",
+		      dataType: 'json',
+		      url: $.getUrlVar("url")+'/user/$$userid?api_key=$$key'.render2({
+                            key: $.cookie("key"),
+                            userid: $.cookie("user.id"),
+			    networkid: $.getUrlVar("url").split('/')[5]
+                        }),
+		      
+		      success: function (data, textStatus, jqXHR) {
+			  $("#aviso").setWarning({
+			      msg: "Participação cadastrada com sucesso.".render2({
+				  codigo: jqXHR.status
+			      })
+			  });
+			  $.loading.hide();
+		      },
+		      error: function (data) {
+			  $("#aviso").setWarning({
+			      msg: "Erro ao salvar. ($$erro)".render2({
+				  erro: $.trataErro(data)
+			      })
+			  });
+			  $.loading.hide();
+		      }
+		   });
+		   
+		   location.hash = "#!/" + getUrlSub();
+		}
+		
             } else if (getUrlSub() == "myindicator") {
                 /*  INDICATORS */
                 if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined) {
+		  
+
+		   var redeid;
+			    if ($.getUrlVar("redeid") != ""){
+			      redeid = $.getUrlVar("redeid");
+			    }
+		   
                     $.ajax({
                         type: 'GET',
                         dataType: 'json',
@@ -6567,6 +6664,7 @@ $(document).ready(function () {
                             key: $.cookie("key"),
                             userid: $.cookie("user.id")
                         }),
+			data: { network_id: redeid },
                         success: function (data, textStatus, jqXHR) {
                             var data_indicators = [];
                             $.each(data.indicators, function (index, value) {
@@ -6645,7 +6743,8 @@ $(document).ready(function () {
                             var indicators_table = "";
                             var indicators_legend = "";
                             var indicators_status = "";
-
+			    var indicator_filter = "";
+			    
                             indicators_legend = "<div class='indicadores_legend'><div class='fillContent'>";
                             indicators_legend += "<div class='item'><div class='color no-data'></div><div class='label'>$$x</div><div class='clear'></div></div>".render({
                                 x: 'Nenhum dado preenchido'
@@ -6661,18 +6760,23 @@ $(document).ready(function () {
                             indicators_status = "<div class='indicadores-status'></div>";
 
                             indicators_table = "<div class='indicadores_list'>";
-
+                            indicators_table += "<div class='status'></div>";
+			    indicator_filter = "<div class='variable-filter'><div class='form-pesquisa'></div></div><div class='clear'></div>";
+			    		    
+			    
                             //carrega grupos
+			    
                             var indicators_in_groups = [];
                             if (data_groups && data_groups.length > 0) {
                                 indicators_table += "<div class='grupos_list'>$$e".render({
                                     e: 'Grupos'
                                 });
+				
                                 $.each(data_groups, function (index_group, group) {
                                     indicators_table += "<div class='eixos collapse group'><div class='title'>$$axis</div><div class='clear'></div>".render({
                                         axis: group.name
-                                    });
-
+                                    }); 
+				    
                                     $.each(group.items, function (index_item, item) {
                                         for (i = 0; i < data_indicators.length; i++) {
                                             if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1) {
@@ -6714,46 +6818,61 @@ $(document).ready(function () {
 
                             var count_i = 0;
                             //carrega indicadores por eixo
-                            for (i = 0; i < data_indicators.length; i++) {
-                                if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1) {
-                                    continue;
-                                }
-                                //if (!findInArray(indicators_in_groups,data_indicators[i].id)){ oculta indicadores já listados nos grupos
-                                if (data_indicators[i].axis_id != axis_ant) {
-                                    if (count_i > 0) {
-                                        indicators_table += "</div>";
-                                    }
-                                    indicators_table += "<div class='eixos collapse'><div class='title'>$$axis</div><div class='clear'></div>".render({
-                                        axis: data_indicators[i].axis.name
-                                    });
-                                    axis_ant = data_indicators[i].axis_id;
-                                }
-                                var formula = formataFormula(data_indicators[i].formula, data_variables, data_vvariables);
+			    data_indicators.sort(function (a, b) {
+                                    a = a.name,
+                                    b = b.name;
 
-                                var tr_class = "folded";
-                                $.each(data_indicators[i].network_configs, function (index_config, item_config) {
-                                    if (item_config.network_id == user_info.network && item_config.unfolded_in_home == 1) {
-                                        tr_class = "unfolded";
-                                    }
+                                    return a.localeCompare(b);
                                 });
+			    if (data_indicators != ""){
+			      for (i = 0; i < data_indicators.length; i++) {
+				  if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1) {
+				      continue;
+				  }
+				  //if (!findInArray(indicators_in_groups,data_indicators[i].id)){ oculta indicadores já listados nos grupos
+				  
+				  if (data_indicators[i].axis_id != axis_ant) {
+				      if (count_i > 0) {
+					  indicators_table += "</div>";
+				      }
+				      indicators_table += "<div class='eixos collapse'><div class='title'>$$axis</div><div class='clear'></div>".render({
+					  axis: data_indicators[i].axis.name
+				      });
+				      axis_ant = data_indicators[i].axis_id;
+				  }
+				  
+				  var formula = formataFormula(data_indicators[i].formula, data_variables, data_vvariables);
 
-                                indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='$$ss' alt='$$ss' indicator-id='$$_id' period='$$_period' aaa=123>$$det</a><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='$$a' alt='$$a'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
-                                    name: data_indicators[i].name,
-                                    a: 'adicionar valores',
-                                    ss: 'Série Histórica',
-                                    fxormula: formula,
-                                    _hash: "#!/" + getUrlSub(),
-                                    _url: api_path + "/api/indicator/" + data_indicators[i].id,
-                                    _indicator_id: data_indicators[i].id,
-                                    det: 'detalhes',
-                                    _period: data_indicators[i].period,
-                                    _id: data_indicators[i].id,
-                                    _tr_class: tr_class
-                                });
-                                indicators_table += "<div class='clear'></div>";
-                                count_i++;
-                                //}
-                            }
+				  var tr_class = "folded";
+				  $.each(data_indicators[i].network_configs, function (index_config, item_config) {
+				      if (item_config.network_id == user_info.network && item_config.unfolded_in_home == 1) {
+					  tr_class = "unfolded";
+				      }
+				  });
+
+				  indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='$$ss' alt='$$ss' indicator-id='$$_id' period='$$_period' aaa=123>$$det</a><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='$$a' alt='$$a'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
+				      name: data_indicators[i].name,
+				      a: 'adicionar valores',
+				      ss: 'Série Histórica',
+				      fxormula: formula,
+				      _hash: "#!/" + getUrlSub(),
+				      _url: api_path + "/api/indicator/" + data_indicators[i].id,
+				      _indicator_id: data_indicators[i].id,
+				      det: 'detalhes',
+				      _period: data_indicators[i].period,
+				      _id: data_indicators[i].id,
+				      _tr_class: tr_class
+				  });
+				  indicators_table += "<div class='clear'></div>";
+				  count_i++;
+				  //}
+			      }
+			    }else{
+			      
+			      indicators_table += "<div class='eixos collapse'><div class='title'>$$aviso</div><div class='clear'></div>".render({
+				  aviso: 'Nenhum indicador encontrado'
+			      });
+			    }
 
                             if (user_info.institute.id == 2) {
                                 //carrega indicadores ocultos
@@ -6761,6 +6880,7 @@ $(document).ready(function () {
                                 indicators_table += "<div class='eixos hidden collapse'><div class='title'>$$e</div><div class='clear'></div>".render({
                                     e: 'Indicadores Ocultos'
                                 });
+				
                                 for (i = 0; i < data_indicators.length; i++) {
                                     if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1) {
                                         var formula = formataFormula(data_indicators[i].formula, data_variables, data_vvariables);
@@ -6785,7 +6905,7 @@ $(document).ready(function () {
                             indicators_table += "</div>";
                             indicators_table += "<div class='clear'></div>";
 
-                            $("#dashboard-content .content").append(indicators_legend + indicators_status + indicators_table);
+                            $("#dashboard-content .content").append(indicators_legend + indicator_filter + indicators_status + indicators_table);
 
                             $("#dashboard-content .content .indicadores_list .eixos").each(function (index, item) {
                                 if ($(item).find(".variable").length <= 0) {
@@ -6794,143 +6914,191 @@ $(document).ready(function () {
                                     }));
                                 }
                             });
+ $("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='variable'>$$v: <select id='rede_id'></select></div>".render({
+                        v: 'Redes'
+                    }));
+   
 
+                   
+                    $("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='botao'><input type='button' id='botao-pesquisar' value='$$e'></div><div class='clear'></div>".render({
+                        e: 'Pesquisar'
+                    }));
+		    function carregaRedesEdit() {
+                        $("#dashboard-content .content #rede_id option").remove();
+                        $("#dashboard-content .content #rede_id").append($("<option value=''>$$t</option>".render({
+                            t: 'Todas'
+                        })));
+                        $.loading();
+                        $.ajax({
+                            type: 'GET',
+                            dataType: 'json',
+                            url: api_path + '/api/network?api_key=$$key'.render2({
+                                key: $.cookie("key"),
+                            }),
+                            success: function (data, textStatus, jqXHR) {
+			
+                                data.network.sort(function (a, b) {
+                                    a = a.name,
+                                    b = b.name;
+
+                                    return a.localeCompare(b);
+                                });
+                                $.each(data.network, function (index, item) {
+                                    $("#dashboard-content .content #rede_id").append($("<option value='$$id'>$$nome</option>".render({
+                                        id: item.id,
+                                        nome: item.name
+                                    })));
+                                });
+                                $.loading.hide();
+                            }
+                        });
+                    }
+                    
+                    $("#dashboard-content .content .variable-filter #botao-pesquisar").click(function () {
+		           
+                        location.hash = "#!/" + getUrlSub() + "?redeid=$$rede_id".render2({
+			     rede_id: $("#dashboard-content .content .variable-filter select#rede_id option:selected").val()
+			});
+			
+                    });
+		    carregaRedesEdit();
+		    
                             $("#dashboard-content .content .indicadores_list .zoom").click(function () {
                                 var target = $(this).parent().parent();
                                 var indicator_period = $(this).attr("period");
-								if ($(target).find(".historico-popup").is(":visible")){
-									$(target).find(".historico-popup").hide();
-								}else{
-									$.ajax({
-										type: 'GET',
-										dataType: 'json',
-										url: api_path + '/api/indicator/$$id/variable/value?api_key=$$key'.render2({
-											key: $.cookie("key"),
-											id: $(this).attr("indicator-id")
-										}),
-										success: function (data, textStatus, jqXHR) {
-											var vvariations = [];
-											if (data.rows) {
-												var history_table = "<table class='history'><thead><tr><th>$$e</th>".render({
-													e: 'Período'
-												});
+				if ($(target).find(".historico-popup").is(":visible")){
+				      $(target).find(".historico-popup").hide();
+				}else{
+				      $.ajax({
+					      type: 'GET',
+					      dataType: 'json',
+					      url: api_path + '/api/indicator/$$id/variable/value?api_key=$$key'.render2({
+						      key: $.cookie("key"),
+						      id: $(this).attr("indicator-id")
+					      }),
+					      success: function (data, textStatus, jqXHR) {
+						      var vvariations = [];
+						      if (data.rows) {
+							      var history_table = "<table class='history'><thead><tr><th>$$e</th>".render({
+								      e: 'Período'
+							      });
 
-												var headers = []; //corrige ordem do header
-												$.each(data.header, function (titulo, index) {
-													headers[index] = titulo;
-												});
+							      var headers = []; //corrige ordem do header
+							      $.each(data.header, function (titulo, index) {
+								      headers[index] = titulo;
+							      });
 
 
-												$.each(headers, function (index, value) {
-													history_table += "<th class='variavel'>$$variavel</th>".render({
-														variavel: value
-													});
-												});
-												history_table += "#theader_valor";
-												history_table += "</tr><tbody>";
-												$.each(data.rows, function (index, value) {
-													history_table += "<tr><td class='periodo'>$$periodo</td>".render2({
-														periodo: $.convertDateToPeriod(data.rows[index].valid_from, indicator_period)
-													});
-													$.each(headers, function (index2, value2) {
-														if ((data.rows[index].valores[index2]) && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined && data.rows[index].valores[index2].value != "-") {
-															history_table += "<td class='valor' title='$$data'>$$valor</td>".render2({
-																valor: $.formatNumber(data.rows[index].valores[index2].value, {
-																	format: "#,##0.###",
-																	locale: "br"
-																}),
-																data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T")
-															});
-														} else {
-															if ((data.rows[index].valores[index2])) {
-																history_table += "<td class='valor' title='$$data'>-</td>".render({
-																	data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T")
-																});
-															} else {
-																history_table += "<td class='valor' title='$$data'>-</td>".render({
-																	data: $.convertDate(data.rows[index].valid_from, "T")
-																});
-															}
-														}
-													});
-													if (value.variations && value.variations.length > 0) {
-														var th_valor = "";
-														for (i = 0; i < value.variations.length; i++) {
-															th_valor += "<th class='formula_valor' variation-index='" + i + "'>$$e</th>".render({
-																e: 'Valor da Fórmula'
-															});
-														}
-														history_table = history_table.replace("#theader_valor", th_valor);
-														$.each(value.variations, function (index, item) {
-															if (item.value != "-") {
-																history_table += "<td class='formula_valor' variation-index='$$index'>$$formula_valor</td>".render2({
-																	formula_valor: $.formatNumber(item.value, {
-																		format: "#,##0.###",
-																		locale: "br"
-																	}),
-																	index: index
-																});
-															} else {
-																history_table += "<td class='formula_valor' variation-index='$$index'>-</td>".render2({
-																	index: index
-																});
-															}
-															vvariations.push({
-																name: item.name,
-																index: index
-															});
-														});
-													} else {
-														history_table = history_table.replace("#theader_valor", "<th class='formula_valor'>$$e</th>".render({
-															e: 'Valor da Fórmula'
-														}));
-														if (data.rows[index].formula_value != "-") {
-															history_table += "<td class='formula_valor' variation-index='0'>$$formula_valor</td>".render2({
-																formula_valor: $.formatNumber(data.rows[index].formula_value, {
-																	format: "#,##0.###",
-																	locale: "br"
-																})
-															});
-														} else {
-															history_table += "<td class='formula_valor' variation-index='0'>-</td>";
-														}
-													}
-													history_table += "</tr></tbody>";
-												});
-												history_table += "</table>";
-											} else {
-												var history_table = "<table class='history'><thead><tr><th>nenhum registro encontrado</th></tr></thead></table>";
-											}
+							      $.each(headers, function (index, value) {
+								      history_table += "<th class='variavel'>$$variavel</th>".render({
+									      variavel: value
+								      });
+							      });
+							      history_table += "#theader_valor";
+							      history_table += "</tr><tbody>";
+							      $.each(data.rows, function (index, value) {
+								      history_table += "<tr><td class='periodo'>$$periodo</td>".render2({
+									      periodo: $.convertDateToPeriod(data.rows[index].valid_from, indicator_period)
+								      });
+								      $.each(headers, function (index2, value2) {
+									      if ((data.rows[index].valores[index2]) && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined && data.rows[index].valores[index2].value != "-") {
+										      history_table += "<td class='valor' title='$$data'>$$valor</td>".render2({
+											      valor: $.formatNumber(data.rows[index].valores[index2].value, {
+												      format: "#,##0.###",
+												      locale: "br"
+											      }),
+											      data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T")
+										      });
+									      } else {
+										      if ((data.rows[index].valores[index2])) {
+											      history_table += "<td class='valor' title='$$data'>-</td>".render({
+												      data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T")
+											      });
+										      } else {
+											      history_table += "<td class='valor' title='$$data'>-</td>".render({
+												      data: $.convertDate(data.rows[index].valid_from, "T")
+											      });
+										      }
+									      }
+								      });
+								      if (value.variations && value.variations.length > 0) {
+									      var th_valor = "";
+									      for (i = 0; i < value.variations.length; i++) {
+										      th_valor += "<th class='formula_valor' variation-index='" + i + "'>$$e</th>".render({
+											      e: 'Valor da Fórmula'
+										      });
+									      }
+									      history_table = history_table.replace("#theader_valor", th_valor);
+									      $.each(value.variations, function (index, item) {
+										      if (item.value != "-") {
+											      history_table += "<td class='formula_valor' variation-index='$$index'>$$formula_valor</td>".render2({
+												      formula_valor: $.formatNumber(item.value, {
+													      format: "#,##0.###",
+													      locale: "br"
+												      }),
+												      index: index
+											      });
+										      } else {
+											      history_table += "<td class='formula_valor' variation-index='$$index'>-</td>".render2({
+												      index: index
+											      });
+										      }
+										      vvariations.push({
+											      name: item.name,
+											      index: index
+										      });
+									      });
+								      } else {
+									      history_table = history_table.replace("#theader_valor", "<th class='formula_valor'>$$e</th>".render({
+										      e: 'Valor da Fórmula'
+									      }));
+									      if (data.rows[index].formula_value != "-") {
+										      history_table += "<td class='formula_valor' variation-index='0'>$$formula_valor</td>".render2({
+											      formula_valor: $.formatNumber(data.rows[index].formula_value, {
+												      format: "#,##0.###",
+												      locale: "br"
+											      })
+										      });
+									      } else {
+										      history_table += "<td class='formula_valor' variation-index='0'>-</td>";
+									      }
+								      }
+								      history_table += "</tr></tbody>";
+							      });
+							      history_table += "</table>";
+						      } else {
+							      var history_table = "<table class='history'><thead><tr><th>nenhum registro encontrado</th></tr></thead></table>";
+						      }
 
-											var variation_filter = "";
-											if (vvariations.length > 0) {
-												variation_filter += "<div class='variation-filter'><span class='variation-filter'>Faixa: </span><select class='variation-filter'>";
-												$.each(vvariations, function (index, item) {
-													variation_filter += "<option value='$$index'>$$name".render({
-														index: item.index,
-														name: item.name
-													});
-												});
-												variation_filter += "</select></div>";
-											}
+						      var variation_filter = "";
+						      if (vvariations.length > 0) {
+							      variation_filter += "<div class='variation-filter'><span class='variation-filter'>Faixa: </span><select class='variation-filter'>";
+							      $.each(vvariations, function (index, item) {
+								      variation_filter += "<option value='$$index'>$$name".render({
+									      index: item.index,
+									      name: item.name
+								      });
+							      });
+							      variation_filter += "</select></div>";
+						      }
 
-											$(target).find(".historico-popup").html(variation_filter + history_table);
-											$(target).find(".historico-popup").toggle();
+						      $(target).find(".historico-popup").html(variation_filter + history_table);
+						      $(target).find(".historico-popup").toggle();
 
-											if (vvariations.length > 0) {
-												$(target).find(".historico-popup table .formula_valor[variation-index!=0]").hide();
+						      if (vvariations.length > 0) {
+							      $(target).find(".historico-popup table .formula_valor[variation-index!=0]").hide();
 
-												$("select.variation-filter").change(function () {
-													var obj = $(this);
-													$(obj).parent().next("table").find(".formula_valor").fadeOut("fast", function () {
-														$(obj).parent().next("table").find(".formula_valor[variation-index='" + $(obj).val() + "']").show();
-													});
-												});
-											}
+							      $("select.variation-filter").change(function () {
+								      var obj = $(this);
+								      $(obj).parent().next("table").find(".formula_valor").fadeOut("fast", function () {
+									      $(obj).parent().next("table").find(".formula_valor[variation-index='" + $(obj).val() + "']").show();
+								      });
+							      });
+						      }
 
-										}
-									});
-								}
+					      }
+				      });
+			      }
                             });
 
                             $("div.indicadores_list .eixos .title").click(function () {
@@ -6939,6 +7107,7 @@ $(document).ready(function () {
                             });
 
                             //busca status dos indicadores
+			   
                             $.ajax({
                                 type: 'GET',
                                 dataType: 'json',
@@ -6946,6 +7115,7 @@ $(document).ready(function () {
                                     key: $.cookie("key"),
                                     userid: $.cookie("user.id")
                                 }),
+				
                                 success: function (data, textStatus, jqXHR) {
                                     var dataStatus = data.status;
                                     $.each(dataStatus, function (index, value) {
@@ -10463,7 +10633,7 @@ $(document).ready(function () {
             } else if (getUrlSub() == "prefs") {
 
                 var newform = [];
-
+				
                 newform.push({
                     label: "Nome",
                     input: ["text,name,itext"]
@@ -10602,7 +10772,7 @@ $(document).ready(function () {
                     });
                 }
 
-                var formbuild = $("#dashboard-content .content").append(buildForm(newform, "Preferências"));
+                var formbuild = $("#dashboard-content .content").append(buildForm(newform, "Preferênciasiss"));
                 $(formbuild).find("div .field:odd").addClass("odd");
                 $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 

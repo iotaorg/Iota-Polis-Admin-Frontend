@@ -25,8 +25,8 @@
 <script type="text/javascript" src="../js/jstorage.min.js?v=3.48"></script>
 <script type="text/javascript" src="../js/kml.converter.js?v=3.48"></script>
 <script type="text/javascript" src="../js/jquery.jstepper.min.js"></script>
-<script type="text/javascript" src="../js/api.common.js?v=3.48"></script>
-<script type="text/javascript" src="../js/api.js?v=3.48"></script>
+<script type="text/javascript" src="../js/api.common.js?v=3.49"></script>
+<script type="text/javascript" src="../js/api.js?v=3.49"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <link href='http://fonts.googleapis.com/css?family=Asap:400,700' rel='stylesheet' type='text/css' />
 </head>
@@ -52,7 +52,18 @@
 	<div id="top">
     	<div class="content">
         	<div class="top-left">
-	        	<div class="logo"><a href="#"><img src="../images/logo.png" border="0" alt="Programa Cidades Sustentáveis" /></a></div>
+	        	<div class="logo"><a href="#">
+
+                    <!-- nao me bata, estou fazendo isso por motivos maiores! -->
+                    <script>
+                    if (window.location.href.indexOf("atletaspelobrasil.org.br")){
+                         document.write('<img src="/static/images/logo-cidades-do-esporte.jpeg" alt="Cidades do Esporte" border="0"/>');
+                     }else{
+                         document.write('<img src="../images/logo.png" border="0" alt="Programa Cidades Sustentáveis" />')
+                     }
+                    </script>
+                    </a>
+                </div>
             </div>
         	<div class="top-right">
 	        	<div class="logo"></div>

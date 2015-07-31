@@ -450,7 +450,7 @@ $(document).ready(function () {
                 submenu_access["user"].push("files");
             }
 
-            menu_access["user"].push("topic");
+            //menu_access["user"].push("topic");
 
             menu_access["user"].push("variable_user");
             if (user_info.institute.users_can_edit_value == 1) {
@@ -6816,7 +6816,7 @@ $(document).ready(function () {
                                 indicators_table += "</div>";
                             }
 
-                            var count_i = 0;
+                            
                             //carrega indicadores por eixo
 			    data_indicators.sort(function (a, b) {
                                     a = a.name,
@@ -6824,82 +6824,150 @@ $(document).ready(function () {
 
                                     return a.localeCompare(b);
                                 });
-			    if (data_indicators != ""){
+			    var indicators_hash = {};
+			    
+			    
 			      for (i = 0; i < data_indicators.length; i++) {
+				  
 				  if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1) {
-				      continue;
+				    if (!indicators_hash['hidden']){
+				      indicators_hash['hidden'] = [ data_indicators[i] ];
+				    }else{
+				      indicators_hash['hidden'].push(data_indicators[i]);
+				    }
+				     
+				  }else{
+				    var axis_name = data_indicators[i].axis.name;
+				    
+				    
+				    if (!indicators_hash[axis_name]){
+				      indicators_hash[axis_name] = [ data_indicators[i] ];
+				    }else{
+				      indicators_hash[axis_name].push(data_indicators[i]);
+				    }
 				  }
+				  
 				  //if (!findInArray(indicators_in_groups,data_indicators[i].id)){ oculta indicadores já listados nos grupos
 				  
-				  if (data_indicators[i].axis_id != axis_ant) {
-				      if (count_i > 0) {
-					  indicators_table += "</div>";
-				      }
-				      indicators_table += "<div class='eixos collapse'><div class='title'>$$axis</div><div class='clear'></div>".render({
-					  axis: data_indicators[i].axis.name
-				      });
-				      axis_ant = data_indicators[i].axis_id;
-				  }
+// 				  if (data_indicators[i].axis_id != axis_ant) {
+// 				      if (count_i > 0) {
+// 					  indicators_table += "</div>";
+// 				      }
+// 				      indicators_table += "<div class='eixos collapse'><div class='title'>$$axis</div><div class='clear'></div>".render({
+// 					  axis: data_indicators[i].axis.name
+// 				      });
+// 				      axis_ant = data_indicators[i].axis_id;
+// 				  }
+// 				  
+// 				  var formula = formataFormula(data_indicators[i].formula, data_variables, data_vvariables);
+// 
+// 				  var tr_class = "folded";
+// 				  $.each(data_indicators[i].network_configs, function (index_config, item_config) {
+// 				      if (item_config.network_id == user_info.network && item_config.unfolded_in_home == 1) {
+// 					  tr_class = "unfolded";
+// 				      }
+// 				  });
+// 
+// 				  indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='$$ss' alt='$$ss' indicator-id='$$_id' period='$$_period' aaa=123>$$det</a><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='$$a' alt='$$a'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
+// 				      name: data_indicators[i].name,
+// 				      a: 'adicionar valores',
+// 				      ss: 'Série Histórica',
+// 				      fxormula: formula,
+// 				      _hash: "#!/" + getUrlSub(),
+// 				      _url: api_path + "/api/indicator/" + data_indicators[i].id,
+// 				      _indicator_id: data_indicators[i].id,
+// 				      det: 'detalhes',
+// 				      _period: data_indicators[i].period,
+// 				      _id: data_indicators[i].id,
+// 				      _tr_class: tr_class
+// 				  });
+// 				  indicators_table += "<div class='clear'></div>";
+// 				  count_i++;
+// 				  //}
+			      }
+			      
+			      var count_i = 0;
+			      
+			      if (indicators_hash != ""){
+			      for (var key in indicators_hash){
+// 				console.log(indicators_hash[key]);
+				if ( key == 'hidden' ){
+				  continue;
+				}
+				if (count_i > 0) {
+				    indicators_table += "</div>";
+				}
+				 				
+				indicators_table += "<div class='eixos collapse'><div class='title'>$$axis</div><div class='clear'></div>".render({
+ 				  axis: key
+				});
+// 				console.log(indicators_hash[key][0]);
+				for (i = 0; i < indicators_hash[key].length; i++) {
 				  
-				  var formula = formataFormula(data_indicators[i].formula, data_variables, data_vvariables);
-
+				      axis_ant = indicators_hash[key][i].axis_id;
+				  
+// 				  
+ 				  var formula = formataFormula(indicators_hash[key][i].formula, data_variables, data_vvariables);
 				  var tr_class = "folded";
-				  $.each(data_indicators[i].network_configs, function (index_config, item_config) {
-				      if (item_config.network_id == user_info.network && item_config.unfolded_in_home == 1) {
-					  tr_class = "unfolded";
-				      }
-				  });
-
+				  $.each(indicators_hash[key][i].network_configs, function (index_config, item_config) {
+ 				      if (item_config.network_id == user_info.network && item_config.unfolded_in_home == 1) {
+ 					  tr_class = "unfolded";
+ 				      }
+ 				  });
 				  indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='$$ss' alt='$$ss' indicator-id='$$_id' period='$$_period' aaa=123>$$det</a><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='$$a' alt='$$a'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
-				      name: data_indicators[i].name,
+				      name: indicators_hash[key][i].name,
 				      a: 'adicionar valores',
 				      ss: 'Série Histórica',
 				      fxormula: formula,
 				      _hash: "#!/" + getUrlSub(),
-				      _url: api_path + "/api/indicator/" + data_indicators[i].id,
-				      _indicator_id: data_indicators[i].id,
+				      _url: api_path + "/api/indicator/" + indicators_hash[key][i].id,
+				      _indicator_id: indicators_hash[key][i].id,
 				      det: 'detalhes',
-				      _period: data_indicators[i].period,
-				      _id: data_indicators[i].id,
+				      _period: indicators_hash[key][i].period,
+				      _id: indicators_hash[key][i].id,
 				      _tr_class: tr_class
 				  });
 				  indicators_table += "<div class='clear'></div>";
 				  count_i++;
-				  //}
+				}
 			      }
+			      
 			    }else{
 			      
-			      indicators_table += "<div class='eixos collapse'><div class='title'>$$aviso</div><div class='clear'></div>".render({
-				  aviso: 'Nenhum indicador encontrado'
-			      });
+			     indicators_table += "<div class='eixos collapse'><div class='title'>$$aviso</div><div class='clear'></div>".render({
+			    	  aviso: 'Nenhum indicador encontrado'
+			     });
 			    }
 
                             if (user_info.institute.id == 2) {
                                 //carrega indicadores ocultos
-                                indicators_table += "</div>";
-                                indicators_table += "<div class='eixos hidden collapse'><div class='title'>$$e</div><div class='clear'></div>".render({
-                                    e: 'Indicadores Ocultos'
-                                });
-				
-                                for (i = 0; i < data_indicators.length; i++) {
-                                    if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1) {
-                                        var formula = formataFormula(data_indicators[i].formula, data_variables, data_vvariables);
-                                        var tr_class = "folded";
-                                        indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='$$_hash?option=unhide&url=$$_url&config_id=$$_config_id' class='icone unhide' title='$$e' alt='$$e'>$$m</a></div><div class='clear'></div></div>".render({
-                                            name: data_indicators[i].name,
-                                            m: 'mostrar',
-                                            e: 'remover da lista de ocultos',
-                                            fxormula: formula,
-                                            _hash: "#!/" + getUrlSub(),
-                                            _url: api_path + "/api/indicator/" + data_indicators[i].id,
-                                            _indicator_id: data_indicators[i].id,
+				if (typeof indicators_hash['hidden'] != "undefined"){
+				  
+				    indicators_table += "</div>";
+				    indicators_table += "<div class='eixos hidden collapse'><div class='title'>$$e</div><div class='clear'></div>".render({
+					e: 'Indicadores Ocultos'
+				    });
+				    
+				    for (i = 0; i < indicators_hash['hidden'].length; i++) {
+					if (indicators_hash['hidden'][i].user_indicator_config && indicators_hash['hidden'][i].user_indicator_config.hide_indicator == 1) {
+					    var formula = formataFormula(indicators_hash['hidden'][i].formula, data_variables, data_vvariables);
+					    var tr_class = "folded";
+					    indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='$$_hash?option=unhide&url=$$_url&config_id=$$_config_id' class='icone unhide' title='$$e' alt='$$e'>$$m</a></div><div class='clear'></div></div>".render({
+						name: indicators_hash['hidden'][i].name,
+						m: 'mostrar',
+						e: 'remover da lista de ocultos',
+						fxormula: formula,
+						_hash: "#!/" + getUrlSub(),
+						_url: api_path + "/api/indicator/" + indicators_hash['hidden'][i].id,
+						_indicator_id: indicators_hash['hidden'][i].id,
 
-                                            _config_id: data_indicators[i].user_indicator_config.id,
-                                            _tr_class: tr_class
-                                        });
-                                        indicators_table += "<div class='clear'></div>";
-                                    }
-                                }
+						_config_id: indicators_hash['hidden'][i].user_indicator_config.id,
+						_tr_class: tr_class
+					    });
+					    indicators_table += "<div class='clear'></div>";
+					}
+				  }
+				}
                             }
 
                             indicators_table += "</div>";
@@ -10699,7 +10767,7 @@ $(document).ready(function () {
                     });
 
 
-                    if (user_info.institute.id == 1) {
+                   // if (user_info.institute.id == 1) {
                         newform.push({
                             label: "Carta Compromisso (PDF)",
                             input: ["file,carta_compromisso,itext"]
@@ -10712,7 +10780,7 @@ $(document).ready(function () {
                             label: "Imagem do perfil da cidade",
                             input: ["file,imagem_cidade,itext"]
                         });
-                    }
+                   // }
                     if (user_info.institute.id == 2) {
                         newform.push({
                             label: "Logo(imagem)<br /><font size='1'>(altura máx: 80 pixels)</font>",

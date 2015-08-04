@@ -432,7 +432,7 @@ $(document).ready(function () {
 				menu_access["user"] = ["prefs"];
 			}
             if (user_info.institute) {
-		console.log(user_info.institute.id);
+		
 		if (user_info.institute.id != 3) {
 		  if (user_info.institute.can_use_custom_pages == 1) {
 		      if (!findInArray(menu_access["user"], "customize")) {
@@ -7001,26 +7001,24 @@ $(document).ready(function () {
                                     }));
                                 }
                             });
- $("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='variable'>$$v: <select id='rede_id'></select></div>".render({
-                        v: 'Redes'
-                    }));
+		   
    
 
-                   
-                    $("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='botao'><input type='button' id='botao-pesquisar' value='$$e'></div><div class='clear'></div>".render({
-                        e: 'Pesquisar'
-                    }));
+			    $("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='variable'>$$v: <select id='rede_id'></select></div>".render({
+						  v: 'Redes'
+					      }));
+			      $("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='botao'><input type='button' id='botao-pesquisar' value='$$e'></div><div class='clear'></div>".render({
+				  e: 'Pesquisar'
+			      }));
 		    function carregaRedesEdit() {
-                        $("#dashboard-content .content #rede_id option").remove();
-                        $("#dashboard-content .content #rede_id").append($("<option value=''>$$t</option>".render({
-                            t: 'Todas'
-                        })));
+                        
                         $.loading();
                         $.ajax({
                             type: 'GET',
                             dataType: 'json',
-                            url: api_path + '/api/network?api_key=$$key'.render2({
+                            url: api_path + '/api/network?user_id=$$user&api_key=$$key'.render2({
                                 key: $.cookie("key"),
+				user : user_info.id
                             }),
                             success: function (data, textStatus, jqXHR) {
 			
@@ -7030,12 +7028,24 @@ $(document).ready(function () {
 
                                     return a.localeCompare(b);
                                 });
-                                $.each(data.network, function (index, item) {
-                                    $("#dashboard-content .content #rede_id").append($("<option value='$$id'>$$nome</option>".render({
-                                        id: item.id,
-                                        nome: item.name
-                                    })));
-                                });
+				
+				if (data.network.length > 1){
+				    
+				    $("#dashboard-content .content #rede_id option").remove();
+				      $("#dashboard-content .content #rede_id").append($("<option value=''>$$t</option>".render({
+					  t: 'Todas'
+				    })));
+				    $.each(data.network, function (index, item) {
+					$("#dashboard-content .content #rede_id").append($("<option value='$$id'>$$nome</option>".render({
+					    id: item.id,
+					    nome: item.name
+					})));
+				    });
+				}else{
+				  $("#dashboard-content .content .variable-filter").hide();
+				  $("#dashboard-content .content .variable-filter .form-pesquisa .variable").hide();
+				  $("#dashboard-content .content .variable-filter .form-pesquisa .botao").hide();
+				}
                                 $.loading.hide();
                             }
                         });
@@ -7069,7 +7079,7 @@ $(document).ready(function () {
 							      var history_table = "<table class='history'><thead><tr><th>$$e</th>".render({
 								      e: 'Período'
 							      });
-							      console.log('TESTE');
+							      
 							      var headers = []; //corrige ordem do header
 							      $.each(data.header, function (titulo, index) {
 								      headers[index] = titulo;
@@ -7088,10 +7098,10 @@ $(document).ready(function () {
 									      periodo: $.convertDateToPeriod(data.rows[index].valid_from, indicator_period)
 								      });
 								      $.each(headers, function (index2, value2) {
-									console.log(index2);
+								
 									
 									      if ((data.rows[index].valores[index2]) && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined && data.rows[index].valores[index2].value != "-") {
-										      console.log(data.rows[index].valores[index2]);
+										      
 										      if ( isNaN(data.rows[index].valores[index2].value)){
 											  history_table += "<td class='valor' title='$$data'>$$valor</td>".render2({
 											      valor: data.rows[index].valores[index2].value, 
@@ -7153,7 +7163,7 @@ $(document).ready(function () {
 									      history_table = history_table.replace("#theader_valor", "<th class='formula_valor'>$$e</th>".render({
 										      e: 'Valor da Fórmula'
 									      }));
-									      console.log(data.rows[index]);
+									      
 									      if (data.rows[index].formula_value != "-") {
 										      if ( isNaN(data.rows[index].formula_value)){
 											history_table += "<td class='formula_valor' variation-index='0'>$$formula_valor</td>".render2({

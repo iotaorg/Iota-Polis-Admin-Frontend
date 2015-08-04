@@ -56,7 +56,7 @@ if (!String.prototype.render) {
 					if (typeof v == 'string') {
 						n = 0;
 					}
-
+ 
 					if (n == 0 && (
 						k.match(/password/) ||
 						k.match(/email/) ||
@@ -1166,17 +1166,30 @@ var buildIndicatorHistory = function (args) {
 
                     $.each(headers, function (index2, value2) {
                         if (data.rows[index].valores[index2] && data.rows[index].valores[index2].value != "-" && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined) {
-                            history_table += "<td class='valor' title='$$data' value-id='$$id' variable-id='$$variable_id'>$$valor <a href='javascript: void(0);' class='delete delete-item' title='$$title' alt='$$title'>$$e</a></td>".render2({
-                                valor: $.formatNumber(data.rows[index].valores[index2].value, {
-                                    format: "#,##0.###",
-                                    locale: "br",
-                                }),
-                                data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T"),
-                                id: data.rows[index].valores[index2].id,
-                                variable_id: data.rows[index].valores[index2].variable_id,
-                                title: "Apagar valor",
-								e: "X"
-                            });
+			    if ( isNaN(data.rows[index].valores[index2].value)){
+				
+				history_table += "<td class='valor' title='$$data' value-id='$$id' variable-id='$$variable_id'>$$valor <a href='javascript: void(0);' class='delete delete-item' title='$$title' alt='$$title'>$$e</a></td>".render2({
+				    valor: data.rows[index].valores[index2].value,					
+				    data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T"),
+				    id: data.rows[index].valores[index2].id,
+				    variable_id: data.rows[index].valores[index2].variable_id,
+				    title: "Apagar valor",
+				    e: "X"
+				});
+			    }else{
+				history_table += "<td class='valor' title='$$data' value-id='$$id' variable-id='$$variable_id'>$$valor <a href='javascript: void(0);' class='delete delete-item' title='$$title' alt='$$title'>$$e</a></td>".render2({
+				    valor: $.formatNumber(data.rows[index].valores[index2].value, {
+					format: "#,##0.###",
+					locale: "br",
+				    }),
+				    data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T"),
+				    id: data.rows[index].valores[index2].id,
+				    variable_id: data.rows[index].valores[index2].variable_id,
+				    title: "Apagar valor",
+								    e: "X"
+				
+				});
+			    }
 
                         } else {
                             if (data.rows[index].valores[index2]) {

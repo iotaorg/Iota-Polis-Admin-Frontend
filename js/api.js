@@ -432,19 +432,22 @@ $(document).ready(function () {
 				menu_access["user"] = ["prefs"];
 			}
             if (user_info.institute) {
-                if (user_info.institute.can_use_custom_pages == 1) {
-                    if (!findInArray(menu_access["user"], "customize")) {
-                        menu_access["user"].push("customize");
-                    }
-                    submenu_access["user"].push("pages");
-                    submenu_access["user"].push("menus");
-                }
-                if (user_info.institute.can_use_custom_css == 1) {
-                    if (!findInArray(menu_access["user"], "customize")) {
-                        menu_access["user"].push("customize");
-                    }
-                    submenu_access["user"].push("css");
-                }
+		console.log(user_info.institute.id);
+		if (user_info.institute.id != 3) {
+		  if (user_info.institute.can_use_custom_pages == 1) {
+		      if (!findInArray(menu_access["user"], "customize")) {
+			  menu_access["user"].push("customize");
+		      }
+		      submenu_access["user"].push("pages");
+		      submenu_access["user"].push("menus");
+		  }
+		  if (user_info.institute.can_use_custom_css == 1) {
+		      if (!findInArray(menu_access["user"], "customize")) {
+			  menu_access["user"].push("customize");
+		      }
+		      submenu_access["user"].push("css");
+		  }
+		}
                 menu_access["user"].push("content");
                 submenu_access["user"].push("best_pratice");
                 submenu_access["user"].push("files");
@@ -6819,11 +6822,13 @@ $(document).ready(function () {
                             
                             //carrega indicadores por eixo
 			    data_indicators.sort(function (a, b) {
-                                    a = a.name,
-                                    b = b.name;
+                                    a = a.axis.name,
+                                    b = b.axis.name;
 
                                     return a.localeCompare(b);
                                 });
+			    
+			    
 			    var indicators_hash = {};
 			    
 			    
@@ -6885,12 +6890,26 @@ $(document).ready(function () {
 // 				  count_i++;
 // 				  //}
 			      }
+			     
+// 			      indicators_hash.sort;
+			      
+// 			      console.log(indicators_hash);
+
+				  
+			      
 			      
 			      var count_i = 0;
-			      
+			     
 			      if (indicators_hash != ""){
 			      for (var key in indicators_hash){
-// 				console.log(indicators_hash[key]);
+				
+				indicators_hash[key].sort(function (a, b) {
+                                    a = a.name,
+                                    b = b.name;
+
+                                    return a.localeCompare(b);
+                                });
+				
 				if ( key == 'hidden' ){
 				  continue;
 				}
@@ -7007,7 +7026,7 @@ $(document).ready(function () {
 			
                                 data.network.sort(function (a, b) {
                                     a = a.name,
-                                    b = b.name;
+                                    b = b.nami;
 
                                     return a.localeCompare(b);
                                 });
@@ -7050,7 +7069,7 @@ $(document).ready(function () {
 							      var history_table = "<table class='history'><thead><tr><th>$$e</th>".render({
 								      e: 'Período'
 							      });
-
+							      console.log('TESTE');
 							      var headers = []; //corrige ordem do header
 							      $.each(data.header, function (titulo, index) {
 								      headers[index] = titulo;
@@ -7069,14 +7088,25 @@ $(document).ready(function () {
 									      periodo: $.convertDateToPeriod(data.rows[index].valid_from, indicator_period)
 								      });
 								      $.each(headers, function (index2, value2) {
+									console.log(index2);
+									
 									      if ((data.rows[index].valores[index2]) && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined && data.rows[index].valores[index2].value != "-") {
-										      history_table += "<td class='valor' title='$$data'>$$valor</td>".render2({
-											      valor: $.formatNumber(data.rows[index].valores[index2].value, {
-												      format: "#,##0.###",
-												      locale: "br"
-											      }),
+										      console.log(data.rows[index].valores[index2]);
+										      if ( isNaN(data.rows[index].valores[index2].value)){
+											  history_table += "<td class='valor' title='$$data'>$$valor</td>".render2({
+											      valor: data.rows[index].valores[index2].value, 
 											      data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T")
-										      });
+											  });	
+										      }else{
+											 
+											  history_table += "<td class='valor' title='$$data'>$$valor</td>".render2({
+												valor: $.formatNumber(data.rows[index].valores[index2].value, {
+													format: "#,##0.###",
+													locale: "br"
+												}),
+												data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T")
+											  });
+										      }
 									      } else {
 										      if ((data.rows[index].valores[index2])) {
 											      history_table += "<td class='valor' title='$$data'>-</td>".render({
@@ -7097,8 +7127,11 @@ $(document).ready(function () {
 										      });
 									      }
 									      history_table = history_table.replace("#theader_valor", th_valor);
+									      
 									      $.each(value.variations, function (index, item) {
+										      
 										      if (item.value != "-") {
+											      
 											      history_table += "<td class='formula_valor' variation-index='$$index'>$$formula_valor</td>".render2({
 												      formula_valor: $.formatNumber(item.value, {
 													      format: "#,##0.###",
@@ -7120,13 +7153,21 @@ $(document).ready(function () {
 									      history_table = history_table.replace("#theader_valor", "<th class='formula_valor'>$$e</th>".render({
 										      e: 'Valor da Fórmula'
 									      }));
+									      console.log(data.rows[index]);
 									      if (data.rows[index].formula_value != "-") {
-										      history_table += "<td class='formula_valor' variation-index='0'>$$formula_valor</td>".render2({
-											      formula_valor: $.formatNumber(data.rows[index].formula_value, {
-												      format: "#,##0.###",
-												      locale: "br"
-											      })
-										      });
+										      if ( isNaN(data.rows[index].formula_value)){
+											history_table += "<td class='formula_valor' variation-index='0'>$$formula_valor</td>".render2({
+											      formula_valor: data.rows[index].formula_value
+											      
+											});
+										      }else{
+											history_table += "<td class='formula_valor' variation-index='0'>$$formula_valor</td>".render2({
+												formula_valor: $.formatNumber(data.rows[index].formula_value, {
+													format: "#,##0.###",
+													locale: "br"
+												})
+											});
+										      }
 									      } else {
 										      history_table += "<td class='formula_valor' variation-index='0'>-</td>";
 									      }

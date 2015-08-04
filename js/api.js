@@ -7026,7 +7026,7 @@ $(document).ready(function () {
 			
                                 data.network.sort(function (a, b) {
                                     a = a.name,
-                                    b = b.nami;
+                                    b = b.name;
 
                                     return a.localeCompare(b);
                                 });

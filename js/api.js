@@ -3983,7 +3983,7 @@
                                                  $(".form-aviso").setWarning({
                                                      msg: "Erro ao editar. Talvez já exista valor para esse Período.".render2({
                                                          erro: $.trataErro(data)
-                                                     });
+                                                     })
                                                  });
                                                  alert(JSON.stringify(data));
                                                  $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({

@@ -432,7 +432,7 @@ $(document).ready(function () {
 				menu_access["user"] = ["prefs"];
 			}
             if (user_info.institute) {
-		
+
 		if (user_info.institute.id != 3) {
 		  if (user_info.institute.can_use_custom_pages == 1) {
 		      if (!findInArray(menu_access["user"], "customize")) {
@@ -3740,7 +3740,7 @@ $(document).ready(function () {
                                 });
                                 newform.push({
                                     label: "Valor",
-                                    input: ["text,value,itext"]
+                                    input: ["text,value,itext,ivar"] /* ref 01*/
                                 });
 
                                 newform.push({
@@ -3769,6 +3769,10 @@ $(document).ready(function () {
                                 });
 
                                 var formbuild = $("#dashboard-content .content").append(buildForm(newform, txtOption));
+
+                                $(formbuild).find('.ivar').each(function(i, o){
+                                    setup_jStepper(o, data.type == 'num');
+                                });
 
                                 if (data_region && data_region.length > 0) {
 
@@ -3926,12 +3930,14 @@ $(document).ready(function () {
                                             prefix = "region.";
                                         }
 
+                                        var xvalor = $.convertNumberToBd($(this).parent().parent().find("#value").val());
+
                                         args = [{
                                             name: "api_key",
                                             value: $.cookie("key")
                                         }, {
                                             name: prefix + "variable.value." + api_method + ".value",
-                                            value: $(this).parent().parent().find("#value").val()
+                                            value: xvalor
                                         }, {
                                             name: prefix + "variable.value." + api_method + ".value_of_date",
                                             value: data_formatada
@@ -3971,9 +3977,10 @@ $(document).ready(function () {
                                             },
                                             error: function (data) {
                                                 $(".form-aviso").setWarning({
-                                                    msg: "Erro ao editar. Já existe valor para esse Período".render2({
+                                                    msg: "Erro ao editar. Talvez já exista valor para esse Período.".render2({
                                                         erro: $.trataErro(data)
-                                                    })
+                                                    });
+                                                    alert(JSON.stringify(data));
                                                 });
                                                 $("#dashboard-content .content .botao-form[ref='cancelar']").html("$$e".render({
                                                     e: 'Voltar'
@@ -6584,16 +6591,16 @@ $(document).ready(function () {
                 }
 
             } else if (getUrlSub() == "topic") {
-	      
+
 		if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined) {
 
                     var userList = buildDTWithButton({
                         headers: ["Nome", "Url", "_"]
                     });
-		    
+
                     $("#dashboard-content .content").append(userList);
 
-                    
+
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
@@ -6612,14 +6619,14 @@ $(document).ready(function () {
                         "fnDrawCallback": function () {
                             DTdesenhaBtEntrar();
                         }
-                        
+
                     });
-		    
-		  
+
+
 		} else if ($.getUrlVar("option") == "save") {
 		  // var network_id = $.getUrlVar("url").split('/')[5];
-		  
-		   
+
+
 		   $.ajax({
 		      type: "POST",
 		      dataType: 'json',
@@ -6628,7 +6635,7 @@ $(document).ready(function () {
                             userid: $.cookie("user.id"),
 			    networkid: $.getUrlVar("url").split('/')[5]
                         }),
-		      
+
 		      success: function (data, textStatus, jqXHR) {
 			  $("#aviso").setWarning({
 			      msg: "Participação cadastrada com sucesso.".render2({
@@ -6646,20 +6653,20 @@ $(document).ready(function () {
 			  $.loading.hide();
 		      }
 		   });
-		   
+
 		   location.hash = "#!/" + getUrlSub();
 		}
-		
+
             } else if (getUrlSub() == "myindicator") {
                 /*  INDICATORS */
                 if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined) {
-		  
+
 
 		   var redeid;
 			    if ($.getUrlVar("redeid") != ""){
 			      redeid = $.getUrlVar("redeid");
 			    }
-		   
+
                     $.ajax({
                         type: 'GET',
                         dataType: 'json',
@@ -6747,7 +6754,7 @@ $(document).ready(function () {
                             var indicators_legend = "";
                             var indicators_status = "";
 			    var indicator_filter = "";
-			    
+
                             indicators_legend = "<div class='indicadores_legend'><div class='fillContent'>";
                             indicators_legend += "<div class='item'><div class='color no-data'></div><div class='label'>$$x</div><div class='clear'></div></div>".render({
                                 x: 'Nenhum dado preenchido'
@@ -6765,21 +6772,21 @@ $(document).ready(function () {
                             indicators_table = "<div class='indicadores_list'>";
                             indicators_table += "<div class='status'></div>";
 			    indicator_filter = "<div class='variable-filter'><div class='form-pesquisa'></div></div><div class='clear'></div>";
-			    		    
-			    
+
+
                             //carrega grupos
-			    
+
                             var indicators_in_groups = [];
                             if (data_groups && data_groups.length > 0) {
                                 indicators_table += "<div class='grupos_list'>$$e".render({
                                     e: 'Grupos'
                                 });
-				
+
                                 $.each(data_groups, function (index_group, group) {
                                     indicators_table += "<div class='eixos collapse group'><div class='title'>$$axis</div><div class='clear'></div>".render({
                                         axis: group.name
-                                    }); 
-				    
+                                    });
+
                                     $.each(group.items, function (index_item, item) {
                                         for (i = 0; i < data_indicators.length; i++) {
                                             if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1) {
@@ -6819,7 +6826,7 @@ $(document).ready(function () {
                                 indicators_table += "</div>";
                             }
 
-                            
+
                             //carrega indicadores por eixo
 			    data_indicators.sort(function (a, b) {
                                     a = a.axis.name,
@@ -6827,33 +6834,33 @@ $(document).ready(function () {
 
                                     return a.localeCompare(b);
                                 });
-			    
-			    
+
+
 			    var indicators_hash = {};
-			    
-			    
+
+
 			      for (i = 0; i < data_indicators.length; i++) {
-				  
+
 				  if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1) {
 				    if (!indicators_hash['hidden']){
 				      indicators_hash['hidden'] = [ data_indicators[i] ];
 				    }else{
 				      indicators_hash['hidden'].push(data_indicators[i]);
 				    }
-				     
+
 				  }else{
 				    var axis_name = data_indicators[i].axis.name;
-				    
-				    
+
+
 				    if (!indicators_hash[axis_name]){
 				      indicators_hash[axis_name] = [ data_indicators[i] ];
 				    }else{
 				      indicators_hash[axis_name].push(data_indicators[i]);
 				    }
 				  }
-				  
+
 				  //if (!findInArray(indicators_in_groups,data_indicators[i].id)){ oculta indicadores já listados nos grupos
-				  
+
 // 				  if (data_indicators[i].axis_id != axis_ant) {
 // 				      if (count_i > 0) {
 // 					  indicators_table += "</div>";
@@ -6863,16 +6870,16 @@ $(document).ready(function () {
 // 				      });
 // 				      axis_ant = data_indicators[i].axis_id;
 // 				  }
-// 				  
+//
 // 				  var formula = formataFormula(data_indicators[i].formula, data_variables, data_vvariables);
-// 
+//
 // 				  var tr_class = "folded";
 // 				  $.each(data_indicators[i].network_configs, function (index_config, item_config) {
 // 				      if (item_config.network_id == user_info.network && item_config.unfolded_in_home == 1) {
 // 					  tr_class = "unfolded";
 // 				      }
 // 				  });
-// 
+//
 // 				  indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='$$ss' alt='$$ss' indicator-id='$$_id' period='$$_period' aaa=123>$$det</a><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='$$a' alt='$$a'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
 // 				      name: data_indicators[i].name,
 // 				      a: 'adicionar valores',
@@ -6890,42 +6897,42 @@ $(document).ready(function () {
 // 				  count_i++;
 // 				  //}
 			      }
-			     
+
 // 			      indicators_hash.sort;
-			      
+
 // 			      console.log(indicators_hash);
 
-				  
-			      
-			      
+
+
+
 			      var count_i = 0;
-			     
+
 			      if (indicators_hash != ""){
 			      for (var key in indicators_hash){
-				
+
 				indicators_hash[key].sort(function (a, b) {
                                     a = a.name,
                                     b = b.name;
 
                                     return a.localeCompare(b);
                                 });
-				
+
 				if ( key == 'hidden' ){
 				  continue;
 				}
 				if (count_i > 0) {
 				    indicators_table += "</div>";
 				}
-				 				
+
 				indicators_table += "<div class='eixos collapse'><div class='title'>$$axis</div><div class='clear'></div>".render({
  				  axis: key
 				});
 // 				console.log(indicators_hash[key][0]);
 				for (i = 0; i < indicators_hash[key].length; i++) {
-				  
+
 				      axis_ant = indicators_hash[key][i].axis_id;
-				  
-// 				  
+
+//
  				  var formula = formataFormula(indicators_hash[key][i].formula, data_variables, data_vvariables);
 				  var tr_class = "folded";
 				  $.each(indicators_hash[key][i].network_configs, function (index_config, item_config) {
@@ -6950,9 +6957,9 @@ $(document).ready(function () {
 				  count_i++;
 				}
 			      }
-			      
+
 			    }else{
-			      
+
 			     indicators_table += "<div class='eixos collapse'><div class='title'>$$aviso</div><div class='clear'></div>".render({
 			    	  aviso: 'Nenhum indicador encontrado'
 			     });
@@ -6961,12 +6968,12 @@ $(document).ready(function () {
                             if (user_info.institute.id == 2) {
                                 //carrega indicadores ocultos
 				if (typeof indicators_hash['hidden'] != "undefined"){
-				  
+
 				    indicators_table += "</div>";
 				    indicators_table += "<div class='eixos hidden collapse'><div class='title'>$$e</div><div class='clear'></div>".render({
 					e: 'Indicadores Ocultos'
 				    });
-				    
+
 				    for (i = 0; i < indicators_hash['hidden'].length; i++) {
 					if (indicators_hash['hidden'][i].user_indicator_config && indicators_hash['hidden'][i].user_indicator_config.hide_indicator == 1) {
 					    var formula = formataFormula(indicators_hash['hidden'][i].formula, data_variables, data_vvariables);
@@ -7001,8 +7008,8 @@ $(document).ready(function () {
                                     }));
                                 }
                             });
-		   
-   
+
+
 
 			    $("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='variable'>$$v: <select id='rede_id'></select></div>".render({
 						  v: 'Redes'
@@ -7011,7 +7018,7 @@ $(document).ready(function () {
 				  e: 'Pesquisar'
 			      }));
 		    function carregaRedesEdit() {
-                        
+
                         $.loading();
                         $.ajax({
                             type: 'GET',
@@ -7021,16 +7028,16 @@ $(document).ready(function () {
 				user : user_info.id
                             }),
                             success: function (data, textStatus, jqXHR) {
-			
+
                                 data.network.sort(function (a, b) {
                                     a = a.name,
                                     b = b.name;
 
                                     return a.localeCompare(b);
                                 });
-				
+
 				if (data.network.length > 1){
-				    
+
 				    $("#dashboard-content .content #rede_id option").remove();
 				      $("#dashboard-content .content #rede_id").append($("<option value=''>$$t</option>".render({
 					  t: 'Todas'
@@ -7050,16 +7057,16 @@ $(document).ready(function () {
                             }
                         });
                     }
-                    
+
                     $("#dashboard-content .content .variable-filter #botao-pesquisar").click(function () {
-		           
+
                         location.hash = "#!/" + getUrlSub() + "?redeid=$$rede_id".render2({
 			     rede_id: $("#dashboard-content .content .variable-filter select#rede_id option:selected").val()
 			});
-			
+
                     });
 		    carregaRedesEdit();
-		    
+
                             $("#dashboard-content .content .indicadores_list .zoom").click(function () {
                                 var target = $(this).parent().parent();
                                 var indicator_period = $(this).attr("period");
@@ -7079,7 +7086,7 @@ $(document).ready(function () {
 							      var history_table = "<table class='history'><thead><tr><th>$$e</th>".render({
 								      e: 'Período'
 							      });
-							      
+
 							      var headers = []; //corrige ordem do header
 							      $.each(data.header, function (titulo, index) {
 								      headers[index] = titulo;
@@ -7098,17 +7105,17 @@ $(document).ready(function () {
 									      periodo: $.convertDateToPeriod(data.rows[index].valid_from, indicator_period)
 								      });
 								      $.each(headers, function (index2, value2) {
-								
-									
+
+
 									      if ((data.rows[index].valores[index2]) && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined && data.rows[index].valores[index2].value != "-") {
-										      
+
 										      if ( isNaN(data.rows[index].valores[index2].value)){
 											  history_table += "<td class='valor' title='$$data'>$$valor</td>".render2({
-											      valor: data.rows[index].valores[index2].value, 
+											      valor: data.rows[index].valores[index2].value,
 											      data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T")
-											  });	
+											  });
 										      }else{
-											 
+
 											  history_table += "<td class='valor' title='$$data'>$$valor</td>".render2({
 												valor: $.formatNumber(data.rows[index].valores[index2].value, {
 													format: "#,##0.###",
@@ -7137,11 +7144,11 @@ $(document).ready(function () {
 										      });
 									      }
 									      history_table = history_table.replace("#theader_valor", th_valor);
-									      
+
 									      $.each(value.variations, function (index, item) {
-										      
+
 										      if (item.value != "-") {
-											      
+
 											      history_table += "<td class='formula_valor' variation-index='$$index'>$$formula_valor</td>".render2({
 												      formula_valor: $.formatNumber(item.value, {
 													      format: "#,##0.###",
@@ -7163,12 +7170,12 @@ $(document).ready(function () {
 									      history_table = history_table.replace("#theader_valor", "<th class='formula_valor'>$$e</th>".render({
 										      e: 'Valor da Fórmula'
 									      }));
-									      
+
 									      if (data.rows[index].formula_value != "-") {
 										      if ( isNaN(data.rows[index].formula_value)){
 											history_table += "<td class='formula_valor' variation-index='0'>$$formula_valor</td>".render2({
 											      formula_valor: data.rows[index].formula_value
-											      
+
 											});
 										      }else{
 											history_table += "<td class='formula_valor' variation-index='0'>$$formula_valor</td>".render2({
@@ -7226,7 +7233,7 @@ $(document).ready(function () {
                             });
 
                             //busca status dos indicadores
-			   
+
                             $.ajax({
                                 type: 'GET',
                                 dataType: 'json',
@@ -7234,7 +7241,7 @@ $(document).ready(function () {
                                     key: $.cookie("key"),
                                     userid: $.cookie("user.id")
                                 }),
-				
+
                                 success: function (data, textStatus, jqXHR) {
                                     var dataStatus = data.status;
                                     $.each(dataStatus, function (index, value) {
@@ -10752,7 +10759,7 @@ $(document).ready(function () {
             } else if (getUrlSub() == "prefs") {
 
                 var newform = [];
-				
+
                 newform.push({
                     label: "Nome",
                     input: ["text,name,itext"]

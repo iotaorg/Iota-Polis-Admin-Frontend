@@ -3774,10 +3774,6 @@
 
                                  var formbuild = $("#dashboard-content .content").append(buildForm(newform, txtOption));
 
-                                 $(formbuild).find('.ivar').each(function(i, o) {
-                                     setup_jStepper(o, data.type == 'num');
-                                 });
-
                                  if (data_region && data_region.length > 0) {
 
                                      $("#dashboard-content .content select#region_id").change(function(e) {
@@ -3885,6 +3881,10 @@
                                      e: variable_periods[data.period]
                                  }));
 
+
+                                 $('#value').each(function(i, o) {
+                                     setup_jStepper(o, data.type == 'num');
+                                 });
 
                                  $("#dashboard-content .content .botao-form[ref='enviar']").click(function() {
 

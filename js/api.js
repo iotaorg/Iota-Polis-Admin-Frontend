@@ -7075,7 +7075,7 @@
                                                  t: 'Todas'
                                              })));
 
-                                             var $cur_rede_id = $.getUrlVar("rede_id");
+                                             var $cur_rede_id = $.getUrlVar("redeid");
 
                                              $.each(data.network, function(index, item) {
                                                  $("#dashboard-content .content #rede_id").append($("<option $$_active value='$$id'>$$nome</option>".render({

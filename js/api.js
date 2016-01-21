@@ -7074,12 +7074,20 @@
                                              $("#dashboard-content .content #rede_id").append($("<option value=''>$$t</option>".render({
                                                  t: 'Todas'
                                              })));
+
+                                             var $cur_rede_id = $.getUrlVar("rede_id");
+
                                              $.each(data.network, function(index, item) {
-                                                 $("#dashboard-content .content #rede_id").append($("<option value='$$id'>$$nome</option>".render({
+                                                 $("#dashboard-content .content #rede_id").append($("<option $$_active value='$$id'>$$nome</option>".render({
                                                      id: item.id,
-                                                     nome: item.name
+                                                     nome: item.name,
+                                                     _active: (item.id == $cur_rede_id ? 'selected="selected"' : ''),
                                                  })));
                                              });
+
+
+
+
                                          } else {
                                              $("#dashboard-content .content .variable-filter").hide();
                                              $("#dashboard-content .content .variable-filter .form-pesquisa .variable").hide();
@@ -7092,8 +7100,8 @@
 
                              $("#dashboard-content .content .variable-filter #botao-pesquisar").click(function() {
 
-                                 location.hash = "#!/" + getUrlSub() + "?redeid=$$rede_id".render2({
-                                     rede_id: $("#dashboard-content .content .variable-filter select#rede_id option:selected").val()
+                                 location.hash = "#!/" + getUrlSub() + "?redeid=$$_rede_id".render2({
+                                     _rede_id: $("#dashboard-content .content .variable-filter select#rede_id option:selected").val()
                                  });
 
                              });

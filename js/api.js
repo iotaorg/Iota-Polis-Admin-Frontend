@@ -4176,10 +4176,10 @@
                         };
 
                         $.each($arquivos, function(k, v) {
-                            formbuild.find(".models").append('$$e para "' + k + '": <a href="/frontend/arquivos-exemplo-premio/' + v + '.xls">XLS</a><br />'.render({
+                            formbuild.find(".models").append('$$e para "'.render({
                                 _user: $.cookie("user.id"),
                                 e: 'Modelo de arquivo'
-                            }));
+                            }) + k + '": <a href="/frontend/arquivos-exemplo-premio/' + v + '.xls">XLS</a><br />' );
                         });
 
                     }

@@ -431,7 +431,7 @@
 
          if (findInArray(user_info.roles, "user")) {
              if ((user_info.institute) && (user_info.institute.id) && user_info.institute.id == "1") {
-                 menu_access["user"] = ["prefs"];
+                 menu_access["user"] = ["premio","prefs"];
              } else {
                  menu_access["user"] = ["prefs"];
              }
@@ -11253,7 +11253,7 @@
              } else if (getUrlSub() == "premio") {
 
                  $("#dashboard-content .content").append("<br /><br /><div id='form-inscricao'></div>");
-                 $("#form-inscricao").append('<iframe src="https://docs.google.com/forms/d/19xK-8pz_3vQwDfxnj5rfgxDSezuSLrxUqQImvCxFc4g/viewform?embedded=true" width="760" height="500" frameborder="0" marginheight="0" marginwidth="0" style="border: 2px solid #e0e0e0;">Carregando...</iframe>');
+                 $("#form-inscricao").append('<iframe src="https://docs.google.com/forms/d/1vtC5nIUFvEX47JIqqgFKHFf3yMi9f-BqFTOfdTKh4C0/viewform?embedded=true" width="760" height="500" frameborder="0" marginheight="0" marginwidth="0" style="border: 2px solid #e0e0e0;">Carregando...</iframe>');
 
              } else if (getUrlSub() == "logs") {
 

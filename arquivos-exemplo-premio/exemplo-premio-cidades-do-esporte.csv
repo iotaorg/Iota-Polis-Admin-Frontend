@@ -1,0 +1,99 @@
+id,name
+60,Número total de equipamentos esportivos públicos
+19,População total
+61,"Número total, em m², de áreas verdes"
+19,População total
+304,Quantidade de quilômetros de calçadas consideradas adequadas às exigências legais
+305,Quantidade total de quilômetros de calçadas
+262,Número de escolas públicas com esporte educacional no turno obrigatório
+263,Número total de escolas públicas
+2906,Proporção de escolas estaduais com quadra poliesportiva coberta ou ginásio em condições de uso
+2883,Número total de escolas estaduais de ensino fundamental ou médio
+2950,Número médio de usuários por dia das ruas de lazer
+19,População total
+2991,Proporção das mulheres adultas inativas
+2955,População feminina acima de 18 anos
+3196,Valor total do orçamento municipal executado pelo órgão ou secretaria de esporte
+3195,Total do orçamento executado pelo município
+3462,Número total de vagas nos bicicletários públicos e paraciclos
+19,População total
+3463,Número de pessoas com deficiência que praticam atividades física ou esportiva monitorada promovida regularmente pelo poder público municipal
+3464,Número total de pessoas com deficiência no município
+3465,"Número de pessoas idosas, do sexo feminino, que praticam atividade física e ou esportiva monitorada promovida regularmente pelo poder público municipal"
+3466,"Número total de idosos, do sexo feminino, no município"
+3467,"Número de pessoas idosas, do sexo masculino, que praticam atividade física e ou esportiva monitorada promovida regularmente pelo poder público municipal"
+3468,Número total de idosos do sexo masculino no município
+3469,"Número de pessoas adultas, do sexo masculino, que praticam atividade física e ou esportiva monitorada promovida regularmente pelo poder público municipal"
+3470,Número total de adultos do sexo masculino no município
+3471,"Número de pessoas adultas, do sexo feminino, que praticam atividade física e ou esportiva monitorada promovida regularmente pelo poder público municipal"
+3472,Número total de adultos do sexo feminino no município
+3473,Percentual de pessoas acima de 18 anos do sexo feminino que se exercitam no tempo livre (pessoas suficientemente ativas  de acordo com com as orientações da OMS)
+3474,Percentual da população do sexo masculino acima de 18 anos  se exercitam no tempo livre  (pessoas suficientemente ativas de acordo com com as orientações da OMS)
+2853,Existência de Secretaria Municipal de Esporte
+2854,Existência de Conselho Municipal do Esporte ativo
+2855,Existência do Fundo Municipal do Esporte ativo
+2857,Existência de Lei Municipal de Incentivo ao Esporte vigente
+2858,Existência de Plano Municipal do Esporte vigente
+2864,Orçamento executado da Secretaria de Esporte
+2859,Orçamento total executado pelo município
+299,Número de quilômetros de ciclovias permanentes
+2866,Orçamento  da Secretaria do Esporte executado nas ações e projetos de alto rendimento
+2864,Orçamento executado da Secretaria de Esporte
+2868,Orçamento da Secretaria do Esporte para eventos esportivos
+2864,Orçamento executado da Secretaria de Esporte
+3124,Extensão total de ciclofaixas permanentes (km)
+298,Extensão total de quilômetros de vias
+2897,"Número de escolas municipais de educação infantil com pátio externo em condições de uso, utilizado para atividade física"
+2896,Número total de escolas municipais de educação infantil
+2898,"Número de escolas municipais de educação infantil com pátio coberto em condições de uso, utilizado para atividade física"
+2896,Número total de escolas municipais de educação infantil
+2901,Número de escolas municipais de ensino fundamental com quadra poliesportiva externa em condições de uso
+2873,Número total de escolas municipais de ensino fundamental 
+2902,Número de escolas municipais de ensino fundamental com quadra poliesportiva coberta ou ginásio em condições de uso
+2873,Número total de escolas municipais de ensino fundamental 
+2905,Proporção de escolas estaduais com quadra poliesportiva externa em condições de uso
+2883,Número total de escolas estaduais de ensino fundamental ou médio
+2909,"Área total, em em m², de praças e parques "
+19,População total
+2919,Número total de equipamentos esportivos acessíveis
+60,Número total de equipamentos esportivos públicos
+2925,Número total de unidades esportivas públicas 
+19,População total
+2935,"Número de alunos da rede municipal que participam de atividade física ou esportiva  gratuita oferecida pela Secretaria de Educação municipal e parceiros, no horário complementar ao ensino regular (contraturno)"
+2993,Número total de alunos no ensino fundamental da rede municipal
+2942,"Horas semanais dedicadas à educação física ministrada dentro do turno obrigatório nas escolas estaduais, no ensino médio"
+2949,"Extensão, em quilômetros (km), de ruas de lazer, fechadas para automóveis em fins de semana e feriado"
+298,Extensão total de quilômetros de vias
+2958,"Número de crianças e adolescentes, do sexo masculino, entre 7 e 14 anos participantes em atividades físicas monitoradas ou modalidades esportivas, em programas desenvolvidos pelo Poder Público Municipal"
+2957,População masculina da faixa etária 7-14
+2960,"Número de crianças e adolescentes, do sexo feminino, entre 7 e 14 anos participantes em atividades físicas monitoradas ou modalidades esportivas, em programas desenvolvidos pelo Poder Público Municipal"
+2959,População feminina da faixa etária 7-14
+2978,O município possui estudo das desigualdades regionais na oferta de unidades e equipamentos esportivos dentro do perímetro urbano? (S ou N)
+2982,Total de deslocamentos diários feitos à pé
+2981,Total de deslocamentos diários 
+2983,Total de deslocamentos diários feitos de bicicleta
+2981,Total de deslocamentos diários 
+19,População total
+3130,Total de alunos no ensino fundamental da rede municipal
+3146,"Total de professores, com formação específica em educação física no ensino fundamental da rede municipal"
+2852,Número total de alunos no ensino fundamental da rede estadual
+3145,"Total de professores, com formação específica em educação física no ensino fundamental da rede estadual"
+3129,Total de alunos nas escolas de ensino médio da rede estadual
+3142,"Total de professores que ministram aulas de educação física, com formação específica na área, nas escolas de ensino médio da rede estadual"
+3157,Tempo semanal dedicado à Educação Física nas escolas estaduais de ensino fundamental
+3158,Tempo semanal dedicado à Educação Física nas escolas municipais de ensino fundamental
+2865,Orçamento da Secretaria do Esporte  executado nas ações e projetos
+2864,Orçamento executado da Secretaria de Esporte
+3475,"Número de crianças e  jovens  de 15 a 17 anos, do sexo feminino, que praticam atividades física e ou esportiva monitorada promovida regularmente pelo poder público municipal"
+3476,"Número total de habitantes de 15 a 17 anos, do sexo feminino,  no município"
+3477,"Número de jovens do sexo masculino, de 15 a 17 anos, que praticam atividades física e ou esportiva monitorada promovida regularmente pelo poder público municipal"
+3478,"Número total de habitantes de 15 a 17 anos, do sexo masculino,  no município"
+3485,"Número de alunos da rede estadual participantes  de atividade física ou esportiva gratuita oferecida pela secretaria de educação e parceiros, no horário complementar ao ensino regular (contraturno)"
+3486,Número total de alunos nas escolas estaduais
+3487,Percentual de pessoas do sexo feminino acima de 18 anos que são inativas (de acordo com as orientações da OMS)
+3488,Percentual de indivíduos acima de 65 anos que se exercitam no tempo livre  (pessoas suficientemente ativas de acordo com a OMS)
+3489,"Número de professores de educação física da rede estadual que passaram por ao menos 40 horas no ano de curso de formação, qualificação ou atualização profissional"
+3490,Total de professores de educação física dedicados exclusivamente a ministrar disciplina na rede estadual
+3491,"Número de professores de educação física da rede municipal que passaram por ao menos 40 horas no ano de curso de formação, qualificação ou atualização profissional"
+3492,Total de professores de educação física dedicados exclusivamente a ministrar disciplina  na rede municipal
+3493,Percentual de pessoas do sexo masculino acima de 18 anos que são inativas (de acordo com as orientações da OMS)

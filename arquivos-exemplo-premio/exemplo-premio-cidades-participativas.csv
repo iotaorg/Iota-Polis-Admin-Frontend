@@ -1,0 +1,74 @@
+id,name
+289,Número de negros empregados no governo do município
+39,Total de funcionários do município
+313,Quantidade de secretarias do governo que contam com conselhos municipais
+314,Total de secretarias do governo
+85,Número total de mulheres empregadas no governo do município
+39,Total de funcionários do município
+311,Monto del presupuesto decidido de forma participativa del municipio
+312,Monto del presupuesto total del municipio
+290,Número total de pessoas com deficiência empregadas no governo
+39,Total de funcionários do município
+3213,Sua cidade tem órgãos de controle externo (ex. ouvidorias) nas secretarias e outros órgãos municipais? Responder sim ou não
+3214,"Se sim, quais são os órgãos de controle externo?"
+3215,Estes órgãos de controle externo tem eleições diretas em que a população participa da definição dos responsáveis (ex. ouvidores)?
+3216,Estes órgãos de controle externo tem orçamento exclusivo?
+3217,Sua cidade tem controladoria e ou mecanismos de controle internos de combate à corrupção? Responder sim ou não
+3218,"Se sim, quais são os órgãos de controle interno?"
+3219,Sua cidade realizou Conferências Municipais de Políticas Públicas? Responder sim ou não
+3220,"Se sim, liste quais conferências foram realizadas."
+3221,População participante das Conferências Municipais
+19,População total
+3274,"Sua cidade tem ferramentas de participação social na construção do orçamento da cidade (ex. conselho de orçamento, audiências públicas, consultas públicas, consultas virtuais, etc.)? Responder sim ou não"
+3275,A população participa efetivamente e ou utiliza as ferramentas de participação social? Descreva como.
+3222,Sua cidade tem Orçamento Participativo? Responder sim ou não
+3223,Todas as secretarias e órgãos análogos (ex. coordenadorias) têm conselho municipal? Responder sim ou não
+3224,Liste as pastas que compreendem a prefeitura municipal (secretarias e coordenadorias) existentes.
+3225,Liste os Conselhos de Políticas Públicas existentes.
+3226,Quantas audiências públicas foram realizadas no município?
+3227,Sua cidade construiu e ou realizou instâncias participativas para construção do Plano Diretor Estratégico? Responder sim ou não
+3228,Sua cidade construiu e ou realizou instâncias participativas para construção da Lei de Zoneamento? Responder sim ou não
+3229,Sua cidade construiu e ou realizou instâncias participativas para construção de algum outro instrumento de planejamento urbano? Responder sim ou não
+3230,Sua cidade construiu os Planos Municipais de Políticas Públicas com participação da população? Responder sim ou não
+3231,"Se sim, liste quais Planos Municipais de Políticas Públicas e com quais ferramentas de participação a população participa"
+3232,Sua cidade tem Programa de Metas? Responder sim ou não
+3233,"Se sim, o Programa de Metas está regulamentado na Lei Orgânica do Município? Responder sim ou não"
+3234,"A prefeitura faz audiências públicas para dar uma ""devolutiva"" à população sobre o desenvolvimento das metas? Responder sim ou não"
+3236,"Sua cidade regulamentou, na Lei Orgânica do Município, os mecanismos de Democracia Direta (Plebiscito, Referendo e Lei de Iniciativa Popular)? Responder sim ou não"
+3237,Sua cidade já convocou plebiscitos e ou referendos? Responder sim ou não
+3238,"Se sim, quais foram os temas consultados à população via plebiscito e ou referendo?"
+3239,Já foram elaboradas Leis de Iniciativa Popular na sua cidade? Responder sim ou não
+3240,"Se sim, qual ou quais foram os temas dos Projetos de Lei de Iniciativa Popular?"
+3241,Os Projetos de Lei de Iniciativa Popular elaborados na sua cidade foram aprovados pela Câmara Municipal? Responder sim ou não
+3242,"Os Conselhos Municipais de Políticas Públicas têm paridade de gênero em seu estatuto, regimento, lei ou decreto? Responder sim ou não"
+3243,"Os Conselhos Municipais de Políticas Públicas tem políticas afirmativas de inclusão de negros, jovens e pessoas com deficiência  em seu estatuto, regimento, lei ou decreto? Responder sim ou não"
+3244,"Se sim, quais Conselhos Municipais têm políticas afirmativas de inclusão  de negros, jovens e pessoas com deficiência  em seu estatuto, regimento, lei ou decreto?"
+3245,"Os espaços físicos de participação social (Conselhos de Políticas Públicas, audiências públicas, reuniões abertas e outros) têm adaptação para a acessibilidade (rampas de acesso, iluminação especial, material em braile, tradução em libras, etc.)? Responder sim ou não"
+3246,"Se sim, quais são as adaptações de acessibilidade existentes nos espaços físicos de participação?"
+3247,As audiências públicas realizadas pela prefeitura municipal foram regionalizadas? Responder sim ou não
+3248,"Sua cidade tem políticas de governo itinerante (ex. reuniões descentralizadas, audiências em bairros, consultas localizadas na cidade)? Responder sim ou não"
+3249,"Se sim, liste quais são as políticas de ""governo itinerante""?"
+3250,Sua cidade tem práticas de debate sobre a legislação municipal em audiências regionalizadas (ex. Câmara no seu bairro)? Responder sim ou não
+3251,"Se sim, liste quais são as práticas de debate sobre a legislação municipal acontecem de forma regionalizada?"
+3252,Sua cidade regulamentou a Lei de Acesso à Informação (LAI)? Responder sim ou não 
+3253,"Se sim, para quais poderes (executivo e ou legislativo) a Lei de Acesso à Informação foi regulamentada?"
+3254,Sua cidade tem mecanismos de transparência ativa e passiva como preconiza a Lei de Acesso à Informação (LAI)? Responder sim ou não
+3255,"Se sim, quais são os mecanismos de transparência ativa e passiva existentes?"
+3256,Sua cidade monitora as respostas às solicitações de informação feitas pela população via LAI? Responder sim ou não
+3257,"Se sim, qual é a porcentagem de respostas atendidas (número de solicitações de informação respondidas dentro do prazo estabelecido a contento do solicitante) por pedidos de informação feitas via Lei de Acesso à Informação? "
+3258,Como é feito o monitoramento de respostas atendidas (número de solicitações de informação respondidas dentro do prazo estabelecido a contento do solicitante) por pedidos de informação feitas via Lei de Acesso à Informação? 
+3259,Sua cidade tem Portal da Transparência? Responder sim ou não
+3260,"Sua cidade tem mecanismos de participação virtual da população (ex. e-governo, consultas públicas, enquetes, etc)? Responder sim ou não"
+3261,"Se sim, quais são os  mecanismos de participação virtual da população (ex. e-governo, consultas públicas, enquetes, etc)?"
+3262,"A prefeitura municipal desenvolve ciclos formativos (cursos, palestras, formações, capacitações, etc.) em cidadania e direitos humanos para os servidores públicos e conselheir@s públicos municipais? Responder sim ou não"
+3263,"Se sim, quais são os  ciclos formativos (cursos, palestras, formações, capacitações, etc.) em cidadania e direitos humanos para os servidores públicos e conselheir@s públicos municipais que a prefeitura desenvolve?"
+3264,A prefeitura municipal desenvolve campanhas educativas em defesa da cidadania e inclusão social? Responder sim ou não
+3265,"Se sim, quais são as campanhas educativas em defesa da cidadania e inclusão social desenvolvidas pela prefeitura? "
+3266,Como  as campanhas educativas em defesa da cidadania e inclusão social realizadas pela prefeitura são desenvolvidas? 
+3267,"Sua cidade tem Conselho Municipal, Plano Municipal e Fundo Municipal de Saúde, Educação, Assistência Social, Juventude e Criança e Adolescente? Responder sim ou não"
+3268,"Se sim, liste quais áreas da prefeitura tem Conselho Municipal, Plano Municipal e Fundo Municipal."
+3269,"Sua cidade cumpre a lei Lei 12.990/2014 (cotas para negros), e a lei Lei nº 8.112/1990 (cotas para pessoas com deficiência) nos concursos públicos municipais? Responder sim ou não"
+3270,Sua cidade tem outras políticas afirmativas que garantem a paridade de gênero nos editais e concursos públicos municipais? Responder sim ou não
+3271,"Se sim, quais são as  políticas afirmativas que garantem a paridade de gênero nos editais e concursos públicos municipais existentes?"
+3272,"Sua cidade tem Conselhos Municipais regionalizados (que estejam vinculados ao território e não à uma área temática específica, como saúde, educação e assistência) em bairros, distritos, subprefeituras ou regiões? Responder sim ou não"
+3273,"Se sim, quais são os Conselhos Municipais regionalizados em bairros, distritos, subprefeituras ou regiões?"

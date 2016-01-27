@@ -6694,7 +6694,7 @@
                      var redeid, redeparam = $.getUrlVar("redeid");
                      if (redeparam == undefined && (window.location.href.indexOf("http://indicadores.cidadessustentaveis.org.br") >= 0)) {
                         redeid = '1';
-                     }else (/^[0-9]+$/.test(redeparam)){
+                     }else if ( /^[0-9]+$/.test(redeparam) ) {
                          redeid = +redeparam;
                      }/* else = all ou outras strings = todos indicadores */
 

@@ -6691,12 +6691,12 @@
                  if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined) {
 
 
-                     var redeid;
-                     if ($.getUrlVar("redeid") != "") {
-                         redeid = $.getUrlVar("redeid");
-                     }else if ((window.location.href.indexOf("http://indicadores.cidadessustentaveis.org.br") >= 0)){
+                     var redeid, redeparam = $.getUrlVar("redeid");
+                     if (redeparam == undefined && (window.location.href.indexOf("http://indicadores.cidadessustentaveis.org.br") >= 0)) {
                         redeid = '1';
-                     }
+                     }else (/^[0-9]+$/.test(redeparam)){
+                         redeid = +redeparam;
+                     }/* else = all ou outras strings = todos indicadores */
 
                      $.ajax({
                          type: 'GET',
@@ -7073,11 +7073,11 @@
                                          if (data.network.length > 1) {
 
                                              $("#dashboard-content .content #rede_id option").remove();
-                                             $("#dashboard-content .content #rede_id").append($("<option value=''>$$t</option>".render({
+                                             $("#dashboard-content .content #rede_id").append($("<option value='all'>$$t</option>".render({
                                                  t: 'Todas'
                                              })));
 
-                                             var $cur_rede_id = $.getUrlVar("redeid") || 1; // rede 1 = padrao se tiver mais de alguma (isso na teoria só vale pra rede 1 tbm kkk
+                                             var $cur_rede_id = redeid || 'all'; // padrao = todos.
 
                                              $.each(data.network, function(index, item) {
                                                  $("#dashboard-content .content #rede_id").append($("<option $$_active value='$$id'>$$nome</option>".render({

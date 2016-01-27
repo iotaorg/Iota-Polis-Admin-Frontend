@@ -6694,6 +6694,8 @@
                      var redeid;
                      if ($.getUrlVar("redeid") != "") {
                          redeid = $.getUrlVar("redeid");
+                     }else if ((window.location.href.indexOf("http://indicadores.cidadessustentaveis.org.br") >= 0)){
+                        redeid = '1';
                      }
 
                      $.ajax({
@@ -7075,7 +7077,7 @@
                                                  t: 'Todas'
                                              })));
 
-                                             var $cur_rede_id = $.getUrlVar("redeid");
+                                             var $cur_rede_id = $.getUrlVar("redeid") || 1; // rede 1 = padrao se tiver mais de alguma (isso na teoria só vale pra rede 1 tbm kkk
 
                                              $.each(data.network, function(index, item) {
                                                  $("#dashboard-content .content #rede_id").append($("<option $$_active value='$$id'>$$nome</option>".render({

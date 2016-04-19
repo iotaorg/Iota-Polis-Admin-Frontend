@@ -7886,7 +7886,7 @@
                                                  if (/_var_/.test(o.name)) {
                                                      setup_jStepper(o, 'num');
                                                  } else {
-                                                     setup_jStepper(o, data_indicator.variable_type == 'num');
+                                                     setup_jStepper(o,  'num');
                                                  }
                                              })
                                          }

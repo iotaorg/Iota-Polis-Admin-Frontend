@@ -7765,8 +7765,9 @@
                                                  newform.push({
                                                      label: item.name,
                                                      bold: 1,
-                                                     input: ["text,var_$$id,itext ivar".render2({
-                                                         id: item.id
+                                                     input: ["text,var_$$id,itext ivar$$num".render2({
+                                                         id: item.id,
+                                                         num: item.type == 'num' ? ' inum' : ''
                                                      })]
                                                  });
                                              }
@@ -7886,7 +7887,7 @@
                                                  if (/_var_/.test(o.name)) {
                                                      setup_jStepper(o, 'num');
                                                  } else {
-                                                     setup_jStepper(o,  'num');
+                                                     setup_jStepper(o, /inum/.test(o.className) ? 1 : 0 );
                                                  }
                                              })
                                          }

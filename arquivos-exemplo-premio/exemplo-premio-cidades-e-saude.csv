@@ -1,52 +1,38 @@
-id,name
-91,Número de mortes em acidentes de trânsito
-19,População total
-61,"Número total, em m², de áreas verdes"
-19,População total
-229,Número total de nascidos vivos cujas mães tinham 19 anos ou menos
-41,Número total de nascidos vivos
-230,Número total de óbitos por causas maternas
-41,Número total de nascidos vivos
-231,Número total de crianças com baixo peso ao nascer
-41,Número total de nascidos vivos
-241,"Número total, em m³, de esgoto sem tratamento"
-321,"Total gerado de esgoto, em m³"
-299,Número de quilômetros de ciclovias permanentes
-298,Extensão total de quilômetros de vias
-82,Número total de óbitos por homicídio
-19,População total
+ID da variável,Nome,Data,Valor,fonte,observacao
 3768,Número de casos novos confirmados de dengue (todas as formas) em residentes
-19,População total
-3769,Número de profissionais da categoria de saúde específica
-19,População total
-3770,Número mínimo de consultas de pré-natal na população residente
-3771,"População residente em domicílios particulares permanentes servidos por rede geral de abastecimento de água, com ou sem canalização interna"
-3772, População total residente em domicílios particulares permanentes
-3773,População residente em domicílios particulares permanentes servidos por rede coletora ou fossa séptica no domicílio
-3772, População total residente em domicílios particulares permanentes
+82,Número total de óbitos por homicídio
 3774,"População residente atendida direta, ou indiretamente por serviço regular de coleta de lixo no domicílio"
-3772, População total residente em domicílios particulares permanentes
-3775,Porcentagem de ônibus que utilizam sistemas de energia sustentável em relação
-3495,Média anual do número mensal de leitos hospitalares existentes
-19,População total
-3496,Número total de consultas médicas apresentadas ao SUS
-19,População total
-3497,"Número médio de anos de vida esperados para um recém-nascido, mantido o padrão de mortalidade existente na população residente"
-3498,Número de adultos (18 anos ou mais de idade) com atividade física suficiente no tempo livre
-3499,Número de adultos (18 anos ou mais de idade)
-3756,Número de adultos (35 anos ou mais de idade) com diabetes
-3757,Número de adultos (35 anos ou mais de idade) entrevistados
-3758,"Número de indivíduos de 20 a 59 anos com IMC maior ou igual a 25,0kg/m²"
-3759,Número de indivíduos de 20 a 59 anos
-3760,Número de casos novos confirmados de hanseníase em residentes
-19,População total
-3761,Número de óbitos de mulheres por câncer de mama
-3762,População total de mulheres residente
-3763,Número de óbitos de residentes de 0 a 6 dias de idade 
-41,Número total de nascidos vivos
-3764,Número de óbitos de residentes com menos de cinco anos de idade
-41,Número total de nascidos vivos
-3765,Número de óbitos de residentes menores de cinco anos por doença diarreica aguda
-3766,Número de óbitos de residentes menores de cinco anos por causa definida
 3767,Número de óbitos de residentes por aids
+3498,Número de adultos (18 anos ou mais de idade) com atividade física suficiente no tempo livre
+3760,Número de casos novos confirmados de hanseníase em residentes
+321,"Total gerado de esgoto, em m³"
+3499,Número de adultos (18 anos ou mais de idade)
+3763,Número de óbitos de residentes de 0 a 6 dias de idade 
+3761,Número de óbitos de mulheres por câncer de mama
+298,Extensão total de quilômetros de vias
+3772, População total residente em domicílios particulares permanentes
+3764,Número de óbitos de residentes com menos de cinco anos de idade
+61,"Número total, em m², de áreas verdes"
+3769,Número de profissionais da categoria de saúde específica
+91,Número de mortes em acidentes de trânsito
+3775,Porcentagem de ônibus que utilizam sistemas de energia sustentável em relação
+3757,Número de adultos (35 anos ou mais de idade) entrevistados
+241,"Número total, em m³, de esgoto sem tratamento"
+3497,"Número médio de anos de vida esperados para um recém-nascido, mantido o padrão de mortalidade existente na população residente"
+230,Número total de óbitos por causas maternas
+3495,Média anual do número mensal de leitos hospitalares existentes
+3496,Número total de consultas médicas apresentadas ao SUS
+3766,Número de óbitos de residentes menores de cinco anos por causa definida
+3765,Número de óbitos de residentes menores de cinco anos por doença diarreica aguda
+3773,População residente em domicílios particulares permanentes servidos por rede coletora ou fossa séptica no domicílio
+299,Número de quilômetros de ciclovias permanentes
+231,Número total de crianças com baixo peso ao nascer
+3762,População total de mulheres residente
+3770,Número mínimo de consultas de pré-natal na população residente
 19,População total
+3771,"População residente em domicílios particulares permanentes servidos por rede geral de abastecimento de água, com ou sem canalização interna"
+3756,Número de adultos (35 anos ou mais de idade) com diabetes
+41,Número total de nascidos vivos
+3759,Número de indivíduos de 20 a 59 anos
+3758,"Número de indivíduos de 20 a 59 anos com IMC maior ou igual a 25,0kg/m²"
+229,Número total de nascidos vivos cujas mães tinham 19 anos ou menos

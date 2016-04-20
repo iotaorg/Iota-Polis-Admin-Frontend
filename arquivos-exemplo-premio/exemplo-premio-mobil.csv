@@ -1,43 +1,32 @@
-id,name
-214,Total de mortes com bicicleta
-19,População total
-297,Número de quilômetros de corredores exclusivos de ônibus
-298,Extensão total de quilômetros de vias
-91,Número de mortes em acidentes de trânsito
-19,População total
-304,Quantidade de quilômetros de calçadas consideradas adequadas às exigências legais
-305,Quantidade total de quilômetros de calçadas
-294,Total de mortes de ocupantes de automóveis e caminhonetes
-19,População total
+ID da variável,Nome,Data,Valor,fonte,observacao
 296,Número total de atropelamentos
-19,População total
-293,Total de mortes de ocupantes de motocicleta
-19,População total
-322,"Valor total do orçamento, em reais, destinado a transporte público"
-323,Valor total do orçamento da área de transporte do município
-292,Total de mortes por atropelamentos
-19,População total
 295,Número total de acidentes de trânsito
-19,População total
-3420,Número estações de transporte de média e alta capacidade com bicicletários
-3429,Número total de estações de transporte de média e alta capacidade
-3421,Número de estações do programa de compartilhamento de bicicletas
-3430,Área de cobertura do programa de compartilhamento de bicicletas em km²
-3423,Número de ônibus com piso rebaixado para pessoas com deficiência
+305,Quantidade total de quilômetros de calçadas
+297,Número de quilômetros de corredores exclusivos de ônibus
 90,Número total de ônibus coletivos no município
-3424,Número de viagens por dia no programa de compartilhamento de bicicletas
-3431,População na área de cobertura do programa de bicicletas compartilhadas
-3425,"Valor total do orçamento, em reais, destinado aos transportes ativos"
-323,Valor total do orçamento da área de transporte do município
-3426,Valor da tarifa preponderante no município multiplicado por 50 viagens
-3432,Renda média mensal no município
-3428,Tempo médio de deslocamento casa-trabalho das pessoas na cidade
-299,Número de quilômetros de ciclovias permanentes
-3124,Extensão total de ciclofaixas permanentes (km)
 298,Extensão total de quilômetros de vias
-2912,Número total de bicicletários públicos 
-19,População total
+3425,"Valor total do orçamento, em reais, destinado aos transportes ativos"
+3420,Número estações de transporte de média e alta capacidade com bicicletários
+3424,Número de viagens por dia no programa de compartilhamento de bicicletas
+3428,Tempo médio de deslocamento casa-trabalho das pessoas na cidade
+292,Total de mortes por atropelamentos
 3422,Número de ônibus com elevador para pessoas com deficiência
-90,Número total de ônibus coletivos no município
+323,Valor total do orçamento da área de transporte do município
+322,"Valor total do orçamento, em reais, destinado a transporte público"
+3431,População na área de cobertura do programa de bicicletas compartilhadas
+91,Número de mortes em acidentes de trânsito
+294,Total de mortes de ocupantes de automóveis e caminhonetes
+3426,Valor da tarifa preponderante no município multiplicado por 50 viagens
+304,Quantidade de quilômetros de calçadas consideradas adequadas às exigências legais
+293,Total de mortes de ocupantes de motocicleta
+299,Número de quilômetros de ciclovias permanentes
+3421,Número de estações do programa de compartilhamento de bicicletas
 3427,População total que mora em um raio de até 1km de estações de transporte de média ou alta capacidade (fonte: setor censitário)
+3423,Número de ônibus com piso rebaixado para pessoas com deficiência
 19,População total
+2912,Número total de bicicletários públicos 
+3429,Número total de estações de transporte de média e alta capacidade
+214,Total de mortes com bicicleta
+3432,Renda média mensal no município
+3430,Área de cobertura do programa de compartilhamento de bicicletas em km²
+3124,Extensão total de ciclofaixas permanentes (km)

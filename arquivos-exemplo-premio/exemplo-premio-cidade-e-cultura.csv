@@ -1,73 +1,61 @@
 ID da variável,Nome,Data,Valor,fonte,observacao
-3776,Qual o conceito de cultura no qual o município se baseia para pensar políticas públicas?,,,,
-3777,"Mencione quais são as ações do município voltadas à preservação, valorização e difusão do patrimônio material e imaterial.",,,,
-3778,Existem ações de políticas culturais voltadas à diversidade sexual (LGBTT)?,,,,
-3779,Existem ações de políticas culturais voltadas às mulheres?,,,,
-3780,Existem ações de políticas culturais voltadas à diversidade étnica?,,,,
-3781,"Existem ações de políticas culturais voltadas à diversidade de modos de vida (quilombolas, ciganos, hip hop...)?",,,,
-3782,Existem ações de políticas culturais voltadas à cultura popular e grupos tradicionais?,,,,
-3783,Existem ações de políticas culturais voltadas à infância?,,,,
-3784,Existem ações de políticas culturais voltadas à juventude?,,,,
-3785,Existem ações de políticas culturais voltadas aos idosos?,,,,
-3786,"Existem ações de políticas culturais voltadas aos deficientes (físicos, sensoriais, cognitivos, mentais)?",,,,
-3787,Existem ações de políticas culturais voltadas a pessoas em situação de vulnerabilidade social?,,,,
-3830,"Há a manutenção, pela municipalidade, de ferramentas digitais para divulgação de agenda e calendário de eventos culturais (com atividades promovidas ou não pela municipalidade)?",,,,
-3831,"Há a manutenção, pela municipalidade, de ferramentas não-digitais (gráficas, audiovisuais etc.) para divulgação de agenda e calendário de eventos culturais (com atividades promovidas ou não pela municipalidade)?",,,,
-3788,Há um setor na área da cultura dedicado ao patrimônio cultural? ,,,,
-3789,Há instrumentos legais municipais de proteção a bens patrimoniais materiais?  ,,,,
-3790,Há instrumentos legais municipais de proteção de bens do patrimônio imaterial?,,,,
-3791,"Número de equipamentos públicos municipais de cultura (centros culturais, espaços, casas de cultura e museus) em pleno funcionamento",,,,
-19,População total,,,,
-3792,Total de atendimentos realizados  pelos equipamentos municipais de cultura (quantidade anual de frequentadores dos equipamentos públicos de cultura),,,,
-3793,Número total de equipamentos municipais de cultura,,,,
-3794,Total de equipamentos de cultura que ficam abertos aos finais de semana,,,,
-3793,Número total de equipamentos municipais de cultura,,,,
-3795,Número total de bibliotecas públicas municipais,,,,
-19,População total,,,,
-3796,"Número total de equipamentos alternativos de leitura (Exemplos: pontos de leitura, bosques de leitura, Ônibus-biblioteca) ",,,,
-19,População total,,,,
-3797,Número total de livros tomabados e disponíveis em bibliotecas públicas,,,,
-19,População total,,,,
-3798,"Número total de livros disponíveis em equipamentos alternativos de leitura (Exemplos: pontos de leitura, bosques de leitura, Ônibus-biblioteca) ",,,,
-19,População total,,,,
-3799,Número total de empréstimos realizados nas bibliotecas municipais,,,,
-19,População total,,,,
-3800,Número total de consultas realizadas nas bibliotecas municipais,,,,
-19,População total,,,,
-3801,Quantidade total de novos inscritos nas bibliotecas municipais,,,,
-19,População total,,,,
-3802,Número total de frequentadores de janeiro a dezembro,,,,
-19,População total,,,,
-3802,Número total de frequentadores de janeiro a dezembro,,,,
-3804,Total de bibliotecas e equipamentos de leitura,,,,
+3792,Total de atendimentos realizados  pelos equipamentos municipais de cultura (quantidade anual de frequentadores dos equipamentos públicos de cultura)
+3820,A municipalidade disponibiliza em seu site ou outro meio de comunicação os contatos dos funcionários responsáveis por áreas técnicas ou de gestão no campo da cultura?
+3785,Existem ações de políticas culturais voltadas aos idosos?
+3786,"Existem ações de políticas culturais voltadas aos deficientes (físicos, sensoriais, cognitivos, mentais)?"
+3819,A municipalidade disponibiliza em seu site ou outro meio de comunicação o organograma da pasta da cultura ou correlata?
+3796,"Número total de equipamentos alternativos de leitura (Exemplos: pontos de leitura, bosques de leitura, Ônibus-biblioteca) "
+3822,A municipalidade disponibiliza em seu site ou outro meio de comunicação a agenda de decisões políticas e consultas públicas?
+3778,Existem ações de políticas culturais voltadas à diversidade sexual (LGBTT)?
+3830,"Há a manutenção, pela municipalidade, de ferramentas digitais para divulgação de agenda e calendário de eventos culturais (com atividades promovidas ou não pela municipalidade)?"
+3804,Total de bibliotecas e equipamentos de leitura
+3824,"Houve ao menos 1 reunião do conselho nos últimos 12 meses? (Se houver conselho de cultura  no município, responder a pergunta. )"
+3806,"Escolha a alternativa correspondente: A) Existem ações ou programas voltados a pessoas com deficiência visual, B) Existem ações ou programas voltados a pessoas com deficiência auditiva ou  C) Existem ações ou programas voltados a pessoas com deficiência intelectual"
+3780,Existem ações de políticas culturais voltadas à diversidade étnica?
+3808,Número de escolas municipais que permanecem abertas aos finais de semana com atividades culturais dirigidas à comunidade
+3810,O poder público realiza mapeamento das iniciativas de artesanato local?
+312,Monto del presupuesto total del municipio
+3788,Há um setor na área da cultura dedicado ao patrimônio cultural? 
+3826,"O conselho tem caráter deliberativo? (Se houver conselho de cultura  no município, responder a pergunta. )"
+3813,A municipalidade oferece espaços para a produção coletiva?  
+3807,Número de equipamentos públicos de cultura que praticam gratuidade em suas ações 
+3782,Existem ações de políticas culturais voltadas à cultura popular e grupos tradicionais?
+3827,"O presidente do conselho é oriundo da sociedade civil? (Se houver conselho de cultura  no município, responder a pergunta. )"
+3793,Número total de equipamentos municipais de cultura
+3729,Número total de escolas municipais.
+3809,"Número total de computadores com acesso à internet disponibilizados pela municipalidade para o uso da população (bibliotecas, telecentros...)"
+3816,Há informações de turismo cultural disponíveis no site da prefeitura?
+3825,"Há ao menos 50% de conselheiros oriundos da sociedade civil? (Se houver conselho de cultura  no município, responder a pergunta. )"
+3777,"Mencione quais são as ações do município voltadas à preservação, valorização e difusão do patrimônio material e imaterial."
+3784,Existem ações de políticas culturais voltadas à juventude?
+3811,"A municipalidade mantém medidas que promovam espaços mercadológicos adequados à divulgação e comercialização dos produtos artesanais, a participação em feiras, mostras e eventos? "
 3805,"Em relação à existência de plano municipal de leitura, escolha uma das opções.
-A) Não há, B) está em elaboração, C) está em votação, D) está em implementação ou E) está em revisão",,,,
-3806,"Escolha a alternativa correspondente: A) Existem ações ou programas voltados a pessoas com deficiência visual, B) Existem ações ou programas voltados a pessoas com deficiência auditiva ou  C) Existem ações ou programas voltados a pessoas com deficiência intelectual",,,,
-3807,Número de equipamentos públicos de cultura que praticam gratuidade em suas ações ,,,,
-3793,Número total de equipamentos municipais de cultura,,,,
-3808,Número de escolas municipais que permanecem abertas aos finais de semana com atividades culturais dirigidas à comunidade,,,,
-3729,Número total de escolas municipais.,,,,
-3809,"Número total de computadores com acesso à internet disponibilizados pela municipalidade para o uso da população (bibliotecas, telecentros...)",,,,
-19,População total,,,,
-3810,O poder público realiza mapeamento das iniciativas de artesanato local?,,,,
-3811,"A municipalidade mantém medidas que promovam espaços mercadológicos adequados à divulgação e comercialização dos produtos artesanais, a participação em feiras, mostras e eventos? ",,,,
-3812,A municipalidade oferece algum tipo de incentivo ou isenção fiscal para os artesãos?,,,,
-3813,A municipalidade oferece espaços para a produção coletiva?  ,,,,
-3814,A municipalidade realiza ou realizou inventário de atrativos culturais?,,,,
-3815,A municipalidade promove políticas específicas para o desenvolvimento de turismo cultural?,,,,
-3816,Há informações de turismo cultural disponíveis no site da prefeitura?,,,,
+A) Não há, B) está em elaboração, C) está em votação, D) está em implementação ou E) está em revisão"
+3795,Número total de bibliotecas públicas municipais
+3802,Número total de frequentadores de janeiro a dezembro
+3801,Quantidade total de novos inscritos nas bibliotecas municipais
+3814,A municipalidade realiza ou realizou inventário de atrativos culturais?
+3783,Existem ações de políticas culturais voltadas à infância?
+3781,"Existem ações de políticas culturais voltadas à diversidade de modos de vida (quilombolas, ciganos, hip hop...)?"
+3812,A municipalidade oferece algum tipo de incentivo ou isenção fiscal para os artesãos?
+3787,Existem ações de políticas culturais voltadas a pessoas em situação de vulnerabilidade social?
+3791,"Número de equipamentos públicos municipais de cultura (centros culturais, espaços, casas de cultura e museus) em pleno funcionamento"
+3797,Número total de livros tomabados e disponíveis em bibliotecas públicas
+3798,"Número total de livros disponíveis em equipamentos alternativos de leitura (Exemplos: pontos de leitura, bosques de leitura, Ônibus-biblioteca) "
+3779,Existem ações de políticas culturais voltadas às mulheres?
+3789,Há instrumentos legais municipais de proteção a bens patrimoniais materiais?  
+3790,Há instrumentos legais municipais de proteção de bens do patrimônio imaterial?
+3815,A municipalidade promove políticas específicas para o desenvolvimento de turismo cultural?
+3821,A municipalidade disponibiliza em seu site ou outro meio de comunicação o orçamento da cultura e suas destinações?
+3776,Qual o conceito de cultura no qual o município se baseia para pensar políticas públicas?
+3823,Há conselho de cultura em seu município? 
+19,População total
+3800,Número total de consultas realizadas nas bibliotecas municipais
+3828,"Há plano municipal de cultura em seu município? Se existe, ele foi elaborado com participação social?"
+3818,Orçamento dedicado ao órgão que responde pela cultura no município
 3817,"Quanto ao órgão gestor de cultura, trata-se de (escolha uma das opções):
-A) Secretaria  ou Fundação exclusiva para a cultura?, B) Secretaria de cultura compartilhada com secretaria de educação?, C) Secretaria de cultura compartilhada com outras áreas, exceto educação?, B) Órgão diretamente ligado ao gabinete do Prefeito? ou C) Não existe órgão gestor de cultura",,,,
-3818,Orçamento dedicado ao órgão que responde pela cultura no município,,,,
-312,Monto del presupuesto total del municipio,,,,
-3819,A municipalidade disponibiliza em seu site ou outro meio de comunicação o organograma da pasta da cultura ou correlata?,,,,
-3820,A municipalidade disponibiliza em seu site ou outro meio de comunicação os contatos dos funcionários responsáveis por áreas técnicas ou de gestão no campo da cultura?,,,,
-3821,A municipalidade disponibiliza em seu site ou outro meio de comunicação o orçamento da cultura e suas destinações?,,,,
-3822,A municipalidade disponibiliza em seu site ou outro meio de comunicação a agenda de decisões políticas e consultas públicas?,,,,
-3823,Há conselho de cultura em seu município? ,,,,
-3824,"Houve ao menos 1 reunião do conselho nos últimos 12 meses? (Se houver conselho de cultura  no município, responder a pergunta. )",,,,
-3825,"Há ao menos 50% de conselheiros oriundos da sociedade civil? (Se houver conselho de cultura  no município, responder a pergunta. )",,,,
-3826,"O conselho tem caráter deliberativo? (Se houver conselho de cultura  no município, responder a pergunta. )",,,,
-3827,"O presidente do conselho é oriundo da sociedade civil? (Se houver conselho de cultura  no município, responder a pergunta. )",,,,
-3832,"Em relação a conferências de cultura, escolha uma das opções: A) Foram realizadas 3 ou mais conferências  nos últimos 10 anos, B) Foram realizadas 2 conferências nos últimos 10 anos, C) Foi realizada 1 conferência nos últimos 10 anos ou D) Não foi realizada nenhuma conferência nos últimos 10 anos",,,,
-3828,"Há plano municipal de cultura em seu município? Se existe, ele foi elaborado com participação social?",,,,
+A) Secretaria  ou Fundação exclusiva para a cultura?, B) Secretaria de cultura compartilhada com secretaria de educação?, C) Secretaria de cultura compartilhada com outras áreas, exceto educação?, B) Órgão diretamente ligado ao gabinete do Prefeito? ou C) Não existe órgão gestor de cultura"
+3794,Total de equipamentos de cultura que ficam abertos aos finais de semana
+3832,"Em relação a conferências de cultura, escolha uma das opções: A) Foram realizadas 3 ou mais conferências  nos últimos 10 anos, B) Foram realizadas 2 conferências nos últimos 10 anos, C) Foi realizada 1 conferência nos últimos 10 anos ou D) Não foi realizada nenhuma conferência nos últimos 10 anos"
+3831,"Há a manutenção, pela municipalidade, de ferramentas não-digitais (gráficas, audiovisuais etc.) para divulgação de agenda e calendário de eventos culturais (com atividades promovidas ou não pela municipalidade)?"
+3799,Número total de empréstimos realizados nas bibliotecas municipais

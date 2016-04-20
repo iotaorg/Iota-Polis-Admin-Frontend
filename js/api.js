@@ -4179,7 +4179,7 @@
                             formbuild.find(".models").append('$$e para "'.render({
                                 _user: $.cookie("user.id"),
                                 e: 'Modelo de arquivo'
-                            }) + k + '": <a href="/frontend/arquivos-exemplo-premio/' + v + '.xls">XLS</a><br />' );
+                            }) + k + '": <a href="/frontend/arquivos-exemplo-premio/' + v + '.xls?v=2">XLS</a><br />' );
                         });
 
                     }

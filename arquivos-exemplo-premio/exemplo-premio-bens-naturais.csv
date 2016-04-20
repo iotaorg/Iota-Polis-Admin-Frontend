@@ -1,38 +1,29 @@
-id,name
-64,Número total de domicílios da região urbana que são atendidos pelo abastecimento público de água potável
+ID da variável,Nome,Data,Valor,fonte,observacao
 337,Total de domicílios da região urbana
 247,"Valor total, em reais, destinados às campanhas de educação cidadã"
-248,Verba total destinada a comunicação/publicidade
-61,"Número total, em m², de áreas verdes"
-19,População total
-234,Número total de pessoas infectadas com dengue
-19,População total
-241,"Número total, em m³, de esgoto sem tratamento"
-321,"Total gerado de esgoto, em m³"
-252,Temperatura média mensal
-253,Número de mortes causadas por desastres socioambientais
-301,"Número total, em quilômetros quadrados (km²), de área desmatada"
-27,Área total do município em quilômetros quadrados (km²)
-63,"Número total, em m³, de água perdida"
-320,Total de água tratada
-235,Número total de pessoas infectadas por doenças hídricas
-19,População total
-70,"Número total de energia consumida, em kwh"
-19,População total
-65,Número de domicílios sem ligação de rede de esgoto
-55,Número de domicílios do município
-93,"Número total, em quilômetros quadrados (km²), de área destinada a conservação"
-27,Área total do município em quilômetros quadrados (km²)
-66,"Consumo total de água (residencial, comercial, público, industrial e misto) em m³ no ano"
-19,População total
-61,"Número total, em m², de áreas verdes"
-27,Área total do município em quilômetros quadrados (km²)
-493,Área de cobertura vegetal
-27,Área total do município em quilômetros quadrados (km²)
-3073,Número total de crianças (0 a 14 anos) infectadas por doenças hídricas
 2535,População na faixa etária de 10 a 14 anos
+321,"Total gerado de esgoto, em m³"
 3069,Número de mortes de crianças de 0 a 14 anos por desastres socioambientais
-3099,Total de mortes de crianças de 0 a 14 anos de idade
-3419,A cidade possui Plano Municipal de Mudanças Climáticas aprovado?
+252,Temperatura média mensal
 2909,"Área total, em em m², de praças e parques "
+320,Total de água tratada
+3073,Número total de crianças (0 a 14 anos) infectadas por doenças hídricas
+3419,A cidade possui Plano Municipal de Mudanças Climáticas aprovado?
+61,"Número total, em m², de áreas verdes"
+63,"Número total, em m³, de água perdida"
+64,Número total de domicílios da região urbana que são atendidos pelo abastecimento público de água potável
+70,"Número total de energia consumida, em kwh"
+241,"Número total, em m³, de esgoto sem tratamento"
+27,Área total do município em quilômetros quadrados (km²)
+235,Número total de pessoas infectadas por doenças hídricas
+55,Número de domicílios do município
+493,Área de cobertura vegetal
+248,Verba total destinada a comunicação/publicidade
+66,"Consumo total de água (residencial, comercial, público, industrial e misto) em m³ no ano"
+3099,Total de mortes de crianças de 0 a 14 anos de idade
+253,Número de mortes causadas por desastres socioambientais
 19,População total
+93,"Número total, em quilômetros quadrados (km²), de área destinada a conservação"
+234,Número total de pessoas infectadas com dengue
+65,Número de domicílios sem ligação de rede de esgoto
+301,"Número total, em quilômetros quadrados (km²), de área desmatada"

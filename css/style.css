@@ -2,9 +2,13 @@
     font-family: "Asap", tahoma, sans-serif;
     color: #666;
 }
-body{
+body, html{
     margin: 0 auto;
     padding: 0;
+}
+#myfooter {
+    background-color: #8fcae8;
+
 }
 body, td, div{
     font-size: 11pt;
@@ -95,10 +99,10 @@ a{
     text-decoration: none;
 }
 #top .content .link a:hover{
-    color: #20c1c1;
+    color: #5aa9dc;
 }
 #top .content .link a span.clique{
-    color: #20c1c1;
+    color: #5aa9dc;
 }
 
 #top .top-left{
@@ -137,7 +141,7 @@ a{
 #menu{
     margin: 10px auto;
     text-align: center;
-    background-color: #20c1c1;
+    background-color: #5aa9dc;
     clear: both;
 }
 
@@ -158,13 +162,13 @@ a{
     font-size: 11pt;
     font-weight: bolder;
     color: #fff;
-    border-bottom: 3px solid #20c1c1;
+    border-bottom: 3px solid #5aa9dc;
 }
 #menu ul.submenu{
     margin-top: 5px;
     display: none;
     position: absolute;
-    background-color: #20c1c1;
+    background-color: #5aa9dc;
 }
 #menu ul.submenu li{
     clear: both;
@@ -311,16 +315,16 @@ a.button-add:hover{
 .form{
     padding: 0;
     margin: 0;
-    border: 1px solid #20c1c1;
+    border: 1px solid #5aa9dc;
     display: inline-block;
-    border-bottom: 5px solid #20c1c1;
+    border-bottom: 5px solid #5aa9dc;
     margin-bottom: 10px;
     min-width: 600px;
     text-align: left;
 }
 .form .title{
     margin: 0;
-    background-color: #20c1c1;
+    background-color: #5aa9dc;
     padding: 4px;
     clear: both;
     color: #fff;
@@ -750,7 +754,7 @@ table#results span.noresults{
     color: #000;
 }
 #formula-editor .variables .item.selected{
-    background-color: #20c1c1;
+    background-color: #5aa9dc;
     color: #b8feff;
 }
 
@@ -948,27 +952,26 @@ a#help-formula:hover{
     margin-left: 10px;
 }
 
-#aware .content{
+#myfooter .content{
     margin: auto;
 }
 
-#aware .content{
+#myfooter .content{
     width: 890px;
     text-align: right;
-    font-size: 9pt;
-    font-family: arial;
-    padding: 5px;
-    color: #999;
+    font-size: 8pt;
+    padding: 10px;
+    color: white;
 }
-#aware .content img{
-    margin-bottom: -3px;
+#myfooter .content img{
+    margin-bottom: -7px;
 }
 
-#aware .content a{
+#myfooter .content a{
     color: #666;
     text-decoration: none;
 }
-#aware .content a:hover{
+#myfooter .content a:hover{
     color: #333;
 }
 
@@ -978,7 +981,7 @@ table.indicadores {
     width: 100%;
     border-collapse: collapse;
     border: 1px solid #d3e5ee;
-    border-bottom: 5px solid #20c1c1;
+    border-bottom: 5px solid #5aa9dc;
 }
 
 table.indicadores thead th {
@@ -986,7 +989,7 @@ table.indicadores thead th {
     font-weight: normal;
     cursor: pointer;
     *cursor: hand;
-    background-color: #20c1c1;
+    background-color: #5aa9dc;
     color: #ffffff;
 }
 
@@ -1484,7 +1487,7 @@ a#indicator-remove.active:hover{
     background: url("../images/bg_botao.gif") repeat-x top center;
     border: 1px solid #e0e0e0;
     padding: 2px 4px;
-    background-color: #20c1c1;
+    background-color: #5aa9dc;
     color: #fff;
 }
 .variable-filter .botao input:hover{
@@ -1637,7 +1640,7 @@ input.admin_checked{
 }
 #panel-region #region-list .contents .item.selected{
     background-color: #c9ffff;
-    color: #20c1c1;
+    color: #5aa9dc;
 }
 
 #panel-region #region-list .contents .item:last{
@@ -1708,10 +1711,10 @@ input.admin_checked{
 	font-size: 0.9em;
 }
 .models a{
-	color: #20c1c1;
+	color: #5aa9dc;
 	font-size: 0.9em;
 	padding: 2px 8px;
-	border: 1px solid #20c1c1;
+	border: 1px solid #5aa9dc;
 }
 .models a:hover{
 	color: #666;

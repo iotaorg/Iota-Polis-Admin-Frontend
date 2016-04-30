@@ -1,4 +1,4 @@
-RNSP-PCS-frontend
+IOTA-frontend
 =================
 
-Polis branch
+Instituto Pólis branch

@@ -7,7 +7,7 @@ table.dataTable {
 	width: 100%;
 	border-collapse: collapse;
 	border: 1px solid #d3e5ee;
-	border-bottom: 5px solid #20c1c1;
+	border-bottom: 5px solid #5aa9dc;
 }
 
 table.dataTable thead th {
@@ -15,7 +15,7 @@ table.dataTable thead th {
 	font-weight: normal;
 	cursor: pointer;
 	*cursor: hand;
-	background-color: #20c1c1;
+	background-color: #5aa9dc;
 	color: #ffffff;
 }
 

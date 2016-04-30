@@ -219,6 +219,7 @@ a{
     text-align: center;
     color: #990000;
     padding: 5px 10px;
+    display: none;
 }
 #aviso div{
     color: #990000;

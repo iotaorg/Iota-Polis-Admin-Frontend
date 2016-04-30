@@ -285,11 +285,13 @@
              "region-map": "Definir Regiões no Mapa"
          });
 
-         menu_access["superadmin"] = ["dashboard", "prefs", "parameters", "networks", "admins", "users", "indicator", "axis", "logs", "logout"];
+         menu_access["superadmin"] = ["dashboard", "prefs",  "networks", "admins", "users", "indicator", "logout"];
          submenu_access["superadmin"] = ["countries", "states", "cities", "units"];
 
-         menu_access["admin"] = ["dashboard", "prefs", "users", "parameters", "variable_user", "axis", "indicator", "customize", "logs"];
+         menu_access["admin"] = ["dashboard", "prefs", "variable_user", "networks", "indicator"];
          submenu_access["admin"] = ["countries", "states", "cities", "units", "css"];
+
+
 
 
          menu_access["admin"].push("logout");

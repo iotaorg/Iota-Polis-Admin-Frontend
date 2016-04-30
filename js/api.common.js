@@ -556,6 +556,9 @@ var resetDashboard = function () {
     $("#top .top-right .logo").addClass("empty");
     $("#user-info").remove();
 
+
+//    $("#content>.content").show();
+
     $("#menu ul.menu li").remove();
     $("#menu ul.menu").append("<li class='selected'>$$ee</li>".render({
         ee: 'Entrar'

@@ -84,10 +84,10 @@
                      key: $.cookie("key")
                  }),
                  success: function(data, status, jqXHR) {
+                    $("#content").show();
                      switch (jqXHR.status) {
                          case 200:
                              user_info = data;
-
 
                              user_info.role = "";
 
@@ -149,6 +149,7 @@
                      }
                  },
                  error: function(data) {
+                    $("#content").show();
                      switch (data.status) {
                          case 400:
                              $("#aviso").setWarning({
@@ -193,6 +194,7 @@
                  }
              });
          } else {
+            $("#content").show();
              resetCookies()
              resetDashboard();
              buildLogin();

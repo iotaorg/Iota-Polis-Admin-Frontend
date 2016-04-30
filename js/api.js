@@ -1,88 +1,10 @@
  var _is_updating_lexicon = 0;
  $(document).ready(function() {
 
-     if (do_not_use_lex == false) {
-         $('.top-left').append('<div style="float: left; margin-left: 5em"><a href="#" data-href="pt-br" title="português" style="padding-bottom: 1px;border-bottom: 2px solid $$pt;display: inline-block;"><img src="/frontend/images/br.png"> </a><a data-href="es" title="espanhol" style="border-bottom: 2px solid $$es;margin-left:4px;display: inline-block;padding-bottom: 1px;" href="#" ><img src="/frontend/images/es.png"> </a> </div>'.render2({
-             es: cur_lang == 'es' ? 'gray' : 'white',
-             pt: cur_lang == 'pt-br' ? 'gray' : 'white'
-         }));
-     }
-
-     $('.top-left a').click(function() {
-
-         var $me = $(this);
-
-         cur_lang = $me.attr('data-href');
-         $.cookie("cur_lang", cur_lang, {
-             path: '/'
-         });
-         location.reload();
-         return false;
-     });
-
      /*MONTA TELAS*/
 
-     var _add_trad = function() {
-             $("#trad").remove();
-             $("#content").prepend('<div id="trad">$$t1. <a href="#">$$link</a> $$t2.</div>'.render({
-                 t1: 'Há textos pendentes para você traduzir',
-                 link: 'Clique aqui',
-                 t2: 'para traduzi-los'
-             }));
-
-             $('#trad a').click(function() {
-
-                 var height = 600;
-                 var width = 600;
-
-                 var left = 99;
-                 var top = 99;
-
-                 window.open(api_path + '/:lexicon/pending?api_key=$$key'.render2({
-                     key: $.cookie("key"),
-                 }), 'janela', 'width=' + width + ', height=' + height + ', top=' + top + ', left=' + left + ', scrollbars=yes, status=no, toolbar=no, location=no, directories=no, menubar=no, resizable=yes, fullscreen=no');
-
-
-
-                 return false;
-             });
-         },
-         _theres_trad = 0,
-         _trad_next_ajax;
-
-     function load_trad() {
-         if (_theres_trad == 0 && $.cookie("key")) {
-
-             if (!_trad_next_ajax || new Date().getTime() > _trad_next_ajax) {
-                 $.ajax({
-                     type: 'GET',
-                     dataType: 'json',
-                     url: api_path + '/:lexicon/pending/count?api_key=$$key'.render2({
-                         key: $.cookie("key"),
-                     }),
-                     beforeSend: function() {},
-                     success: function(data, textStatus, jqXHR) {
-                         $('#trad').remove();
-                         if (data.count > 0) {
-                             _theres_trad = 1;
-                             _add_trad();
-                         }
-                     }
-                 });
-
-                 _trad_next_ajax = new Date().getTime() + 10 * 1000; // 10 segundos
-             }
-         }
-
-         if (_theres_trad == 1) {
-             _add_trad();
-         }
-     }
-
-     $(window).hashchange(function() {
+      $(window).hashchange(function() {
          $("#dashboard-content .content").empty();
-
-         load_trad();
 
          buildUserInterface();
      })
@@ -93,64 +15,6 @@
          sendLogin();
      });
 
-     var __update_lexicon_id = setInterval(function() {
-         var count = $.assocArraySize(lexicon_untranslated);
-         if (_is_updating_lexicon == 0 && count > 0 && $.cookie("key") != null && $.cookie("key") != "") {
-             _is_updating_lexicon = 1;
-
-             var args = [{
-                 name: "api_key",
-                 value: $.cookie("key")
-             }];
-             untranslated_temp = {};
-             for (var x in lexicon_untranslated) {
-                 if (lexicon_untranslated.hasOwnProperty(x)) {
-                     args.push({
-                         name: "lex",
-                         value: x
-                     });
-                     untranslated_temp[x] = 1;
-                 }
-             }
-
-             lexicon_untranslated = {};
-
-             $.ajax({
-                 type: 'POST',
-                 beforeSend: function() {},
-                 dataType: 'json',
-                 url: api_path + '/api/lexicons',
-                 data: args,
-                 success: function(data, status, jqXHR) {
-                     $.jStorage.set("lexicon", 0);
-                     load_lexicon(true);
-                     _is_updating_lexicon = 0;
-                 },
-                 error: function(data) {
-                     for (var x in untranslated_temp) {
-                         if (untranslated_temp.hasOwnProperty(x)) {
-                             lexicon_untranslated[x] = 1;
-                         }
-                     }
-                     _is_updating_lexicon = 0;
-                 }
-             });
-
-         }
-
-         if ($.cookie('reload_lex') == 1) {
-
-             _theres_trad = 0;
-             _trad_next_ajax = null;
-             load_trad();
-
-             $.cookie('reload_lex', 0, {
-                 path: '/'
-             });
-             $.jStorage.set("lexicon", 0);
-             load_lexicon(true);
-         }
-     }, 5000);
 
      var sendLogin = function() {
          args = [{

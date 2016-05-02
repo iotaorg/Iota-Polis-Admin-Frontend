@@ -99,10 +99,10 @@ a{
     text-decoration: none;
 }
 #top .content .link a:hover{
-    color: #5aa9dc;
+    color: #6FA7E0;
 }
 #top .content .link a span.clique{
-    color: #5aa9dc;
+    color: #6FA7E0;
 }
 
 #top .top-left{
@@ -141,7 +141,7 @@ a{
 #menu{
     margin: 10px auto;
     text-align: center;
-    background-color: #5aa9dc;
+    background-color: #6FA7E0;
     clear: both;
 }
 
@@ -162,13 +162,13 @@ a{
     font-size: 11pt;
     font-weight: bolder;
     color: #fff;
-    border-bottom: 3px solid #5aa9dc;
+    border-bottom: 3px solid #6FA7E0;
 }
 #menu ul.submenu{
     margin-top: 5px;
     display: none;
     position: absolute;
-    background-color: #5aa9dc;
+    background-color: #6FA7E0;
 }
 #menu ul.submenu li{
     clear: both;
@@ -316,16 +316,16 @@ a.button-add:hover{
 .form{
     padding: 0;
     margin: 0;
-    border: 1px solid #5aa9dc;
+    border: 1px solid #6FA7E0;
     display: inline-block;
-    border-bottom: 5px solid #5aa9dc;
+    border-bottom: 5px solid #6FA7E0;
     margin-bottom: 10px;
     min-width: 600px;
     text-align: left;
 }
 .form .title{
     margin: 0;
-    background-color: #5aa9dc;
+    background-color: #6FA7E0;
     padding: 4px;
     clear: both;
     color: #fff;
@@ -755,7 +755,7 @@ table#results span.noresults{
     color: #000;
 }
 #formula-editor .variables .item.selected{
-    background-color: #5aa9dc;
+    background-color: #6FA7E0;
     color: #b8feff;
 }
 
@@ -982,7 +982,7 @@ table.indicadores {
     width: 100%;
     border-collapse: collapse;
     border: 1px solid #d3e5ee;
-    border-bottom: 5px solid #5aa9dc;
+    border-bottom: 5px solid #6FA7E0;
 }
 
 table.indicadores thead th {
@@ -990,7 +990,7 @@ table.indicadores thead th {
     font-weight: normal;
     cursor: pointer;
     *cursor: hand;
-    background-color: #5aa9dc;
+    background-color: #6FA7E0;
     color: #ffffff;
 }
 
@@ -1488,7 +1488,7 @@ a#indicator-remove.active:hover{
     background: url("../images/bg_botao.gif") repeat-x top center;
     border: 1px solid #e0e0e0;
     padding: 2px 4px;
-    background-color: #5aa9dc;
+    background-color: #6FA7E0;
     color: #fff;
 }
 .variable-filter .botao input:hover{
@@ -1641,7 +1641,7 @@ input.admin_checked{
 }
 #panel-region #region-list .contents .item.selected{
     background-color: #c9ffff;
-    color: #5aa9dc;
+    color: #6FA7E0;
 }
 
 #panel-region #region-list .contents .item:last{
@@ -1712,10 +1712,10 @@ input.admin_checked{
 	font-size: 0.9em;
 }
 .models a{
-	color: #5aa9dc;
+	color: #6FA7E0;
 	font-size: 0.9em;
 	padding: 2px 8px;
-	border: 1px solid #5aa9dc;
+	border: 1px solid #6FA7E0;
 }
 .models a:hover{
 	color: #666;

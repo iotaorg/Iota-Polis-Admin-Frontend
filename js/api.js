@@ -10671,144 +10671,11 @@
                      label: "Confirmar Senha",
                      input: ["password,password_confirm,itext"]
                  });
-                 newform.push({
-                     label: "Idioma da escrita",
-                     input: ["select,cur_lang,iselect"]
-                 });
 
-                 if (findInArray(user_info.roles, "user")) {
-
-                     newform.push({
-                         label: "Endereço",
-                         input: ["text,endereco,itext"]
-                     });
-                     newform.push({
-                         label: "Cidade",
-                         input: ["text,cidade,itext"]
-                     });
-                     newform.push({
-                         label: "Estado",
-                         input: ["text,estado,itext"]
-                     });
-                     newform.push({
-                         label: "Bairro",
-                         input: ["text,bairro,itext"]
-                     });
-                     newform.push({
-                         label: "CEP",
-                         input: ["text,cep,itext"]
-                     });
-                     newform.push({
-                         label: "Telefone",
-                         input: ["text,telefone,itext"]
-                     });
-                     newform.push({
-                         label: "Email de Contato",
-                         input: ["text,email_contato,itext"]
-                     });
-                     newform.push({
-                         label: "Telefone de Contato",
-                         input: ["text,telefone_contato,itext"]
-                     });
-                     newform.push({
-                         label: "Nome do responsável pelo cadastro",
-                         input: ["text,nome_responsavel_cadastro,itext"]
-                     });
-                     newform.push({
-                         label: "Resumo da Cidade (texto)",
-                         input: ["textarea,city_summary,itext"]
-                     });
-
-
-                     // if (user_info.institute.id == 1) {
-                     newform.push({
-                         label: "Carta Compromisso (PDF)",
-                         input: ["file,carta_compromisso,itext"]
-                     });
-                     newform.push({
-                         label: "Programa de Metas (PDF)",
-                         input: ["file,programa_metas,itext"]
-                     });
-                     newform.push({
-                         label: "Imagem do perfil da cidade",
-                         input: ["file,imagem_cidade,itext"]
-                     });
-                     // }
-                     if (user_info.institute.id == 2) {
-                         newform.push({
-                             label: "Logo(imagem)<br /><font size='1'>(altura máx: 80 pixels)</font>",
-                             input: ["file,logo_movimento,itext"]
-                         });
-                         newform.push({
-                             label: "Imagem do<br />perfil da cidade<br /><font size='1'>(630x135 pixels)</font>",
-                             input: ["file,imagem_cidade,itext"]
-                         });
-                     }
-                 }
-
-                 if (findInArray(user_info.roles, "superadmin")) {
-                     var data_institute;
-                     $.ajax({
-                         async: false,
-                         type: 'GET',
-                         dataType: 'json',
-                         url: api_path + '/api/institute?api_key=$$key'.render2({
-                             key: $.cookie("key")
-                         }),
-                         success: function(data, status, jqXHR) {
-                             data.institute.sort(function(a, b) {
-                                 a = String(a.name),
-                                     b = String(b.name);
-                                 return a.localeCompare(b);
-                             });
-                             data_institute = data;
-                             $.each(data.institute, function(index, item) {
-                                 newform.push({
-                                     type: "subtitle",
-                                     title: "Instituição: " + item.name,
-                                     class: "institute"
-                                 });
-                                 newform.push({
-                                     type: "inverted",
-                                     label: "Usuários podem editar valores",
-                                     input: ["checkbox,users_can_edit_value_inst_" + item.id + ",checkbox"]
-                                 });
-                                 newform.push({
-                                     type: "inverted",
-                                     label: "Usuários podem editar grupos",
-                                     input: ["checkbox,users_can_edit_groups_inst_" + item.id + ",checkbox"]
-                                 });
-                                 newform.push({
-                                     type: "inverted",
-                                     label: "Usuários podem customizar CSS",
-                                     input: ["checkbox,can_use_custom_css_inst_" + item.id + ",checkbox"]
-                                 });
-                                 newform.push({
-                                     type: "inverted",
-                                     label: "Usuários podem criar páginas custmizadas",
-                                     input: ["checkbox,can_use_custom_pages_inst_" + item.id + ",checkbox"]
-                                 });
-                             });
-                         }
-                     });
-                 }
-
-                 var formbuild = $("#dashboard-content .content").append(buildForm(newform, "Preferênciasiss"));
+                 var formbuild = $("#dashboard-content .content").append(buildForm(newform, "Preferências"));
                  $(formbuild).find("div .field:odd").addClass("odd");
                  $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 
-                 $.each(languages_list, function(key, value) {
-                     $("#dashboard-content .content select#cur_lang").append($("<option></option>").val(key).html(value));
-                 });
-
-                 if (findInArray(user_info.roles, "superadmin")) {
-                     $.each(data_institute.institute, function(index, item) {
-                         if (item.users_can_edit_value == 1) $("input#users_can_edit_value_inst_" + item.id).attr("checked", true);
-                         if (item.users_can_edit_groups == 1) $("input#users_can_edit_groups_inst_" + item.id).attr("checked", true);
-                         if (item.can_use_custom_css == 1) $("input#can_use_custom_css_inst_" + item.id).attr("checked", true);
-                         if (item.can_use_custom_pages == 1) $("input#can_use_custom_pages_inst_" + item.id).attr("checked", true);
-                     });
-                 }
 
                  $.ajax({
                      type: 'GET',
@@ -10960,38 +10827,6 @@
                                  }),
                                  data: args,
                                  success: function(data, textStatus, jqXHR) {
-
-                                     if (findInArray(user_info.roles, "superadmin")) {
-                                         $.each(data_institute.institute, function(index, item) {
-                                             args = [{
-                                                 name: "api_key",
-                                                 value: $.cookie("key")
-                                             }, {
-                                                 name: "institute.update.users_can_edit_value",
-                                                 value: ($("input#users_can_edit_value_inst_" + item.id).attr("checked") ? 1 : 0)
-                                             }, {
-                                                 name: "institute.update.users_can_edit_groups",
-                                                 value: ($("input#users_can_edit_groups_inst_" + item.id).attr("checked") ? 1 : 0)
-                                             }, {
-                                                 name: "institute.update.can_use_custom_css",
-                                                 value: ($("input#can_use_custom_css_inst_" + item.id).attr("checked") ? 1 : 0)
-                                             }, {
-                                                 name: "institute.update.can_use_custom_pages",
-                                                 value: ($("input#can_use_custom_pages_inst_" + item.id).attr("checked") ? 1 : 0)
-                                             }];
-                                             $.ajax({
-                                                 async: false,
-                                                 type: 'POST',
-                                                 dataType: 'json',
-                                                 url: api_path + '/api/institute/$$institute_id?api_key=$$key'.render2({
-                                                     userid: $.cookie("user.id"),
-                                                     institute_id: item.id,
-                                                     key: $.cookie("key")
-                                                 }),
-                                                 data: args
-                                             });
-                                         });
-                                     }
 
                                      $(clickedButton).html("$$save".render({
                                          save: 'Salvar'

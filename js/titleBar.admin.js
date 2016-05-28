@@ -4,8 +4,8 @@ var titleBarContent = {
 								"tip": "Entre com seu usuário e senha:"
 								},
 					"dashboard":{
-								"title": "Interface administrativa",
-								"tip": ""
+								"title": "Início",
+								"tip": "Este é o painel administrativo do Litoral Sustentavel. Utilize o menu acima para navegar."
 								},
 					"users":{
 							"title": "Usuários",
@@ -68,8 +68,8 @@ var titleBarContent = {
 							"title": "Parâmetros - Unidades de Medida",
 							"tip": ""},
 					"networks":{
-							"title": "Redes",
-							"tip": ""},
+							"title": "Ações",
+							"tip": "Configure informações qualitativas, glossário, etc"},
 					"admins":{
 							"title": "Administradores",
 							"tip": ""},
@@ -84,7 +84,7 @@ var titleBarContent = {
 							"tip": ""},
 					"best_pratice":{
 							"title": "Conteúdo - Boas Práticas",
-							"tip": ""},							
+							"tip": ""},
 					"logs":{
 							"title": "Relatórios do Sistema",
 							"tip": ""},
@@ -96,5 +96,6 @@ var titleBarContent = {
 							"tip": "Preencha o formulário abaixo para fazer sua inscrição"},
 					"prefs":{
 							"title": "Preferências",
-							"tip": ""}
+							"tip": "Preferências do seu usuário"
+                        }
 				  };

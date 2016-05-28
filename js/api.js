@@ -1,5 +1,24 @@
+var UUID = (function() {
+    var self = {};
+    var lut = [];
+    for (var i = 0; i < 256; i++) {
+        lut[i] = (i < 16 ? '0' : '') + (i).toString(16);
+    }
+    self.generate = function() {
+        var d0 = Math.random() * 0xffffffff | 0;
+        var d1 = Math.random() * 0xffffffff | 0;
+        var d2 = Math.random() * 0xffffffff | 0;
+        var d3 = Math.random() * 0xffffffff | 0;
+        return lut[d0 & 0xff] + lut[d0 >> 8 & 0xff] + lut[d0 >> 16 & 0xff] + lut[d0 >> 24 & 0xff] + '-' +
+            lut[d1 & 0xff] + lut[d1 >> 8 & 0xff] + '-' + lut[d1 >> 16 & 0x0f | 0x40] + lut[d1 >> 24 & 0xff] + '-' +
+            lut[d2 & 0x3f | 0x80] + lut[d2 >> 8 & 0xff] + '-' + lut[d2 >> 16 & 0xff] + lut[d2 >> 24 & 0xff] +
+            lut[d3 & 0xff] + lut[d3 >> 8 & 0xff] + lut[d3 >> 16 & 0xff] + lut[d3 >> 24 & 0xff];
+    }
+    return self;
+})();
  var _is_updating_lexicon = 0;
  $(document).ready(function() {
+
 
      /*MONTA TELAS*/
 
@@ -222,7 +241,7 @@
          menu_label["indicator_user"] = "Indicadores";
          menu_label["variable_user"] = "Variáveis";
          menu_label["region"] = "Regiões";
-         menu_label["networks"] = "Redes";
+         menu_label["networks"] = "Ações";
          menu_label["parameters"] = "Parâmetros";
          menu_label["logs"] = "Logs";
          menu_label["prefs"] = "Preferências";
@@ -2575,20 +2594,20 @@
                      var newform = [];
 
                      newform.push({
-                         label: "Instituição",
-                         input: ["select,institute_id,iselect"]
-                     });
-                     newform.push({
-                         label: "Domínio",
-                         input: ["text,domain_name,itext"]
-                     });
-                     newform.push({
-                         label: "Nome da Rede",
+                         label: "Nome da Ação",
                          input: ["text,name,itext"]
                      });
                      newform.push({
-                         label: "Tema",
-                         input: ["select,topic,iselect"]
+                         label: "Descrição da ação",
+                         input: ["text,description,itext"]
+                     });
+                     newform.push({
+                         label: "Eixo da ação",
+                         input: ["text,axis_name,itext"]
+                     });
+                     newform.push({
+                         label: "Layout",
+                         input: ["select,template_name,iselect"]
                      });
 
                      var formbuild = $("#dashboard-content .content").append(buildForm(newform, txtOption));
@@ -2599,39 +2618,18 @@
                          content: "Importante: Nome da Rede."
                      }));
 
-                     $("#dashboard-content .content select#institute_id").append($("<option></option>").val("").html("$$e...".render({
+                     var template_elm = $("#dashboard-content .content select#template_name");
+                     template_elm.append($("<option></option>").val("").html("$$e...".render({
                          e: 'Selecione'
                      })));
-                     $("#dashboard-content .content select#topic").append($("<option></option>").val("").html("$$e...".render({
-                         e: 'Selecione'
+                     template_elm.append($("<option></option>").val("layout1").html("$$e".render({
+                         e: 'layout1'
                      })));
-                     $("#dashboard-content .content select#topic").append($("<option></option>").val("0").html("$$e".render({
-                         e: 'Não'
-                     })));
-                     $("#dashboard-content .content select#topic").append($("<option></option>").val("1").html("$$e".render({
-                         e: 'Sim'
+                     template_elm.append($("<option></option>").val("layout2").html("$$e".render({
+                         e: 'layout2 [falta escolher nomes melhores...]'
                      })));
 
-                     $.ajax({
-                         async: false,
-                         type: 'GET',
-                         dataType: 'json',
-                         url: api_path + "/api/institute?api_key=$$key".render2({
-                             key: $.cookie("key")
-                         }),
-                         success: function(data, status, jqXHR) {
-                             data.institute.sort(function(a, b) {
-                                 a = String(a.name),
-                                     b = String(b.name);
-                                 return a.localeCompare(b);
-                             });
-                             $.each(data.institute, function(index, item) {
-                                 $("#dashboard-content .content select#institute_id").append($("<option></option>").val(item.id).html(item.name));
-                             });
-                         }
-                     });
-
-                     if ($.getUrlVar("option") == "edit") {
+                      if ($.getUrlVar("option") == "edit") {
                          $.ajax({
                              type: 'GET',
                              dataType: 'json',
@@ -2639,11 +2637,14 @@
                                  key: $.cookie("key")
                              }),
                              success: function(data, status, jqXHR) {
+                                console.log(data);
                                  switch (jqXHR.status) {
                                      case 200:
-                                         $(formbuild).find("select#institute_id").val(data.institute_id);
-                                         $(formbuild).find("input#domain_name").val(data.domain_name);
                                          $(formbuild).find("input#name").val(data.name);
+                                         $(formbuild).find("input#axis_name").val(data.axis_name);
+                                         $(formbuild).find("input#description").val(data.description);
+
+                                         template_elm.val(data.template_name);
 
                                          break;
                                  }
@@ -2664,17 +2665,21 @@
 
                      $("#dashboard-content .content .botao-form[ref='enviar']").click(function() {
                          resetWarnings();
-                         if ($(this).parent().parent().find("#institute_id option:selected").val() == "") {
+                         if ($(this).parent().parent().find("#template_name").val() == "") {
                              $(".form-aviso").setWarning({
-                                 msg: "Por favor informe a Instituição"
-                             });
-                         } else if ($(this).parent().parent().find("#domain_name").val() == "") {
-                             $(".form-aviso").setWarning({
-                                 msg: "Por favor informe o Domínio"
+                                 msg: "Por favor informe o Layout"
                              });
                          } else if ($(this).parent().parent().find("#name").val() == "") {
                              $(".form-aviso").setWarning({
                                  msg: "Por favor informe o Nome"
+                             });
+                             } else if ($(this).parent().parent().find("#axis_name").val() == "") {
+                             $(".form-aviso").setWarning({
+                                 msg: "Por favor informe o Eixo"
+                             });
+                             } else if ($(this).parent().parent().find("#description").val() == "") {
+                             $(".form-aviso").setWarning({
+                                 msg: "Por favor informe a Descrição"
                              });
 
                          } else {
@@ -2694,17 +2699,35 @@
                                  value: $.cookie("key")
                              }, {
                                  name: "network." + action + ".domain_name",
-                                 value: $(this).parent().parent().find("#domain_name").val()
+                                 value: UUID.generate() + '.com'
                              }, {
                                  name: "network." + action + ".name",
                                  value: $(this).parent().parent().find("#name").val()
+                             },
+                              {
+                                 name: "network." + action + ".axis_name",
+                                 value: $(this).parent().parent().find("#axis_name").val()
+                             },
+                              {
+                                 name: "network." + action + ".description",
+                                 value: $(this).parent().parent().find("#description").val()
                              }, {
                                  name: "network." + action + ".institute_id",
-                                 value: $(this).parent().parent().find("#institute_id option:selected").val()
+                                 value: 1
                              }, {
+                                 name: "network." + action + ".template_name",
+                                 value: $(this).parent().parent().find("#template_name option:selected").val()
+                             },
+                             {
                                  name: "network." + action + ".topic",
-                                 value: $(this).parent().parent().find("#topic option:selected").val()
-                             }];
+                                 value: 0
+                             },
+                             {
+                                 name: "network." + action + ".text_content",
+                                 value: '{}'
+                             }
+
+                             ];
 
                              $("#dashboard-content .content .botao-form[ref='enviar']").hide();
                              $.ajax({
@@ -5121,7 +5144,7 @@
                              } else if ($("#visibility_level").val() == "network") {
                                  $("#visibility-options").before("<div class='clear'></div>");
                                  $("#visibility-options").addClass("inline");
-                                 $("#visibility-options").append("<label class='visibility'>Selecione uma ou mais redes:</label><br /><select multiple id='visibility_networks_select' class='iselect multiselect'><option value=''>carregando...</option></select><div class='buttons'><button id='button-add'>>></button><button id='button-remove'><<</button></div><select multiple id='visibility_networks_id' class='iselect multiselect'></select>");
+                                 $("#visibility-options").append("<label class='visibility'>Selecione uma ação:</label><br /><select multiple id='visibility_networks_select' class='iselect multiselect'><option value=''>carregando...</option></select><div class='buttons'><button id='button-add'>>></button><button id='button-remove'><<</button></div><select multiple id='visibility_networks_id' class='iselect multiselect'></select>");
                                  $.ajax({
                                      type: 'GET',
                                      dataType: 'json',

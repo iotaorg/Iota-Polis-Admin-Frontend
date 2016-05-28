@@ -4922,10 +4922,6 @@ $(document).ready(function() {
                     }
 
                     newform.push({
-                        label: "Tipo",
-                        input: ["select,indicator_type,iselect"]
-                    });
-                    newform.push({
                         label: "Nome da Faixa",
                         input: ["text,variety_name,itext"]
                     });
@@ -5049,9 +5045,9 @@ $(document).ready(function() {
                         $("#dashboard-content .content select#visibility_level").append($("<option></option>").val(key).html(value));
                     });
 
-                    $.each(indicator_types, function(key, value) {
-                        $("#dashboard-content .content select#indicator_type").append($("<option></option>").val(key).html(value));
-                    });
+                    //$.each(indicator_types, function(key, value) {
+                    //    $("#dashboard-content .content select#indicator_type").append($("<option></option>").val(key).html(value));
+                    //});
 
                     $.each(goal_operators, function(key, value) {
                         $("#dashboard-content .content select#goal_operator").append($("<option></option>").val(key).html(value));
@@ -5664,7 +5660,7 @@ $(document).ready(function() {
                     $("#variacoes_placeholder").parent().parent().hide();
                     $("#vvariacoes_placeholder").parent().parent().hide();
                     $("#all_variations_variables_are_required").parent().parent().hide();
-
+/*
                     $("#indicator_type").change(function() {
                         if ($("#indicator_type").val() == "normal") {
                             $("#variety_name").parent().parent().hide();
@@ -5679,7 +5675,7 @@ $(document).ready(function() {
                             $("#all_variations_variables_are_required").parent().parent().show();
                         }
                     });
-
+*/
                     $("#vvariacoes-button-add").click(function() {
                         addVVariacao();
                     });
@@ -5713,7 +5709,7 @@ $(document).ready(function() {
                                     value: $(this).parent().parent().find("#name").val()
                                 }, {
                                     name: "indicator.create.indicator_type",
-                                    value: $(this).parent().parent().find("#indicator_type").val().replace("_dyn", "")
+                                    value: 'normal'
                                 }, {
                                     name: "indicator.create.formula",
                                     value: $(this).parent().parent().find("#formula").val()
@@ -5795,7 +5791,7 @@ $(document).ready(function() {
                                         value: users
                                     });
                                 }
-
+/*
                                 if ($(this).parent().parent().find("#indicator_type").val() == "varied" || $(this).parent().parent().find("#indicator_type").val() == "varied_dyn") {
                                     if ($(this).parent().parent().find("#all_variations_variables_are_required").attr("checked")) {
                                         args.push({
@@ -5823,7 +5819,7 @@ $(document).ready(function() {
                                         });
                                     }
                                 }
-
+*/
                                 $("#dashboard-content .content .botao-form[ref='enviar']").hide();
                                 $.ajax({
                                     async: false,
@@ -5834,6 +5830,7 @@ $(document).ready(function() {
                                     success: function(data, status, jqXHR) {
                                         var newId = data.id;
                                         var formula_update = $("#dashboard-content textarea#formula").val();
+                                        /*
                                         if ($("#dashboard-content .content select#indicator_type").val() == "varied" || $("#dashboard-content .content select#indicator_type").val() == "varied_dyn") {
 
                                             $.each(variacoes_list, function(index, item) {
@@ -5882,6 +5879,7 @@ $(document).ready(function() {
                                                 });
                                             });
                                         }
+                                        */
                                         if (formula_update != $("#dashboard-content textarea#formula").val()) {
                                             args = [{
                                                 name: "api_key",
@@ -5954,11 +5952,14 @@ $(document).ready(function() {
                                 switch (jqXHR.status) {
                                     case 200:
                                         $(formbuild).find("input#name").val(data.name);
+                                        /*
                                         if (data.indicator_type == "varied" && data.dynamic_variations == "1") {
                                             $(formbuild).find("select#indicator_type").val("varied_dyn");
                                         } else {
                                             $(formbuild).find("select#indicator_type").val(data.indicator_type);
                                         }
+                                        */
+                                        /*
                                         if (data.indicator_type == "varied") {
                                             $(formbuild).find("input#variety_name").val(data.variety_name);
                                             if (data.all_variations_variables_are_required == 1) {
@@ -6010,7 +6011,7 @@ $(document).ready(function() {
                                             updateVariacoesTable();
                                             updateVVariacoesTable();
 
-                                        }
+                                        }*/
 
                                         $(formbuild).find("select#visibility_level").val(data.visibility_level);
 
@@ -6149,7 +6150,7 @@ $(document).ready(function() {
                                     value: $(this).parent().parent().find("#name").val()
                                 }, {
                                     name: "indicator.update.indicator_type",
-                                    value: $(this).parent().parent().find("#indicator_type").val().replace("_dyn", "")
+                                    value: 'normal'
                                 }, {
                                     name: "indicator.update.formula",
                                     value: $(this).parent().parent().find("#formula").val()
@@ -6231,7 +6232,7 @@ $(document).ready(function() {
                                 }
 
 
-                                if ($(this).parent().parent().find("#indicator_type").val() == "varied" || $(this).parent().parent().find("#indicator_type").val() == "varied_dyn") {
+                                /*if ($(this).parent().parent().find("#indicator_type").val() == "varied" || $(this).parent().parent().find("#indicator_type").val() == "varied_dyn") {
                                     if ($(this).parent().parent().find("#all_variations_variables_are_required").attr("checked")) {
                                         args.push({
                                             name: "indicator.update.all_variations_variables_are_required",
@@ -6262,7 +6263,7 @@ $(document).ready(function() {
                                             value: 0
                                         });
                                     }
-                                } else {
+                                } else { */
                                     args.push({
                                         name: "indicator.update.all_variations_variables_are_required",
                                         value: ''
@@ -6275,7 +6276,7 @@ $(document).ready(function() {
                                         name: "indicator.update.summarization_method",
                                         value: ''
                                     });
-                                }
+                                // }
 
                                 $("#dashboard-content .content .botao-form[ref='enviar']").hide();
                                 $.ajax({
@@ -6286,7 +6287,7 @@ $(document).ready(function() {
                                     success: function(data, textStatus, jqXHR) {
                                         var newId = data.id;
                                         var formula_update = $("#dashboard-content textarea#formula").val();
-                                        if ($("#dashboard-content .content select#indicator_type").val() == "varied" || $("#dashboard-content .content select#indicator_type").val() == "varied_dyn") {
+                                        /*if ($("#dashboard-content .content select#indicator_type").val() == "varied" || $("#dashboard-content .content select#indicator_type").val() == "varied_dyn") {
 
                                             $.each(variacoes_list, function(index, item) {
                                                 if ((item.temp) || item.temp == "true") {
@@ -6399,7 +6400,8 @@ $(document).ready(function() {
                                                     }
                                                 }
                                             });
-                                        }
+                                        }*/
+
                                         if (formula_update != $("#dashboard-content textarea#formula").val()) {
                                             args = [{
                                                 name: "api_key",

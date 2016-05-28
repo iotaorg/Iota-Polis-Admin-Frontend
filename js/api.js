@@ -4978,11 +4978,6 @@ $(document).ready(function() {
                         label: "Observações",
                         input: ["textarea,observations,itext"]
                     });
-                    newform.push({
-                        type: "inverted",
-                        label: "Aparecer na Home",
-                        input: ["checkbox,unfolded_in_home,checkbox"]
-                    });
 
                     var formbuild = $("#dashboard-content .content").append(buildForm(newform, txtOption));
                     $(formbuild).find("div .field:odd").addClass("odd");
@@ -5057,6 +5052,7 @@ $(document).ready(function() {
                         $("#dashboard-content .content select#sort_direction").append($("<option></option>").val(key).html(value));
                     });
 
+visibilityChanged();
                     $("#visibility_level").change(function() {
                         visibilityChanged();
                     });
@@ -5226,11 +5222,6 @@ $(document).ready(function() {
                         value: ")",
                         caption: ")",
                         title: "Fecha Parenteses"
-                    }));
-                    $("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title'>$$caption</div>".render2({
-                        value: "√",
-                        caption: "√",
-                        title: "Raíz Quadrada"
                     }));
                     $("#formula-editor .operators").append("<div class='op-button' val='$$value' title='$$title'>$$caption</div>".render2({
                         value: "CONCATENAR",
@@ -6420,6 +6411,8 @@ $(document).ready(function() {
                                                 data: args
                                             });
                                         }
+
+                                        /*
                                         // cadastra flag mostrar na home
                                         args = [{
                                             name: "api_key",
@@ -6437,7 +6430,8 @@ $(document).ready(function() {
                                                 network_id: user_info.network
                                             }),
                                             data: args
-                                        });
+                                        });*/
+
                                         $("#aviso").setWarning({
                                             msg: "Cadastro editado com sucesso.".render2({
                                                 codigo: jqXHR.status

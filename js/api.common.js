@@ -301,8 +301,8 @@ var indicator_roles = {
     "_movimento": "Somente Movimentos"
 };
 var visibility_level = {
-    "public": "Público",
-    "private": "Privado",
+    //"public": "Público",
+    //"private": "Privado",
 //    "country": "por País",
 //    "restrict": "por Usuário"
     "network": "por Rede"

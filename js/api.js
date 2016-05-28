@@ -222,6 +222,7 @@ $(document).ready(function() {
         menu_label["dashboard"] = "Início";
         menu_label["admins"] = "Administradores";
         menu_label["users"] = "Usuários";
+        menu_label["variable"] = "Variáveis";
         menu_label["customize"] = "Customização";
         menu_label["content"] = "Conteúdo";
         menu_label["axis"] = "Eixos";
@@ -293,8 +294,8 @@ $(document).ready(function() {
             "region-map": "Definir Regiões no Mapa"
         });
 
-        menu_access["superadmin"] = ["dashboard", "prefs", "networks", "admins", "users", "indicator", "logout"];
-        submenu_access["superadmin"] = ["countries", "states", "cities", "units"];
+        menu_access["superadmin"] = ["dashboard", "prefs", "parameters", "networks", "variable", "indicator", "logout", ];
+        submenu_access["superadmin"] = ["units"];
 
         menu_access["admin"] = ["dashboard", "prefs", "variable_user", "networks", "indicator"];
         submenu_access["admin"] = ["countries", "states", "cities", "units", "css"];
@@ -2954,7 +2955,7 @@ $(document).ready(function() {
                 if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined) {
 
                     var variableList = buildDataTable({
-                        headers: ["Nome", "Apelido", "Tipo", "Data Criação", "Básica", "Aparecer na Home", "_"]
+                        headers: ["Nome", "Apelido", "Tipo", "Data Criação", "_"]
                     });
 
                     $("#dashboard-content .content").append(variableList);
@@ -2998,7 +2999,7 @@ $(document).ready(function() {
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/variable?use=edit&api_key=$$key&content-type=application/json&lang=$$lang&columns=name,cognomen,type,created_at,is_basic,url,url,_,_'.render2({
+                        "sAjaxSource": api_path + '/api/variable?use=edit&api_key=$$key&content-type=application/json&lang=$$lang&columns=name,cognomen,type,created_at,url,url,_,_'.render2({
                             lang: cur_lang,
                             key: $.cookie("key")
                         }),
@@ -3007,24 +3008,19 @@ $(document).ready(function() {
                             "bSortable": false,
                             "sClass": "botoes",
                             "sWidth": "80px",
-                            "aTargets": [6]
+                            "aTargets": [4]
                         }, {
                             "bSearchable": false,
                             "bSortable": true,
                             "sClass": "checkbox center",
                             "sWidth": "80px",
-                            "aTargets": [5]
-                        }, {
-                            "bSearchable": false,
-                            "bSortable": true,
-                            "sClass": "center is_basic",
-                            "aTargets": [4]
+                            "aTargets": [3]
                         }, {
                             "sClass": "center",
-                            "aTargets": [2, 3, 4]
+                            "aTargets": [2]
                         }, {
                             "sWidth": "300px",
-                            "aTargets": [0]
+                            "aTargets": [3]
                         }, {
                             "fnRender": function(oObj, sVal) {
                                 return variable_types[sVal];
@@ -3032,7 +3028,7 @@ $(document).ready(function() {
                             "aTargets": [2]
                         }, {
                             "fnRender": function(oObj, sVal) {
-                                return $.format.date(sVal, "dd/MM/yyyy HH:mm:ss");
+                                return $.format.date(sVal, "dd/MM/yyyy");
                             },
                             "aTargets": [3]
                         }, {
@@ -3046,21 +3042,6 @@ $(document).ready(function() {
                                 return text;
                             },
                             "aTargets": [1]
-                        }, {
-                            "fnRender": function(oObj, sVal) {
-                                if (oObj.aData[4] == 1) {
-                                    var checked = "";
-                                    if (data_config[getIdFromUrl(sVal)] && data_config[getIdFromUrl(sVal)].display_in_home == 1) {
-                                        checked = "checked";
-                                    }
-                                    return "<input type='checkbox' name='chk_home' var-id='" + getIdFromUrl(sVal) + "' $$checked>".render({
-                                        checked: checked
-                                    });
-                                } else {
-                                    return "--";
-                                }
-                            },
-                            "aTargets": [5]
                         }],
                         "aaSorting": [
                             [3, 'desc'],
@@ -3160,18 +3141,7 @@ $(document).ready(function() {
                         label: "Unidade de Medida",
                         input: ["select,measurement_unit,iselect unit", "text,unit_new,itext250px", "text,unit_sg_new,itext50px"]
                     });
-                    newform.push({
-                        label: "Período",
-                        input: ["select,period,iselect"]
-                    });
-                    newform.push({
-                        label: "Fonte",
-                        input: ["select,source,iselect source", "text,source_new,itext300px"]
-                    });
-                    newform.push({
-                        label: "Variável básica",
-                        input: ["checkbox,is_basic,icheckbox"]
-                    });
+
 
                     var formbuild = $("#dashboard-content .content").append(buildForm(newform, txtOption));
                     $(formbuild).find("div .field:odd").addClass("odd");
@@ -3208,11 +3178,6 @@ $(document).ready(function() {
 
                     loadComboSources(sources, $("#dashboard-content .content select#source"), $("#dashboard-content .content input#source_new"));
 
-                    $.each(variable_periods, function(key, value) {
-                        $("#dashboard-content .content select#period").append($("<option></option>").val(key).html(value));
-                    });
-
-
                     if ($.getUrlVar("option") == "edit") {
                         $.ajax({
                             type: 'GET',
@@ -3230,7 +3195,7 @@ $(document).ready(function() {
                                         if (data.measurement_unit) {
                                             $(formbuild).find("select#measurement_unit").val(data.measurement_unit.id);
                                         }
-                                        $(formbuild).find("select#period").val(data.period);
+                                        //$(formbuild).find("select#period").val(data.period);
 
                                         $(formbuild).find("select#source").val(data.source);
 
@@ -3311,7 +3276,7 @@ $(document).ready(function() {
                                 value: $(this).parent().parent().find("#measurement_unit option:selected").val()
                             }, {
                                 name: "variable." + action + ".period",
-                                value: $(this).parent().parent().find("#period option:selected").val()
+                                value: 'yearly'
                             }];
 
                             args.push({

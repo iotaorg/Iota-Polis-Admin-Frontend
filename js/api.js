@@ -95,15 +95,19 @@ $(document).ready(function() {
     var buildUserInterface = function() {
         if ($.cookie("key") != null && $.cookie("key") != "") {
 
+            $('#content').slideUp();
             $.ajax({
                 type: 'GET',
                 dataType: 'json',
+                async: true,
                 url: api_path + '/api/user/$$userid?api_key=$$key'.render2({
                     userid: $.cookie("user.id"),
                     key: $.cookie("key")
                 }),
                 success: function(data, status, jqXHR) {
-                    $("#content").show();
+                    $("#content").stop(true, true).slideDown('fast');
+                    //$("#content").show();
+
                     switch (jqXHR.status) {
                         case 200:
                             user_info = data;
@@ -127,24 +131,8 @@ $(document).ready(function() {
                             }
 
                             if (user_info.role != "") {
+                                $("#top .top-right .info").html("<div id='user-info'> Usuário " + user_info.name + "</div>");
 
-                                var info_content = "$$e: ".render({
-                                    e: 'Usuário'
-                                }) + user_info.name;
-                                if ($("#user-info").length == 0) {
-                                    $("#top .top-right .info").append("<div id='user-info'>" + info_content + "</div>");
-                                } else {
-                                    $("#top #user-info").html(info_content);
-                                }
-                                if (findInArray(user_info.roles, "_movimento")) {
-                                    if (user_info.files.logo_movimento != undefined) {
-                                        $("#top .top-right .logo").empty().append("<img>");
-                                        $("#top .top-right .logo img").attr("src", user_info.files.logo_movimento);
-                                    }
-                                } else {
-                                    $("#top .top-right .logo").empty();
-                                    $("#top .top-right .logo").addClass("empty");
-                                }
                                 buildMenu();
                                 setTitleBar();
                                 buildContent();
@@ -168,7 +156,8 @@ $(document).ready(function() {
                     }
                 },
                 error: function(data) {
-                    $("#content").show();
+                    $("#content").stop(true, true).slideDown('fast');
+                    //$('#content').css('opacity', 1);
                     switch (data.status) {
                         case 400:
                             $("#aviso").setWarning({
@@ -2610,6 +2599,21 @@ $(document).ready(function() {
                         input: ["select,template_name,iselect"]
                     });
 
+                    var text_content = {
+                        "text_a": 'Texto A',
+                        "text_b": 'Texto b',
+                        "text_c": 'Texto C'
+                    };
+
+                    for (var prop in text_content) {
+                        if (text_content.hasOwnProperty(prop)) {
+                            newform.push({
+                                label: text_content[prop],
+                                input: ["textarea," + prop + ",itext"]
+                            });
+                        }
+                    }
+
                     var formbuild = $("#dashboard-content .content").append(buildForm(newform, txtOption));
                     $(formbuild).find("div .field:odd").addClass("odd");
                     $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
@@ -2637,12 +2641,18 @@ $(document).ready(function() {
                                 key: $.cookie("key")
                             }),
                             success: function(data, status, jqXHR) {
-                                console.log(data);
                                 switch (jqXHR.status) {
                                     case 200:
                                         $(formbuild).find("input#name").val(data.name);
                                         $(formbuild).find("input#axis_name").val(data.axis_name);
                                         $(formbuild).find("input#description").val(data.description);
+
+                                        var text_data = $.parseJSON(data.text_content);
+                                        for (var prop in text_content) {
+                                            if (text_content.hasOwnProperty(prop)) {
+                                                $(formbuild).find("#" + prop).val(text_data[prop]);
+                                            }
+                                        }
 
                                         template_elm.val(data.template_name);
 
@@ -2684,6 +2694,13 @@ $(document).ready(function() {
 
                         } else {
 
+                            var save_data = {};
+                            for (var prop in text_content) {
+                                if (text_content.hasOwnProperty(prop)) {
+                                    save_data[prop] = $(formbuild).find("input#" + prop).val();
+                                }
+                            }
+
                             if ($.getUrlVar("option") == "add") {
                                 var action = "create";
                                 var method = "POST";
@@ -2720,7 +2737,7 @@ $(document).ready(function() {
                                     value: 0
                                 }, {
                                     name: "network." + action + ".text_content",
-                                    value: '{}'
+                                    value: JSON.stringify(save_data)
                                 }
 
                             ];

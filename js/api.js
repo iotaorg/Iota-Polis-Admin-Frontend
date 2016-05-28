@@ -2543,7 +2543,7 @@ $(document).ready(function() {
                 if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined) {
 
                     var userList = buildDataTable({
-                        headers: ["Nome", "Url", "_"]
+                        headers: ["Nome", "Sobre", "_"]
                     });
 
                     $("#dashboard-content .content").append(userList);
@@ -2556,7 +2556,7 @@ $(document).ready(function() {
                     $("#results").dataTable({
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
-                        "sAjaxSource": api_path + '/api/network?api_key=$$key&content-type=application/json&lang=$$lang&columns=name,name_url,url,_,_'.render2({
+                        "sAjaxSource": api_path + '/api/network?api_key=$$key&content-type=application/json&lang=$$lang&columns=name,description,url,_,_'.render2({
                             lang: cur_lang,
                             key: $.cookie("key")
                         }),
@@ -2587,7 +2587,7 @@ $(document).ready(function() {
                         input: ["text,name,itext"]
                     });
                     newform.push({
-                        label: "Descrição da ação",
+                        label: "Sobre a ação",
                         input: ["text,description,itext"]
                     });
                     newform.push({
@@ -2600,8 +2600,8 @@ $(document).ready(function() {
                     });
 
                     var text_content = {
-                        "text_a": 'Texto A',
-                        "text_b": 'Texto b',
+                        "txt_glossario": 'Glossário',
+                        "memo_info_qualitativas": 'Informações qualitativas',
                         "text_c": 'Texto C'
                     };
 

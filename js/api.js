@@ -2698,7 +2698,7 @@ $(document).ready(function() {
                             var save_data = {};
                             for (var prop in text_content) {
                                 if (text_content.hasOwnProperty(prop)) {
-                                    save_data[prop] = $(formbuild).find("input#" + prop).val();
+                                    save_data[prop] = $("#" + prop).val();
                                 }
                             }
 

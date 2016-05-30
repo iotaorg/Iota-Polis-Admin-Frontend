@@ -5052,7 +5052,7 @@ $(document).ready(function() {
                         $("#dashboard-content .content select#sort_direction").append($("<option></option>").val(key).html(value));
                     });
 
-visibilityChanged();
+                    visibilityChanged();
                     $("#visibility_level").change(function() {
                         visibilityChanged();
                     });

@@ -2603,7 +2603,7 @@ $(document).ready(function() {
                     var text_content = {
                         "txt_glossario": 'Glossário',
                         "memo_info_qualitativas": 'Informações qualitativas',
-                        "text_c": 'Texto C'
+                        "txt_condicionantes": 'Condicionantes'
                     };
 
                     for (var prop in text_content) {

@@ -4967,10 +4967,6 @@ $(document).ready(function() {
                         input: ["textarea,goal_explanation,itext"]
                     });
                     newform.push({
-                        label: "Eixo",
-                        input: ["select,axis_id,iselect"]
-                    });
-                    newform.push({
                         label: "Fonte",
                         input: ["select,source,iselect source", "text,source_new,itext300px"]
                     });
@@ -5728,7 +5724,7 @@ $(document).ready(function() {
                                     value: $(this).parent().parent().find("#goal_explanation").val()
                                 }, {
                                     name: "indicator.create.axis_id",
-                                    value: $(this).parent().parent().find("#axis_id option:selected").val()
+                                    value: 1
                                 }, {
                                     name: "indicator.create.source",
                                     value: $(this).parent().parent().find("#source option:selected").val()
@@ -6169,7 +6165,7 @@ $(document).ready(function() {
                                     value: $(this).parent().parent().find("#goal_explanation").val()
                                 }, {
                                     name: "indicator.update.axis_id",
-                                    value: $(this).parent().parent().find("#axis_id option:selected").val()
+                                    value: 1
                                 }, {
                                     name: "indicator.update.source",
                                     value: $(this).parent().parent().find("#source").val()

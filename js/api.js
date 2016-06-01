@@ -6398,54 +6398,9 @@ $(document).ready(function() {
                                 e: 'Pesquisar'
                             }));
 
-                            function carregaRedesEdit() {
-
-                                $.loading();
-                                $.ajax({
-                                    type: 'GET',
-                                    dataType: 'json',
-                                    url: api_path + '/api/network?user_id=$$user&api_key=$$key'.render2({
-                                        key: $.cookie("key"),
-                                        user: user_info.id
-                                    }),
-                                    success: function(data, textStatus, jqXHR) {
-
-                                        data.network.sort(function(a, b) {
-                                            a = a.name,
-                                                b = b.name;
-
-                                            return a.localeCompare(b);
-                                        });
-
-                                        if (data.network.length > 1) {
-
-                                            $("#dashboard-content .content #rede_id option").remove();
-                                            $("#dashboard-content .content #rede_id").append($("<option value='all'>$$t</option>".render({
-                                                t: 'Todas'
-                                            })));
-
-                                            var $cur_rede_id = redeid || 'all'; // padrao = todos.
-
-                                            $.each(data.network, function(index, item) {
-                                                $("#dashboard-content .content #rede_id").append($("<option $$_active value='$$id'>$$nome</option>".render({
-                                                    id: item.id,
-                                                    nome: item.name,
-                                                    _active: (item.id == $cur_rede_id ? 'selected="selected"' : ''),
-                                                })));
-                                            });
-
-
-
-
-                                        } else {
-                                            $("#dashboard-content .content .variable-filter").hide();
-                                            $("#dashboard-content .content .variable-filter .form-pesquisa .variable").hide();
-                                            $("#dashboard-content .content .variable-filter .form-pesquisa .botao").hide();
-                                        }
-                                        $.loading.hide();
-                                    }
-                                });
-                            }
+                            $("#dashboard-content .content .variable-filter").hide();
+                            $("#dashboard-content .content .variable-filter .form-pesquisa .variable").hide();
+                            $("#dashboard-content .content .variable-filter .form-pesquisa .botao").hide();
 
                             $("#dashboard-content .content .variable-filter #botao-pesquisar").click(function() {
 
@@ -6454,9 +6409,8 @@ $(document).ready(function() {
                                 });
 
                             });
-                            carregaRedesEdit();
 
-                            $("#dashboard-content .content .indicadores_list .zoom").click(function() {
+                            /*$("#dashboard-content .content .indicadores_list .zoom").click(function() {
                                 var target = $(this).parent().parent();
                                 var indicator_period = $(this).attr("period");
                                 if ($(target).find(".historico-popup").is(":visible")) {
@@ -6614,12 +6568,11 @@ $(document).ready(function() {
                                         }
                                     });
                                 }
-                            });
+                            });*/
 
                             $("div.indicadores_list .eixos .title").click(function() {
                                 $(this).parent().toggleClass("collapse");
-                                //                              $(this).parent().find(".variable").toggle();
-                            });
+                            }).click();
 
                             //busca status dos indicadores
 
@@ -6684,9 +6637,6 @@ $(document).ready(function() {
                             $("#dashboard-content .content").append("<div class='filter_indicator'></div><div class='clear'><br /></div><div class='filter_result'></div><div class='clear'><br /></div><div class='tech_info'></div><div class='clear'><br /></div><div class='historico'></div>");
 
                             var data_indicator = data;
-
-
-
 
                             var data_region;
                             if (user_info.regions_enabled) {

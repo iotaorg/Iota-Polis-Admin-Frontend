@@ -134,7 +134,7 @@ $(document).ready(function() {
                             if (user_info.role != "") {
                                 $("#top .top-right .info").html("<div id='user-info'> Usuário " + user_info.name + "</div>");
 
-                                user_info.regions_enabled=true;
+                                user_info.regions_enabled = true;
 
 
                                 buildMenu();
@@ -277,9 +277,8 @@ $(document).ready(function() {
 
         submenu_label["indicator_user"] = [];
         submenu_label["indicator_user"].push({
-
-            "myindicator": "Editar Indicadores",
-            "indicator": "Meus Indicadores",
+            "indicator": "Gerenciar indicadores",
+            "myindicator": "Valores por indicador",
             "mygroup": "Grupos de Indicadores"
         });
 
@@ -298,8 +297,8 @@ $(document).ready(function() {
             "region-map": "Definir Regiões no Mapa"
         });
 
-        menu_access["superadmin"] = ["dashboard", "prefs", "parameters", "networks", "variable", "indicator", "indicator_user" , "logout", ];
-        submenu_access["superadmin"] = ["units", "myindicator"];
+        menu_access["superadmin"] = ["dashboard", "prefs", "parameters", "networks", "variable", "indicator_user", "logout", ];
+        submenu_access["superadmin"] = ["units", "myindicator", "indicator"];
 
         menu_access["admin"] = ["dashboard", "prefs", "variable_user", "networks", "indicator"];
         submenu_access["admin"] = ["countries", "states", "cities", "units", "css"];
@@ -2619,7 +2618,7 @@ $(document).ready(function() {
                         if (text_content.hasOwnProperty(prop)) {
                             newform.push({
                                 label: text_content[prop],
-                                input: [( /(url|titulo)/.test(prop) ? 'text' : 'textarea' ) + "," + prop + ",itext"]
+                                input: [(/(url|titulo)/.test(prop) ? 'text' : 'textarea') + "," + prop + ",itext"]
                             });
                         }
                     }
@@ -5166,7 +5165,9 @@ $(document).ready(function() {
                             }
                         }
 
-                        setTimeout(function(){$("#visibility_level").remove()}, 0);
+                        setTimeout(function() {
+                            $("#visibility_level").remove()
+                        }, 0);
                     }
 
                     $("#dashboard-content .content textarea#formula").after("<div id='formula-editor'><div class='editor'><div class='editor-content'></div></div><div class='button'><<</div><div class='variables-title'>Variáveis</div><div class='variables'></div><div class='user-input'></div><div class='operators'></div></div>");
@@ -5629,22 +5630,7 @@ $(document).ready(function() {
                     $("#variacoes_placeholder").parent().parent().hide();
                     $("#vvariacoes_placeholder").parent().parent().hide();
                     $("#all_variations_variables_are_required").parent().parent().hide();
-/*
-                    $("#indicator_type").change(function() {
-                        if ($("#indicator_type").val() == "normal") {
-                            $("#variety_name").parent().parent().hide();
-                            $("#variacoes_placeholder").parent().parent().hide();
-                            $("#vvariacoes_placeholder").parent().parent().hide();
-                            $("#all_variations_variables_are_required").parent().parent().hide();
-                            $("#formula-editor .variables")
-                        } else {
-                            $("#variety_name").parent().parent().show();
-                            $("#variacoes_placeholder").parent().parent().show();
-                            $("#vvariacoes_placeholder").parent().parent().show();
-                            $("#all_variations_variables_are_required").parent().parent().show();
-                        }
-                    });
-*/
+
                     $("#vvariacoes-button-add").click(function() {
                         addVVariacao();
                     });
@@ -5688,7 +5674,7 @@ $(document).ready(function() {
                                 }, {
                                     name: "indicator.create.sort_direction",
                                     value: $(this).parent().parent().find("#sort_direction option:selected").val()
-                                },  {
+                                }, {
                                     name: "indicator.create.summarization_method",
                                     value: $("#summarization_method option:selected").val()
                                 }, {
@@ -5711,40 +5697,12 @@ $(document).ready(function() {
                                     value: 'network'
                                 });
 
-                                 args.push({
+                                args.push({
                                     name: "indicator.create.visibility_networks_id",
                                     value: $(this).parent().parent().find("#visibility_networks_id").val()
                                 });
 
-/*
-                                if ($(this).parent().parent().find("#indicator_type").val() == "varied" || $(this).parent().parent().find("#indicator_type").val() == "varied_dyn") {
-                                    if ($(this).parent().parent().find("#all_variations_variables_are_required").attr("checked")) {
-                                        args.push({
-                                            name: "indicator.create.all_variations_variables_are_required",
-                                            value: 1
-                                        });
-                                    } else {
-                                        args.push({
-                                            name: "indicator.create.all_variations_variables_are_required",
-                                            value: 0
-                                        });
-                                    }
-                                    args.push({
-                                        name: "indicator.create.variety_name",
-                                        value: $(this).parent().parent().find("#variety_name").val()
-                                    });
-                                    args.push({
-                                        name: "indicator.create.summarization_method",
-                                        value: 'sum'
-                                    });
-                                    if ($(this).parent().parent().find("#indicator_type").val() == "varied_dyn") {
-                                        args.push({
-                                            name: "indicator.create.dynamic_variations",
-                                            value: 1
-                                        });
-                                    }
-                                }
-*/
+
                                 $("#dashboard-content .content .botao-form[ref='enviar']").hide();
                                 $.ajax({
                                     async: false,
@@ -5755,56 +5713,7 @@ $(document).ready(function() {
                                     success: function(data, status, jqXHR) {
                                         var newId = data.id;
                                         var formula_update = $("#dashboard-content textarea#formula").val();
-                                        /*
-                                        if ($("#dashboard-content .content select#indicator_type").val() == "varied" || $("#dashboard-content .content select#indicator_type").val() == "varied_dyn") {
 
-                                            $.each(variacoes_list, function(index, item) {
-                                                args = [{
-                                                    name: "api_key",
-                                                    value: $.cookie("key")
-                                                }, {
-                                                    name: "indicator.variation.create.name",
-                                                    value: item.name
-                                                }, {
-                                                    name: "indicator.variation.create.order",
-                                                    value: item.order
-                                                }];
-
-                                                $.ajax({
-                                                    async: false,
-                                                    type: 'POST',
-                                                    dataType: 'json',
-                                                    url: api_path + '/api/indicator/$$newid/variation'.render2({
-                                                        newid: newId
-                                                    }),
-                                                    data: args
-                                                });
-                                            });
-
-                                            $.each(vvariacoes_list, function(index, item) {
-                                                args = [{
-                                                    name: "api_key",
-                                                    value: $.cookie("key")
-                                                }, {
-                                                    name: "indicator.variables_variation.create.name",
-                                                    value: item.name
-                                                }];
-
-                                                $.ajax({
-                                                    async: false,
-                                                    type: 'POST',
-                                                    dataType: 'json',
-                                                    url: api_path + '/api/indicator/$$newid/variables_variation'.render2({
-                                                        newid: newId
-                                                    }),
-                                                    data: args,
-                                                    success: function(data, status, jqXHR) {
-                                                        formula_update = formula_update.replace("#" + item.id, "#" + data.id);
-                                                    }
-                                                });
-                                            });
-                                        }
-                                        */
                                         if (formula_update != $("#dashboard-content textarea#formula").val()) {
                                             args = [{
                                                 name: "api_key",
@@ -5877,66 +5786,6 @@ $(document).ready(function() {
                                 switch (jqXHR.status) {
                                     case 200:
                                         $(formbuild).find("input#name").val(data.name);
-                                        /*
-                                        if (data.indicator_type == "varied" && data.dynamic_variations == "1") {
-                                            $(formbuild).find("select#indicator_type").val("varied_dyn");
-                                        } else {
-                                            $(formbuild).find("select#indicator_type").val(data.indicator_type);
-                                        }
-                                        */
-                                        /*
-                                        if (data.indicator_type == "varied") {
-                                            $(formbuild).find("input#variety_name").val(data.variety_name);
-                                            if (data.all_variations_variables_are_required == 1) {
-                                                $(formbuild).find("input#all_variations_variables_are_required").attr("checked", true);
-                                            } else {
-                                                $(formbuild).find("input#all_variations_variables_are_required").attr("checked", false);
-                                            }
-                                            $.ajax({
-                                                async: false,
-                                                type: 'GET',
-                                                dataType: 'json',
-                                                url: api_path + '/api/indicator/$$id/variation?api_key=$$key'.render2({
-                                                    key: $.cookie("key"),
-                                                    id: getIdFromUrl($.getUrlVar("url"))
-                                                }),
-                                                success: function(data, status, jqXHR) {
-                                                    variacoes_list = [];
-                                                    variacoes_id_temp = 0;
-                                                    $.each(data.variations, function(index, item) {
-                                                        variacoes_list.push({
-                                                            id: item.id,
-                                                            name: item.name,
-                                                            order: item.order,
-                                                            temp: false
-                                                        });
-                                                    });
-                                                }
-                                            });
-                                            $.ajax({
-                                                async: false,
-                                                type: 'GET',
-                                                dataType: 'json',
-                                                url: api_path + '/api/indicator/$$id/variables_variation?api_key=$$key'.render2({
-                                                    key: $.cookie("key"),
-                                                    id: getIdFromUrl($.getUrlVar("url"))
-                                                }),
-                                                success: function(data, status, jqXHR) {
-                                                    vvariacoes_list = [];
-                                                    vvariacoes_id_temp = 0
-                                                    $.each(data.variables_variations, function(index, item) {
-                                                        vvariacoes_list.push({
-                                                            id: item.id,
-                                                            name: item.name,
-                                                            temp: false
-                                                        });
-                                                    });
-                                                }
-                                            });
-                                            updateVariacoesTable();
-                                            updateVVariacoesTable();
-
-                                        }*/
 
                                         $(formbuild).find("select#visibility_level").val(data.visibility_level);
 
@@ -6084,7 +5933,7 @@ $(document).ready(function() {
                                 }, {
                                     name: "indicator.update.sort_direction",
                                     value: $(this).parent().parent().find("#sort_direction option:selected").val()
-                                },   {
+                                }, {
                                     name: "indicator.update.summarization_method",
                                     value: $("#summarization_method option:selected").val()
                                 }, {
@@ -6118,47 +5967,14 @@ $(document).ready(function() {
                                 });
 
 
-                                /*if ($(this).parent().parent().find("#indicator_type").val() == "varied" || $(this).parent().parent().find("#indicator_type").val() == "varied_dyn") {
-                                    if ($(this).parent().parent().find("#all_variations_variables_are_required").attr("checked")) {
-                                        args.push({
-                                            name: "indicator.update.all_variations_variables_are_required",
-                                            value: 1
-                                        });
-                                    } else {
-                                        args.push({
-                                            name: "indicator.update.all_variations_variables_are_required",
-                                            value: 0
-                                        });
-                                    }
-                                    args.push({
-                                        name: "indicator.update.variety_name",
-                                        value: $(this).parent().parent().find("#variety_name").val()
-                                    });
-                                    args.push({
-                                        name: "indicator.update.summarization_method",
-                                        value: 'sum'
-                                    });
-                                    if ($(this).parent().parent().find("#indicator_type").val() == "varied_dyn") {
-                                        args.push({
-                                            name: "indicator.update.dynamic_variations",
-                                            value: 1
-                                        });
-                                    } else {
-                                        args.push({
-                                            name: "indicator.update.dynamic_variations",
-                                            value: 0
-                                        });
-                                    }
-                                } else { */
-                                    args.push({
-                                        name: "indicator.update.all_variations_variables_are_required",
-                                        value: ''
-                                    });
-                                    args.push({
-                                        name: "indicator.update.variety_name",
-                                        value: ''
-                                    });
-                                // }
+                                args.push({
+                                    name: "indicator.update.all_variations_variables_are_required",
+                                    value: ''
+                                });
+                                args.push({
+                                    name: "indicator.update.variety_name",
+                                    value: ''
+                                });
 
                                 $("#dashboard-content .content .botao-form[ref='enviar']").hide();
                                 $.ajax({
@@ -6169,120 +5985,7 @@ $(document).ready(function() {
                                     success: function(data, textStatus, jqXHR) {
                                         var newId = data.id;
                                         var formula_update = $("#dashboard-content textarea#formula").val();
-                                        /*if ($("#dashboard-content .content select#indicator_type").val() == "varied" || $("#dashboard-content .content select#indicator_type").val() == "varied_dyn") {
 
-                                            $.each(variacoes_list, function(index, item) {
-                                                if ((item.temp) || item.temp == "true") {
-                                                    args = [{
-                                                        name: "api_key",
-                                                        value: $.cookie("key")
-                                                    }, {
-                                                        name: "indicator.variation.create.name",
-                                                        value: item.name
-                                                    }, {
-                                                        name: "indicator.variation.create.order",
-                                                        value: item.order
-                                                    }];
-
-                                                    $.ajax({
-                                                        async: false,
-                                                        type: 'POST',
-                                                        dataType: 'json',
-                                                        url: api_path + '/api/indicator/$$newid/variation'.render2({
-                                                            newid: newId
-                                                        }),
-                                                        data: args
-                                                    });
-                                                } else {
-                                                    if ((item.update) || item.update == "true") {
-                                                        args = [{
-                                                            name: "api_key",
-                                                            value: $.cookie("key")
-                                                        }, {
-                                                            name: "indicator.variation.update.name",
-                                                            value: item.name
-                                                        }];
-                                                        $.ajax({
-                                                            async: false,
-                                                            type: 'POST',
-                                                            dataType: 'json',
-                                                            url: api_path + '/api/indicator/$$newid/variation/$$id'.render2({
-                                                                newid: newId,
-                                                                id: item.id
-                                                            }),
-                                                            data: args
-                                                        });
-                                                    } else if ((item.delete) || item.delete == "true") {
-                                                        $.ajax({
-                                                            async: false,
-                                                            type: 'DELETE',
-                                                            dataType: 'json',
-                                                            url: api_path + '/api/indicator/$$newid/variation/$$id'.render2({
-                                                                newid: newId,
-                                                                id: item.id
-                                                            }),
-                                                            data: args
-                                                        });
-                                                    }
-                                                }
-                                            });
-
-                                            $.each(vvariacoes_list, function(index, item) {
-                                                if ((item.temp) || item.temp == "true") {
-                                                    args = [{
-                                                        name: "api_key",
-                                                        value: $.cookie("key")
-                                                    }, {
-                                                        name: "indicator.variables_variation.create.name",
-                                                        value: item.name
-                                                    }];
-
-                                                    $.ajax({
-                                                        async: false,
-                                                        type: 'POST',
-                                                        dataType: 'json',
-                                                        url: api_path + '/api/indicator/$$newid/variables_variation'.render2({
-                                                            newid: newId
-                                                        }),
-                                                        data: args,
-                                                        success: function(data) {
-                                                            formula_update = formula_update.replace("#" + item.id, "#" + data.id);
-                                                        }
-                                                    });
-                                                } else {
-                                                    if ((item.update) || item.update == "true") {
-                                                        args = [{
-                                                            name: "api_key",
-                                                            value: $.cookie("key")
-                                                        }, {
-                                                            name: "indicator.variables_variation.update.name",
-                                                            value: item.name
-                                                        }];
-                                                        $.ajax({
-                                                            async: false,
-                                                            type: 'POST',
-                                                            dataType: 'json',
-                                                            url: api_path + '/api/indicator/$$newid/variables_variation/$$id'.render2({
-                                                                newid: newId,
-                                                                id: item.id
-                                                            }),
-                                                            data: args
-                                                        });
-                                                    } else if ((item.delete) || item.delete == "true") {
-                                                        $.ajax({
-                                                            async: false,
-                                                            type: 'DELETE',
-                                                            dataType: 'json',
-                                                            url: api_path + '/api/indicator/$$newid/variables_variation/$$id'.render2({
-                                                                newid: newId,
-                                                                id: item.id
-                                                            }),
-                                                            data: args
-                                                        });
-                                                    }
-                                                }
-                                            });
-                                        }*/
 
                                         if (formula_update != $("#dashboard-content textarea#formula").val()) {
                                             args = [{
@@ -6303,25 +6006,6 @@ $(document).ready(function() {
                                             });
                                         }
 
-                                        /*
-                                        // cadastra flag mostrar na home
-                                        args = [{
-                                            name: "api_key",
-                                            value: $.cookie("key")
-                                        }, {
-                                            name: "indicator.network_config.upsert.unfolded_in_home",
-                                            value: ($("input#unfolded_in_home").attr("checked") ? 1 : 0)
-                                        }];
-                                        $.ajax({
-                                            async: false,
-                                            type: 'POST',
-                                            dataType: 'json',
-                                            url: api_path + '/api/indicator/$$newid/network_config/$$network_id'.render2({
-                                                newid: newId,
-                                                network_id: user_info.network
-                                            }),
-                                            data: args
-                                        });*/
 
                                         $("#aviso").setWarning({
                                             msg: "Cadastro editado com sucesso.".render2({
@@ -6629,51 +6313,7 @@ $(document).ready(function() {
                                     }
                                 }
 
-                                //if (!findInArray(indicators_in_groups,data_indicators[i].id)){ oculta indicadores já listados nos grupos
-
-                                //                   if (data_indicators[i].axis_id != axis_ant) {
-                                //                       if (count_i > 0) {
-                                //                       indicators_table += "</div>";
-                                //                       }
-                                //                       indicators_table += "<div class='eixos collapse'><div class='title'>$$axis</div><div class='clear'></div>".render({
-                                //                       axis: data_indicators[i].axis.name
-                                //                       });
-                                //                       axis_ant = data_indicators[i].axis_id;
-                                //                   }
-                                //
-                                //                   var formula = formataFormula(data_indicators[i].formula, data_variables, data_vvariables);
-                                //
-                                //                   var tr_class = "folded";
-                                //                   $.each(data_indicators[i].network_configs, function (index_config, item_config) {
-                                //                       if (item_config.network_id == user_info.network && item_config.unfolded_in_home == 1) {
-                                //                       tr_class = "unfolded";
-                                //                       }
-                                //                   });
-                                //
-                                //                   indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='$$ss' alt='$$ss' indicator-id='$$_id' period='$$_period' aaa=123>$$det</a><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='$$a' alt='$$a'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
-                                //                       name: data_indicators[i].name,
-                                //                       a: 'adicionar valores',
-                                //                       ss: 'Série Histórica',
-                                //                       fxormula: formula,
-                                //                       _hash: "#!/" + getUrlSub(),
-                                //                       _url: api_path + "/api/indicator/" + data_indicators[i].id,
-                                //                       _indicator_id: data_indicators[i].id,
-                                //                       det: 'detalhes',
-                                //                       _period: data_indicators[i].period,
-                                //                       _id: data_indicators[i].id,
-                                //                       _tr_class: tr_class
-                                //                   });
-                                //                   indicators_table += "<div class='clear'></div>";
-                                //                   count_i++;
-                                //                   //}
                             }
-
-                            //                   indicators_hash.sort;
-
-                            //                   console.log(indicators_hash);
-
-
-
 
                             var count_i = 0;
 
@@ -6735,36 +6375,6 @@ $(document).ready(function() {
                                 });
                             }
 
-                            /*if (user_info.institute.id == 2) {
-                                //carrega indicadores ocultos
-                                if (typeof indicators_hash['hidden'] != "undefined") {
-
-                                    indicators_table += "</div>";
-                                    indicators_table += "<div class='eixos hidden collapse'><div class='title'>$$e</div><div class='clear'></div>".render({
-                                        e: 'Indicadores Ocultos'
-                                    });
-
-                                    for (i = 0; i < indicators_hash['hidden'].length; i++) {
-                                        if (indicators_hash['hidden'][i].user_indicator_config && indicators_hash['hidden'][i].user_indicator_config.hide_indicator == 1) {
-                                            var formula = formataFormula(indicators_hash['hidden'][i].formula, data_variables, data_vvariables);
-                                            var tr_class = "folded";
-                                            indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='$$_hash?option=unhide&url=$$_url&config_id=$$_config_id' class='icone unhide' title='$$e' alt='$$e'>$$m</a></div><div class='clear'></div></div>".render({
-                                                name: indicators_hash['hidden'][i].name,
-                                                m: 'mostrar',
-                                                e: 'remover da lista de ocultos',
-                                                fxormula: formula,
-                                                _hash: "#!/" + getUrlSub(),
-                                                _url: api_path + "/api/indicator/" + indicators_hash['hidden'][i].id,
-                                                _indicator_id: indicators_hash['hidden'][i].id,
-
-                                                _config_id: indicators_hash['hidden'][i].user_indicator_config.id,
-                                                _tr_class: tr_class
-                                            });
-                                            indicators_table += "<div class='clear'></div>";
-                                        }
-                                    }
-                                }
-                            }*/
 
                             indicators_table += "</div>";
                             indicators_table += "<div class='clear'></div>";
@@ -7075,134 +6685,7 @@ $(document).ready(function() {
 
                             var data_indicator = data;
 
-                            /* //mostra informação técnica
-                            var newform = [];
-                            newform.push({
-                                label: "Informação Técnica",
-                                input: ["textarea,technical_information,itext"]
-                            });
-                            if (user_info.institute.id == 2) {
-                                newform.push({
-                                    label: "",
-                                    input: ["checkbox,hide_indicator,icheckbox"]
-                                });
-                            }*/
 
-                            /*var formbuild = $("#dashboard-content .content .tech_info").append(buildForm(newform, "Observações do Indicador"));
-                            $(formbuild).find("div .field:odd").addClass("odd");
-                            $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
-
-                            $("#dashboard-content .content .tech_info .botao-form[ref='enviar']").html("$$save".render({
-                                save: 'Salvar'
-                            }));
-                            $("#dashboard-content .content .tech_info .botao-form[ref='cancelar']").hide();
-
-                            var tech_info_id;
-                            $("#hide_indicator").after("$$e".render({
-                                e: "Ocultar esse indicador"
-                            }));
-
-                            $.ajax({
-                                type: 'GET',
-                                dataType: 'json',
-                                url: api_path + '/api/user/$$user_id/indicator_config?indicator_id=$$id&api_key=$$key'.render2({
-                                    key: $.cookie("key"),
-                                    user_id: $.cookie("user.id"),
-                                    id: getIdFromUrl($.getUrlVar("url"))
-                                }),
-                                success: function(data, textStatus, jqXHR) {
-                                    tech_info_id = data.id;
-                                    $(".tech_info #technical_information").val(data.technical_information);
-                                    if (user_info.institute.id == 2) {
-                                        if (data.hide_indicator == 1) {
-                                            $(".tech_info #hide_indicator").attr("checked", true);
-                                        } else {
-                                            $(".tech_info #hide_indicator").attr("checked", false);
-                                        }
-                                    }
-                                },
-                                error: function(data) {
-                                    if (data.status == 404) {
-                                        tech_info_id = null;
-                                    }
-                                }
-                            });
-
-                            $("#dashboard-content .content .tech_info .botao-form[ref='enviar']").click(function() {
-                                var validation = true;
-
-                                if (user_info.institute.id == 2) {
-                                    if ($(".tech_info #technical_information").val() == "" && (!$(".tech_info #hide_indicator").attr("checked")) && !(tech_info_id)) {
-                                        validation = false;
-                                    }
-                                } else {
-                                    if ($(".tech_info #technical_information").val() == "" && !(tech_info_id)) {
-                                        validation = false;
-                                    }
-                                }
-                                if (!validation) {
-                                    $(".tech_info .form-aviso").setWarning({
-                                        msg: "Por favor informe a informação a ser salva.".render2({
-                                            codigo: jqXHR.status
-                                        })
-                                    });
-                                } else {
-                                    $.loading();
-                                    if (!tech_info_id) {
-                                        var action = "create";
-                                        url_action = api_path + "/api/user/$$user_id/indicator_config".render2({
-                                            user_id: $.cookie("user.id")
-                                        });
-                                    } else {
-                                        var action = "update";
-                                        url_action = api_path + "/api/user/$$user_id/indicator_config/$$id".render2({
-                                            user_id: $.cookie("user.id"),
-                                            id: tech_info_id
-                                        });
-                                    }
-                                    args = [{
-                                        name: "api_key",
-                                        value: $.cookie("key")
-                                    }, {
-                                        name: "user.indicator_config." + action + ".technical_information",
-                                        value: $(".tech_info #technical_information").val()
-                                    }, {
-                                        name: "user.indicator_config." + action + ".indicator_id",
-                                        value: getIdFromUrl($.getUrlVar("url"))
-                                    }];
-
-                                    if (user_info.institute.id == 2) {
-                                        args.push({
-                                            name: "user.indicator_config." + action + ".hide_indicator",
-                                            value: ($(".tech_info #hide_indicator").attr("checked")) ? 1 : 0
-                                        });
-                                    }
-
-                                    $.ajax({
-                                        type: "POST",
-                                        dataType: 'json',
-                                        url: url_action,
-                                        data: args,
-                                        success: function(data, textStatus, jqXHR) {
-                                            $(".tech_info .form-aviso").setWarning({
-                                                msg: "Informação salva com sucesso.".render2({
-                                                    codigo: jqXHR.status
-                                                })
-                                            });
-                                            $.loading.hide();
-                                        },
-                                        error: function(data) {
-                                            $(".tech_info .form-aviso").setWarning({
-                                                msg: "Erro ao salvar. ($$erro)".render2({
-                                                    erro: $.trataErro(data)
-                                                })
-                                            });
-                                            $.loading.hide();
-                                        }
-                                    });
-                                }
-
-                            });*/
 
 
                             var data_region;
@@ -7272,8 +6755,8 @@ $(document).ready(function() {
 
                                 $("#region_id").change(function(e) {
 
-                                    if (!$("#dashboard-content .content .filter_result").is(':empty')){
-                                        if (window.confirm('Ao alterar a região, você irá perder os dados preenchidos. Deseja continaur?')){
+                                    if (!$("#dashboard-content .content .filter_result").is(':empty')) {
+                                        if (window.confirm('Ao alterar a região, você irá perder os dados preenchidos abaixo. Deseja continuar?')) {
                                             $('.filter_result a[ref="cancelar"]').click();
 
                                             $("#dashboard-content .content div.historico").html('Carregando...');
@@ -7285,7 +6768,7 @@ $(document).ready(function() {
 
 
                                         }
-                                    }else{
+                                    } else {
                                         $("#dashboard-content .content div.historico").html('Carregando...');
                                         buildIndicatorHistory({
                                             "id": getIdFromUrl($.getUrlVar("url")),
@@ -7297,7 +6780,7 @@ $(document).ready(function() {
 
                                 });
                                 $("#dashboard-content .content select#region_id").append($("<option></option>").val("1").html("$$e".render({
-                                    e: 'São Paulo'
+                                    e: 'Litoral Sustentável'
                                 }))).change();
 
                                 var region = [];
@@ -7363,25 +6846,7 @@ $(document).ready(function() {
                                 }
                             });
                             var data_vvariables = [];
-                            /*
-                            $.ajax({
-                                async: false,
-                                cache: true,
-                                type: 'GET',
-                                dataType: 'json',
-                                url: api_path + '/api/indicator/variable?api_key=$$key'.render2({
-                                    key: $.cookie("key"),
-                                    userid: $.cookie("user.id")
-                                }),
-                                success: function(data, textStatus, jqXHR) {
-                                    $.each(data.variables, function(index, value) {
-                                        data_vvariables.push({
-                                            "id": data.variables[index].id,
-                                            "name": data.variables[index].name
-                                        });
-                                    });
-                                }
-                            });*/
+
 
                             $("#dashboard-content .content .filter_indicator #textlabel_formula").html("$$e".render({
                                 e: formataFormula(data_indicator.formula, data_variables, data_vvariables)
@@ -7422,11 +6887,11 @@ $(document).ready(function() {
 
 
                             $("#dashboard-content .content .filter_indicator #date_filter").change(function() {
-                                if (!$("#dashboard-content .content .filter_result").is(':empty')){
-                                    if (window.confirm('Ao alterar o ano, você irá perder os dados preenchidos. Deseja continaur?')){
+                                if (!$("#dashboard-content .content .filter_result").is(':empty')) {
+                                    if (window.confirm('Ao alterar o ano, você irá perder os dados preenchidos abaixo. Deseja continuar?')) {
                                         $('.filter_result a[ref="cancelar"]').click();
                                     }
-                                }else{
+                                } else {
                                     $('.filter_result a[ref="cancelar"]').click();
                                 }
                             });
@@ -7494,71 +6959,10 @@ $(document).ready(function() {
                                             });
                                         });
 
-                                        /*$.ajax({
-                                            async: false,
-                                            type: 'GET',
-                                            dataType: 'json',
-                                            url: api_path + '/api/indicator/$$id/variables_variation?api_key=$$key'.render2({
-                                                key: $.cookie("key"),
-                                                id: getIdFromUrl($.getUrlVar("url"))
-                                            }),
-                                            success: function(data_variables_variation, textStatus, jqXHR) {
-                                                data_vvariables = data_variables_variation.variables_variations;
-                                            }
-                                        });*/
                                         data_vvariables = [];
 
-                                        /*$.ajax({
-                                            async: false,
-                                            type: 'GET',
-                                            dataType: 'json',
-                                            url: api_path + '/api/indicator/$$id/variation?api_key=$$key'.render2({
-                                                key: $.cookie("key"),
-                                                id: getIdFromUrl($.getUrlVar("url"))
-                                            }),
-                                            success: function(data_variation, textStatus, jqXHR) {
-                                                data_variations = data_variation.variations;
-                                                $.each(data_variations, function(index_variation, item_variation) {
-                                                    newform.push({
-                                                        label: "Faixa",
-                                                        input: ["textlabel,textlabel_variation_$$id,ilabel".render2({
-                                                            id: item_variation.id
-                                                        })]
-                                                    });
-                                                    $.each(data_vvariables, function(index_vvariables, item_vvariables) {
-                                                        newform.push({
-                                                            label: "<b>" + item_vvariables.name + "</b>",
-                                                            input: ["text,v_$$var_id_var_$$id,itext ivar".render2({
-                                                                id: item_vvariables.id,
-                                                                var_id: item_variation.id
-                                                            })]
-                                                        });
-                                                    });
-                                                    if (data_vvariables.length > 0) {
-                                                        newform.push({
-                                                            type: "div",
-                                                            class: "div_variacoes"
-                                                        });
-                                                    }
-                                                });
-                                            }
-                                        });*/
                                         data_variations = [];
 
-                                        /*if (data_indicator.dynamic_variations == "1") {
-                                            newform.push({
-                                                label: "Nova Faixa",
-                                                input: ["text,new_variation,itext"],
-                                                class: "nova_variacao"
-                                            });
-                                            newform.push({
-                                                label: "",
-                                                input: ["button,new_variation_add,botao-form"]
-                                            });
-                                            newform.push({
-                                                type: "div"
-                                            });
-                                        }*/
 
                                         newform.push({
                                             label: "Meta",
@@ -7611,82 +7015,7 @@ $(document).ready(function() {
                                             loadComboSources(sources, $("#dashboard-content .content select#source_" + item.id), $("#dashboard-content .content input#source_" + item.id + "_new"));
                                         });
 
-                                        /*$(formbuild).find("#new_variation_add").click(function() {
-                                            $(this).html("Aguarde...");
-                                            $(this).unbind();
-                                            addNewVariation();
-                                        });
 
-                                        function addNewVariation() {
-                                            var variation_id;
-
-                                            args = [{
-                                                name: "api_key",
-                                                value: $.cookie("key")
-                                            }, {
-                                                name: "indicator.variation.create.name",
-                                                value: $(formbuild).find("div.field.nova_variacao .input input").val()
-                                            }, {
-                                                name: "indicator.variation.create.order",
-                                                value: ($(formbuild).find(".div_variacoes").length + 1)
-                                            }];
-
-                                            $.ajax({
-                                                async: false,
-                                                type: "POST",
-                                                dataType: 'json',
-                                                url: api_path + '/api/indicator/$$indicator_id/variation'.render2({
-                                                    indicator_id: getIdFromUrl($.getUrlVar("url"))
-                                                }),
-                                                data: args,
-                                                success: function(data, textStatus, jqXHR) {
-
-                                                    variation_id = data.id
-                                                    $(formbuild).find("#new_variation_add").html("$$e".render({
-                                                        e: 'Adicionar'
-                                                    }));
-                                                    $(formbuild).find("#new_variation_add").click(function() {
-                                                        $(this).html("Aguarde...");
-                                                        $(this).unbind();
-                                                        addNewVariation();
-                                                    });
-                                                    //Adiciona nova variação na tela
-                                                    var newformVariation = '<div class="field "><div class="label">Faixa:</div><div class="input"><div class="ilabel" id="textlabel_variation_$$_var_id">$$nome</div></div><div class="clear"></div></div>'.render({
-                                                        _var_id: variation_id,
-                                                        nome: $(formbuild).find("div.field.nova_variacao .input input").val()
-                                                    });
-                                                    $.each(data_vvariables, function(index_vvariables, item_vvariables) {
-                                                        newformVariation += '<div class="field  odd"><div class="label"><b>$$name</b>:</div><div class="input"><input name="v_$$_var_id_var_$$_id" id="v_$$_var_id_var_$$_id" class="itext" type="text"></div><div class="clear"></div></div>'.render({
-                                                            _id: item_vvariables.id,
-                                                            name: item_vvariables.name,
-                                                            _var_id: variation_id
-                                                        });
-                                                    });
-                                                    newformVariation += '<div class="div div_variacoes"></div>';
-
-                                                    $(formbuild).find("div.field.nova_variacao").before(newformVariation);
-
-                                                    $(formbuild).find("div.field.nova_variacao .input input").val("");
-
-                                                },
-                                                error: function(data) {
-                                                    $(".filter_result .form-aviso").setWarning({
-                                                        msg: "Erro ao enviar. ($$erro)".render2({
-                                                            erro: $.trataErro(data)
-                                                        })
-                                                    });
-                                                    $(formbuild).find("#new_variation_add").html("$$e".render({
-                                                        e: 'Adicionar'
-                                                    }));
-                                                    $(formbuild).find("#new_variation_add").click(function() {
-                                                        $(this).html("Aguarde...");
-                                                        $(this).unbind();
-                                                        addNewVariation();
-                                                    });
-                                                }
-                                            });
-
-                                        }*/
 
                                         $("#no_data").after("Não possuo um ou mais dados, quero justificar o indicador.");
                                         $("#dashboard-content .content .filter_result .field:last").hide();
@@ -7746,44 +7075,6 @@ $(document).ready(function() {
                                         if (data.justification_of_missing_field) {
                                             $("#no_data").click();
                                         }
-
-                                        // comentando em motivo de nao ter valores variados nesse sistema polis.
-                                        /*$.each(data_variations, function(index_variation, item_variation) {
-                                            $("#dashboard-content .content .filter_result div#textlabel_variation_$$id".render({
-                                                id: item_variation.id
-                                            })).html(item_variation.name)
-                                        });*/
-
-                                        /*$.each(data_vvariables, function(index_vvariables, item_vvariables) {
-                                            $.ajax({
-                                                async: false,
-                                                type: 'GET',
-                                                dataType: 'json',
-                                                url: api_path + '/api/indicator/$$indicator_id/variables_variation/$$id/values?valid_from=$$period&api_key=$$key$$region'.render2({
-                                                    key: $.cookie("key"),
-                                                    indicator_id: getIdFromUrl($.getUrlVar("url")),
-                                                    id: item_vvariables.id,
-                                                    period: $("#dashboard-content .content .filter_indicator select#date_filter option:selected").val(),
-                                                    region: ($("#dashboard-content .content select#region_id option:selected").val()) ? "&region_id=" + $("#dashboard-content .content select#region_id option:selected").val() : ""
-                                                }),
-                                                success: function(data, textStatus, jqXHR) {
-                                                    $.loading.hide();
-                                                    $.each(data.values, function(index_value, item_value) {
-                                                        var obj = "#v_$$var_id_var_$$id".render({
-                                                            id: item_vvariables.id,
-                                                            var_id: item_value.indicator_variation_id
-                                                        });
-                                                        setup_jStepper($(obj), 1);
-                                                        $(obj).val($.convertNumberFromBd(item_value.value));
-                                                        $(obj).attr("update", "true");
-                                                        $(obj).attr("item-id", item_value.id);
-                                                    });
-                                                },
-                                                error: function(data) {
-                                                    $.loading.hide();
-                                                }
-                                            });
-                                        });*/
 
                                         $.loading.hide();
                                         $("#dashboard-content .content .filter_result .botao-form[ref='enviar']").click(function() {
@@ -7970,83 +7261,6 @@ $(document).ready(function() {
                                                 if (cont_sent == cont_total) {
 
                                                     var deu_erro = 0;
-                                                   /* if (data_vvariables.length > 0) {
-                                                        $.each(data_variations, function(index_variation, item_variation) {
-                                                            $.each(data_vvariables, function(index_variables, item_variables) {
-                                                                var data_formatada = "";
-                                                                if (data_indicator.period == "yearly" || data_indicator.period == "monthly") {
-                                                                    data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter option:selected").val();
-                                                                } else if (data_indicator.period == "daily") {
-                                                                    data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter").val();
-                                                                }
-
-                                                                var ajax_id;
-                                                                if ($("#dashboard-content .content .filter_result").find("#v_" + item_variation.id + "_var_" + item_variables.id).attr("update") != undefined) {
-
-                                                                    ajax_option = "update";
-                                                                    ajax_id = $("#dashboard-content .content .filter_result").find("#v_" + item_variation.id + "_var_" + item_variables.id).attr("item-id");
-                                                                } else {
-
-                                                                    ajax_option = "create";
-                                                                    ajax_id = "";
-                                                                }
-
-                                                                args = [{
-                                                                    name: "api_key",
-                                                                    value: $.cookie("key")
-                                                                }, {
-                                                                    name: "indicator.variation_value." + ajax_option + ".value",
-                                                                    value: $.convertNumberToBd($("#dashboard-content .content .filter_result").find("#v_" + item_variation.id + "_var_" + item_variables.id).val())
-                                                                }, {
-                                                                    name: "indicator.variation_value." + ajax_option + ".value_of_date",
-                                                                    value: data_formatada
-                                                                }, {
-                                                                    name: "indicator.variation_value." + ajax_option + ".indicator_variation_id",
-                                                                    value: item_variation.id
-                                                                }];
-
-                                                                if ($("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()) {
-                                                                    args = {
-                                                                        name: "indicator.variation_value." + ajax_option + ".region_id",
-                                                                        value: $("#dashboard-content .content .filter_indicator").find("#region_id option:selected").val()
-                                                                    };
-                                                                }
-
-                                                                var url = api_path + '/api/indicator/$$indicator_id/variables_variation/$$var_id/values/$$ajax_id'.render2({
-                                                                    indicator_id: getIdFromUrl($.getUrlVar("url")),
-                                                                    var_id: item_variables.id,
-                                                                    ajax_id: ajax_id
-                                                                });
-
-                                                                $.ajax({
-                                                                    async: false,
-                                                                    type: "POST",
-                                                                    dataType: 'json',
-                                                                    url: url,
-                                                                    data: args,
-                                                                    success: function(data, textStatus, jqXHR) {
-                                                                        cont_returned++;
-                                                                    },
-                                                                    error: function(data) {
-                                                                        $(".filter_result .form-aviso").setWarning({
-                                                                            msg: "Erro ao editar. ($$erro)".render2({
-                                                                                erro: $.trataErro(data)
-                                                                            })
-                                                                        });
-                                                                        $("#dashboard-content .content .filter_result .botao-form[ref='enviar']").show();
-                                                                        deu_erro = 1;
-
-                                                                    }
-                                                                });
-                                                                if (deu_erro == 1) {
-                                                                    return false
-                                                                }
-                                                            });
-                                                            if (deu_erro == 1) {
-                                                                return false
-                                                            }
-                                                        });
-                                                    }*/
 
                                                     if (deu_erro == 0) {
                                                         var send_justification_meta = false;
@@ -8072,8 +7286,7 @@ $(document).ready(function() {
                                                             }, {
                                                                 name: acao + "valid_from",
                                                                 value: data_formatada
-                                                            },
-                                                            {
+                                                            }, {
                                                                 name: acao + "region_id",
                                                                 value: $("#region_id option:selected").val()
                                                             }, {
@@ -8088,8 +7301,7 @@ $(document).ready(function() {
                                                             }, {
                                                                 name: acao + "goal",
                                                                 value: $("#goal").val()
-                                                            },
-                                                            {
+                                                            }, {
                                                                 name: acao + "region_id",
                                                                 value: $("#region_id option:selected").val()
                                                             }, {
@@ -8100,25 +7312,7 @@ $(document).ready(function() {
                                                                 value: getIdFromUrl($.getUrlVar("url"))
                                                             }];
                                                             send_justification_meta = true;
-                                                        } /*else {
-                                                            args = [{
-                                                                name: "api_key",
-                                                                value: $.cookie("key")
-                                                            }, {
-                                                                name: acao + "goal",
-                                                                value: ''
-                                                            }, {
-                                                                name: acao + "justification_of_missing_field",
-                                                                value: ''
-                                                            }, {
-                                                                name: acao + "valid_from",
-                                                                value: data_formatada
-                                                            }, {
-                                                                name: acao + "indicator_id",
-                                                                value: getIdFromUrl($.getUrlVar("url"))
-                                                            }];
-                                                            send_justification_meta = true;
-                                                        }*/
+                                                        }
 
                                                         if (send_justification_meta) {
                                                             $.ajax({

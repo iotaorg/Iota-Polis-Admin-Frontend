@@ -4932,7 +4932,7 @@ $(document).ready(function() {
 
                     if (user_info.user_type != 'user') {
                         newform.push({
-                            label: "Visibilidade",
+                            label: "",
                             input: ["select,visibility_level,iselect"]
                         });
                     }
@@ -4959,36 +4959,28 @@ $(document).ready(function() {
                         input: ["textarea,formula,itext"]
                     });
                     newform.push({
-                        label: "Explicação",
+                        label: "Descrição da formula",
                         input: ["textarea,explanation,itext"]
+                    });
+                    newform.push({
+                        label: "Nossa leitura",
+                        input: ["textarea,observations,itext"]
                     });
                     newform.push({
                         label: "Direção de classificação",
                         input: ["select,sort_direction,iselect"]
                     });
                     newform.push({
-                        label: "Referência de Meta",
-                        input: ["select,goal_operator,iselect200px", "text,goal,itext200px"]
-                    });
-                    newform.push({
-                        label: "Fonte (Ref. de Meta)",
-                        input: ["select,goal_source,iselect source", "text,goal_source_new,itext300px"]
-                    });
-                    newform.push({
-                        label: "Explicação (Ref. de Meta)",
-                        input: ["textarea,goal_explanation,itext"]
+                        label: "Método de composição",
+                        input: ["select,summarization_method,iselect"]
                     });
                     newform.push({
                         label: "Fonte",
                         input: ["select,source,iselect source", "text,source_new,itext300px"]
                     });
                     newform.push({
-                        label: "Tags",
-                        input: ["text,tags,itext"]
-                    });
-                    newform.push({
-                        label: "Observações",
-                        input: ["textarea,observations,itext"]
+                        label: "Campo texto reservado",
+                        input: ["textarea,goal_explanation,itext"]
                     });
 
                     var formbuild = $("#dashboard-content .content").append(buildForm(newform, txtOption));
@@ -5017,36 +5009,11 @@ $(document).ready(function() {
 
                     loadSources();
 
-                    loadComboSources(sources, $("#dashboard-content .content select#goal_source"), $("#dashboard-content .content input#goal_source_new"));
+                    //loadComboSources(sources, $("#dashboard-content .content select#goal_source"), $("#dashboard-content .content input#goal_source_new"));
                     loadComboSources(sources, $("#dashboard-content .content select#source"), $("#dashboard-content .content input#source_new"));
 
-                    $.ajax({
-                        async: false,
-                        type: 'GET',
-                        dataType: 'json',
-                        url: api_path + '/api/axis?api_key=$$key'.render2({
-                            key: $.cookie("key")
-                        }),
-                        success: function(data, textStatus, jqXHR) {
-                            data.axis.sort(function(a, b) {
-                                a = a.name,
-                                    b = b.name;
-
-                                return a.localeCompare(b);
-                            });
-                            $.each(data.axis, function(index, item) {
-                                $("#dashboard-content .content select#axis_id").append($("<option></option>").val(item.id).html(item.name));
-                            });
-
-                        },
-                        error: function(data) {
-                            $("#aviso").setWarning({
-                                msg: "Erro ao carregar ($$codigo)".render2({
-                                    codigo: $.trataErro(data)
-                                })
-                            });
-                        }
-                    });
+                    $("#summarization_method").append($("<option selected>Somátorio</option>").val('sum'));
+                    $("#summarization_method").append($("<option>Média</option>").val('avg'));
 
                     $.each(visibility_level, function(key, value) {
                         $("#dashboard-content .content select#visibility_level").append($("<option></option>").val(key).html(value));
@@ -5065,9 +5032,6 @@ $(document).ready(function() {
                     });
 
                     visibilityChanged();
-                    $("#visibility_level").change(function() {
-                        visibilityChanged();
-                    });
 
                     function visibilityChanged(args) {
                         if ($("#visibility_level").val() == "public" || $("#visiblity_level").val() == "private" && user_info.roles[0] == "admin") {
@@ -5201,6 +5165,8 @@ $(document).ready(function() {
                                 });
                             }
                         }
+
+                        setTimeout(function(){$("#visibility_level").remove()}, 0);
                     }
 
                     $("#dashboard-content .content textarea#formula").after("<div id='formula-editor'><div class='editor'><div class='editor-content'></div></div><div class='button'><<</div><div class='variables-title'>Variáveis</div><div class='variables'></div><div class='user-input'></div><div class='operators'></div></div>");
@@ -5722,15 +5688,9 @@ $(document).ready(function() {
                                 }, {
                                     name: "indicator.create.sort_direction",
                                     value: $(this).parent().parent().find("#sort_direction option:selected").val()
-                                }, {
-                                    name: "indicator.create.goal",
-                                    value: $.convertNumberToBd($(this).parent().parent().find("#goal").val())
-                                }, {
-                                    name: "indicator.create.goal_source",
-                                    value: $(this).parent().parent().find("#goal_source option:selected").val()
-                                }, {
-                                    name: "indicator.create.goal_operator",
-                                    value: $(this).parent().parent().find("#goal_operator option:selected").val()
+                                },  {
+                                    name: "indicator.create.summarization_method",
+                                    value: $("#summarization_method option:selected").val()
                                 }, {
                                     name: "indicator.create.goal_explanation",
                                     value: $(this).parent().parent().find("#goal_explanation").val()
@@ -5741,59 +5701,21 @@ $(document).ready(function() {
                                     name: "indicator.create.source",
                                     value: $(this).parent().parent().find("#source option:selected").val()
                                 }, {
-                                    name: "indicator.create.tags",
-                                    value: $(this).parent().parent().find("#tags").val()
-                                }, {
                                     name: "indicator.create.observations",
                                     value: $(this).parent().parent().find("#observations").val()
                                 }];
 
-                                if (user_info.user_type == 'user') {
-                                    args.push({
-                                        name: "indicator.create.visibility_level",
-                                        value: 'private'
-                                    });
-                                } else {
 
-                                    args.push({
-                                        name: "indicator.create.visibility_level",
-                                        value: $(this).parent().parent().find("#visibility_level").val()
-                                    });
-                                }
+                                args.push({
+                                    name: "indicator.create.visibility_level",
+                                    value: 'network'
+                                });
 
-                                if ($(this).parent().parent().find("#visibility_level").val() == "private") {
-                                    if (user_info.roles[0] == "superadmin") {
-                                        args.push({
-                                            name: "indicator.create.visibility_user_id",
-                                            value: $(this).parent().parent().find("#visibility_user_id").val()
-                                        });
-                                    } else {
-                                        args.push({
-                                            name: "indicator.create.visibility_user_id",
-                                            value: $.cookie("user.id")
-                                        });
-                                    }
-                                } else if ($(this).parent().parent().find("#visibility_level").val() == "country") {
-                                    args.push({
-                                        name: "indicator.create.visibility_country_id",
-                                        value: $(this).parent().parent().find("#visibility_country_id").val()
-                                    });
-                                } else if ($(this).parent().parent().find("#visibility_level").val() == "network") {
-                                    args.push({
-                                        name: "indicator.create.visibility_networks_id",
-                                        value: $(this).parent().parent().find("#visibility_networks_id").val()
-                                    });
-                                } else if ($(this).parent().parent().find("#visibility_level").val() == "restrict") {
-                                    var users = "";
-                                    $(this).parent().parent().find("#visibility_users_id option").each(function(index, item) {
-                                        if (users != "") users += ",";
-                                        users += item.value;
-                                    });
-                                    args.push({
-                                        name: "indicator.create.visibility_users_id",
-                                        value: users
-                                    });
-                                }
+                                 args.push({
+                                    name: "indicator.create.visibility_networks_id",
+                                    value: $(this).parent().parent().find("#visibility_networks_id").val()
+                                });
+
 /*
                                 if ($(this).parent().parent().find("#indicator_type").val() == "varied" || $(this).parent().parent().find("#indicator_type").val() == "varied_dyn") {
                                     if ($(this).parent().parent().find("#all_variations_variables_are_required").attr("checked")) {
@@ -6051,11 +5973,10 @@ $(document).ready(function() {
                                         $(formbuild).find("select#sort_direction").val(String(data.sort_direction));
                                         $(formbuild).find("input#goal").val($.convertNumberFromBd(data.goal));
                                         $(formbuild).find("select#goal_source").val(data.goal_source);
-                                        $(formbuild).find("select#goal_operator").val(String(data.goal_operator));
+                                        $(formbuild).find("select#summarization_method").val(String(data.summarization_method));
                                         $(formbuild).find("textarea#goal_explanation").val(data.goal_explanation);
                                         $(formbuild).find("select#axis_id").val(data.axis_id);
                                         $(formbuild).find("select#source").val(data.source);
-                                        $(formbuild).find("input#tags").val(data.tags);
                                         $(formbuild).find("textarea#observations").val(data.observations);
 
                                         $.each(data.network_configs, function(index, item) {
@@ -6163,15 +6084,9 @@ $(document).ready(function() {
                                 }, {
                                     name: "indicator.update.sort_direction",
                                     value: $(this).parent().parent().find("#sort_direction option:selected").val()
-                                }, {
-                                    name: "indicator.update.goal",
-                                    value: $.convertNumberToBd($(this).parent().parent().find("#goal").val())
-                                }, {
-                                    name: "indicator.update.goal_source",
-                                    value: $(this).parent().parent().find("#goal_source").val()
-                                }, {
-                                    name: "indicator.update.goal_operator",
-                                    value: $(this).parent().parent().find("#goal_operator option:selected").val()
+                                },   {
+                                    name: "indicator.update.summarization_method",
+                                    value: $("#summarization_method option:selected").val()
                                 }, {
                                     name: "indicator.update.goal_explanation",
                                     value: $(this).parent().parent().find("#goal_explanation").val()
@@ -6182,9 +6097,6 @@ $(document).ready(function() {
                                     name: "indicator.update.source",
                                     value: $(this).parent().parent().find("#source").val()
                                 }, {
-                                    name: "indicator.update.tags",
-                                    value: $(this).parent().parent().find("#tags").val()
-                                }, {
                                     name: "indicator.update.observations",
                                     value: $(this).parent().parent().find("#observations").val()
                                 }];
@@ -6192,47 +6104,18 @@ $(document).ready(function() {
 
                                 args.push({
                                     name: "indicator.update.visibility_level",
-                                    value: $(this).parent().parent().find("#visibility_level").val()
+                                    value: 'network'
                                 });
 
-                                if ($(this).parent().parent().find("#visibility_level").val() == "private") {
-                                    if (user_info.roles[0] == "superadmin") {
-                                        args.push({
-                                            name: "indicator.update.visibility_user_id",
-                                            value: $(this).parent().parent().find("#visibility_user_id").val()
-                                        });
-                                    } else {
-                                        args.push({
-                                            name: "indicator.update.visibility_user_id",
-                                            value: $.cookie("user.id")
-                                        });
-                                    }
-                                } else if ($(this).parent().parent().find("#visibility_level").val() == "country") {
-                                    args.push({
-                                        name: "indicator.update.visibility_country_id",
-                                        value: $(this).parent().parent().find("#visibility_country_id").val()
-                                    });
-                                } else if ($(this).parent().parent().find("#visibility_level").val() == "network") {
-                                    var networks = "";
-                                    $("#visibility_networks_id option").each(function(index, item) {
-                                        if (networks != "") networks += ",";
-                                        networks += item.value;
-                                    });
-                                    args.push({
-                                        name: "indicator.update.visibility_networks_id",
-                                        value: networks
-                                    });
-                                } else if ($(this).parent().parent().find("#visibility_level").val() == "restrict") {
-                                    var users = "";
-                                    $("#visibility_users_id option").each(function(index, item) {
-                                        if (users != "") users += ",";
-                                        users += item.value;
-                                    });
-                                    args.push({
-                                        name: "indicator.update.visibility_users_id",
-                                        value: users
-                                    });
-                                }
+                                var networks = "";
+                                $("#visibility_networks_id option").each(function(index, item) {
+                                    if (networks != "") networks += ",";
+                                    networks += item.value;
+                                });
+                                args.push({
+                                    name: "indicator.update.visibility_networks_id",
+                                    value: networks
+                                });
 
 
                                 /*if ($(this).parent().parent().find("#indicator_type").val() == "varied" || $(this).parent().parent().find("#indicator_type").val() == "varied_dyn") {
@@ -6273,10 +6156,6 @@ $(document).ready(function() {
                                     });
                                     args.push({
                                         name: "indicator.update.variety_name",
-                                        value: ''
-                                    });
-                                    args.push({
-                                        name: "indicator.update.summarization_method",
                                         value: ''
                                     });
                                 // }

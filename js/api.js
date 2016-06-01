@@ -5645,6 +5645,10 @@ $(document).ready(function() {
 
                     if ($.getUrlVar("option") == "add") {
                         $("#dashboard-content .content .botao-form[ref='enviar']").click(function() {
+                            if ($("#source").val() == '_new'){
+                                $("#add-source").click();
+                            }
+
                             resetWarnings();
                             if ($(this).parent().parent().find("#name").val() == "") {
                                 $(".form-aviso").setWarning({
@@ -5655,7 +5659,6 @@ $(document).ready(function() {
                                     msg: "Por favor informe a Fórmula"
                                 });
                             } else {
-
                                 args = [{
                                     name: "api_key",
                                     value: $.cookie("key")
@@ -5685,7 +5688,7 @@ $(document).ready(function() {
                                     value: 1
                                 }, {
                                     name: "indicator.create.source",
-                                    value: $(this).parent().parent().find("#source option:selected").val()
+                                    value: $("#source option:selected").val()
                                 }, {
                                     name: "indicator.create.observations",
                                     value: $(this).parent().parent().find("#observations").val()
@@ -5905,6 +5908,9 @@ $(document).ready(function() {
                         });
 
                         $("#dashboard-content .content .botao-form[ref='enviar']").click(function() {
+                            if ($("#source").val() == '_new'){
+                                $("#add-source").click();
+                            }
                             resetWarnings();
                             if ($(this).parent().parent().find("#name").val() == "") {
                                 $(".form-aviso").setWarning({
@@ -6205,86 +6211,26 @@ $(document).ready(function() {
 
                             var axis_ant = "";
                             var indicators_table = "";
-                            var indicators_legend = "";
+
                             var indicators_status = "";
-                            var indicator_filter = "";
 
-                            indicators_legend = "<div class='indicadores_legend'><div class='fillContent'>";
-                            indicators_legend += "<div class='item'><div class='color no-data'></div><div class='label'>$$x</div><div class='clear'></div></div>".render({
-                                x: 'Nenhum dado preenchido'
-                            });
-                            indicators_legend += "<div class='item'><div class='color last-period'></div><div class='label'>$$a</div><div class='clear'></div></div>".render({
-                                a: 'Preenchido'
-                            });
-                            indicators_legend += "<div class='item'><div class='color full'></div><div class='label'>$$a</div><div class='clear'></div></div>".render({
-                                a: 'Período corrente preenchido'
-                            });
-                            indicators_legend += "</div></div><div class='clear'></div>";
 
-                            indicators_status = "<div class='indicadores-status'></div>";
+
+
 
                             indicators_table = "<div class='indicadores_list'>";
                             indicators_table += "<div class='status'></div>";
-                            indicator_filter = "<div class='variable-filter'><div class='form-pesquisa'></div></div><div class='clear'></div>";
+
 
 
                             //carrega grupos
 
                             var indicators_in_groups = [];
-                            if (data_groups && data_groups.length > 0) {
-                                indicators_table += "<div class='grupos_list'>$$e".render({
-                                    e: 'Grupos'
-                                });
-
-                                $.each(data_groups, function(index_group, group) {
-                                    indicators_table += "<div class='eixos collapse group'><div class='title'>$$axis</div><div class='clear'></div>".render({
-                                        axis: group.name
-                                    });
-
-                                    $.each(group.items, function(index_item, item) {
-                                        for (i = 0; i < data_indicators.length; i++) {
-                                            if (data_indicators[i].user_indicator_config && data_indicators[i].user_indicator_config.hide_indicator == 1) {
-                                                continue;
-                                            }
-                                            if (data_indicators[i].id == item.indicator_id) {
-                                                var formula = formataFormula(data_indicators[i].formula, data_variables, data_vvariables);
-                                                var tr_class = "folded";
-                                                $.each(data_indicators[i].network_configs, function(index_config, item_config) {
-                                                    if (item_config.network_id == user_info.network && item_config.unfolded_in_home == 1) {
-                                                        tr_class = "unfolded";
-                                                    }
-                                                });
-
-                                                indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='$$ss' alt='$$ss' indicator-id='$$_id' period='$$_period'>$$det</a><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='$$e' alt='$$e'>$$a</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
-                                                    name: data_indicators[i].name,
-                                                    e: 'adicionar valores',
-                                                    a: 'editar',
-                                                    ss: 'Série Histórica',
-                                                    fxormula: formula,
-                                                    det: 'detalhes',
-                                                    _period: data_indicators[i].period,
-                                                    _hash: "#!/" + getUrlSub(),
-                                                    _url: api_path + "/api/indicator/" + data_indicators[i].id,
-                                                    _indicator_id: data_indicators[i].id,
-                                                    _id: data_indicators[i].id,
-                                                    _tr_class: tr_class
-                                                });
-
-                                                indicators_table += "<div class='clear'></div>";
-                                                indicators_in_groups.push(data_indicators[i].id);
-                                            }
-                                        }
-                                    });
-                                    indicators_table += "</div>";
-                                });
-                                indicators_table += "</div>";
-                            }
 
 
                             //carrega indicadores por eixo
                             data_indicators.sort(function(a, b) {
-                                a = a.axis.name,
-                                    b = b.axis.name;
+                                a = a.axis.name,  b = b.axis.name;
 
                                 return a.localeCompare(b);
                             });
@@ -6334,7 +6280,7 @@ $(document).ready(function() {
                                         indicators_table += "</div>";
                                     }
 
-                                    indicators_table += "<div class='eixos collapse'><div class='title'>$$axis</div><div class='clear'></div>".render({
+                                    indicators_table += "<div class='eixos'><div class='title'>$$axis</div><div class='clear'></div>".render({
                                         axis: key
                                     });
                                     //                 console.log(indicators_hash[key][0]);
@@ -6350,7 +6296,7 @@ $(document).ready(function() {
                                                 tr_class = "unfolded";
                                             }
                                         });
-                                        indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='javascript: void(0);' class='icone zoom' title='$$ss' alt='$$ss' indicator-id='$$_id' period='$$_period' aaa=123>$$det</a><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='$$a' alt='$$a'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
+                                        indicators_table += "<div class='variable $$_tr_class' indicator-id='$$_indicator_id'><div class='name'>$$name</div><div class='formula'>$$fxormula</div><div class='link'><a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='$$a' alt='$$a'>editar</a></div><div class='clear'></div><div class='historico-popup'></div></div>".render({
                                             name: indicators_hash[key][i].name,
                                             a: 'adicionar valores',
                                             ss: 'Série Histórica',
@@ -6370,7 +6316,7 @@ $(document).ready(function() {
 
                             } else {
 
-                                indicators_table += "<div class='eixos collapse'><div class='title'>$$aviso</div><div class='clear'></div>".render({
+                                indicators_table += "<div class='eixos'><div class='title'>$$aviso</div><div class='clear'></div>".render({
                                     aviso: 'Nenhum indicador encontrado'
                                 });
                             }
@@ -6379,7 +6325,7 @@ $(document).ready(function() {
                             indicators_table += "</div>";
                             indicators_table += "<div class='clear'></div>";
 
-                            $("#dashboard-content .content").append(indicators_legend + indicator_filter + indicators_status + indicators_table);
+                            $("#dashboard-content .content").append(indicators_table);
 
                             $("#dashboard-content .content .indicadores_list .eixos").each(function(index, item) {
                                 if ($(item).find(".variable").length <= 0) {
@@ -6410,209 +6356,7 @@ $(document).ready(function() {
 
                             });
 
-                            /*$("#dashboard-content .content .indicadores_list .zoom").click(function() {
-                                var target = $(this).parent().parent();
-                                var indicator_period = $(this).attr("period");
-                                if ($(target).find(".historico-popup").is(":visible")) {
-                                    $(target).find(".historico-popup").hide();
-                                } else {
-                                    $.ajax({
-                                        type: 'GET',
-                                        dataType: 'json',
-                                        url: api_path + '/api/indicator/$$id/variable/value?api_key=$$key'.render2({
-                                            key: $.cookie("key"),
-                                            id: $(this).attr("indicator-id")
-                                        }),
-                                        success: function(data, textStatus, jqXHR) {
-                                            var vvariations = [];
-                                            if (data.rows) {
-                                                var history_table = "<table class='history'><thead><tr><th>$$e</th>".render({
-                                                    e: 'Período'
-                                                });
 
-                                                var headers = []; //corrige ordem do header
-                                                $.each(data.header, function(titulo, index) {
-                                                    headers[index] = titulo;
-                                                });
-
-
-                                                $.each(headers, function(index, value) {
-                                                    history_table += "<th class='variavel'>$$variavel</th>".render({
-                                                        variavel: value
-                                                    });
-                                                });
-                                                history_table += "#theader_valor";
-                                                history_table += "</tr><tbody>";
-                                                $.each(data.rows, function(index, value) {
-                                                    history_table += "<tr><td class='periodo'>$$periodo</td>".render2({
-                                                        periodo: $.convertDateToPeriod(data.rows[index].valid_from, indicator_period)
-                                                    });
-                                                    $.each(headers, function(index2, value2) {
-
-
-                                                        if ((data.rows[index].valores[index2]) && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined && data.rows[index].valores[index2].value != "-") {
-
-                                                            if (isNaN(data.rows[index].valores[index2].value)) {
-                                                                history_table += "<td class='valor' title='$$data'>$$valor</td>".render2({
-                                                                    valor: data.rows[index].valores[index2].value,
-                                                                    data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T")
-                                                                });
-                                                            } else {
-
-                                                                history_table += "<td class='valor' title='$$data'>$$valor</td>".render2({
-                                                                    valor: $.formatNumber(data.rows[index].valores[index2].value, {
-                                                                        format: "#,##0.###",
-                                                                        locale: "br"
-                                                                    }),
-                                                                    data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T")
-                                                                });
-                                                            }
-                                                        } else {
-                                                            if ((data.rows[index].valores[index2])) {
-                                                                history_table += "<td class='valor' title='$$data'>-</td>".render({
-                                                                    data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T")
-                                                                });
-                                                            } else {
-                                                                history_table += "<td class='valor' title='$$data'>-</td>".render({
-                                                                    data: $.convertDate(data.rows[index].valid_from, "T")
-                                                                });
-                                                            }
-                                                        }
-                                                    });
-                                                    if (value.variations && value.variations.length > 0) {
-                                                        var th_valor = "";
-                                                        for (i = 0; i < value.variations.length; i++) {
-                                                            th_valor += "<th class='formula_valor' variation-index='" + i + "'>$$e</th>".render({
-                                                                e: 'Valor da Fórmula'
-                                                            });
-                                                        }
-                                                        history_table = history_table.replace("#theader_valor", th_valor);
-
-                                                        $.each(value.variations, function(index, item) {
-
-                                                            if (item.value != "-") {
-
-                                                                history_table += "<td class='formula_valor' variation-index='$$index'>$$formula_valor</td>".render2({
-                                                                    formula_valor: $.formatNumber(item.value, {
-                                                                        format: "#,##0.###",
-                                                                        locale: "br"
-                                                                    }),
-                                                                    index: index
-                                                                });
-                                                            } else {
-                                                                history_table += "<td class='formula_valor' variation-index='$$index'>-</td>".render2({
-                                                                    index: index
-                                                                });
-                                                            }
-                                                            vvariations.push({
-                                                                name: item.name,
-                                                                index: index
-                                                            });
-                                                        });
-                                                    } else {
-                                                        history_table = history_table.replace("#theader_valor", "<th class='formula_valor'>$$e</th>".render({
-                                                            e: 'Valor da Fórmula'
-                                                        }));
-
-                                                        if (data.rows[index].formula_value != "-") {
-                                                            if (isNaN(data.rows[index].formula_value)) {
-                                                                history_table += "<td class='formula_valor' variation-index='0'>$$formula_valor</td>".render2({
-                                                                    formula_valor: data.rows[index].formula_value
-
-                                                                });
-                                                            } else {
-                                                                history_table += "<td class='formula_valor' variation-index='0'>$$formula_valor</td>".render2({
-                                                                    formula_valor: $.formatNumber(data.rows[index].formula_value, {
-                                                                        format: "#,##0.###",
-                                                                        locale: "br"
-                                                                    })
-                                                                });
-                                                            }
-                                                        } else {
-                                                            history_table += "<td class='formula_valor' variation-index='0'>-</td>";
-                                                        }
-                                                    }
-                                                    history_table += "</tr></tbody>";
-                                                });
-                                                history_table += "</table>";
-                                            } else {
-                                                var history_table = "<table class='history'><thead><tr><th>nenhum registro encontrado</th></tr></thead></table>";
-                                            }
-
-                                            var variation_filter = "";
-                                            if (vvariations.length > 0) {
-                                                variation_filter += "<div class='variation-filter'><span class='variation-filter'>Faixa: </span><select class='variation-filter'>";
-                                                $.each(vvariations, function(index, item) {
-                                                    variation_filter += "<option value='$$index'>$$name".render({
-                                                        index: item.index,
-                                                        name: item.name
-                                                    });
-                                                });
-                                                variation_filter += "</select></div>";
-                                            }
-
-                                            $(target).find(".historico-popup").html(variation_filter + history_table);
-                                            $(target).find(".historico-popup").toggle();
-
-                                            if (vvariations.length > 0) {
-                                                $(target).find(".historico-popup table .formula_valor[variation-index!=0]").hide();
-
-                                                $("select.variation-filter").change(function() {
-                                                    var obj = $(this);
-                                                    $(obj).parent().next("table").find(".formula_valor").fadeOut("fast", function() {
-                                                        $(obj).parent().next("table").find(".formula_valor[variation-index='" + $(obj).val() + "']").show();
-                                                    });
-                                                });
-                                            }
-
-                                        }
-                                    });
-                                }
-                            });*/
-
-                            $("div.indicadores_list .eixos .title").click(function() {
-                                $(this).parent().toggleClass("collapse");
-                            }).click();
-
-                            //busca status dos indicadores
-
-                            $.ajax({
-                                type: 'GET',
-                                dataType: 'json',
-                                url: api_path + '/api/public/user/$$userid/indicator/status?api_key=$$key'.render2({
-                                    key: $.cookie("key"),
-                                    userid: $.cookie("user.id")
-                                }),
-
-                                success: function(data, textStatus, jqXHR) {
-                                    var dataStatus = data.status;
-                                    $.each(dataStatus, function(index, value) {
-                                        var statusClass = "";
-                                        if (dataStatus[index].without_data) {
-                                            statusClass = "no-data";
-                                        } else if (dataStatus[index].has_current) {
-                                            statusClass = "full";
-                                        } else if (dataStatus[index].has_data) {
-                                            statusClass = "last-period";
-                                        }
-                                        $(".indicadores_list .variable[indicator-id='$$indicator_id']".render2({
-                                            indicator_id: data.status[index].id
-                                        })).addClass(statusClass);
-                                        if (dataStatus[index].justification_count) {
-                                            $(".indicadores_list .variable[indicator-id='$$indicator_id'] .link".render2({
-                                                indicator_id: data.status[index].id
-                                            })).append("<a href='javascript: void(0);' class='icone justification' title='valores não preenchidos (justificados)' alt='valores não preenchidos (justificados)'>$$justification_count</a>".render2({
-                                                justification_count: dataStatus[index].justification_count
-                                            }));
-                                        }
-                                    });
-                                    if (data.totals) {
-                                        $(".indicadores_legend .item").eq(0).find(".label").append("<span class='percent'> (" + parseInt(data.totals.without_data_perc * 100) + "%)</span>");
-                                        $(".indicadores_legend .item").eq(1).find(".label").append("<span class='percent'> (" + parseInt(data.totals.has_data_perc * 100) + "%)</span>");
-                                        $(".indicadores_legend .item").eq(2).find(".label").append("<span class='percent'> (" + parseInt(data.totals.has_current_perc * 100) + "%)</span>");
-                                    }
-                                }
-                            });
 
                         },
                         error: function(data) {
@@ -6913,21 +6657,7 @@ $(document).ready(function() {
 
                                         data_variations = [];
 
-
-                                        newform.push({
-                                            label: "Meta",
-                                            input: ["text,goal,itext"]
-                                        });
-                                        newform.push({
-                                            label: "",
-                                            input: ["checkbox,no_data,icheckbox"]
-                                        });
-                                        newform.push({
-                                            label: "Justificativa",
-                                            input: ["text,justification_of_missing_field,itext"]
-                                        });
-
-                                        var formbuild = $("#dashboard-content .content .filter_result").append(buildForm(newform, data_indicator.name));
+                                         var formbuild = $("#dashboard-content .content .filter_result").append(buildForm(newform, data_indicator.name));
                                         $(formbuild).find("div .field:odd").addClass("odd");
                                         $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
                                         $(formbuild).find("#new_variation_add").html("$$e".render({
@@ -7019,12 +6749,6 @@ $(document).ready(function() {
                                             }
                                         });
 
-                                        $("#justification_of_missing_field").val(data.justification_of_missing_field);
-                                        $("#goal").val(data.goal);
-
-                                        if (data.justification_of_missing_field) {
-                                            $("#no_data").click();
-                                        }
 
                                         $.loading.hide();
                                         $("#dashboard-content .content .filter_result .botao-form[ref='enviar']").click(function() {
@@ -7053,7 +6777,12 @@ $(document).ready(function() {
                                                     if (isNaN(valor)) {
                                                         informou_valores_validos = false;
                                                     }
-                                                    if ($("#dashboard-content .content .filter_result").find("#var_" + data_variables[index].id).val() != "" && $("#dashboard-content .content .filter_result").find("#source_" + data_variables[index].id).val() == "") {
+                                                    if ( $("#dashboard-content .content .filter_result").find("#var_" + data_variables[index].id).val() != "" &&
+                                                         ($("#dashboard-content .content .filter_result").find("#source_" + data_variables[index].id).val() == "" ||
+                                                         $("#dashboard-content .content .filter_result").find("#source_" + data_variables[index].id).val() == "_new")
+                                                         ) {
+                                                        console.log('fo');
+                                                        informou_valores=true;
                                                         informou_fontes = false;
                                                     }
                                                 }
@@ -7074,25 +6803,21 @@ $(document).ready(function() {
                                                 });
                                             }
 
-                                            if (!informou_valores && !$("#no_data").attr("checked")) {
+                                            if (!informou_valores  ) {
                                                 $(".filter_result .form-aviso").setWarning({
                                                     msg: "Por favor informe os valores ou justificativa"
                                                 });
-                                            } else if (!informou_valores_validos && !$("#no_data").attr("checked")) {
+                                            } else if (!informou_valores_validos ) {
                                                 $(".filter_result .form-aviso").setWarning({
                                                     msg: "Os valores devem ser apenas numéricos"
                                                 });
-                                            } else if (!informou_vvalores_validos && !$("#no_data").attr("checked")) {
+                                            } else if (!informou_vvalores_validos  ) {
                                                 $(".filter_result .form-aviso").setWarning({
                                                     msg: "Os valores devem ser apenas números inteiros"
                                                 });
-                                            } else if (!informou_fontes && !$("#no_data").attr("checked")) {
+                                            } else if (!informou_fontes  ) {
                                                 $(".filter_result .form-aviso").setWarning({
                                                     msg: "Por favor informe a fonte dos valores"
-                                                });
-                                            } else if ($("#no_data").attr("checked") && $("#dashboard-content .content").find("#justification_of_missing_field").val() == "") {
-                                                $(".filter_result .form-aviso").setWarning({
-                                                    msg: "Por favor informe a justificativa"
                                                 });
                                             } else {
                                                 $("#dashboard-content .content .filter_result .botao-form[ref='enviar']").hide();
@@ -7210,113 +6935,26 @@ $(document).ready(function() {
                                                 // se deu sucesso
                                                 if (cont_sent == cont_total) {
 
-                                                    var deu_erro = 0;
+                                                    var data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter option:selected").val();
 
-                                                    if (deu_erro == 0) {
-                                                        var send_justification_meta = false;
+                                                    var acao = "user.indicator." + data.action + ".";
 
-                                                        var data_formatada = "";
-                                                        if (data_indicator.period == "yearly" || data_indicator.period == "monthly") {
+                                                    $("#aviso").setWarning({
+                                                        msg: "Cadastro editado com sucesso.".render2({
+                                                            codigo: jqXHR.status
+                                                        })
+                                                    });
+                                                    $("#dashboard-content .content .filter_result .botao-form[ref='enviar']").show();
+                                                    $("#dashboard-content .content .filter_result").empty();
+                                                    //mostra historico
+                                                    buildIndicatorHistory({
+                                                        "id": getIdFromUrl($.getUrlVar("url")),
+                                                        "period": data_indicator.period,
+                                                        "target": $("#dashboard-content .content div.historico")
+                                                    });
 
-                                                            data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter option:selected").val();
-                                                        } else if (data_indicator.period == "daily") {
-                                                            data_formatada = $("#dashboard-content .content .filter_indicator").find("#date_filter").val();
-                                                        }
 
-
-
-                                                        var acao = "user.indicator." + data.action + ".";
-                                                        if ($("#no_data").attr("checked")) {
-                                                            args = [{
-                                                                name: "api_key",
-                                                                value: $.cookie("key")
-                                                            }, {
-                                                                name: acao + "justification_of_missing_field",
-                                                                value: $("#dashboard-content .content .filter_result").find("#justification_of_missing_field").val()
-                                                            }, {
-                                                                name: acao + "valid_from",
-                                                                value: data_formatada
-                                                            }, {
-                                                                name: acao + "region_id",
-                                                                value: $("#region_id option:selected").val()
-                                                            }, {
-                                                                name: acao + "indicator_id",
-                                                                value: getIdFromUrl($.getUrlVar("url"))
-                                                            }];
-                                                            send_justification_meta = true;
-                                                        } else if ($("#goal").val() != "") {
-                                                            args = [{
-                                                                name: "api_key",
-                                                                value: $.cookie("key")
-                                                            }, {
-                                                                name: acao + "goal",
-                                                                value: $("#goal").val()
-                                                            }, {
-                                                                name: acao + "region_id",
-                                                                value: $("#region_id option:selected").val()
-                                                            }, {
-                                                                name: acao + "valid_from",
-                                                                value: data_formatada
-                                                            }, {
-                                                                name: acao + "indicator_id",
-                                                                value: getIdFromUrl($.getUrlVar("url"))
-                                                            }];
-                                                            send_justification_meta = true;
-                                                        }
-
-                                                        if (send_justification_meta) {
-                                                            $.ajax({
-                                                                type: 'POST',
-                                                                dataType: 'json',
-                                                                url: api_path + '/api/user/$$userid/indicator/$$id'.render2({
-                                                                    userid: $.cookie("user.id"),
-                                                                    id: data.action == 'update' ? data.user_indicator_id : ''
-                                                                }),
-                                                                data: args,
-                                                                success: function(data, textStatus, jqXHR) {
-                                                                    $("#aviso").setWarning({
-                                                                        msg: "Cadastro editado com sucesso.".render2({
-                                                                            codigo: jqXHR.status
-                                                                        })
-                                                                    });
-                                                                    $("#dashboard-content .content .filter_result .botao-form[ref='enviar']").show();
-                                                                    $("#dashboard-content .content .filter_result").empty();
-                                                                    //mostra historico
-                                                                    buildIndicatorHistory({
-                                                                        "id": getIdFromUrl($.getUrlVar("url")),
-                                                                        "period": data_indicator.period,
-                                                                        "target": $("#dashboard-content .content div.historico")
-                                                                    });
-                                                                },
-                                                                error: function(data) {
-                                                                    $(".filter_result .form-aviso").setWarning({
-                                                                        msg: "Valores enviados, mas ocorreu um erro ao enviar Justificativa/Meta. ($$erro)".render2({
-                                                                            erro: $.trataErro(data)
-                                                                        })
-                                                                    });
-                                                                    $("#dashboard-content .content .filter_result .botao-form[ref='enviar']").show();
-                                                                }
-                                                            });
-                                                        } else {
-
-                                                            $("#aviso").setWarning({
-                                                                msg: "Cadastro editado com sucesso.".render2({
-                                                                    codigo: jqXHR.status
-                                                                })
-                                                            });
-                                                            $("#dashboard-content .content .filter_result .botao-form[ref='enviar']").show();
-                                                            $("#dashboard-content .content .filter_result").empty();
-                                                            //mostra historico
-                                                            buildIndicatorHistory({
-                                                                "id": getIdFromUrl($.getUrlVar("url")),
-                                                                "period": data_indicator.period,
-                                                                "target": $("#dashboard-content .content div.historico")
-                                                            });
-                                                        }
-
-                                                    }
                                                 }
-
 
 
                                             }

@@ -30,10 +30,10 @@ var titleBarContent = {
 							"tip": "Veja os indicadores já cadastrados. Utilize o botão 'Adicionar' para criar um novo indicador."},
 					"myindicator":{
 							"title": "Indicadores",
-							"tip": ""},
+							"tip": "Edite os valores das váriaveis navegando pelos indicadores"},
 					"myindicator,edit":{
 							"title": "Indicadores",
-							"tip": ""},
+							"tip": "Escolha a região e o ano, depois clique em Cadastrar para editar os valores."},
 					"mygroup":{
 							"title": "Grupo de Indicadores",
 							"tip": ""},

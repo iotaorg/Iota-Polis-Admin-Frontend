@@ -1124,6 +1124,9 @@ var buildVariableHistory = function (var_id) {
 var buildIndicatorHistory = function (args) {
 
     var vvariations = [];
+
+    if (!$("#dashboard-content .content select#region_id option:selected").val()){ return false }
+
     $.ajax({
         type: 'GET',
         dataType: 'json',

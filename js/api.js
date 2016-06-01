@@ -2588,36 +2588,45 @@ $(document).ready(function() {
                     var newform = [];
 
                     newform.push({
-                        label: "Nome da Ação",
+                        label: "Nome",
                         input: ["text,name,itext"]
                     });
                     newform.push({
-                        label: "Sobre a ação",
+                        label: "Sobre",
                         input: ["text,description,itext"]
                     });
                     newform.push({
-                        label: "Eixo da ação",
+                        label: "Eixo",
                         input: ["text,axis_name,itext"]
                     });
                     newform.push({
-                        label: "Layout",
-                        input: ["select,template_name,iselect"]
+                        label: "Tags",
+                        input: ["text,tags,itext"]
                     });
 
                     var text_content = {
+                        "txt_info_qualitativas": 'Informações qualitativas',
+                        "txt_condicionantes": 'Condicionantes',
+                        "txt_focos": "Focos e Perguntas Orientadoras",
+                        "txt_titulo_mapa": "Título do mapa",
+                        "txt_descricao_mapa": "Descrição do mapa",
                         "txt_glossario": 'Glossário',
-                        "memo_info_qualitativas": 'Informações qualitativas',
-                        "txt_condicionantes": 'Condicionantes'
+                        "url_rede_low": "Imagem de fundo (baixa resolução)",
+                        "url_mapa_high": "Imagem de fundo (alta resolução)",
                     };
 
                     for (var prop in text_content) {
                         if (text_content.hasOwnProperty(prop)) {
                             newform.push({
                                 label: text_content[prop],
-                                input: ["textarea," + prop + ",itext"]
+                                input: [( /(url|titulo)/.test(prop) ? 'text' : 'textarea' ) + "," + prop + ",itext"]
                             });
                         }
                     }
+                    newform.push({
+                        label: "Layout",
+                        input: ["select,template_name,iselect"]
+                    });
 
                     var formbuild = $("#dashboard-content .content").append(buildForm(newform, txtOption));
                     $(formbuild).find("div .field:odd").addClass("odd");
@@ -2731,6 +2740,9 @@ $(document).ready(function() {
                                 }, {
                                     name: "network." + action + ".description",
                                     value: $(this).parent().parent().find("#description").val()
+                                }, {
+                                    name: "network." + action + ".tags",
+                                    value: $(this).parent().parent().find("#tags").val()
                                 }, {
                                     name: "network." + action + ".institute_id",
                                     value: 1

@@ -230,15 +230,13 @@ a{
 input.botao-form,
 a.botao-form{
     clear: both;
-    background: url("../images/bg_botao.gif") repeat-x top center;
+    background-color: #8fcae8;
     padding: 2px 20px;
     font-family: "Asap", tahoma, sans-serif;
     font-weight: bolder;
     font-size: 12pt;
     color: #fff;
-    text-shadow:#004f98 1px 1px 0px;
-    -moz-text-shadow:#004f98 1px 1px 0px;
-    -webkit-text-shadow:#004f98 1px 1px 0px;
+
     border-radius:3px;
     -moz-border-radius:3px;
     -webkit-border-radius:3px;

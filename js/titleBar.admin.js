@@ -21,7 +21,7 @@ var titleBarContent = {
 							"tip": ""},
 					"myvariableedit":{
 							"title": "Editar Valores",
-							"tip": ""},
+							"tip": "Edite os valores das váriaveis para popular os indicadores."},
 					"myvariableclone":{
 							"title": "Clonar Valores",
 							"tip": ""},
@@ -66,7 +66,7 @@ var titleBarContent = {
 							"tip": ""},
 					"units":{
 							"title": "Parâmetros - Unidades de Medida",
-							"tip": ""},
+							"tip": "As unidades de medidas são apenas informativas e não influenciam no calculo das váriaveis."},
 					"networks":{
 							"title": "Ações",
 							"tip": "Configure informações qualitativas, glossário, etc"},

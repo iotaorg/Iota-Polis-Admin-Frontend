@@ -236,7 +236,7 @@ $(document).ready(function() {
         menu_label["variable_user"] = "Variáveis";
         menu_label["region"] = "Regiões";
         menu_label["networks"] = "Ações";
-        menu_label["parameters"] = "Parâmetros";
+        menu_label["parameters"] = "Configurações";
         menu_label["logs"] = "Logs";
         menu_label["prefs"] = "Preferências";
         menu_label["reports"] = "Relatórios";
@@ -255,7 +255,8 @@ $(document).ready(function() {
             "cities": "Cidades"
         });
         submenu_label["parameters"].push({
-            "units": "Unidades de Medida"
+            "units": "Gerenciar unidades de medidas",
+            "prefs": "Preferências do usuário"
         });
 
         submenu_label["customize"] = [];
@@ -286,8 +287,8 @@ $(document).ready(function() {
         submenu_label["variable_user"] = [];
         submenu_label["variable_user"].push({
             "myvariable": "Variáveis Básicas",
-            "variable": findInArray(user_info.roles, "user") ? "Minhas Variáveis" : "Variáveis",
-            "myvariableedit": "Editar/Importar Valores",
+            "variable":  "Gerenciar variáveis",
+            "myvariableedit": "Valores por variável",
             "myvariableclone": "Clonar Valores"
         });
 
@@ -297,99 +298,30 @@ $(document).ready(function() {
             "region-map": "Definir Regiões no Mapa"
         });
 
-        menu_access["superadmin"] = ["dashboard", "prefs", "parameters", "networks", "variable", "indicator_user", "logout", ];
-        submenu_access["superadmin"] = ["units", "myindicator", "indicator"];
+        menu_access["superadmin"] = ["dashboard", "parameters", "networks", "variable_user", "indicator_user", "logout", ];
+        submenu_access["superadmin"] = ["units", "myindicator", "indicator", "myvariableedit", "variable", "prefs"];
 
-        menu_access["admin"] = ["dashboard", "prefs", "variable_user", "networks", "indicator"];
-        submenu_access["admin"] = ["countries", "states", "cities", "units", "css"];
-
-
-
-
-        menu_access["admin"].push("logout");
-        submenu_access["user"] = ["dashboard"];
-
-        if (findInArray(user_info.roles, "user")) {
-            if ((user_info.institute) && (user_info.institute.id) && user_info.institute.id == "1") {
-                menu_access["user"] = ["premio", "prefs"];
-            } else {
-                menu_access["user"] = ["prefs"];
-            }
-            if (user_info.institute) {
-
-                if (user_info.institute.id != 3) {
-                    if (user_info.institute.can_use_custom_pages == 1) {
-                        if (!findInArray(menu_access["user"], "customize")) {
-                            menu_access["user"].push("customize");
-                        }
-                        submenu_access["user"].push("pages");
-                        submenu_access["user"].push("menus");
-                    }
-                    if (user_info.institute.can_use_custom_css == 1) {
-                        if (!findInArray(menu_access["user"], "customize")) {
-                            menu_access["user"].push("customize");
-                        }
-                        submenu_access["user"].push("css");
-                    }
-                }
-                menu_access["user"].push("content");
-                submenu_access["user"].push("best_pratice");
-                submenu_access["user"].push("files");
-            }
-
-            //menu_access["user"].push("topic");
-
-            menu_access["user"].push("variable_user");
-            if (user_info.institute.users_can_edit_value == 1) {
-                submenu_access["user"].push("myvariableedit");
-            }
-
-            menu_access["user"].push("indicator_user");
-            if (user_info.institute.users_can_edit_groups == 1) {
-                submenu_access["user"].push("mygroup");
-            }
-
-            submenu_access["user"].push("myvariable");
-
-            if (user_info.institute.id == 2) {
-                submenu_access["user"].push("myvariableclone");
-            }
-
-            if (user_info.can_create_indicators) {
-                submenu_access["user"].push("indicator");
-                submenu_access["user"].push("variable");
-            }
-
-            submenu_access["user"].push("myindicator");
-
-            if (user_info.regions_enabled) {
-                menu_access["user"].push("region");
-                submenu_access["user"].push("region-list")
-                submenu_access["user"].push("region-map")
-            }
-
-            menu_access["user"].push("logout");
-        }
-        if (findInArray(user_info.roles, "admin")) {
-            submenu_access["admin"].push("variable");
-            submenu_access["admin"].push("myvariableedit");
-        }
 
         var menu_item = "";
         $.each(menu_access[user_info.role], function(index, value) {
-            var menu_class = (getUrlSub() == value) ? "selected" : "";
+            var a_menu_class = (getUrlSub() == value) ? "selected" : "";
             var a_class = "";
 
             if (submenu_label[value]) {
                 a_class = "submenu";
                 var submenu_item = "<ul class='submenu'>";
                 $.each(submenu_label[value], function(index, item) {
+
+
                     $.each(item, function(url_sub, text) {
                         if (findInArray(submenu_access[user_info.role], url_sub)) {
+
+                            a_menu_class =a_menu_class ? a_menu_class : (getUrlSub() == url_sub) ? "selected" : "";
+
                             submenu_item += "<li class='submenu $$_class' ref='$$_url_sub'><a href='#!/$$_url_sub'>$$text</a></li>".render({
                                 text: text,
                                 _url_sub: url_sub,
-                                _class: menu_class
+                                _class: ""
                             });
                         }
                     });
@@ -404,7 +336,7 @@ $(document).ready(function() {
                 menu_label: menu_label[value],
                 _sub: submenu_item,
                 _url_sub: value,
-                _class: menu_class,
+                _class: a_menu_class,
                 _a_class: a_class
             });
         });

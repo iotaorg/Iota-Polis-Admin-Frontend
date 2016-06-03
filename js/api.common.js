@@ -4,9 +4,10 @@ var do_not_use_lex = !(window.location.href.indexOf("http://indicadores.redciuda
 
 var cur_lang = $.cookie("cur_lang"),
     lexicon, default_lang, langs, lexiconconf,
-    lexicon_untranslated = {}, untranslated_temp = {};
+    lexicon_untranslated = {},
+    untranslated_temp = {};
 
-if (!cur_lang || do_not_use_lex){
+if (!cur_lang || do_not_use_lex) {
     cur_lang = 'pt-br';
     $.cookie("cur_lang", cur_lang, {
         path: "/"
@@ -15,7 +16,7 @@ if (!cur_lang || do_not_use_lex){
 
 
 
-$.assocArraySize = function (obj) {
+$.assocArraySize = function(obj) {
     var size = 0,
         key;
     for (key in obj) {
@@ -25,7 +26,7 @@ $.assocArraySize = function (obj) {
 };
 
 if (!String.prototype.render2) {
-    String.prototype.render2 = function (args) {
+    String.prototype.render2 = function(args) {
         var copy = this + '';
         for (var k in args) {
             copy = copy.replace(RegExp('\\$\\$' + k, 'g'), args[k]);
@@ -35,67 +36,67 @@ if (!String.prototype.render2) {
 }
 
 if (!String.prototype.render) {
-    String.prototype.render = function (args) {
+    String.prototype.render = function(args) {
         var copy = this + '',
             v, n;
 
-		if (do_not_use_lex == false){
-			if (lexicon[cur_lang] === undefined)
-				lexicon[cur_lang] = [];
-		}
+        if (do_not_use_lex == false) {
+            if (lexicon[cur_lang] === undefined)
+                lexicon[cur_lang] = [];
+        }
 
         for (var k in args) {
             v = args[k];
 
-            if (do_not_use_lex == false){
-				if (!k.match(/^_/) && v && v in lexicon[cur_lang]) {
-					v = lexicon[cur_lang][v];
-				} else if (v) {
+            if (do_not_use_lex == false) {
+                if (!k.match(/^_/) && v && v in lexicon[cur_lang]) {
+                    v = lexicon[cur_lang][v];
+                } else if (v) {
 
-					n = 1;
-					if (typeof v == 'string') {
-						n = 0;
-					}
+                    n = 1;
+                    if (typeof v == 'string') {
+                        n = 0;
+                    }
 
-					if (n == 0 && (
-						k.match(/password/) ||
-						k.match(/email/) ||
-						k.match(/formula/) ||
-						k.match(/^_/) ||
-						k == 'key' ||
-						k == 'arquivo'
-					)) n = 1;
-					/*
-					if (n==0 && v.match(/^\</)) {
-						console.log(k);
-					}
-		*/
-					if (n == 0 && (!v ||
-						v == '&nbsp;' ||
-						v.match(/^\s*$/) ||
-						v.match(/^\/api\//) || !v.match(/[a-z]/i) ||
-						v.match(/^\s*[0-9]+\s*$/) ||
-						v.match(/\:\/\//) ||
-						v.match(/^#/)
-					)) n = 2;
+                    if (n == 0 && (
+                            k.match(/password/) ||
+                            k.match(/email/) ||
+                            k.match(/formula/) ||
+                            k.match(/^_/) ||
+                            k == 'key' ||
+                            k == 'arquivo'
+                        )) n = 1;
+                    /*
+                    if (n==0 && v.match(/^\</)) {
+                        console.log(k);
+                    }
+        */
+                    if (n == 0 && (!v ||
+                            v == '&nbsp;' ||
+                            v.match(/^\s*$/) ||
+                            v.match(/^\/api\//) || !v.match(/[a-z]/i) ||
+                            v.match(/^\s*[0-9]+\s*$/) ||
+                            v.match(/\:\/\//) ||
+                            v.match(/^#/)
+                        )) n = 2;
 
-					if (n == 0) {
-						if (cur_lang == default_lang) {
-							lexicon[cur_lang][v] = v;
-							// precisa mandar pro servidor ter as outras versoes dessa e fazer a traducao
-							lexicon_untranslated[v] = 1;
-						} else {
-							lexicon_untranslated[v] = 1;
-							v = '? ' + v;
-						}
-					}
-					/*else {
-						if (n == 2) {
-							console.log(k, v);
-						}
-					}*/
-				}
-			}
+                    if (n == 0) {
+                        if (cur_lang == default_lang) {
+                            lexicon[cur_lang][v] = v;
+                            // precisa mandar pro servidor ter as outras versoes dessa e fazer a traducao
+                            lexicon_untranslated[v] = 1;
+                        } else {
+                            lexicon_untranslated[v] = 1;
+                            v = '? ' + v;
+                        }
+                    }
+                    /*else {
+                        if (n == 2) {
+                            console.log(k, v);
+                        }
+                    }*/
+                }
+            }
             copy = copy.replace(RegExp('\\$\\$' + k, 'g'), v);
         }
         return copy;
@@ -103,7 +104,7 @@ if (!String.prototype.render) {
 }
 
 if (!String.prototype.trim) {
-    String.prototype.trim = function () {
+    String.prototype.trim = function() {
         return this.replace(/^\s+|\s+$/g, '');
     };
 }
@@ -121,7 +122,7 @@ var accentMap = {
     "ç": "c"
 };
 
-var normalize = function (term) {
+var normalize = function(term) {
     var ret = "";
     for (var i = 0; i < term.length; i++) {
         ret += accentMap[term.charAt(i)] || term.charAt(i);
@@ -130,7 +131,7 @@ var normalize = function (term) {
 };
 
 $.extend({
-    getUrlVars: function () {
+    getUrlVars: function() {
         var vars = [],
             hash;
         var anchor = window.location.href.slice(window.location.href.indexOf('#') + 1);
@@ -142,10 +143,10 @@ $.extend({
         }
         return vars;
     },
-    getUrlVar: function (name) {
+    getUrlVar: function(name) {
         return $.getUrlVars()[name];
     },
-    convertDate: function (date, splitter) {
+    convertDate: function(date, splitter) {
         var date_tmp = date.split(splitter);
         var date = date_tmp[0];
         var time = date_tmp[1];
@@ -154,7 +155,7 @@ $.extend({
 
         return date_split[2] + "/" + date_split[1] + "/" + date_split[0];
     },
-    convertDateTime: function (date, splitter) {
+    convertDateTime: function(date, splitter) {
         var date_tmp = date.split(splitter);
         var date = date_tmp[0];
         var time = date_tmp[1];
@@ -163,7 +164,7 @@ $.extend({
 
         return date_split[2] + "/" + date_split[1] + "/" + date_split[0] + " " + time;
     },
-    convertDatetoBd: function (date, splitter) {
+    convertDatetoBd: function(date, splitter) {
         var date_tmp = date.split(splitter);
         var date = date_tmp[0];
         var time = date_tmp[1];
@@ -172,7 +173,7 @@ $.extend({
 
         return date_split[2] + "/" + date_split[1] + "/" + date_split[0];
     },
-    convertDateToPeriod: function (date, period) {
+    convertDateToPeriod: function(date, period) {
         if (period == "yearly") {
             return date.split("-")[0];
         } else if (period == "monthly") {
@@ -181,12 +182,12 @@ $.extend({
             return date + ' ' + period;
         }
     },
-    convertNumberToBd: function (number) {
+    convertNumberToBd: function(number) {
         var new_number = number.replace(",", ".");
 
         return new_number;
     },
-    convertNumberFromBd: function (number) {
+    convertNumberFromBd: function(number) {
         if (number == null) {
             var new_number = "";
         } else if (number == undefined) {
@@ -198,17 +199,17 @@ $.extend({
         }
         return new_number;
     },
-    isInt: function (number) {
+    isInt: function(number) {
         return number % 1 === 0;
     },
-    trataErro: function (data) {
-        if (typeof (data) == "string") {
+    trataErro: function(data) {
+        if (typeof(data) == "string") {
             if (sys_messages[data]) {
                 return sys_messages[data];
             } else {
                 return data;
             }
-        } else if (typeof (data) == "object") {
+        } else if (typeof(data) == "object") {
 
             var erro;
             if (data.responseText && data.responseText.substr(0, 1) == '{') {
@@ -244,32 +245,32 @@ $.extend({
             return msg;
         }
     },
-    scrollToRegionList: function (id) {
+    scrollToRegionList: function(id) {
         if ($("#region-list .selected").length <= 0) return;
         var position = parseInt($("#region-list .selected").offset().top - $("#region-list .item:first").offset().top);
         $('#region-list .contents').animate({
             scrollTop: position
         }, 'slow');
     },
-    setSelectedRegion: function () {
+    setSelectedRegion: function() {
         $("#region-selected span.selected").text($("#region-list .item.selected").text());
     }
 
 });
 
 $.xhrPool = [];
-$.xhrPool.abortAll = function () {
-    $(this).each(function (idx, jqXHR) {
+$.xhrPool.abortAll = function() {
+    $(this).each(function(idx, jqXHR) {
         jqXHR.abort();
     });
     $.xhrPool.length = 0
 };
 
 $.ajaxSetup({
-    beforeSend: function (jqXHR) {
+    beforeSend: function(jqXHR) {
         $.xhrPool.push(jqXHR);
     },
-    complete: function (jqXHR) {
+    complete: function(jqXHR) {
         var index = $.xhrPool.indexOf(jqXHR);
         if (index > -1) {
             $.xhrPool.splice(index, 1);
@@ -303,8 +304,8 @@ var indicator_roles = {
 var visibility_level = {
     //"public": "Público",
     //"private": "Privado",
-//    "country": "por País",
-//    "restrict": "por Usuário"
+    //    "country": "por País",
+    //    "restrict": "por Usuário"
     "network": "por Rede"
 };
 var indicator_types = {
@@ -439,7 +440,7 @@ var qtip_editor = {
     }
 };
 
-var findInArray = function (obj, value) {
+var findInArray = function(obj, value) {
     if (value == "") return true;
     var retorno = false;
     for (a = 0; a < obj.length; a++) {
@@ -448,11 +449,11 @@ var findInArray = function (obj, value) {
     return retorno;
 }
 
-var findInJson = function (obj, key, value) {
+var findInJson = function(obj, key, value) {
     var found = false;
     var key_found = "";
-    $.each(obj, function (key1, value1) {
-        $.each(obj[key1], function (key2, value2) {
+    $.each(obj, function(key1, value1) {
+        $.each(obj[key1], function(key2, value2) {
             if (key2 == key) {
                 if (value2 == value) {
                     found = true;
@@ -469,7 +470,7 @@ var findInJson = function (obj, key, value) {
     return retorno;
 }
 
-var resetCookies = function () {
+var resetCookies = function() {
     $.cookie("user.id", null, {
         path: "/",
         expires: -5
@@ -489,7 +490,7 @@ var resetCookies = function () {
     });
 }
 
-$.fn.setWarning = function () {
+$.fn.setWarning = function() {
     var args = arguments[0];
 
     $(this).hide();
@@ -499,17 +500,17 @@ $.fn.setWarning = function () {
         e: args.msg
     }));
 
-    if(args.msg){
-       $(this).show("slow");
+    if (args.msg) {
+        $(this).show("slow");
     }
 };
-$.fn.clearWarning = function () {
+$.fn.clearWarning = function() {
     $(this).hide();
     $(this).html("");
 };
 
 
-$.fn.offsetRelative = function (top) {
+$.fn.offsetRelative = function(top) {
     var $this = $(this);
     var $parent = $this.offsetParent();
     var offset = $this.position();
@@ -524,11 +525,11 @@ $.fn.offsetRelative = function (top) {
         return offset;
     }
 };
-$.fn.positionRelative = function (top) {
+$.fn.positionRelative = function(top) {
     return $(this).offsetRelative(top);
 };
 
-var findCidadePrefeito = function (city_id) {
+var findCidadePrefeito = function(city_id) {
     var retorno = "";
     for (i = 0; i < cidades_prefeitos.length; i++) {
         if (cidades_prefeitos[i].id == city_id) {
@@ -538,7 +539,7 @@ var findCidadePrefeito = function (city_id) {
     return retorno;
 }
 
-var findCidadeMovimento = function (city_id) {
+var findCidadeMovimento = function(city_id) {
     var retorno = "";
     for (i = 0; i < cidades_prefeitos.length; i++) {
         if (cidades_prefeitos[i].id == city_id) {
@@ -548,7 +549,7 @@ var findCidadeMovimento = function (city_id) {
     return retorno;
 }
 
-var resetDashboard = function () {
+var resetDashboard = function() {
     $("#aviso").setWarning({
         msg: ""
     });
@@ -557,7 +558,7 @@ var resetDashboard = function () {
     $("#user-info").remove();
 
 
-//    $("#content>.content").show();
+    //    $("#content>.content").show();
 
     $("#menu ul.menu li").remove();
     $("#menu ul.menu").append("<li class='selected'>$$ee</li>".render({
@@ -565,14 +566,14 @@ var resetDashboard = function () {
     }));
     setTitleBar();
 };
-var resetWarnings = function () {
+var resetWarnings = function() {
     $("#aviso").empty();
     $(".form-aviso").empty();
 };
 
 /*monta titleBar*/
 
-var setTitleBar = function () {
+var setTitleBar = function() {
     var pagina = getUrlSub();
     var option = $.getUrlVar("option");
 
@@ -607,7 +608,7 @@ var setTitleBar = function () {
     }
 }
 
-var buildList = function (args) {
+var buildList = function(args) {
     var url = args.url;
     var headers = args.headers;
     var fields = args.fields;
@@ -632,7 +633,7 @@ var buildList = function (args) {
 
     newlist += "<tbody>";
 
-    $.each(data, function (index, value) {
+    $.each(data, function(index, value) {
         newlist += "<tr>";
         for (var key in fields) {
             newlist += "<td>" + data[index][fields[key]] + "</td>";
@@ -654,7 +655,7 @@ var buildList = function (args) {
     newlist += "</table>";
     return newlist;
 };
-var buildDataTable = function (args, table_id, button_add, add_class) {
+var buildDataTable = function(args, table_id, button_add, add_class) {
     var headers = args.headers;
 
     var newlist = "";
@@ -686,13 +687,13 @@ var buildDataTable = function (args, table_id, button_add, add_class) {
     return newlist;
 
 };
-var buildDTWithButton = function (args, table_id, button_add, add_class) {
+var buildDTWithButton = function(args, table_id, button_add, add_class) {
     var headers = args.headers;
 
     var newlist = "";
 
     if (add_class == undefined || add_class == null) {
-    	  add_class = "";
+        add_class = "";
     }
     if (table_id == undefined || table_id == null) {
         table_id = "results";
@@ -716,8 +717,8 @@ var buildDTWithButton = function (args, table_id, button_add, add_class) {
 
 };
 
-var DTdesenhaBotoes = function () {
-    $("#results td.botoes").each(function () {
+var DTdesenhaBotoes = function() {
+    $("#results td.botoes").each(function() {
         if ($(this).find("a").length <= 0) {
             var url = $(this).html();
             $(this).html("<a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='$$ee' alt='$$ee'>$$ee</a><a href='$$_hash?option=delete&url=$$_url' class='icone delete' title='$$dd' alt='$$dd'>$$dd</a>".render({
@@ -730,12 +731,12 @@ var DTdesenhaBotoes = function () {
     });
 }
 
-var DTdesenhaBtEntrar = function () {
-    $("#results td.botoes").each(function () {
+var DTdesenhaBtEntrar = function() {
+    $("#results td.botoes").each(function() {
         if ($(this).find("a").length <= 0) {
             var url = $(this).html();
 
-	    $(this).html("<a href='$$_hash?option=save&url=$$_url' class='botao-form' title='$$ee' alt='$$ee'>$$ee</a>".render({
+            $(this).html("<a href='$$_hash?option=save&url=$$_url' class='botao-form' title='$$ee' alt='$$ee'>$$ee</a>".render({
                 _hash: "#!/" + getUrlSub(),
                 ee: 'Participar',
                 _url: url
@@ -745,8 +746,8 @@ var DTdesenhaBtEntrar = function () {
         }
     });
 }
-var DTdesenhaBotaoVariavel = function () {
-    $("#results td.botoes").each(function () {
+var DTdesenhaBotaoVariavel = function() {
+    $("#results td.botoes").each(function() {
         if ($(this).find("a").length <= 0) {
             var url = $(this).html();
             $(this).html("<a href='$$_hash?option=edit&url=$$_url' class='icone edit' title='$$aaa' alt='$$ee'>$$aav</a>".render({
@@ -761,9 +762,9 @@ var DTdesenhaBotaoVariavel = function () {
     });
 }
 
-function setup_jStepper(elm, is_num){
+function setup_jStepper(elm, is_num) {
 
-    if (is_num){
+    if (is_num) {
         $(elm).jStepper({
             maxDecimals: 6,
             minDecimals: 2,
@@ -796,7 +797,7 @@ function setup_jStepper(elm, is_num){
             numValue = numValue + '';
             me.val(numValue.replace('.', ','))
         });
-    }else{
+    } else {
         $(elm).jStepper({
             allowDecimals: false,
             defaultValue: ''
@@ -832,7 +833,7 @@ function setup_jStepper(elm, is_num){
     }
 }
 
-var buildForm = function (form_args, title) {
+var buildForm = function(form_args, title) {
     var newform = "<div class='form'>";
     if (title) {
         newform += "<div class='title'>$$title</div>".render({
@@ -919,64 +920,64 @@ var buildForm = function (form_args, title) {
     return newform;
 };
 
-var buildInput = function (input_args) {
+var buildInput = function(input_args) {
     switch (input_args[0]) {
-    case "text":
-    case "password":
-        newinput = "<input type='$$type' name='$$id' id='$$id' class='$$class'>".render2({
-            type: input_args[0],
-            id: input_args[1],
-            class: input_args[2]
-        })
-        break;
-    case "select":
-        newinput = "<select name='$$id' id='$$id' class='$$class'></select>".render2({
-            id: input_args[1],
-            class: input_args[2]
-        })
-        break;
-    case "radio":
-        newinput = "<input type='radio' name='$$id' id='$$id' class='$$class' />".render2({
-            id: input_args[1],
-            class: input_args[2]
-        })
-        break;
-    case "checkbox":
-        newinput = "<input type='checkbox' name='$$id' id='$$id' class='$$class' />".render2({
-            id: input_args[1],
-            class: input_args[2]
-        })
-        break;
-    case "textarea":
-        newinput = "<textarea name='$$id' id='$$id' class='$$class'></textarea>".render2({
-            id: input_args[1],
-            class: input_args[2]
-        })
-        break;
-    case "textlabel":
-        newinput = "<div class='$$class' id='$$id'></div>".render2({
-            id: input_args[1],
-            class: input_args[2]
-        })
-        break;
-    case "file":
-        newinput = "<form id='formFileUpload_$$id'><div class='file'><input type='file' name='arquivo_$$id' id='arquivo_$$id' original-id='arquivo_$$id' class='$$class'></div></form><iframe id='iframe_$$id' name='iframe_$$id' frameborder='0' class='upload'></iframe>".render2({
-            id: input_args[1],
-            class: input_args[2]
-        })
-        break;
-    case "button":
-        newinput = "<a href='javascript: void(0);' id='$$id' class='$$class'></a>".render2({
-            id: input_args[1],
-            class: input_args[2]
-        })
-        break;
+        case "text":
+        case "password":
+            newinput = "<input type='$$type' name='$$id' id='$$id' class='$$class'>".render2({
+                type: input_args[0],
+                id: input_args[1],
+                class: input_args[2]
+            })
+            break;
+        case "select":
+            newinput = "<select name='$$id' id='$$id' class='$$class'></select>".render2({
+                id: input_args[1],
+                class: input_args[2]
+            })
+            break;
+        case "radio":
+            newinput = "<input type='radio' name='$$id' id='$$id' class='$$class' />".render2({
+                id: input_args[1],
+                class: input_args[2]
+            })
+            break;
+        case "checkbox":
+            newinput = "<input type='checkbox' name='$$id' id='$$id' class='$$class' />".render2({
+                id: input_args[1],
+                class: input_args[2]
+            })
+            break;
+        case "textarea":
+            newinput = "<textarea name='$$id' id='$$id' class='$$class'></textarea>".render2({
+                id: input_args[1],
+                class: input_args[2]
+            })
+            break;
+        case "textlabel":
+            newinput = "<div class='$$class' id='$$id'></div>".render2({
+                id: input_args[1],
+                class: input_args[2]
+            })
+            break;
+        case "file":
+            newinput = "<form id='formFileUpload_$$id'><div class='file'><input type='file' name='arquivo_$$id' id='arquivo_$$id' original-id='arquivo_$$id' class='$$class'></div></form><iframe id='iframe_$$id' name='iframe_$$id' frameborder='0' class='upload'></iframe>".render2({
+                id: input_args[1],
+                class: input_args[2]
+            })
+            break;
+        case "button":
+            newinput = "<a href='javascript: void(0);' id='$$id' class='$$class'></a>".render2({
+                id: input_args[1],
+                class: input_args[2]
+            })
+            break;
     }
     return newinput;
 
 }
 
-var buildButton = function (label, classname, id) {
+var buildButton = function(label, classname, id) {
     var new_button = "<a href='javascript: void(0);' class='$$_class' id='$$_id'>$$label</a>".render({
         _class: classname,
         label: label,
@@ -985,7 +986,7 @@ var buildButton = function (label, classname, id) {
     return new_button;
 };
 
-var buildVariableHistory = function (var_id) {
+var buildVariableHistory = function(var_id) {
     $("#dashboard-content .content div.historico").html("carregando");
     $.ajax({
         type: 'GET',
@@ -995,9 +996,9 @@ var buildVariableHistory = function (var_id) {
             userid: $.cookie("user.id"),
             region: ($("#dashboard-content .content select#region_id option:selected").val()) ? "&region_id=" + $("#dashboard-content .content select#region_id option:selected").val() : ""
         }),
-        success: function (data, textStatus, jqXHR) {
+        success: function(data, textStatus, jqXHR) {
             var data_variables = new Array();
-            $.each(data.variables, function (index, value) {
+            $.each(data.variables, function(index, value) {
                 if (String(data.variables[index].variable_id) == getIdFromUrl($.getUrlVar("url"))) {
                     data_variables.push({
                         "id": data.variables[index].variable_id,
@@ -1016,7 +1017,7 @@ var buildVariableHistory = function (var_id) {
                 val: 'Valor',
                 ss: 'Série Histórica'
             });
-            $.each(data_variables[0].values, function (index, value) {
+            $.each(data_variables[0].values, function(index, value) {
                 history_table += "<tr value-id='$$value_id'><td class='periodo'>$$periodo</td>".render2({
                     periodo: $.convertDateToPeriod(data_variables[0].values[index].valid_from, data_variables[0].period),
                     value_id: data_variables[0].values[index].id
@@ -1044,10 +1045,10 @@ var buildVariableHistory = function (var_id) {
             $("#dashboard-content .content div.historico").empty();
             $("#dashboard-content .content div.historico").append(history_table);
             $("#dashboard-content .content div.historic table").width($("#dashboard-content .content").find(".form").width());
-            $("div.historico .title").click(function () {
+            $("div.historico .title").click(function() {
                 $(this).parent().find(".historic-content").toggle();
             });
-            $("table.history a.edit").click(function () {
+            $("table.history a.edit").click(function() {
 
                 // carrega Historico para editar
 
@@ -1073,7 +1074,7 @@ var buildVariableHistory = function (var_id) {
                     type: 'GET',
                     dataType: 'json',
                     url: url,
-                    success: function (data, textStatus, jqXHR) {
+                    success: function(data, textStatus, jqXHR) {
                         $("#dashboard-content .content .form").find("input#value").val(data.value);
                         if (data_variables[0].period == "yearly") {
                             $("#dashboard-content .content .form").find("#value_of_date").val($.format.date(data.value_of_date, "yyyy-MM-dd"));
@@ -1088,7 +1089,7 @@ var buildVariableHistory = function (var_id) {
                 });
 
             });
-            $("table.history a.delete").click(function () {
+            $("table.history a.delete").click(function() {
                 var value_selected = $(this);
                 var url = api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
                     key: $.cookie("key"),
@@ -1113,19 +1114,21 @@ var buildVariableHistory = function (var_id) {
     });
 }
 
-    function numKeys(obj) {
-        var count = 0;
-        for (var prop in obj) {
-            count++;
-        }
-        return count;
+function numKeys(obj) {
+    var count = 0;
+    for (var prop in obj) {
+        count++;
     }
+    return count;
+}
 
-var buildIndicatorHistory = function (args) {
+v ar buildIndicatorHistory = function(args) {
 
     var vvariations = [];
 
-    if (!$("#dashboard-content .content select#region_id option:selected").val()){ return false }
+    if (!$("#dashboard-content .content select#region_id option:selected").val()) {
+        return false
+    }
 
     $.ajax({
         type: 'GET',
@@ -1135,7 +1138,7 @@ var buildIndicatorHistory = function (args) {
             id: args.id,
             region: ($("#dashboard-content .content select#region_id option:selected").val()) ? "&region_id=" + $("#dashboard-content .content select#region_id option:selected").val() : ""
         }),
-        success: function (data, textStatus, jqXHR) {
+        success: function(data, textStatus, jqXHR) {
             if (data.header && data.rows != undefined) {
                 var history_table = "";
                 history_table += "<table class='history'><thead><tr><th>$$e</th>".render({
@@ -1143,13 +1146,13 @@ var buildIndicatorHistory = function (args) {
                 });
 
                 var headers = []; //corrige ordem do header
-                $.each(data.header, function (titulo, index) {
+                $.each(data.header, function(titulo, index) {
                     headers[index] = titulo;
                 });
                 vvariations = [];
                 var seta_vvariacoes = true;
 
-                $.each(headers, function (index, value) {
+                $.each(headers, function(index, value) {
                     history_table += "<th class='variavel'>$$variavel</th>".render({
                         variavel: value
                     });
@@ -1157,17 +1160,17 @@ var buildIndicatorHistory = function (args) {
                 history_table += "#theader_valor";
                 history_table += "</tr></thead><tbody>";
                 var rows = 0;
-				var variables_variations = [],
-					th_valor = "",
-					num_var = numKeys(data.variable_variations);
+                var variables_variations = [],
+                    th_valor = "",
+                    num_var = numKeys(data.variable_variations);
 
-				if (data.variables_variations){
-					$.each(data.variables_variations, function(indexv,itemv){
-						variables_variations[itemv.id] = itemv.name;
-					});
-				}
+                if (data.variables_variations) {
+                    $.each(data.variables_variations, function(indexv, itemv) {
+                        variables_variations[itemv.id] = itemv.name;
+                    });
+                }
 
-                $.each(data.rows, function (index, value) {
+                $.each(data.rows, function(index, value) {
                     history_table += "<tr row-id='$$row'><td class='periodo'>$$periodo</td>".render2({
                         periodo: $.convertDateToPeriod(data.rows[index].valid_from, args.period),
                         row: rows
@@ -1176,32 +1179,32 @@ var buildIndicatorHistory = function (args) {
                     var cont = 0,
                         num_var = numKeys(data.header);
 
-                    $.each(headers, function (index2, value2) {
+                    $.each(headers, function(index2, value2) {
                         if (data.rows[index].valores[index2] && data.rows[index].valores[index2].value != "-" && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined) {
-			    if ( isNaN(data.rows[index].valores[index2].value)){
+                            if (isNaN(data.rows[index].valores[index2].value)) {
 
-				history_table += "<td class='valor' title='$$data' value-id='$$id' variable-id='$$variable_id'>$$valor <a href='javascript: void(0);' class='delete delete-item' title='$$title' alt='$$title'>$$e</a></td>".render2({
-				    valor: data.rows[index].valores[index2].value,
-				    data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T"),
-				    id: data.rows[index].valores[index2].id,
-				    variable_id: data.rows[index].valores[index2].variable_id,
-				    title: "Apagar valor",
-				    e: "X"
-				});
-			    }else{
-				history_table += "<td class='valor' title='$$data' value-id='$$id' variable-id='$$variable_id'>$$valor <a href='javascript: void(0);' class='delete delete-item' title='$$title' alt='$$title'>$$e</a></td>".render2({
-				    valor: $.formatNumber(data.rows[index].valores[index2].value, {
-					format: "#,##0.###",
-					locale: "br",
-				    }),
-				    data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T"),
-				    id: data.rows[index].valores[index2].id,
-				    variable_id: data.rows[index].valores[index2].variable_id,
-				    title: "Apagar valor",
-								    e: "X"
+                                history_table += "<td class='valor' title='$$data' value-id='$$id' variable-id='$$variable_id'>$$valor <a href='javascript: void(0);' class='delete delete-item' title='$$title' alt='$$title'>$$e</a></td>".render2({
+                                    valor: data.rows[index].valores[index2].value,
+                                    data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T"),
+                                    id: data.rows[index].valores[index2].id,
+                                    variable_id: data.rows[index].valores[index2].variable_id,
+                                    title: "Apagar valor",
+                                    e: "X"
+                                });
+                            } else {
+                                history_table += "<td class='valor' title='$$data' value-id='$$id' variable-id='$$variable_id'>$$valor <a href='javascript: void(0);' class='delete delete-item' title='$$title' alt='$$title'>$$e</a></td>".render2({
+                                    valor: $.formatNumber(data.rows[index].valores[index2].value, {
+                                        format: "#,##0.###",
+                                        locale: "br",
+                                    }),
+                                    data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T"),
+                                    id: data.rows[index].valores[index2].id,
+                                    variable_id: data.rows[index].valores[index2].variable_id,
+                                    title: "Apagar valor",
+                                    e: "X"
 
-				});
-			    }
+                                });
+                            }
 
                         } else {
                             if (data.rows[index].valores[index2]) {
@@ -1221,59 +1224,59 @@ var buildIndicatorHistory = function (args) {
                         history_table += "<td class='valor'>-</td>";
                     }
                     if (value.variations && value.variations.length > 0) {
-						var th_valor = "",
-							num_var = numKeys(data.variables_variations);
+                        var th_valor = "",
+                            num_var = numKeys(data.variables_variations);
 
                         for (i = 0; i < value.variations.length; i++) {
-							$.each(variables_variations, function(indexv,itemv){
-								if (itemv){
-									th_valor += "<th class='variavel' variation-id='" + value.variations[i].id + "' variation-index='" + i + "' variable-id='" + indexv + "'>$$variavel</th>".render({
-										variavel: itemv
-									});
-								}
-							});
+                            $.each(variables_variations, function(indexv, itemv) {
+                                if (itemv) {
+                                    th_valor += "<th class='variavel' variation-id='" + value.variations[i].id + "' variation-index='" + i + "' variable-id='" + indexv + "'>$$variavel</th>".render({
+                                        variavel: itemv
+                                    });
+                                }
+                            });
                             th_valor += "<th class='formula_valor' variation-id='" + value.variations[i].id + "' variation-index='" + i + "'>$$e</th>".render({
                                 e: 'Valor da Fórmula'
                             });
                         }
                         history_table = history_table.replace("#theader_valor", th_valor + "<th></th>");
-                        $.each(value.variations, function (indexv, itemv) {
-							var cont = 0;
-							if (itemv.variations_values){
-								$.each(itemv.variations_values, function(indexv2, itemv2){
-									if (itemv2.value != "-"){
-										history_table += "<td class='variavel valor' variation-id='$$variation_id' variation-index='$$index' variable-id='$$variable_id' value-id='$$value_id'>$$valor  <a href='javascript: void(0);' class='delete delete-item' title='$$title' alt='$$title'>$$e</a></td>".render2({
-																			valor: $.formatNumber(itemv2.value, {
-																				format: "#,##0.###",
-																				locale: "br"
-																			}),
-																			variable_id: indexv2,
-																			variation_id: itemv.id,
-																			value_id: itemv2.id,
-																			index: indexv,
-																			title: "Apagar valor",
-																			e: "X"
-																		});
-									}else{
-										history_table += "<td class='variavel valor' variation-id='$$variation_id' variation-index='$$index' variable-id='$$variable_id' value-id='$$value_id'>-</td>".render2({
-																			valor: $.formatNumber(itemv2.value, {
-																				format: "#,##0.###",
-																				locale: "br"
-																			}),
-																			variation_id: itemv.id,
-																			variable_id: indexv2,
-																			value_id: itemv2.id,
-																			index: indexv
-																		});
-									}
-									cont++;
-								});
-							}
-							for (i = cont; i < num_var; i++) {
-								history_table += "<td class='variavel valor' variation-id='$$variation_id'>-</td>".render({
-									variation_id: itemv.id
-								});
-							}
+                        $.each(value.variations, function(indexv, itemv) {
+                            var cont = 0;
+                            if (itemv.variations_values) {
+                                $.each(itemv.variations_values, function(indexv2, itemv2) {
+                                    if (itemv2.value != "-") {
+                                        history_table += "<td class='variavel valor' variation-id='$$variation_id' variation-index='$$index' variable-id='$$variable_id' value-id='$$value_id'>$$valor  <a href='javascript: void(0);' class='delete delete-item' title='$$title' alt='$$title'>$$e</a></td>".render2({
+                                            valor: $.formatNumber(itemv2.value, {
+                                                format: "#,##0.###",
+                                                locale: "br"
+                                            }),
+                                            variable_id: indexv2,
+                                            variation_id: itemv.id,
+                                            value_id: itemv2.id,
+                                            index: indexv,
+                                            title: "Apagar valor",
+                                            e: "X"
+                                        });
+                                    } else {
+                                        history_table += "<td class='variavel valor' variation-id='$$variation_id' variation-index='$$index' variable-id='$$variable_id' value-id='$$value_id'>-</td>".render2({
+                                            valor: $.formatNumber(itemv2.value, {
+                                                format: "#,##0.###",
+                                                locale: "br"
+                                            }),
+                                            variation_id: itemv.id,
+                                            variable_id: indexv2,
+                                            value_id: itemv2.id,
+                                            index: indexv
+                                        });
+                                    }
+                                    cont++;
+                                });
+                            }
+                            for (i = cont; i < num_var; i++) {
+                                history_table += "<td class='variavel valor' variation-id='$$variation_id'>-</td>".render({
+                                    variation_id: itemv.id
+                                });
+                            }
                             if (itemv.value != "-") {
                                 history_table += "<td class='formula_valor' variation-index='$$index'>$$formula_valor</td>".render2({
                                     formula_valor: $.formatNumber(itemv.value, {
@@ -1291,7 +1294,7 @@ var buildIndicatorHistory = function (args) {
                                 vvariations.push({
                                     name: itemv.name,
                                     index: indexv,
-									id: itemv.id
+                                    id: itemv.id
                                 });
                             }
                         });
@@ -1330,11 +1333,11 @@ var buildIndicatorHistory = function (args) {
                 variation_filter += "<div class='variation-filter'><span class='variation-filter'>$$f: </span><select class='variation-filter'>".render({
                     f: 'Faixa'
                 });
-                $.each(vvariations, function (index, item) {
+                $.each(vvariations, function(index, item) {
                     variation_filter += "<option value='$$id' $$selected>$$name".render({
                         id: item.id,
                         name: item.name,
-						selected: (index == 0) ? "selected" : ""
+                        selected: (index == 0) ? "selected" : ""
                     });
                 });
                 variation_filter += "</select></div>";
@@ -1345,22 +1348,22 @@ var buildIndicatorHistory = function (args) {
                 tt: 'mostrar/esconder Histórico',
                 e: 'Série Histórica'
             }) + variation_filter + history_table + "</div>");
-            $(args.target).find(".title").click(function () {
+            $(args.target).find(".title").click(function() {
                 $(this).parent().find(".historic-content").toggle();
             });
 
             if (vvariations.length > 0) {
                 $(args.target).find("table .formula_valor[variation-id!=" + $("select.variation-filter option:selected").val() + "],table .variavel[variation-id!=" + $("select.variation-filter option:selected").val() + "]").hide();
 
-                $("select.variation-filter").change(function () {
+                $("select.variation-filter").change(function() {
                     var obj = $(this);
-                    $(obj).parent().next("table").find(".formula_valor,.variavel").fadeOut("fast", function () {
+                    $(obj).parent().next("table").find(".formula_valor,.variavel").fadeOut("fast", function() {
                         $(obj).parent().next("table").find(".formula_valor[variation-id='" + $(obj).val() + "'],.variavel[variation-id='" + $(obj).val() + "']").show();
                     });
                 });
             }
 
-            $("table.history a.delete").click(function () {
+            $("table.history a.delete").click(function() {
                 var link_delete = this;
                 $.confirm({
                     'title': 'Confirmação',
@@ -1368,105 +1371,105 @@ var buildIndicatorHistory = function (args) {
                     'buttons': {
                         'Sim': {
                             'class': '',
-                            'action': function () {
+                            'action': function() {
                                 var row = $("table.history tbody tr[row-id='$$row_id']".render({
                                     row_id: $(link_delete).attr("row-id")
                                 }));
 
-								if ($(link_delete).hasClass("delete-all")){
+                                if ($(link_delete).hasClass("delete-all")) {
 
-									var tds = $(row).find("td[variable-id]:visible");
+                                    var tds = $(row).find("td[variable-id]:visible");
 
-									var total_values = tds.length;
+                                    var total_values = tds.length;
 
-									var total_values_enviados = 0;
+                                    var total_values_enviados = 0;
 
-									$(tds).each(function (index, element) {
-										var url = api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
-											key: $.cookie("key"),
-											var_id: $(element).attr("variable-id"),
-											value_id: $(element).attr("value-id")
-										});
-										if ($(element).attr("variation-id")){
-											url = api_path + '/api/indicator/$$indicator_id/variables_variation/$$variable_id/values/$$value_id?api_key=$$key'.render({
-												key: $.cookie("key"),
-												variable_id: $(element).attr("variable-id"),
-												indicator_id: getIdFromUrl($.getUrlVar("url")),
-												value_id: $(element).attr("value-id")
-											});
-										}
-										if ($("#dashboard-content .content select#region_id").length > 0 && ($("#dashboard-content .content select#region_id option:selected").val())) {
-											url = api_path + '/api/city/$$city/region/$$region/value/$$value_id?api_key=$$key'.render({
-												key: $.cookie("key"),
-												city: getIdFromUrl(user_info.city),
-												region: $("#dashboard-content .content select#region_id option:selected").val(),
-												value_id: $(element).attr("value-id")
-											});
-										}
-										$.ajax({
-											type: 'DELETE',
-											dataType: 'json',
-											url: url,
-											success: function (data, status, jqXHR) {
-												switch (jqXHR.status) {
-												case 204:
-													total_values_enviados++;
-													if (total_values_enviados >= total_values) {
-														resetWarnings();
-														$("#aviso").setWarning({
-															msg: "Cadastro apagado com sucesso."
-														});
-														buildIndicatorHistory(args);
-													}
-													break;
-												}
-											}
-										});
-									});
-								}else{
-									var url = api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
-										key: $.cookie("key"),
-										var_id: $(link_delete).parent().attr("variable-id"),
-										value_id: $(link_delete).parent().attr("value-id")
-									});
-									if ($(link_delete).parent().attr("variation-id")){
-										url = api_path + '/api/indicator/$$indicator_id/variables_variation/$$variable_id/values/$$value_id?api_key=$$key'.render({
-											key: $.cookie("key"),
-											variable_id: $(link_delete).parent().attr("variable-id"),
-											indicator_id:getIdFromUrl($.getUrlVar("url")),
-											value_id: $(link_delete).parent().attr("value-id")
-										});
-									}
-									if ($("#dashboard-content .content select#region_id").length > 0 && ($("#dashboard-content .content select#region_id option:selected").val())) {
-										url = api_path + '/api/city/$$city/region/$$region/value/$$value_id?api_key=$$key'.render({
-											key: $.cookie("key"),
-											city: getIdFromUrl(user_info.city),
-											region: $("#dashboard-content .content select#region_id option:selected").val(),
-											value_id: $(link_delete).parent().attr("value-id")
-										});
-									}
-									$.ajax({
-										type: 'DELETE',
-										dataType: 'json',
-										url: url,
-										success: function (data, status, jqXHR) {
-											switch (jqXHR.status) {
-											case 204:
-												resetWarnings();
-												$("#aviso").setWarning({
-													msg: "Cadastro apagado com sucesso."
-												});
-												buildIndicatorHistory(args);
-												break;
-											}
-										}
-									});
-								}
+                                    $(tds).each(function(index, element) {
+                                        var url = api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
+                                            key: $.cookie("key"),
+                                            var_id: $(element).attr("variable-id"),
+                                            value_id: $(element).attr("value-id")
+                                        });
+                                        if ($(element).attr("variation-id")) {
+                                            url = api_path + '/api/indicator/$$indicator_id/variables_variation/$$variable_id/values/$$value_id?api_key=$$key'.render({
+                                                key: $.cookie("key"),
+                                                variable_id: $(element).attr("variable-id"),
+                                                indicator_id: getIdFromUrl($.getUrlVar("url")),
+                                                value_id: $(element).attr("value-id")
+                                            });
+                                        }
+                                        if ($("#dashboard-content .content select#region_id").length > 0 && ($("#dashboard-content .content select#region_id option:selected").val())) {
+                                            url = api_path + '/api/city/$$city/region/$$region/value/$$value_id?api_key=$$key'.render({
+                                                key: $.cookie("key"),
+                                                city: getIdFromUrl(user_info.city),
+                                                region: $("#dashboard-content .content select#region_id option:selected").val(),
+                                                value_id: $(element).attr("value-id")
+                                            });
+                                        }
+                                        $.ajax({
+                                            type: 'DELETE',
+                                            dataType: 'json',
+                                            url: url,
+                                            success: function(data, status, jqXHR) {
+                                                switch (jqXHR.status) {
+                                                    case 204:
+                                                        total_values_enviados++;
+                                                        if (total_values_enviados >= total_values) {
+                                                            resetWarnings();
+                                                            $("#aviso").setWarning({
+                                                                msg: "Cadastro apagado com sucesso."
+                                                            });
+                                                            buildIndicatorHistory(args);
+                                                        }
+                                                        break;
+                                                }
+                                            }
+                                        });
+                                    });
+                                } else {
+                                    var url = api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
+                                        key: $.cookie("key"),
+                                        var_id: $(link_delete).parent().attr("variable-id"),
+                                        value_id: $(link_delete).parent().attr("value-id")
+                                    });
+                                    if ($(link_delete).parent().attr("variation-id")) {
+                                        url = api_path + '/api/indicator/$$indicator_id/variables_variation/$$variable_id/values/$$value_id?api_key=$$key'.render({
+                                            key: $.cookie("key"),
+                                            variable_id: $(link_delete).parent().attr("variable-id"),
+                                            indicator_id: getIdFromUrl($.getUrlVar("url")),
+                                            value_id: $(link_delete).parent().attr("value-id")
+                                        });
+                                    }
+                                    if ($("#dashboard-content .content select#region_id").length > 0 && ($("#dashboard-content .content select#region_id option:selected").val())) {
+                                        url = api_path + '/api/city/$$city/region/$$region/value/$$value_id?api_key=$$key'.render({
+                                            key: $.cookie("key"),
+                                            city: getIdFromUrl(user_info.city),
+                                            region: $("#dashboard-content .content select#region_id option:selected").val(),
+                                            value_id: $(link_delete).parent().attr("value-id")
+                                        });
+                                    }
+                                    $.ajax({
+                                        type: 'DELETE',
+                                        dataType: 'json',
+                                        url: url,
+                                        success: function(data, status, jqXHR) {
+                                            switch (jqXHR.status) {
+                                                case 204:
+                                                    resetWarnings();
+                                                    $("#aviso").setWarning({
+                                                        msg: "Cadastro apagado com sucesso."
+                                                    });
+                                                    buildIndicatorHistory(args);
+                                                    break;
+                                            }
+                                        }
+                                    });
+                                }
                             }
                         },
                         'Não': {
                             'class': '',
-                            'action': function () {}
+                            'action': function() {}
                         }
                     }
                 });
@@ -1476,7 +1479,7 @@ var buildIndicatorHistory = function (args) {
 
 }
 
-var setNewSource = function (objSelect, objText) {
+var setNewSource = function(objSelect, objText) {
     $(objText).hide();
     $(objText).attr("placeholder", "descrição da nova fonte");
     $(objText).css("margin-top", "5px");
@@ -1486,24 +1489,24 @@ var setNewSource = function (objSelect, objText) {
     $(objText).after("&nbsp;<a href='#' id='add-source'>adicionar</a>");
     $(objSelect).next("a#delete-source").hide();
     $(objText).next("a#add-source").hide();
-    $(objSelect).next("a#delete-source").click(function (e) {
+    $(objSelect).next("a#delete-source").click(function(e) {
         e.preventDefault();
         if ($(objSelect).find("option:selected").val() != "") {
-            if ($(objSelect).find("option:selected").attr("source-id") == '?'){
+            if ($(objSelect).find("option:selected").attr("source-id") == '?') {
                 resetWarnings();
                 $("#aviso").setWarning({
                     msg: "Fonte removida com sucesso."
                 });
 
                 loadSources();
-                $("select.source").each(function (i, item) {
+                $("select.source").each(function(i, item) {
                     var _objSelect = $("select#" + $(item).attr("id"));
                     var _objText = $("input#" + $(item).attr("id") + "_new");
                     loadComboSources(sources, _objSelect, _objText);
                 })
                 $(params.element).val("");
 
-            }else{
+            } else {
                 deleteSource({
                     url: api_path + "/api/source/" + $(objSelect).find("option:selected").attr("source-id") + "?api_key=$$key".render2({
                         key: $.cookie("key")
@@ -1514,7 +1517,7 @@ var setNewSource = function (objSelect, objText) {
             }
         }
     });
-    $(objText).next("a#add-source").click(function (e) {
+    $(objText).next("a#add-source").click(function(e) {
         e.preventDefault();
         if ($(objText).val() == "") {
             $("#aviso").setWarning({
@@ -1541,12 +1544,12 @@ var setNewSource = function (objSelect, objText) {
             dataType: 'json',
             url: api_path + '/api/source',
             data: args_source,
-            success: function (data) {
+            success: function(data) {
                 new_id = data.id;
             }
         });
         loadSources();
-        $("select.source").each(function (i, item) {
+        $("select.source").each(function(i, item) {
             var _objSelect = $("select#" + $(item).attr("id"));
             var _objText = $("input#" + $(item).attr("id") + "_new");
             loadComboSources(sources, _objSelect, _objText);
@@ -1561,21 +1564,21 @@ var setNewSource = function (objSelect, objText) {
     });
 }
 
-var loadComboSources = function (arr, objSelect, objText) {
+var loadComboSources = function(arr, objSelect, objText) {
     var old_selected = $(objSelect).find("option:selected").val();
     $(objSelect).empty();
     $(objSelect).append($("<option></option>").val("").html("nenhuma"));
     $(objSelect).append($("<option></option>").val("_new").html("- nova fonte"));
 
-    $.each(arr, function (index, item) {
-        if (user_info.id == item.user_id){
+    $.each(arr, function(index, item) {
+        if (user_info.id == item.user_id) {
             $(objSelect).append($("<option></option>").val(item.name).html(item.name).attr("source-id", item.id));
         }
     });
 
     $(objSelect).val(old_selected);
 
-    $(objSelect).change(function (e) {
+    $(objSelect).change(function(e) {
         $(objSelect).next("a#delete-source").hide();
         $(objText).next("a#add-source").hide();
         $(objText).hide();
@@ -1591,134 +1594,134 @@ var loadComboSources = function (arr, objSelect, objText) {
     });
 }
 
-var deleteSource = function (params) {
+var deleteSource = function(params) {
     $.ajax({
         async: false,
         type: 'DELETE',
         dataType: 'json',
         url: params.url,
-        success: function (data, status, jqXHR) {
+        success: function(data, status, jqXHR) {
             switch (jqXHR.status) {
-            case 204:
-                resetWarnings();
-                $("#aviso").setWarning({
-                    msg: "Fonte removida com sucesso."
-                });
-                if (params.resetElement) {
-                    loadSources();
-                    $("select.source").each(function (i, item) {
-                        var _objSelect = $("select#" + $(item).attr("id"));
-                        var _objText = $("input#" + $(item).attr("id") + "_new");
-                        loadComboSources(sources, _objSelect, _objText);
-                    })
-                    $(params.element).val("");
-                }
-                break;
+                case 204:
+                    resetWarnings();
+                    $("#aviso").setWarning({
+                        msg: "Fonte removida com sucesso."
+                    });
+                    if (params.resetElement) {
+                        loadSources();
+                        $("select.source").each(function(i, item) {
+                            var _objSelect = $("select#" + $(item).attr("id"));
+                            var _objText = $("input#" + $(item).attr("id") + "_new");
+                            loadComboSources(sources, _objSelect, _objText);
+                        })
+                        $(params.element).val("");
+                    }
+                    break;
             }
         },
-        error: function (data) {
+        error: function(data) {
             switch (data.status) {
-            case 200:
-                break;
-            default:
-                $("#aviso").setWarning({
-                    msg: "Erro: ($$codigo)".render({
-                        codigo: data.status
-                    })
-                });
-                break;
+                case 200:
+                    break;
+                default:
+                    $("#aviso").setWarning({
+                        msg: "Erro: ($$codigo)".render({
+                            codigo: data.status
+                        })
+                    });
+                    break;
             }
         }
     });
 
 }
 
-var deleteUnit = function (params) {
+var deleteUnit = function(params) {
     $.ajax({
         async: false,
         type: 'DELETE',
         dataType: 'json',
         url: params.url,
-        success: function (data, status, jqXHR) {
+        success: function(data, status, jqXHR) {
             switch (jqXHR.status) {
-            case 204:
-                resetWarnings();
-                $("#aviso").setWarning({
-                    msg: "Unidade de medida removida com sucesso."
-                });
-                if (params.resetElement) {
-                    loadUnits();
-                    $("select.unit").each(function (i, item) {
-                        var _objSelect = $("select#" + $(item).attr("id"));
-                        var _objText = $("input#" + $(item).attr("id") + "_new");
-                        var _objSg = $("input#" + $(item).attr("id") + "_sg_new");
-                        loadComboUnits(measurement_units, _objSelect, _objText, _objSg);
-                    })
-                    $(params.element).val("");
-                }
-                break;
+                case 204:
+                    resetWarnings();
+                    $("#aviso").setWarning({
+                        msg: "Unidade de medida removida com sucesso."
+                    });
+                    if (params.resetElement) {
+                        loadUnits();
+                        $("select.unit").each(function(i, item) {
+                            var _objSelect = $("select#" + $(item).attr("id"));
+                            var _objText = $("input#" + $(item).attr("id") + "_new");
+                            var _objSg = $("input#" + $(item).attr("id") + "_sg_new");
+                            loadComboUnits(measurement_units, _objSelect, _objText, _objSg);
+                        })
+                        $(params.element).val("");
+                    }
+                    break;
             }
         },
-        error: function (data) {
+        error: function(data) {
             switch (data.status) {
-            case 200:
-                break;
-            default:
-                $("#aviso").setWarning({
-                    msg: "Erro: ($$codigo)".render({
-                        codigo: data.status
-                    })
-                });
-                break;
+                case 200:
+                    break;
+                default:
+                    $("#aviso").setWarning({
+                        msg: "Erro: ($$codigo)".render({
+                            codigo: data.status
+                        })
+                    });
+                    break;
             }
         }
     });
 
 }
 
-var deleteRegister = function (params) {
+var deleteRegister = function(params) {
     $.confirm({
         'title': 'Confirmação',
         'message': 'Você irá excluir permanentemente esse registro.<br />Continuar?',
         'buttons': {
             'Sim': {
                 'class': '',
-                'action': function () {
+                'action': function() {
                     $.ajax({
                         type: 'DELETE',
                         dataType: 'json',
                         url: params.url,
-                        success: function (data, status, jqXHR) {
+                        success: function(data, status, jqXHR) {
                             switch (jqXHR.status) {
-                            case 204:
-                                resetWarnings();
-                                $("#aviso").setWarning({
-                                    msg: "Cadastro apagado com sucesso."
-                                });
-                                if (params.redirect == undefined || params.redirect == true) {
+                                case 204:
+                                    resetWarnings();
+                                    $("#aviso").setWarning({
+                                        msg: "Cadastro apagado com sucesso."
+                                    });
+                                    if (params.redirect == undefined || params.redirect == true) {
 
-				  location.hash = "#!/" + getUrlSub();
-                                }
-                                if (params.call != undefined) {
-                                    eval(params.call + "();");
-                                }
-                                break;
+                                        location.hash = "#!/" + getUrlSub();
+                                    }
+                                    if (params.call != undefined) {
+                                        eval(params.call + "();");
+                                    }
+                                    break;
                             }
                         },
-                        error: function (data) {
+                        error: function(data) {
                             switch (data.status) {
-                            case 200:
-                                break;
-                            default:
-                                $("#aviso").setWarning({
-                                    msg: "Erro: ($$codigo)".render({
-                                        codigo: data.status
-                                    })
-                                });
-                                if (params.redirect == undefined || params.redirect == true) {
-                                    location.hash = "#!/" + getUrlSub();
-                                }
-                                break;
+                                case 200:
+                                    break;
+                                default:
+                                    $("#aviso").setWarning({
+                                        msg: "Erro: ($$codigo)".render({
+                                            codigo: data.status
+                                        })
+                                    });
+                                    if (params.redirect == undefined || params.redirect == true) {
+                                        location.hash = "#!/" + getUrlSub();
+                                    }
+                                    break;
                             }
                         }
                     });
@@ -1726,7 +1729,7 @@ var deleteRegister = function (params) {
             },
             'Não': {
                 'class': '',
-                'action': function () {
+                'action': function() {
                     if (params.redirect == undefined || params.redirect == true) {
                         location.hash = "#!/" + getUrlSub();
                     }
@@ -1736,7 +1739,7 @@ var deleteRegister = function (params) {
     });
 }
 
-var getUrlSub = function () {
+var getUrlSub = function() {
     var hash = location.hash;
     var url_split = hash.split("#!");
     if (url_split.length > 1) {
@@ -1760,8 +1763,8 @@ var getUrlSub = function () {
     return url_sub;
 };
 
-var getIdFromUrl = function (url) {
-    if (typeof (url) != "string") return undefined;
+var getIdFromUrl = function(url) {
+    if (typeof(url) != "string") return undefined;
     if (url == undefined) return undefined;
     var split_url = url.split("/");
     if (split_url.length > 0) {
@@ -1771,18 +1774,18 @@ var getIdFromUrl = function (url) {
     }
 }
 
-$.confirm = function (params) {
+$.confirm = function(params) {
     if ($("#dialog-overlay").length > 0) {
         return false;
     }
 
     var buttonHTML = '';
-    $.each(params.buttons, function (name, obj) {
+    $.each(params.buttons, function(name, obj) {
         buttonHTML += '<a href="javascript:;" class="button-default ' + obj['class'] + '">' + "$$a".render({
             a: name
         }) + '</a>';
         if (!obj.action) {
-            obj.action = function () {};
+            obj.action = function() {};
         }
     });
 
@@ -1805,22 +1808,22 @@ $.confirm = function (params) {
     var buttons = $('#dialog-box .button-default'),
         i = 0;
 
-    $.each(params.buttons, function (name, obj) {
-        buttons.eq(i++).click(function () {
+    $.each(params.buttons, function(name, obj) {
+        buttons.eq(i++).click(function() {
             $.confirm.hide(obj);
             return false;
         });
     });
 };
-$.confirm.hide = function (obj) {
-    $('#dialog-overlay').fadeOut(function () {
+$.confirm.hide = function(obj) {
+    $('#dialog-overlay').fadeOut(function() {
         $(this).remove();
         if (obj) obj.action();
     });
 }
 
 
-$.loading = function (params) {
+$.loading = function(params) {
     if ($("#dialog-overlay").length > 0) {
         return false;
     }
@@ -1844,14 +1847,14 @@ $.loading = function (params) {
     $(loadingWindow).hide().appendTo("body").fadeIn("fast");
 
 };
-$.loading.hide = function () {
-    $('#dialog-overlay').fadeOut(1000, function () {
+$.loading.hide = function() {
+    $('#dialog-overlay').fadeOut(1000, function() {
         $(this).remove();
     });
 }
 
 
-var loadCidades = function () {
+var loadCidades = function() {
     cidades_prefeitos = [];
     $.ajax({
         async: false,
@@ -1860,9 +1863,9 @@ var loadCidades = function () {
         url: api_path + '/api/city?api_key=$$key'.render2({
             key: $.cookie("key")
         }),
-        success: function (data, textStatus, jqXHR) {
+        success: function(data, textStatus, jqXHR) {
 
-            $.each(data.cities, function (index, value) {
+            $.each(data.cities, function(index, value) {
 
                 cidades_prefeitos.push({
                     "id": value.id,
@@ -1872,7 +1875,7 @@ var loadCidades = function () {
             });
 
         },
-        error: function (data) {
+        error: function(data) {
             $("#aviso").setWarning({
                 msg: "Erro ao carregar ($$codigo)".render2({
                     codigo: $.parseJSON(data.responseText).error
@@ -1883,7 +1886,7 @@ var loadCidades = function () {
 }
 
 
-var loadUnits = function () {
+var loadUnits = function() {
     measurement_units = [];
     $.ajax({
         async: false,
@@ -1892,23 +1895,23 @@ var loadUnits = function () {
         url: api_path + '/api/measurement_unit?api_key=$$key'.render2({
             key: $.cookie("key")
         }),
-        success: function (data, textStatus, jqXHR) {
-            $.each(data.measurement_units, function (index, item) {
+        success: function(data, textStatus, jqXHR) {
+            $.each(data.measurement_units, function(index, item) {
                 measurement_units.push({
                     "id": item.id,
                     "name": item.name
                 });
             });
 
-            measurement_units.sort(function (a, b) {
+            measurement_units.sort(function(a, b) {
                 a = a.name,
-                b = b.name;
+                    b = b.name;
 
                 return a.localeCompare(b);
             });
 
         },
-        error: function (data) {
+        error: function(data) {
             $("#aviso").setWarning({
                 msg: "Erro ao carregar ($$codigo)".render2({
                     codigo: $.parseJSON(data.responseText).error
@@ -1918,18 +1921,18 @@ var loadUnits = function () {
     });
 }
 
-var loadComboUnits = function (arr, objSelect, objText, objSg) {
+var loadComboUnits = function(arr, objSelect, objText, objSg) {
     var old_selected = $(objSelect).find("option:selected").val();
     $(objSelect).empty();
     $(objSelect).append($("<option></option>").val("").html("nenhuma"));
     $(objSelect).append($("<option></option>").val("_new").html("- nova unidade de medida"));
-    $.each(arr, function (index, item) {
+    $.each(arr, function(index, item) {
         $(objSelect).append($("<option></option>").val(item.id).html(item.name).attr("unit-id", item.id));
     });
 
     $(objSelect).val(old_selected);
 
-    $(objSelect).change(function (e) {
+    $(objSelect).change(function(e) {
         $(objSelect).next("a#delete-unit").hide();
         $(objSg).next("a#add-unit").hide();
         $(objText).hide();
@@ -1947,7 +1950,7 @@ var loadComboUnits = function (arr, objSelect, objText, objSg) {
     });
 }
 
-var setNewUnit = function (objSelect, objText, objSg) {
+var setNewUnit = function(objSelect, objText, objSg) {
     $(objText).hide();
     $(objText).attr("placeholder", "descrição da nova unidade de medida");
     $(objText).css("margin-top", "5px");
@@ -1960,7 +1963,7 @@ var setNewUnit = function (objSelect, objText, objSg) {
     $(objSg).after("&nbsp;<a href='#' id='add-unit'>adicionar</a>");
     $(objSelect).next("a#delete-unit").hide();
     $(objSg).next("a#add-unit").hide();
-    $(objSelect).next("a#delete-unit").click(function (e) {
+    $(objSelect).next("a#delete-unit").click(function(e) {
         e.preventDefault();
         if ($(objSelect).find("option:selected").val() != "") {
             deleteUnit({
@@ -1972,7 +1975,7 @@ var setNewUnit = function (objSelect, objText, objSg) {
             });
         }
     });
-    $(objSg).next("a#add-unit").click(function (e) {
+    $(objSg).next("a#add-unit").click(function(e) {
         e.preventDefault();
         if ($(objText).val() == "") {
             $("#aviso").setWarning({
@@ -2012,12 +2015,12 @@ var setNewUnit = function (objSelect, objText, objSg) {
             dataType: 'json',
             url: api_path + '/api/measurement_unit',
             data: args_unit,
-            success: function (data) {
+            success: function(data) {
                 new_id = data.id;
             }
         });
         loadUnits();
-        $("select.unit").each(function (i, item) {
+        $("select.unit").each(function(i, item) {
             var _objSelect = $("select#" + $(item).attr("id"));
             var _objText = $("input#" + $(item).attr("id") + "_new");
             var _objSg = $("input#" + $(item).attr("id") + "_sg_new");
@@ -2034,7 +2037,7 @@ var setNewUnit = function (objSelect, objText, objSg) {
     });
 }
 
-var loadSources = function () {
+var loadSources = function() {
     sources = [];
     $.ajax({
         async: false,
@@ -2043,8 +2046,8 @@ var loadSources = function () {
         url: api_path + '/api/source?api_key=$$key'.render2({
             key: $.cookie("key")
         }),
-        success: function (data, textStatus, jqXHR) {
-            $.each(data.sources, function (index, item) {
+        success: function(data, textStatus, jqXHR) {
+            $.each(data.sources, function(index, item) {
                 sources.push({
                     "name": item.name,
                     "user_id": item.user_id,
@@ -2052,15 +2055,15 @@ var loadSources = function () {
                 });
             });
 
-            sources.sort(function (a, b) {
+            sources.sort(function(a, b) {
                 a = a.name,
-                b = b.name;
+                    b = b.name;
 
                 return a.localeCompare(b);
             });
 
         },
-        error: function (data) {
+        error: function(data) {
             $("#aviso").setWarning({
                 msg: "Erro ao carregar ($$codigo)".render({
                     codigo: $.parseJSON(data.responseText).error
@@ -2071,12 +2074,12 @@ var loadSources = function () {
 }
 
 
-var buildLogin = function () {
+var buildLogin = function() {
     resetDashboard();
     $("#dashboard #form-login").show();
 }
 
-var formataFormula = function (formula, variables, vvariables) {
+var formataFormula = function(formula, variables, vvariables) {
     var operators_caption = {
         "+": "+",
         "-": "-",
@@ -2089,35 +2092,35 @@ var formataFormula = function (formula, variables, vvariables) {
 
     var new_formula = formula;
 
-    variables.sort(function (a, b) {
+    variables.sort(function(a, b) {
         return b.id - a.id;
     });
 
-    $.each(variables, function (index, value) {
+    $.each(variables, function(index, value) {
         var pattern = "\\$" + variables[index].id;
         var re = new RegExp(pattern, "g");
         new_formula = new_formula.replace(re, variables[index].name + " ");
     });
 
     if (vvariables) {
-        vvariables.sort(function (a, b) {
+        vvariables.sort(function(a, b) {
             return b.id - a.id;
         });
-        $.each(vvariables, function (index, value) {
+        $.each(vvariables, function(index, value) {
             var pattern = "\\#" + vvariables[index].id;
             var re = new RegExp(pattern, "g");
             new_formula = new_formula.replace(re, vvariables[index].name);
         });
     }
 
-    $.each(operators_caption, function (index, value) {
+    $.each(operators_caption, function(index, value) {
         new_formula = new_formula.replace(index, " " + value + " ");
     });
 
     return new_formula.trim();
 }
 
-var getVariablesFromFormula = function (formula) {
+var getVariablesFromFormula = function(formula) {
     var indicator_variables = formula.replace(/[^0-9.\$]/g, " ").match(/\s\$[^\s]*|^\$[^\s]*/gi);
     for (i = 0; i < indicator_variables.length; i++) {
         indicator_variables[i] = indicator_variables[i].replace(" ", "");
@@ -2126,9 +2129,9 @@ var getVariablesFromFormula = function (formula) {
     return indicator_variables;
 }
 
-var trataCliqueVariaveis = function () {
+var trataCliqueVariaveis = function() {
     $("#formula-editor .variables .item").unbind();
-    $("#formula-editor .variables .item").click(function (e) {
+    $("#formula-editor .variables .item").click(function(e) {
         if ($(this).hasClass("selected")) {
             $(this).removeClass("selected");
         } else {
@@ -2137,7 +2140,7 @@ var trataCliqueVariaveis = function () {
         }
         e.stopPropagation();
     });
-    $("#formula-editor .variables .item").dblclick(function (e) {
+    $("#formula-editor .variables .item").dblclick(function(e) {
         if (!$(this).hasClass("selected")) {
             $(this).parent().find(".item").removeClass("selected");
             $(this).addClass("selected");
@@ -2146,7 +2149,7 @@ var trataCliqueVariaveis = function () {
         e.stopPropagation();
     });
 }
-var get_datatable_lang = function () {
+var get_datatable_lang = function() {
     return {
         "sProcessing": "$$a".render({
             a: "Processando..."
@@ -2187,7 +2190,7 @@ var get_datatable_lang = function () {
     };
 }
 
-var carregaComboCidades = function (args) {
+var carregaComboCidades = function(args) {
     $.ajax({
         async: false,
         type: 'GET',
@@ -2195,10 +2198,10 @@ var carregaComboCidades = function (args) {
         url: api_path + '/api/city?api_key=$$key'.render2({
             key: $.cookie("key")
         }),
-        success: function (data, textStatus, jqXHR) {
+        success: function(data, textStatus, jqXHR) {
             if (args) {
                 if (args.option == "edit") {
-                    $.each(data.citys, function (index, value) {
+                    $.each(data.citys, function(index, value) {
                         if (findCidadePrefeito(data.citys[index].id) == null || findCidadeMovimento(data.citys[index].id) == null) {
                             $("#dashboard-content .content select#city_id").append($("<option></option>").val(data.citys[index].id).html(data.citys[index].name + " (" + data.citys[index].uf + ")"));
                         } else {
@@ -2212,13 +2215,13 @@ var carregaComboCidades = function (args) {
                     }
                 }
             } else {
-                $.each(data.citys, function (index, value) {
+                $.each(data.citys, function(index, value) {
                     if (findCidadePrefeito(data.citys[index].id) == null || findCidadeMovimento(data.citys[index].id) == null) {
                         $("#dashboard-content .content select#city_id").append($("<option></option>").val(data.citys[index].id).html(data.citys[index].name + " (" + data.citys[index].uf + ")"));
                     }
                 });
             }
-            $("#dashboard-content .content select#city_id").change(function () {
+            $("#dashboard-content .content select#city_id").change(function() {
                 var city_id = $(this).find("option:selected").val();
                 var disabled = false;
                 var checked = true;
@@ -2243,7 +2246,7 @@ var carregaComboCidades = function (args) {
             });
 
         },
-        error: function (data) {
+        error: function(data) {
             $("#aviso").setWarning({
                 msg: "Erro ao carregar ($$codigo)".render({
                     codigo: $.parseJSON(data.responseText).error
@@ -2253,7 +2256,7 @@ var carregaComboCidades = function (args) {
     });
 }
 
-var carregaComboCidadesUsers = function (args) {
+var carregaComboCidadesUsers = function(args) {
     $.ajax({
         async: false,
         type: 'GET',
@@ -2261,21 +2264,21 @@ var carregaComboCidadesUsers = function (args) {
         url: api_path + '/api/city?api_key=$$key'.render2({
             key: $.cookie("key")
         }),
-        success: function (data, textStatus, jqXHR) {
-            data.cities.sort(function (a, b) {
+        success: function(data, textStatus, jqXHR) {
+            data.cities.sort(function(a, b) {
                 a = String(a.name),
-                b = String(b.name);
+                    b = String(b.name);
                 return a.localeCompare(b);
             });
             var valid = true;
-            $.each(data.cities, function (index, item) {
+            $.each(data.cities, function(index, item) {
                 valid = true;
                 if (valid) {
                     $("#dashboard-content .content select#city_id").append($("<option></option>").val(item.id).html(item.name + " (" + item.uf + ")"));
                 }
             });
         },
-        error: function (data) {
+        error: function(data) {
             $("#aviso").setWarning({
                 msg: "Erro ao carregar ($$codigo)".render({
                     codigo: $.parseJSON(data.responseText).error
@@ -2285,9 +2288,9 @@ var carregaComboCidadesUsers = function (args) {
     });
 }
 
-var updateFormula = function () {
+var updateFormula = function() {
     var formula = "";
-    $("#formula-editor .editor-content div").each(function (index, element) {
+    $("#formula-editor .editor-content div").each(function(index, element) {
         if ($(this).hasClass("f-variable")) {
             formula += "$" + $(this).attr("var_id");
         } else if ($(this).hasClass("f-vvariable")) {
@@ -2301,7 +2304,7 @@ var updateFormula = function () {
     $("textarea#formula").val(formula);
 }
 
-var convertFormulaToCss = function () {
+var convertFormulaToCss = function() {
     var operators = ["+", "-", "(", ")", "/", "*", "¢"];
     var operators_caption = {
         "+": "+",
@@ -2374,64 +2377,64 @@ var convertFormulaToCss = function () {
     $("#formula-editor .editor-content").html(formula_css);
 }
 
-var sortSelectBox = function (id) {
+var sortSelectBox = function(id) {
     var options = $(id + ' option');
-    var arr = options.map(function (_, o) {
+    var arr = options.map(function(_, o) {
         return {
             t: $(o).text(),
             v: o.value
         };
     }).get();
-    arr.sort(function (o1, o2) {
+    arr.sort(function(o1, o2) {
         return o1.t > o2.t ? 1 : o1.t < o2.t ? -1 : 0;
     });
-    options.each(function (i, o) {
+    options.each(function(i, o) {
         o.value = arr[i].v;
         $(o).text(arr[i].t);
     });
 }
 
-    function load_lexicon(async) {
+function load_lexicon(async) {
 
-		if (do_not_use_lex)
-			return true;
+    if (do_not_use_lex)
+        return true;
 
-        lexiconconf = $.jStorage.get("lexicon");
-        if (!lexiconconf) {
+    lexiconconf = $.jStorage.get("lexicon");
+    if (!lexiconconf) {
 
-            $.ajax({
-                async: async,
-                beforeSend: function () {},
-                dataType: 'json',
-                cache: async ? false : true,
-                url: api_path + '/api/public/lexicons',
-                success: function (data, status, jqXHR) {
+        $.ajax({
+            async: async,
+            beforeSend: function() {},
+            dataType: 'json',
+            cache: async ? false : true,
+            url: api_path + '/api/public/lexicons',
+            success: function(data, status, jqXHR) {
 
-                    lexiconconf = data;
-                    $.jStorage.set("lexicon", lexiconconf);
+                lexiconconf = data;
+                $.jStorage.set("lexicon", lexiconconf);
 
-                    lexicon = lexiconconf['lex'];
-                    langs = lexiconconf['langs'];
-                    default_lang = lexiconconf['default'];
-                },
-                error: function (data) {
-                    alert('erro ao carregar idiomas // error loading langs');
-                }
-            });
-        } else {
-            lexicon = lexiconconf['lex'];
-            langs = lexiconconf['langs'];
-            default_lang = lexiconconf['default'];
-        }
-
+                lexicon = lexiconconf['lex'];
+                langs = lexiconconf['langs'];
+                default_lang = lexiconconf['default'];
+            },
+            error: function(data) {
+                alert('erro ao carregar idiomas // error loading langs');
+            }
+        });
+    } else {
+        lexicon = lexiconconf['lex'];
+        langs = lexiconconf['langs'];
+        default_lang = lexiconconf['default'];
     }
+
+}
 
 load_lexicon(false);
 
-setTimeout(function(){
+setTimeout(function() {
     $.jStorage.set("lexicon", 0);
     load_lexicon(true);
-}, 1000*60*3);
+}, 1000 * 60 * 3);
 
 
 var sys_messages = {

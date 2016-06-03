@@ -1172,10 +1172,10 @@ $(document).ready(function() {
                                                 var ajax_url = api_path + "/api/city/$$city/region/$$region/value/$$id".render2({
                                                     city: getIdFromUrl(user_info.city),
                                                     region: $("#dashboard-content .content").find("#region_id option:selected").val(),
-                                                    id: $("table.history tbody tr.selected").attr("value-id")
+                                                    id: $("table.history tbody tr.selected").attr("data-value-id")
                                                 });
                                             } else {
-                                                var ajax_url = $.getUrlVar("url") + "/value/" + $("table.history tbody tr.selected").attr("value-id");
+                                                var ajax_url = $.getUrlVar("url") + "/value/" + $("table.history tbody tr.selected").attr("data-value-id");
                                             }
                                         }
 
@@ -3736,10 +3736,10 @@ $(document).ready(function() {
                                             var ajax_url = api_path + "/api/city/$$city/region/$$region/value/$$id".render2({
                                                 city: getIdFromUrl(user_info.city),
                                                 region: $("#dashboard-content .content").find("#region_id option:selected").val(),
-                                                id: $("table.history tbody tr.selected").attr("value-id")
+                                                id: $("table.history tbody tr.selected").attr("data-value-id")
                                             });
                                         } else {
-                                            var ajax_url = $.getUrlVar("url") + "/value/" + $("table.history tbody tr.selected").attr("value-id");
+                                            var ajax_url = $.getUrlVar("url") + "/value/" + $("table.history tbody tr.selected").attr("data-value-id");
                                         }
                                     }
 
@@ -6420,12 +6420,13 @@ $(document).ready(function() {
                                     }
 
                                 });
-                                $("#dashboard-content .content select#region_id").append($("<option></option>").val("1").html("$$e".render({
-                                    e: 'Litoral Sustentável'
+                                $("#dashboard-content .content select#region_id").append($("<option data-dp=1></option>").val("1").html("$$e".render({
+                                    e: '◇ Litoral Sustentável'
                                 }))).change();
 
                                 var region = [];
                                 var district = [];
+                                var district_vs_len = {};
                                 $.each(data_region, function(index, item) {
                                     if (item.depth_level == 2) {
                                         region.push({
@@ -6434,6 +6435,7 @@ $(document).ready(function() {
                                             "url": item.url
                                         });
                                     } else if (item.depth_level == 3) {
+                                        district_vs_len[item.upper_region.id] = district_vs_len[item.upper_region.id] ? district_vs_len[item.upper_region.id] + 1 : 1;
                                         district.push({
                                             "id": item.id,
                                             "name": item.name,
@@ -6454,12 +6456,15 @@ $(document).ready(function() {
                                     return a.localeCompare(b);
                                 });
                                 $.each(region, function(index, item) {
-                                    $("#dashboard-content .content select#region_id").append($("<option></option>").val(item.id).html("- $$e".render({
+                                    $("#region_id").append($("<option data-dp=2></option>").val(item.id).html("╔◌ $$e".render({
                                         e: item.name
                                     })));
+
+                                    var in_loop = 0;
                                     $.each(district, function(index2, item2) {
                                         if (item2.upper_region_id == item.id) {
-                                            $("#dashboard-content .content select#region_id").append($("<option></option>").val(item2.id).html("-- $$e".render({
+                                            in_loop++;
+                                            $("#region_id").append($("<option data-dp=3></option>").val(item2.id).html( ( in_loop == district_vs_len[item.id]  ?"╚" : "╠") + "═◎ $$e".render({
                                                 e: item2.name
                                             })));
                                         }
@@ -6728,7 +6733,7 @@ $(document).ready(function() {
                                                          ($("#dashboard-content .content .filter_result").find("#source_" + data_variables[index].id).val() == "" ||
                                                          $("#dashboard-content .content .filter_result").find("#source_" + data_variables[index].id).val() == "_new")
                                                          ) {
-                                                        console.log('fo');
+
                                                         informou_valores=true;
                                                         informou_fontes = false;
                                                     }

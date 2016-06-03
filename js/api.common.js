@@ -1018,11 +1018,11 @@ var buildVariableHistory = function(var_id) {
                 ss: 'Série Histórica'
             });
             $.each(data_variables[0].values, function(index, value) {
-                history_table += "<tr value-id='$$value_id'><td class='periodo'>$$periodo</td>".render2({
+                history_table += "<tr data-value-id='$$value_id'><td class='periodo'>$$periodo</td>".render2({
                     periodo: $.convertDateToPeriod(data_variables[0].values[index].valid_from, data_variables[0].period),
                     value_id: data_variables[0].values[index].id
                 });
-                history_table += "<td class='valor'>$$_valor</td><td class='edit'><a href='javascript: void(0);' value-id='$$_value_id' class='edit'>$$ee</a>&nbsp;<a href='javascript: void(0);' value-id='$$_value_id' class='delete'>$$ff</a></td>".render({
+                history_table += "<td class='valor'>$$_valor</td><td class='edit'><a href='javascript: void(0);' data-value-id='$$_value_id' class='edit'>$$ee</a>&nbsp;<a href='javascript: void(0);' data-value-id='$$_value_id' class='delete'>$$ff</a></td>".render({
                     ee: 'editar',
                     ff: 'apagar',
                     _valor: $.formatNumber(data_variables[0].values[index].value, {
@@ -1059,12 +1059,12 @@ var buildVariableHistory = function(var_id) {
                 var url = api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
                     key: $.cookie("key"),
                     var_id: getIdFromUrl($.getUrlVar("url")),
-                    value_id: $(value_selected).attr("value-id")
+                    value_id: $(value_selected).attr("data-value-id")
                 });
                 if ($("#dashboard-content .content select#region_id option:selected").val()) {
                     url = api_path + '/api/city/$$city/region/$$region/value/$$value_id?api_key=$$key'.render({
                         key: $.cookie("key"),
-                        value_id: $(value_selected).attr("value-id"),
+                        value_id: $(value_selected).attr("data-value-id"),
                         city: getIdFromUrl(user_info.city),
                         region: $("#dashboard-content .content select#region_id option:selected").val()
                     });
@@ -1094,12 +1094,12 @@ var buildVariableHistory = function(var_id) {
                 var url = api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
                     key: $.cookie("key"),
                     var_id: getIdFromUrl($.getUrlVar("url")),
-                    value_id: $(value_selected).attr("value-id")
+                    value_id: $(value_selected).attr("data-value-id")
                 });
                 if ($("#dashboard-content .content select#region_id option:selected").val()) {
                     url = api_path + '/api/city/$$city/region/$$region/value/$$value_id?api_key=$$key'.render({
                         key: $.cookie("key"),
-                        value_id: $(value_selected).attr("value-id"),
+                        value_id: $(value_selected).attr("data-value-id"),
                         city: getIdFromUrl(user_info.city),
                         region: $("#dashboard-content .content select#region_id option:selected").val()
                     });
@@ -1122,362 +1122,362 @@ function numKeys(obj) {
     return count;
 }
 
-v ar buildIndicatorHistory = function(args) {
+var buildIndicatorHistory = function(args) {
 
-    var vvariations = [];
 
     if (!$("#dashboard-content .content select#region_id option:selected").val()) {
         return false
     }
 
+    $(args.target).empty();
+
+    var cur_depth = $("#region_id option:selected").attr('data-dp');
+
+    args.work_done = function(history_table) {
+
+        if (cur_depth == 1){
+
+            $(args.target).append("<div class='title' title='$$tt'>$$e</div><div class='historic-content'>".render({
+                tt: 'mostrar/esconder Histórico',
+                e: 'Série Histórica de dados regionais gerada automaticamente'
+            }) + history_table + "</div>");
+
+        }else if (cur_depth == 2){
+            $(args.target).append("<div class='title' title='$$tt'>$$e</div><div class='historic-content'>".render({
+                tt: 'mostrar/esconder Histórico',
+                e:  'Série Histórica de região gerada automaticamente'
+            }) + history_table + "</div>");
+
+        }else{
+
+            $(args.target).append("<div class='title' title='$$tt'>$$e</div><div class='historic-content'>".render({
+                tt: 'mostrar/esconder Histórico',
+                e:   'Série Histórica de dados municipais'
+            }) + history_table + "</div>");
+
+            _build_indicator_history_on_real_done(args);
+        }
+
+
+    };
+
     $.ajax({
         type: 'GET',
         dataType: 'json',
+        _arg: args,
         url: api_path + '/api/indicator/$$id/variable/value?api_key=$$key$$region'.render2({
             key: $.cookie("key"),
             id: args.id,
-            region: ($("#dashboard-content .content select#region_id option:selected").val()) ? "&region_id=" + $("#dashboard-content .content select#region_id option:selected").val() : ""
+            region: '&region_id=' + $("#region_id option:selected").val()
         }),
-        success: function(data, textStatus, jqXHR) {
-            if (data.header && data.rows != undefined) {
-                var history_table = "";
-                history_table += "<table class='history'><thead><tr><th>$$e</th>".render({
-                    e: 'Período'
-                });
+        success: _build_indicator_history_success
+    });
 
-                var headers = []; //corrige ordem do header
-                $.each(data.header, function(titulo, index) {
-                    headers[index] = titulo;
-                });
-                vvariations = [];
-                var seta_vvariacoes = true;
-
-                $.each(headers, function(index, value) {
-                    history_table += "<th class='variavel'>$$variavel</th>".render({
-                        variavel: value
-                    });
-                });
-                history_table += "#theader_valor";
-                history_table += "</tr></thead><tbody>";
-                var rows = 0;
-                var variables_variations = [],
-                    th_valor = "",
-                    num_var = numKeys(data.variable_variations);
-
-                if (data.variables_variations) {
-                    $.each(data.variables_variations, function(indexv, itemv) {
-                        variables_variations[itemv.id] = itemv.name;
-                    });
-                }
-
-                $.each(data.rows, function(index, value) {
-                    history_table += "<tr row-id='$$row'><td class='periodo'>$$periodo</td>".render2({
-                        periodo: $.convertDateToPeriod(data.rows[index].valid_from, args.period),
-                        row: rows
-                    });
-
-                    var cont = 0,
-                        num_var = numKeys(data.header);
-
-                    $.each(headers, function(index2, value2) {
-                        if (data.rows[index].valores[index2] && data.rows[index].valores[index2].value != "-" && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined) {
-                            if (isNaN(data.rows[index].valores[index2].value)) {
-
-                                history_table += "<td class='valor' title='$$data' value-id='$$id' variable-id='$$variable_id'>$$valor <a href='javascript: void(0);' class='delete delete-item' title='$$title' alt='$$title'>$$e</a></td>".render2({
-                                    valor: data.rows[index].valores[index2].value,
-                                    data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T"),
-                                    id: data.rows[index].valores[index2].id,
-                                    variable_id: data.rows[index].valores[index2].variable_id,
-                                    title: "Apagar valor",
-                                    e: "X"
-                                });
-                            } else {
-                                history_table += "<td class='valor' title='$$data' value-id='$$id' variable-id='$$variable_id'>$$valor <a href='javascript: void(0);' class='delete delete-item' title='$$title' alt='$$title'>$$e</a></td>".render2({
-                                    valor: $.formatNumber(data.rows[index].valores[index2].value, {
-                                        format: "#,##0.###",
-                                        locale: "br",
-                                    }),
-                                    data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T"),
-                                    id: data.rows[index].valores[index2].id,
-                                    variable_id: data.rows[index].valores[index2].variable_id,
-                                    title: "Apagar valor",
-                                    e: "X"
-
-                                });
-                            }
-
-                        } else {
-                            if (data.rows[index].valores[index2]) {
-                                history_table += "<td class='valor' title='$$data' value-id='$$id'>-</td>".render({
-                                    data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T"),
-                                    id: data.rows[index].valores[index2].id,
-                                    variable_id: data.rows[index].valores[index2].variable_id
-                                });
-                            } else {
-                                history_table += "<td class='valor'>-</td>";
-
-                            }
-                        }
-                        cont++;
-                    });
-                    for (i = cont; i < num_var; i++) {
-                        history_table += "<td class='valor'>-</td>";
-                    }
-                    if (value.variations && value.variations.length > 0) {
-                        var th_valor = "",
-                            num_var = numKeys(data.variables_variations);
-
-                        for (i = 0; i < value.variations.length; i++) {
-                            $.each(variables_variations, function(indexv, itemv) {
-                                if (itemv) {
-                                    th_valor += "<th class='variavel' variation-id='" + value.variations[i].id + "' variation-index='" + i + "' variable-id='" + indexv + "'>$$variavel</th>".render({
-                                        variavel: itemv
-                                    });
-                                }
-                            });
-                            th_valor += "<th class='formula_valor' variation-id='" + value.variations[i].id + "' variation-index='" + i + "'>$$e</th>".render({
-                                e: 'Valor da Fórmula'
-                            });
-                        }
-                        history_table = history_table.replace("#theader_valor", th_valor + "<th></th>");
-                        $.each(value.variations, function(indexv, itemv) {
-                            var cont = 0;
-                            if (itemv.variations_values) {
-                                $.each(itemv.variations_values, function(indexv2, itemv2) {
-                                    if (itemv2.value != "-") {
-                                        history_table += "<td class='variavel valor' variation-id='$$variation_id' variation-index='$$index' variable-id='$$variable_id' value-id='$$value_id'>$$valor  <a href='javascript: void(0);' class='delete delete-item' title='$$title' alt='$$title'>$$e</a></td>".render2({
-                                            valor: $.formatNumber(itemv2.value, {
-                                                format: "#,##0.###",
-                                                locale: "br"
-                                            }),
-                                            variable_id: indexv2,
-                                            variation_id: itemv.id,
-                                            value_id: itemv2.id,
-                                            index: indexv,
-                                            title: "Apagar valor",
-                                            e: "X"
-                                        });
-                                    } else {
-                                        history_table += "<td class='variavel valor' variation-id='$$variation_id' variation-index='$$index' variable-id='$$variable_id' value-id='$$value_id'>-</td>".render2({
-                                            valor: $.formatNumber(itemv2.value, {
-                                                format: "#,##0.###",
-                                                locale: "br"
-                                            }),
-                                            variation_id: itemv.id,
-                                            variable_id: indexv2,
-                                            value_id: itemv2.id,
-                                            index: indexv
-                                        });
-                                    }
-                                    cont++;
-                                });
-                            }
-                            for (i = cont; i < num_var; i++) {
-                                history_table += "<td class='variavel valor' variation-id='$$variation_id'>-</td>".render({
-                                    variation_id: itemv.id
-                                });
-                            }
-                            if (itemv.value != "-") {
-                                history_table += "<td class='formula_valor' variation-index='$$index'>$$formula_valor</td>".render2({
-                                    formula_valor: $.formatNumber(itemv.value, {
-                                        format: "#,##0.###",
-                                        locale: "br"
-                                    }),
-                                    index: indexv
-                                });
-                            } else {
-                                history_table += "<td class='formula_valor' variation-index='$$index'>-</td>".render({
-                                    index: indexv
-                                });
-                            }
-                            if (seta_vvariacoes) {
-                                vvariations.push({
-                                    name: itemv.name,
-                                    index: indexv,
-                                    id: itemv.id
-                                });
-                            }
-                        });
-                        seta_vvariacoes = false;
-                    } else {
-                        history_table = history_table.replace("#theader_valor", "<th class='formula_valor'>$$x</th><th></th>".render({
-                            x: 'Valor da Fórmula'
-                        }));
-                        if (data.rows[index].formula_value != "-") {
-                            history_table += "<td class='formula_valor' variation-index='0'>$$valor</td>".render2({
-                                valor: $.formatNumber(data.rows[index].formula_value, {
-                                    format: "#,##0.###",
-                                    locale: "br"
-                                })
-                            });
-                        } else {
-                            history_table += "<td class='formula_valor' variation-index='0'>-</td>";
-                        }
-                    }
-                    history_table += "<td class='edit'><a href='javascript: void(0);' row-id='$$_row' class='delete delete-all'>$$f</a></td>".render({
-                        _row: rows,
-                        f: 'apagar todos'
-                    });
-                    history_table += "</tr>";
-                    rows++;
-                });
-                history_table += "</tbody></table>";
-            } else {
-                var history_table = "<div class='historic-content'><table class='history'><thead><tr><th>$$e</th></tr></thead></table></div>".render({
-                    e: 'nenhum registro encontrado'
-                });
-            }
-
-            var variation_filter = "";
-            if (vvariations.length > 0) {
-                variation_filter += "<div class='variation-filter'><span class='variation-filter'>$$f: </span><select class='variation-filter'>".render({
-                    f: 'Faixa'
-                });
-                $.each(vvariations, function(index, item) {
-                    variation_filter += "<option value='$$id' $$selected>$$name".render({
-                        id: item.id,
-                        name: item.name,
-                        selected: (index == 0) ? "selected" : ""
-                    });
-                });
-                variation_filter += "</select></div>";
-            }
-
-            $(args.target).empty();
+    if (cur_depth <= 2){
+        args.work_done = function(history_table) {
             $(args.target).append("<div class='title' title='$$tt'>$$e</div><div class='historic-content'>".render({
                 tt: 'mostrar/esconder Histórico',
-                e: 'Série Histórica'
-            }) + variation_filter + history_table + "</div>");
-            $(args.target).find(".title").click(function() {
-                $(this).parent().find(".historic-content").toggle();
+                e:  cur_depth == 1 ? 'Série Histórica de dados regionais inserida manualmente' : 'Série Histórica de região inserida manualmente'
+            }) + history_table + "</div>");
+
+            _build_indicator_history_on_real_done(args);
+        };
+
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            _arg: args,
+            url: api_path + '/api/indicator/$$id/variable/value?active_value=0&api_key=$$key$$region'.render2({
+                key: $.cookie("key"),
+                id: args.id,
+                region: ($("#dashboard-content .content select#region_id option:selected").val()) ? "&region_id=" + $("#dashboard-content .content select#region_id option:selected").val() : ""
+            }),
+            success: _build_indicator_history_success
+        });
+
+    }
+
+}
+
+var _build_indicator_history_on_real_done = function(args){
+
+
+
+    $("table.history a.delete").click(function(){ _build_indicator_history_delete( args ) } );
+
+}
+
+var _build_indicator_history_success = function(data, textStatus, jqXHR) {
+
+    var args = this._arg;
+
+    if (data.header && data.rows != undefined) {
+        var history_table = "";
+        history_table += "<table class='history'><thead><tr><th>$$e</th>".render({
+            e: 'Período'
+        });
+
+        var headers = []; //corrige ordem do header
+        $.each(data.header, function(titulo, index) {
+            headers[index] = titulo;
+        });
+        vvariations = [];
+        var seta_vvariacoes = true;
+
+        $.each(headers, function(index, value) {
+            history_table += "<th class='variavel'>$$variavel</th>".render({
+                variavel: value
+            });
+        });
+        history_table += "#theader_valor";
+        history_table += "</tr></thead><tbody>";
+        var rows = 0;
+        var variables_variations = [],
+            th_valor = "",
+            num_var = numKeys(data.variable_variations);
+
+        if (data.variables_variations) {
+            $.each(data.variables_variations, function(indexv, itemv) {
+                variables_variations[itemv.id] = itemv.name;
+            });
+        }
+
+        $.each(data.rows, function(index, value) {
+            history_table += "<tr row-id='$$row'><td class='periodo'>$$periodo</td>".render2({
+                periodo: $.convertDateToPeriod(data.rows[index].valid_from, args.period),
+                row: rows
             });
 
-            if (vvariations.length > 0) {
-                $(args.target).find("table .formula_valor[variation-id!=" + $("select.variation-filter option:selected").val() + "],table .variavel[variation-id!=" + $("select.variation-filter option:selected").val() + "]").hide();
+            var cont = 0,
+                num_var = numKeys(data.header);
 
-                $("select.variation-filter").change(function() {
-                    var obj = $(this);
-                    $(obj).parent().next("table").find(".formula_valor,.variavel").fadeOut("fast", function() {
-                        $(obj).parent().next("table").find(".formula_valor[variation-id='" + $(obj).val() + "'],.variavel[variation-id='" + $(obj).val() + "']").show();
-                    });
-                });
+            $.each(headers, function(index2, value2) {
+                if (data.rows[index].valores[index2] && data.rows[index].valores[index2].value != "-" && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined) {
+                    if (isNaN(data.rows[index].valores[index2].value)) {
+
+                        history_table += "<td class='valor' title='$$data' data-value-id='$$id' variable-id='$$variable_id'>$$valor <a href='javascript: void(0);' class='delete delete-item' title='$$title' alt='$$title'>$$e</a></td>".render2({
+                            valor: data.rows[index].valores[index2].value,
+                            data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T"),
+                            id: data.rows[index].valores[index2].id,
+                            variable_id: data.rows[index].valores[index2].variable_id,
+                            title: "Apagar valor",
+                            e: "X"
+                        });
+                    } else {
+                        history_table += "<td class='valor' title='$$data' data-value-id='$$id' variable-id='$$variable_id'>$$valor <a href='javascript: void(0);' class='delete delete-item' title='$$title' alt='$$title'>$$e</a></td>".render2({
+                            valor: $.formatNumber(data.rows[index].valores[index2].value, {
+                                format: "#,##0.###",
+                                locale: "br",
+                            }),
+                            data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T"),
+                            id: data.rows[index].valores[index2].id,
+                            variable_id: data.rows[index].valores[index2].variable_id,
+                            title: "Apagar valor",
+                            e: "X"
+
+                        });
+                    }
+
+                } else {
+                    if (data.rows[index].valores[index2]) {
+                        history_table += "<td class='valor' title='$$data' data-value-id='$$id'>-</td>".render({
+                            data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T"),
+                            id: data.rows[index].valores[index2].id,
+                            variable_id: data.rows[index].valores[index2].variable_id
+                        });
+                    } else {
+                        history_table += "<td class='valor'>-</td>";
+
+                    }
+                }
+                cont++;
+            });
+            for (i = cont; i < num_var; i++) {
+                history_table += "<td class='valor'>-</td>";
             }
 
-            $("table.history a.delete").click(function() {
-                var link_delete = this;
-                $.confirm({
-                    'title': 'Confirmação',
-                    'message': 'Você irá excluir permanentemente esse registro.<br />Continuar?',
-                    'buttons': {
-                        'Sim': {
-                            'class': '',
-                            'action': function() {
-                                var row = $("table.history tbody tr[row-id='$$row_id']".render({
-                                    row_id: $(link_delete).attr("row-id")
-                                }));
 
-                                if ($(link_delete).hasClass("delete-all")) {
+            history_table = history_table.replace("#theader_valor", "<th class='formula_valor'>$$x</th><th></th>".render({
+                x: 'Valor da Fórmula'
+            }));
+            if (data.rows[index].formula_value != "-") {
+                history_table += "<td class='formula_valor' variation-index='0'>$$valor</td>".render2({
+                    valor: $.formatNumber(data.rows[index].formula_value, {
+                        format: "#,##0.###",
+                        locale: "br"
+                    })
+                });
+            } else {
+                history_table += "<td class='formula_valor' variation-index='0'>-</td>";
+            }
 
-                                    var tds = $(row).find("td[variable-id]:visible");
+            history_table += "<td class='edit'><a href='javascript: void(0);' row-id='$$_row' class='delete delete-all'>$$f</a></td>".render({
+                _row: rows,
+                f: 'apagar todos'
+            });
+            history_table += "</tr>";
+            rows++;
+        });
+        history_table += "</tbody></table>";
+    } else {
+        var history_table = "<div class='historic-content'><table class='history'><thead><tr><th>$$e</th></tr></thead></table></div>".render({
+            e: 'nenhum registro encontrado'
+        });
+    }
 
-                                    var total_values = tds.length;
+    /*var vvariations = [];
+    var variation_filter = "";
+    if (vvariations.length > 0) {
+        variation_filter += "<div class='variation-filter'><span class='variation-filter'>$$f: </span><select class='variation-filter'>".render({
+            f: 'Faixa'
+        });
+        $.each(vvariations, function(index, item) {
+            variation_filter += "<option value='$$id' $$selected>$$name".render({
+                id: item.id,
+                name: item.name,
+                selected: (index == 0) ? "selected" : ""
+            });
+        });
+        variation_filter += "</select></div>";
+    }*/
 
-                                    var total_values_enviados = 0;
+    /*$(args.target).empty();
 
-                                    $(tds).each(function(index, element) {
-                                        var url = api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
-                                            key: $.cookie("key"),
-                                            var_id: $(element).attr("variable-id"),
-                                            value_id: $(element).attr("value-id")
-                                        });
-                                        if ($(element).attr("variation-id")) {
-                                            url = api_path + '/api/indicator/$$indicator_id/variables_variation/$$variable_id/values/$$value_id?api_key=$$key'.render({
-                                                key: $.cookie("key"),
-                                                variable_id: $(element).attr("variable-id"),
-                                                indicator_id: getIdFromUrl($.getUrlVar("url")),
-                                                value_id: $(element).attr("value-id")
-                                            });
-                                        }
-                                        if ($("#dashboard-content .content select#region_id").length > 0 && ($("#dashboard-content .content select#region_id option:selected").val())) {
-                                            url = api_path + '/api/city/$$city/region/$$region/value/$$value_id?api_key=$$key'.render({
-                                                key: $.cookie("key"),
-                                                city: getIdFromUrl(user_info.city),
-                                                region: $("#dashboard-content .content select#region_id option:selected").val(),
-                                                value_id: $(element).attr("value-id")
-                                            });
-                                        }
-                                        $.ajax({
-                                            type: 'DELETE',
-                                            dataType: 'json',
-                                            url: url,
-                                            success: function(data, status, jqXHR) {
-                                                switch (jqXHR.status) {
-                                                    case 204:
-                                                        total_values_enviados++;
-                                                        if (total_values_enviados >= total_values) {
-                                                            resetWarnings();
-                                                            $("#aviso").setWarning({
-                                                                msg: "Cadastro apagado com sucesso."
-                                                            });
-                                                            buildIndicatorHistory(args);
-                                                        }
-                                                        break;
-                                                }
-                                            }
-                                        });
-                                    });
-                                } else {
-                                    var url = api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
-                                        key: $.cookie("key"),
-                                        var_id: $(link_delete).parent().attr("variable-id"),
-                                        value_id: $(link_delete).parent().attr("value-id")
-                                    });
-                                    if ($(link_delete).parent().attr("variation-id")) {
-                                        url = api_path + '/api/indicator/$$indicator_id/variables_variation/$$variable_id/values/$$value_id?api_key=$$key'.render({
-                                            key: $.cookie("key"),
-                                            variable_id: $(link_delete).parent().attr("variable-id"),
-                                            indicator_id: getIdFromUrl($.getUrlVar("url")),
-                                            value_id: $(link_delete).parent().attr("value-id")
-                                        });
-                                    }
-                                    if ($("#dashboard-content .content select#region_id").length > 0 && ($("#dashboard-content .content select#region_id option:selected").val())) {
-                                        url = api_path + '/api/city/$$city/region/$$region/value/$$value_id?api_key=$$key'.render({
-                                            key: $.cookie("key"),
-                                            city: getIdFromUrl(user_info.city),
-                                            region: $("#dashboard-content .content select#region_id option:selected").val(),
-                                            value_id: $(link_delete).parent().attr("value-id")
-                                        });
-                                    }
-                                    $.ajax({
-                                        type: 'DELETE',
-                                        dataType: 'json',
-                                        url: url,
-                                        success: function(data, status, jqXHR) {
-                                            switch (jqXHR.status) {
-                                                case 204:
-                                                    resetWarnings();
-                                                    $("#aviso").setWarning({
-                                                        msg: "Cadastro apagado com sucesso."
-                                                    });
-                                                    buildIndicatorHistory(args);
-                                                    break;
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                        },
-                        'Não': {
-                            'class': '',
-                            'action': function() {}
-                        }
-                    }
+
+
+
+*/
+    args.work_done(history_table);
+
+    /*
+        if (vvariations.length > 0) {
+            $(args.target).find("table .formula_valor[variation-id!=" + $("select.variation-filter option:selected").val() + "],table .variavel[variation-id!=" + $("select.variation-filter option:selected").val() + "]").hide();
+
+            $("select.variation-filter").change(function() {
+                var obj = $(this);
+                $(obj).parent().next("table").find(".formula_valor,.variavel").fadeOut("fast", function() {
+                    $(obj).parent().next("table").find(".formula_valor[variation-id='" + $(obj).val() + "'],.variavel[variation-id='" + $(obj).val() + "']").show();
                 });
             });
         }
-    });
+    */
 
-}
+
+};
+
+
+var _build_indicator_history_delete = function(args) {
+    var link_delete = this;
+    console.log(this);
+    $.confirm({
+        'title': 'Confirmação',
+        'message': 'Você irá excluir permanentemente esse registro.<br />Continuar?',
+        'buttons': {
+            'Sim': {
+                'class': '',
+                'action': function() {
+                    var row = $("table.history tbody tr[row-id='$$row_id']".render({
+                        row_id: $(link_delete).attr("row-id")
+                    }));
+
+                    if ($(link_delete).hasClass("delete-all")) {
+
+                        var tds = $(row).find("td[variable-id]:visible");
+
+                        var total_values = tds.length;
+
+                        var total_values_enviados = 0;
+
+                        $(tds).each(function(index, element) {
+                            var url = api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
+                                key: $.cookie("key"),
+                                var_id: $(element).attr("variable-id"),
+                                value_id: $(element).attr("data-value-id")
+                            });
+                            if ($(element).attr("variation-id")) {
+                                url = api_path + '/api/indicator/$$indicator_id/variables_variation/$$variable_id/values/$$value_id?api_key=$$key'.render({
+                                    key: $.cookie("key"),
+                                    variable_id: $(element).attr("variable-id"),
+                                    indicator_id: getIdFromUrl($.getUrlVar("url")),
+                                    value_id: $(element).attr("data-value-id")
+                                });
+                            }
+                            if ($("#dashboard-content .content select#region_id").length > 0 && ($("#dashboard-content .content select#region_id option:selected").val())) {
+                                url = api_path + '/api/city/$$city/region/$$region/value/$$value_id?api_key=$$key'.render({
+                                    key: $.cookie("key"),
+                                    city: getIdFromUrl(user_info.city),
+                                    region: $("#dashboard-content .content select#region_id option:selected").val(),
+                                    value_id: $(element).attr("data-value-id")
+                                });
+                            }
+                            $.ajax({
+                                type: 'DELETE',
+                                dataType: 'json',
+                                url: url,
+                                success: function(data, status, jqXHR) {
+                                    switch (jqXHR.status) {
+                                        case 204:
+                                            total_values_enviados++;
+                                            if (total_values_enviados >= total_values) {
+                                                resetWarnings();
+                                                $("#aviso").setWarning({
+                                                    msg: "Cadastro apagado com sucesso."
+                                                });
+                                                buildIndicatorHistory(args);
+                                            }
+                                            break;
+                                    }
+                                }
+                            });
+                        });
+                    } else {
+                        var url = api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
+                            key: $.cookie("key"),
+                            var_id: $(link_delete).parent().attr("variable-id"),
+                            value_id: $(link_delete).parent().attr("data-value-id")
+                        });
+                        if ($(link_delete).parent().attr("variation-id")) {
+                            url = api_path + '/api/indicator/$$indicator_id/variables_variation/$$variable_id/values/$$value_id?api_key=$$key'.render({
+                                key: $.cookie("key"),
+                                variable_id: $(link_delete).parent().attr("variable-id"),
+                                indicator_id: getIdFromUrl($.getUrlVar("url")),
+                                value_id: $(link_delete).parent().attr("data-value-id")
+                            });
+                        }
+                        if ($("#dashboard-content .content select#region_id").length > 0 && ($("#dashboard-content .content select#region_id option:selected").val())) {
+                            url = api_path + '/api/city/$$city/region/$$region/value/$$value_id?api_key=$$key'.render({
+                                key: $.cookie("key"),
+                                city: getIdFromUrl(user_info.city),
+                                region: $("#dashboard-content .content select#region_id option:selected").val(),
+                                value_id: $(link_delete).parent().attr("data-value-id")
+                            });
+                        }
+                        $.ajax({
+                            type: 'DELETE',
+                            dataType: 'json',
+                            url: url,
+                            success: function(data, status, jqXHR) {
+                                switch (jqXHR.status) {
+                                    case 204:
+                                        resetWarnings();
+                                        $("#aviso").setWarning({
+                                            msg: "Cadastro apagado com sucesso."
+                                        });
+                                        buildIndicatorHistory(args);
+                                        break;
+                                }
+                            }
+                        });
+                    }
+                }
+            },
+            'Não': {
+                'class': '',
+                'action': function() {}
+            }
+        }
+    });
+};
 
 var setNewSource = function(objSelect, objText) {
     $(objText).hide();

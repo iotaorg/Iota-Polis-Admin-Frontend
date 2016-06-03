@@ -1146,13 +1146,6 @@ div.historico .historic-content{
 }
 
 
-div.historico .title:hover{
-    cursor: pointer;
-    cursor: hand;
-    color: #999999;
-    background-color: #f5f5f5;
-}
-
 
 div.historico .variable{
     background-color: #f0f0f0;

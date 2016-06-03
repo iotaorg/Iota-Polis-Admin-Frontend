@@ -944,6 +944,7 @@ $(document).ready(function() {
                                             });
 
                                             $("#results").dataTable({
+                                                iDisplayLength: 50,
                                                 "oLanguage": get_datatable_lang(),
                                                 "aoColumnDefs": [{
                                                     "bSearchable": false,
@@ -1312,6 +1313,7 @@ $(document).ready(function() {
                     });
 
                     $("#results").dataTable({
+                        iDisplayLength: 50,
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/user?role=admin&api_key=$$key&content-type=application/json&lang=$$lang&columns=name,email,url,_,_'.render2({
@@ -1581,6 +1583,7 @@ $(document).ready(function() {
                     });
 
                     $("#results").dataTable({
+                        iDisplayLength: 50,
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/user?role=user$$network_id&api_key=$$key&content-type=application/json&lang=$$lang&columns=name,email,url,_,_'.render2({
@@ -1861,6 +1864,7 @@ $(document).ready(function() {
                     });
 
                     $("#results").dataTable({
+                        iDisplayLength: 50,
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/city?api_key=$$key&content-type=application/json&lang=$$lang&columns=name,uf,url,_,_'.render2({
@@ -2139,6 +2143,7 @@ $(document).ready(function() {
                     });
 
                     $("#results").dataTable({
+                        iDisplayLength: 50,
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/state?api_key=$$key&content-type=application/json&lang=$$lang&columns=name,uf,country_id,url,_,_'.render2({
@@ -2339,6 +2344,7 @@ $(document).ready(function() {
                     });
 
                     $("#results").dataTable({
+                        iDisplayLength: 50,
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/country?api_key=$$key&content-type=application/json&lang=$$lang&columns=name,name_url,url,_,_'.render2({
@@ -2490,6 +2496,7 @@ $(document).ready(function() {
                     });
 
                     $("#results").dataTable({
+                        iDisplayLength: 50,
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/network?api_key=$$key&content-type=application/json&lang=$$lang&columns=name,description,url,_,_'.render2({
@@ -2747,6 +2754,7 @@ $(document).ready(function() {
                     });
 
                     $("#results").dataTable({
+                        iDisplayLength: 50,
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/measurement_unit?api_key=$$key&content-type=application/json&lang=$$lang&columns=name,short_name,url,_,_'.render2({
@@ -2944,6 +2952,7 @@ $(document).ready(function() {
                     loadVariableConfig();
 
                     $("#results").dataTable({
+                        iDisplayLength: 50,
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/variable?use=edit&api_key=$$key&content-type=application/json&lang=$$lang&columns=name,cognomen,type,created_at,url,url,_,_'.render2({
@@ -3402,6 +3411,7 @@ $(document).ready(function() {
                                         });
 
                                         var oTable = $("#results").dataTable({
+                                            iDisplayLength: 50,
                                             "oLanguage": get_datatable_lang(),
                                             "aoColumnDefs": [{
                                                 "bSearchable": false,
@@ -4130,6 +4140,7 @@ $(document).ready(function() {
                                 });
 
                                 $("#results").dataTable({
+                                    iDisplayLength: 50,
                                     "oLanguage": get_datatable_lang(),
                                     "aoColumnDefs": [{
                                         "bSearchable": false,
@@ -4451,6 +4462,7 @@ $(document).ready(function() {
                                 });
 
                                 oTable = $("#results").dataTable({
+                                    iDisplayLength: 50,
                                     "oLanguage": get_datatable_lang(),
                                     "aoColumnDefs": [{
                                         "bSortable": false,
@@ -4612,6 +4624,7 @@ $(document).ready(function() {
                     });
 
                     $("#results").dataTable({
+                        iDisplayLength: 50,
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/axis?api_key=$$key&content-type=application/json&lang=$$lang&columns=name,url,_,_'.render2({
@@ -4805,6 +4818,7 @@ $(document).ready(function() {
                     });
 
                     $("#results").dataTable({
+                        iDisplayLength: 50,
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/indicator?use=edit&api_key=$$key&content-type=application/json&lang=$$lang&columns=name,formula,created_at,url,_,_'.render2({
@@ -5990,6 +6004,7 @@ $(document).ready(function() {
 
 
                     $("#results").dataTable({
+                        iDisplayLength: 50,
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/network?api_key=$$key&topic=1&content-type=application/json&user_id=$$user_id&lang=$$lang&columns=name,name_url,url,_,_'.render2({
@@ -6967,6 +6982,7 @@ $(document).ready(function() {
                     });
 
                     $("#results").dataTable({
+                        iDisplayLength: 50,
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/user_indicator_axis?api_key=$$key&content-type=application/json&lang=$$lang&columns=name,url,_,_'.render2({
@@ -7421,6 +7437,7 @@ $(document).ready(function() {
                     });
 
                     $("#results").dataTable({
+                        iDisplayLength: 50,
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/menu?api_key=$$key&content-type=application/json&lang=$$lang&columns=title,menu_id,position,url,_,_'.render2({
@@ -7663,6 +7680,7 @@ $(document).ready(function() {
                     });
 
                     $("#results").dataTable({
+                        iDisplayLength: 50,
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/page?api_key=$$key&content-type=application/json&lang=$$lang&columns=title,title_url,url,_,_'.render2({
@@ -7863,6 +7881,7 @@ $(document).ready(function() {
                     });
 
                     $("#results").dataTable({
+                        iDisplayLength: 50,
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/best_pratice?api_key=$$key&content-type=application/json&lang=$$lang&columns=name,name_url,url,_,_'.render2({
@@ -8192,6 +8211,7 @@ $(document).ready(function() {
                     });
 
                     $("#results").dataTable({
+                        iDisplayLength: 50,
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": api_path + '/api/user/$$user/file?api_key=$$key&hide_listing=0&content-type=application/json&lang=$$lang&columns=public_name,public_url,id'.render2({
@@ -8572,6 +8592,7 @@ $(document).ready(function() {
                     });
 
                     $("#results").dataTable({
+                        iDisplayLength: 50,
                         "oLanguage": get_datatable_lang(),
                         "aaData": results,
                         "bSort": false,
@@ -9554,6 +9575,7 @@ $(document).ready(function() {
                 lang: cur_lang,
 
                     $("#results").dataTable({
+                        iDisplayLength: 50,
                         "oLanguage": get_datatable_lang(),
                         "bProcessing": true,
                         "sAjaxSource": url_log,

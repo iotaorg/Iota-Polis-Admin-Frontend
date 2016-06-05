@@ -2595,9 +2595,10 @@ $(document).ready(function() {
                             success: function(data, status, jqXHR) {
                                 switch (jqXHR.status) {
                                     case 200:
-                                        $(formbuild).find("input#name").val(data.name);
-                                        $(formbuild).find("input#axis_name").val(data.axis_name);
-                                        $(formbuild).find("input#description").val(data.description);
+                                        $(formbuild).find("#name").val(data.name);
+                                        $(formbuild).find("#axis_name").val(data.axis_name);
+                                        $(formbuild).find("#description").val(data.description);
+                                        $(formbuild).find("#tags").val(data.tags);
 
                                         var text_data = $.parseJSON(data.text_content);
                                         for (var prop in text_content) {

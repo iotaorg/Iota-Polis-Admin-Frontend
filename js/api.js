@@ -2545,7 +2545,7 @@ $(document).ready(function() {
 
                     var text_content = {
                         "txt_info_qualitativas": 'Informações qualitativas',
-                        "txt_condicionantes": 'Condicionantes',
+                        "txt_condicionantes": 'Condicionantes ambientais',
                         "txt_focos": "Focos e Perguntas Orientadoras",
                         "txt_titulo_mapa": "Título do mapa",
                         "txt_descricao_mapa": "Descrição do mapa",
@@ -6232,7 +6232,7 @@ $(document).ready(function() {
                                     indicators_table += "<div class='eixos'><div class='title'>$$axis</div><div class='clear'></div>".render({
                                         axis: key
                                     });
-                                    //                 console.log(indicators_hash[key][0]);
+
                                     for (i = 0; i < indicators_hash[key].length; i++) {
 
                                         axis_ant = indicators_hash[key][i].axis_id;
@@ -6576,7 +6576,6 @@ $(document).ready(function() {
                                         var data_variations;
                                         var newform = [];
 
-                                        console.log(data_variables);
                                         $.each(data_variables, function(index, item) {
                                             if (item.type == "str") {
                                                 newform.push({

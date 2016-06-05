@@ -1203,7 +1203,7 @@ var _build_indicator_history_on_real_done = function(args){
 
 
 
-    $("table.history a.delete").click(function(){ _build_indicator_history_delete( args ) } );
+    $("table.history a.delete").click(function(){ _build_indicator_history_delete( this, args ) } );
 
 }
 
@@ -1366,9 +1366,10 @@ var _build_indicator_history_success = function(data, textStatus, jqXHR) {
 };
 
 
-var _build_indicator_history_delete = function(args) {
-    var link_delete = this;
-    console.log(this);
+var _build_indicator_history_delete = function(xthis, args) {
+
+    var link_delete = xthis;
+
     $.confirm({
         'title': 'Confirmação',
         'message': 'Você irá excluir permanentemente esse registro.<br />Continuar?',
@@ -1389,11 +1390,14 @@ var _build_indicator_history_delete = function(args) {
                         var total_values_enviados = 0;
 
                         $(tds).each(function(index, element) {
+
+
                             var url = api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
                                 key: $.cookie("key"),
                                 var_id: $(element).attr("variable-id"),
                                 value_id: $(element).attr("data-value-id")
                             });
+
                             if ($(element).attr("variation-id")) {
                                 url = api_path + '/api/indicator/$$indicator_id/variables_variation/$$variable_id/values/$$value_id?api_key=$$key'.render({
                                     key: $.cookie("key"),
@@ -1410,27 +1414,41 @@ var _build_indicator_history_delete = function(args) {
                                     value_id: $(element).attr("data-value-id")
                                 });
                             }
+                            resetWarnings();
                             $.ajax({
                                 type: 'DELETE',
                                 dataType: 'json',
                                 url: url,
-                                success: function(data, status, jqXHR) {
+                                complete: function(jqXHR) {
                                     switch (jqXHR.status) {
                                         case 204:
                                             total_values_enviados++;
+                                            $("#aviso").setWarning({
+                                                msg: "Valor removido com sucesso."
+                                            });
                                             if (total_values_enviados >= total_values) {
-                                                resetWarnings();
-                                                $("#aviso").setWarning({
-                                                    msg: "Cadastro apagado com sucesso."
-                                                });
                                                 buildIndicatorHistory(args);
                                             }
+                                            break;
+                                        case 400:
+                                            total_values_enviados++;
+
+                                            $("#aviso").setWarning({
+                                                msg: "Erro: Você não pode apagar dados gerados automaticamente. Apague os valores inseridos manualmente no nível abaixo."
+                                            });
+
+                                            if (total_values_enviados >= total_values) {
+                                                buildIndicatorHistory(args);
+                                            };
+
                                             break;
                                     }
                                 }
                             });
                         });
                     } else {
+
+
                         var url = api_path + '/api/variable/$$var_id/value/$$value_id?api_key=$$key'.render({
                             key: $.cookie("key"),
                             var_id: $(link_delete).parent().attr("variable-id"),
@@ -1452,16 +1470,25 @@ var _build_indicator_history_delete = function(args) {
                                 value_id: $(link_delete).parent().attr("data-value-id")
                             });
                         }
+
                         $.ajax({
                             type: 'DELETE',
                             dataType: 'json',
                             url: url,
-                            success: function(data, status, jqXHR) {
+                            complete: function(jqXHR ) {
+
                                 switch (jqXHR.status) {
                                     case 204:
                                         resetWarnings();
                                         $("#aviso").setWarning({
-                                            msg: "Cadastro apagado com sucesso."
+                                            msg: "Valor removido com sucesso."
+                                        });
+                                        buildIndicatorHistory(args);
+                                        break;
+                                    case 400:
+                                        resetWarnings();
+                                        $("#aviso").setWarning({
+                                            msg: "Erro: Você não pode apagar dados gerados automaticamente. Apague os valores inseridos manualmente no nível abaixo."
                                         });
                                         buildIndicatorHistory(args);
                                         break;

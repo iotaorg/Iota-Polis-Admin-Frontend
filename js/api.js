@@ -17,6 +17,7 @@ var UUID = (function() {
     return self;
 })();
 var _is_updating_lexicon = 0;
+var SUPER_CACHE_data_region, SUPER_CACHE_data_variables, SUPERA_CACHE_YEARS;
 $(document).ready(function() {
 
 
@@ -6330,8 +6331,8 @@ $(document).ready(function() {
 
                             var data_indicator = data;
 
-                            var data_region;
-                            if (user_info.regions_enabled) {
+                            var data_region = SUPER_CACHE_data_region;
+                            if (user_info.regions_enabled && !data_region) {
                                 $.ajax({
                                     async: false,
                                     type: 'GET',
@@ -6342,6 +6343,7 @@ $(document).ready(function() {
                                     }),
                                     success: function(data, textStatus, jqXHR) {
                                         data_region = data.regions;
+                                        SUPER_CACHE_data_region = data_region;
                                     }
                                 });
                             }
@@ -6473,25 +6475,31 @@ $(document).ready(function() {
                                 });
 
                             }
-                            var data_variables = [];
-                            $.ajax({
-                                async: false,
-                                cache: true,
-                                type: 'GET',
-                                dataType: 'json',
-                                url: api_path + '/api/variable?api_key=$$key'.render2({
-                                    key: $.cookie("key"),
-                                    userid: $.cookie("user.id")
-                                }),
-                                success: function(data, textStatus, jqXHR) {
-                                    $.each(data.variables, function(index, value) {
-                                        data_variables.push({
-                                            "id": data.variables[index].id,
-                                            "name": data.variables[index].name
+                            var data_variables = SUPER_CACHE_data_variables;
+                            if (!data_variables){
+                                data_variables=[];
+                                $.ajax({
+                                    async: false,
+                                    cache: true,
+                                    type: 'GET',
+                                    dataType: 'json',
+                                    url: api_path + '/api/variable?api_key=$$key'.render2({
+                                        key: $.cookie("key"),
+                                        userid: $.cookie("user.id")
+                                    }),
+                                    success: function(data, textStatus, jqXHR) {
+                                        $.each(data.variables, function(index, value) {
+                                            data_variables.push({
+                                                "id": data.variables[index].id,
+                                                "name": data.variables[index].name
+                                            });
                                         });
-                                    });
-                                }
-                            });
+
+                                        SUPER_CACHE_data_variables= data_variables;
+                                    }
+                                });
+                            }
+
                             var data_vvariables = [];
 
 
@@ -6515,21 +6523,26 @@ $(document).ready(function() {
                                 location.hash = "#!/myindicator";
                             });
 
-                            $.ajax({
-                                type: 'GET',
-                                cache: true,
-                                dataType: 'json',
-                                url: api_path + '/api/period/year'.render2({
-                                    key: $.cookie("key")
-                                }),
-                                success: function(data, textStatus, jqXHR) {
-                                    $.each(data.options, function(index, value) {
-                                        $("#dashboard-content .content .filter_indicator select#date_filter").append("<option value='$$_value'>$$_text</option>".render({
-                                            _text: data.options[index].text,
-                                            _value: data.options[index].value
-                                        }));
-                                    });
-                                }
+                            if (!SUPERA_CACHE_YEARS){
+                                $.ajax({
+                                    type: 'GET',
+                                    cache: true,
+                                    async:false,
+                                    dataType: 'json',
+                                    url: api_path + '/api/period/year'.render2({
+                                        key: $.cookie("key")
+                                    }),
+                                    success: function(data, textStatus, jqXHR) {
+                                       SUPERA_CACHE_YEARS = data.options;
+                                    }
+                                });
+                            }
+
+                            $.each(SUPERA_CACHE_YEARS, function(index, value) {
+                                $("#dashboard-content .content .filter_indicator select#date_filter").append("<option value='$$_value'>$$_text</option>".render({
+                                    _text:value.text,
+                                    _value: value.value
+                                }));
                             });
 
 
@@ -6555,13 +6568,15 @@ $(document).ready(function() {
                                         id: getIdFromUrl($.getUrlVar("url")),
                                         period: $("#dashboard-content .content .filter_indicator select#date_filter option:selected").val(),
                                         region: ($("#dashboard-content .content select#region_id option:selected").val()) ? "&region_id=" + $("#dashboard-content .content select#region_id option:selected").val() : "",
-                                        active_value: ($("#dashboard-content .content select#region_id option:selected").text().indexOf("--") < 0) ? "&active_value=0" : ""
+                                        active_value: ($("#region_id option:selected").attr('data-dp')<=2 ) ? "&active_value=0" : ""
                                     }),
                                     success: function(data, textStatus, jqXHR) {
                                         var data_variables = data.rows;
                                         var data_vvariables;
                                         var data_variations;
                                         var newform = [];
+
+                                        console.log(data_variables);
                                         $.each(data_variables, function(index, item) {
                                             if (item.type == "str") {
                                                 newform.push({
@@ -6648,9 +6663,7 @@ $(document).ready(function() {
                                             loadComboSources(sources, $("#dashboard-content .content select#source_" + item.id), $("#dashboard-content .content input#source_" + item.id + "_new"));
                                         });
 
-
-
-                                        $("#no_data").after("Não possuo um ou mais dados, quero justificar o indicador.");
+                                        /*$("#no_data").after("Não possuo um ou mais dados, quero justificar o indicador.");
                                         $("#dashboard-content .content .filter_result .field:last").hide();
                                         $("#no_data").change(function() {
                                             if ($(this).attr("checked")) {
@@ -6661,7 +6674,7 @@ $(document).ready(function() {
                                                 $("#goal").parents('.field').show();
                                                 $("#justification_of_missing_field").val('');
                                             }
-                                        });
+                                        });*/
 
                                         $.each(data_variables, function(index, value) {
                                             $("#dashboard-content .content .filter_result div#textlabel_explanation_$$id".render({

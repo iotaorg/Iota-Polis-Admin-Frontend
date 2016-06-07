@@ -1148,6 +1148,7 @@ var buildIndicatorHistory = function(args) {
                 e:  'Série Histórica de região gerada automaticamente'
             }) + history_table + "</div>");
 
+
         }else{
 
             $(args.target).append("<div class='title' title='$$tt'>$$e</div><div class='historic-content'>".render({
@@ -1160,6 +1161,10 @@ var buildIndicatorHistory = function(args) {
 
 
     };
+
+    // nao foi gerado automaticamente
+    args.can_delete = !(cur_depth == 1 || cur_depth == 2);
+
 
     $.ajax({
         type: 'GET',
@@ -1174,6 +1179,8 @@ var buildIndicatorHistory = function(args) {
     });
 
     if (cur_depth <= 2){
+        args.can_delete = true;
+
         args.work_done = function(history_table) {
             $(args.target).append("<div class='title' title='$$tt'>$$e</div><div class='historic-content'>".render({
                 tt: 'mostrar/esconder Histórico',
@@ -1212,6 +1219,8 @@ var _build_indicator_history_success = function(data, textStatus, jqXHR) {
     var args = this._arg;
 
     if (data.header && data.rows != undefined) {
+
+        var can_delete = args.can_delete;
         var history_table = "";
         history_table += "<table class='history'><thead><tr><th>$$e</th>".render({
             e: 'Período'
@@ -1255,7 +1264,7 @@ var _build_indicator_history_success = function(data, textStatus, jqXHR) {
                 if (data.rows[index].valores[index2] && data.rows[index].valores[index2].value != "-" && data.rows[index].valores[index2].value != null && data.rows[index].valores[index2].value != undefined) {
                     if (isNaN(data.rows[index].valores[index2].value)) {
 
-                        history_table += "<td class='valor' title='$$data' data-value-id='$$id' variable-id='$$variable_id'>$$valor <a href='javascript: void(0);' class='delete delete-item' title='$$title' alt='$$title'>$$e</a></td>".render2({
+                        history_table += ("<td class='valor' title='$$data' data-value-id='$$id' variable-id='$$variable_id'>$$valor " + (can_delete ? "<a href='javascript: void(0);' class='delete delete-item' title='$$title' alt='$$title'>$$e</a>": "")  + "</td>").render2({
                             valor: data.rows[index].valores[index2].value,
                             data: $.convertDate(data.rows[index].valores[index2].value_of_date, "T"),
                             id: data.rows[index].valores[index2].id,
@@ -1264,7 +1273,7 @@ var _build_indicator_history_success = function(data, textStatus, jqXHR) {
                             e: "X"
                         });
                     } else {
-                        history_table += "<td class='valor' title='$$data' data-value-id='$$id' variable-id='$$variable_id'>$$valor <a href='javascript: void(0);' class='delete delete-item' title='$$title' alt='$$title'>$$e</a></td>".render2({
+                        history_table += ("<td class='valor' title='$$data' data-value-id='$$id' variable-id='$$variable_id'>$$valor " + (can_delete ? "<a href='javascript: void(0);' class='delete delete-item' title='$$title' alt='$$title'>$$e</a>": "" ) + "</td>").render2({
                             valor: $.formatNumber(data.rows[index].valores[index2].value, {
                                 format: "#,##0.###",
                                 locale: "br",
@@ -1297,9 +1306,8 @@ var _build_indicator_history_success = function(data, textStatus, jqXHR) {
             }
 
 
-            history_table = history_table.replace("#theader_valor", "<th class='formula_valor'>$$x</th><th></th>".render({
-                x: 'Valor da Fórmula'
-            }));
+            history_table = (history_table.replace("#theader_valor", "<th class='formula_valor'>Valor da Fórmula</th>" + ( can_delete ? "<th></th>" : '')));
+
             if (data.rows[index].formula_value != "-") {
                 history_table += "<td class='formula_valor' variation-index='0'>$$valor</td>".render2({
                     valor: $.formatNumber(data.rows[index].formula_value, {
@@ -1311,7 +1319,7 @@ var _build_indicator_history_success = function(data, textStatus, jqXHR) {
                 history_table += "<td class='formula_valor' variation-index='0'>-</td>";
             }
 
-            history_table += "<td class='edit'><a href='javascript: void(0);' row-id='$$_row' class='delete delete-all'>$$f</a></td>".render({
+            history_table += ( can_delete ? "<td class='edit'><a href='javascript: void(0);' row-id='$$_row' class='delete delete-all'>$$f</a></td>" : "" ).render({
                 _row: rows,
                 f: 'apagar todos'
             });

@@ -268,13 +268,13 @@ $(document).ready(function() {
             "pages": "Páginas"
         });
         submenu_label["customize"].push({
-            "css": "CSS"
+            "css": "CSS",
+            "files": "Arquivos"
         });
 
         submenu_label["content"] = [];
         submenu_label["content"].push({
             "best_pratice": "Boas Práticas",
-            "files": "Arquivos"
         });
 
         submenu_label["indicator_user"] = [];
@@ -300,7 +300,7 @@ $(document).ready(function() {
         });
 
         menu_access["superadmin"] = ["dashboard", "parameters","customize", "networks", "variable_user", "indicator_user",  "logout", ];
-        submenu_access["superadmin"] = ["units", "myindicator", "indicator", "myvariableedit", "variable", "menus","pages", "prefs"];
+        submenu_access["superadmin"] = ["units", "myindicator", "indicator", "myvariableedit", "variable", "menus","pages","files", "prefs"];
 
 
         var menu_item = "";
@@ -8306,6 +8306,7 @@ $(document).ready(function() {
                         }),
                         success: function(data, status, jqXHR) {
                             var classes = [];
+                            data.files = data.files ? data.files :  [];
                             data.files.sort(function(a, b) {
                                 a = a.class_name,
                                     b = b.class_name;

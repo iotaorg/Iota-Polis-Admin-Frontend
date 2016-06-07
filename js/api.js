@@ -7732,10 +7732,6 @@ $(document).ready(function() {
                         input: ["text,title,itext"]
                     });
                     newform.push({
-                        label: "Url",
-                        input: ["text,title_url,itext"]
-                    });
-                    newform.push({
                         label: "Conteúdo",
                         input: ["textarea,page_content"]
                     });
@@ -7761,7 +7757,7 @@ $(document).ready(function() {
                                 switch (jqXHR.status) {
                                     case 200:
                                         $(formbuild).find("input#title").val(data.title);
-                                        $(formbuild).find("input#title_url").val(data.title_url);
+
                                         $(formbuild).find("textarea#page_content").val(data.content);
                                         break;
                                 }
@@ -7835,10 +7831,7 @@ $(document).ready(function() {
                             }, {
                                 name: "page." + action + ".title",
                                 value: $(this).parent().parent().find("#title").val()
-                            }, {
-                                name: "page." + action + ".title_url",
-                                value: $(this).parent().parent().find("#title_url").val()
-                            }, {
+                            },   {
                                 name: "page." + action + ".content",
                                 value: $(this).parent().parent().find("#page_content").val()
                             }];

@@ -240,8 +240,8 @@ $(document).ready(function() {
         menu_label["parameters"] = "Configurações";
         menu_label["logs"] = "Logs";
         menu_label["prefs"] = "Preferências";
-        menu_label["reports"] = "Relatórios";
-        menu_label["tokens"] = "Tokens";
+
+
         menu_label["premio"] = "Inscrição para o Prêmio";
         menu_label["logout"] = "Sair";
 
@@ -299,8 +299,8 @@ $(document).ready(function() {
             "region-map": "Definir Regiões no Mapa"
         });
 
-        menu_access["superadmin"] = ["dashboard", "parameters", "networks", "variable_user", "indicator_user", "logout", ];
-        submenu_access["superadmin"] = ["units", "myindicator", "indicator", "myvariableedit", "variable", "prefs"];
+        menu_access["superadmin"] = ["dashboard", "parameters","customize", "networks", "variable_user", "indicator_user",  "logout", ];
+        submenu_access["superadmin"] = ["units", "myindicator", "indicator", "myvariableedit", "variable", "menus","pages", "prefs"];
 
 
         var menu_item = "";

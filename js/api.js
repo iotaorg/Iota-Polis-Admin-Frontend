@@ -4049,7 +4049,7 @@ $(document).ready(function() {
                             if (erro == 0) {
                                 if (!retorno.error) {
                                     $(".value_via_file .form-aviso").setWarning({
-                                        msg: "Arquivo enviado com sucesso"
+                                        msg: "Arquivo enviado com sucesso<br/>"+ retorno.status
                                     });
                                     $(clickedButton).html("Enviar");
                                     $(clickedButton).attr("is-disabled", 0);
@@ -4076,6 +4076,100 @@ $(document).ready(function() {
                             }
                         });
                     });
+
+                    $("#dashboard-content .content").append("<div class='value_via_file_rotate'></div>");
+                    var newform = [];
+                    newform.push({
+                        label: "Arquivo Rotacionado (Apenas XLS)",
+                        input: ["file,arquivo_rotate,itext"]
+                    });
+                    var formbuild = $("#dashboard-content .content .value_via_file_rotate").append(buildForm(newform, "Importar valores rotacionados"));
+                    $(formbuild).find("div .field:odd").addClass("odd");
+                    $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
+                    $("#dashboard-content .content .value_via_file_rotate .botao-form[ref='cancelar']").hide();
+
+
+
+                    $("#dashboard-content .content .value_via_file_rotate .botao-form[ref='enviar']").click(function() {
+
+                        var clickedButton = $(this);
+
+                        var file = "arquivo_rotate";
+                        var form = $("#formFileUpload_" + file);
+
+                        original_id = $('#arquivo_' + file).attr("original-id");
+
+                        $('#arquivo_' + file).attr({
+                            name: "arquivo",
+                            id: "arquivo"
+                        });
+
+                        form.attr("action", api_path + '/api/variable/value_via_file_rotate?api_key=$$key&content-type=application/json'.render2({
+                            key: $.cookie("key")
+                        }));
+                        form.attr("method", "post");
+                        form.attr("enctype", "multipart/form-data");
+                        form.attr("encoding", "multipart/form-data");
+                        form.attr("target", "iframe_" + file);
+                        form.attr("file", $('#arquivo').val());
+                        form.submit();
+                        $('#arquivo').attr({
+                            name: original_id,
+                            id: original_id
+                        });
+
+                        $("#iframe_" + file).load(function() {
+
+                            var erro = 0;
+                            if ($(this).contents()) {
+                                if ($(this).contents()[0].body) {
+                                    if ($(this).contents()[0].body.outerHTML) {
+                                        var retorno = $(this).contents()[0].body.outerHTML;
+                                        retorno = $(retorno).text();
+                                        retorno = $.parseJSON(retorno);
+                                    } else {
+                                        erro = 1;
+                                    }
+                                } else {
+                                    erro = 1;
+                                }
+                            } else {
+                                erro = 1;
+                            }
+
+                            if (erro == 0) {
+                                if (!retorno.error) {
+                                    $(".value_via_file_rotate .form-aviso").setWarning({
+                                        msg: "Arquivo enviado com sucesso<br/>" + retorno.status
+                                    });
+                                    console.log(retorno);
+                                    $(clickedButton).html("Enviar");
+                                    $(clickedButton).attr("is-disabled", 0);
+                                } else {
+                                    $(".value_via_file_rotate .form-aviso").setWarning({
+                                        msg: "Erro ao enviar arquivo $$_file ($$err)".render2({
+                                            err: retorno.error,
+                                            _file: file
+                                        })
+                                    });
+                                    $(clickedButton).html("Enviar");
+                                    $(clickedButton).attr("is-disabled", 0);
+                                    return;
+                                }
+                            } else {
+                                $(".value_via_file_rotate .form-aviso").setWarning({
+                                    msg: "Erro ao enviar arquivo $$file".render2({
+                                        file: file
+                                    })
+                                });
+                                $(clickedButton).html("Enviar");
+                                $(clickedButton).attr("is-disabled", 0);
+                                return;
+                            }
+                        });
+                    });
+
+
 
                     if (user_info.roles[0] != "admin") {
                         carregaVariaveisEdit();

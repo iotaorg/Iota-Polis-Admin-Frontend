@@ -288,7 +288,7 @@ $(document).ready(function() {
         submenu_label["variable_user"] = [];
         submenu_label["variable_user"].push({
             "myvariable": "Variáveis Básicas",
-            "variable":  "Gerenciar variáveis",
+            "variable": "Gerenciar variáveis",
             "myvariableedit": "Valores por variável",
             "myvariableclone": "Clonar Valores"
         });
@@ -299,8 +299,8 @@ $(document).ready(function() {
             "region-map": "Definir Regiões no Mapa"
         });
 
-        menu_access["superadmin"] = ["dashboard", "parameters","customize", "networks", "variable_user", "indicator_user",  "logout", ];
-        submenu_access["superadmin"] = ["units", "myindicator", "indicator", "myvariableedit", "variable", "menus","pages","files", "prefs"];
+        menu_access["superadmin"] = ["dashboard", "parameters", "customize", "networks", "variable_user", "indicator_user", "logout", ];
+        submenu_access["superadmin"] = ["units", "myindicator", "indicator", "myvariableedit", "variable", "menus", "pages", "files", "prefs"];
 
 
         var menu_item = "";
@@ -317,7 +317,7 @@ $(document).ready(function() {
                     $.each(item, function(url_sub, text) {
                         if (findInArray(submenu_access[user_info.role], url_sub)) {
 
-                            a_menu_class =a_menu_class ? a_menu_class : (getUrlSub() == url_sub) ? "selected" : "";
+                            a_menu_class = a_menu_class ? a_menu_class : (getUrlSub() == url_sub) ? "selected" : "";
 
                             submenu_item += "<li class='submenu $$_class' ref='$$_url_sub'><a href='#!/$$_url_sub'>$$text</a></li>".render({
                                 text: text,
@@ -3869,38 +3869,50 @@ $(document).ready(function() {
                 if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined) {
 
                     $("#dashboard-content .content").append("<div class='variable-filter'><div class='form-pesquisa'></div></div><div class='clear'></div>");
-                    if (user_info.roles[0] == "admin") {
-                        $("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='user'>$$u: <select id='user-id'></select></div>".render({
-                            u: 'Usuário'
-                        }));
-                        $("#dashboard-content .content #user-id").append($("<option value=''>$$se...</option>".render({
-                            se: 'Selecione'
-                        })));
-                        $.ajax({
-                            type: 'GET',
-                            dataType: 'json',
-                            url: api_path + '/api/user?role=user&network_id=$$network_id&api_key=$$key'.render2({
-                                key: $.cookie("key"),
-                                network_id: user_info.network
-                            }),
-                            success: function(data, textStatus, jqXHR) {
-                                data.users.sort(function(a, b) {
-                                    a = a.name,
-                                        b = b.name;
 
-                                    return a.localeCompare(b);
-                                });
-                                $.each(data.users, function(index, item) {
-                                    if (item.city) {
-                                        $("#dashboard-content .content #user-id").append($("<option value='$$id'>$$nome</option>".render({
-                                            id: getIdFromUrl(item.url),
-                                            nome: item.name
-                                        })));
-                                    }
-                                });
-                            }
-                        });
-                    }
+                    $("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='user'>$$u: <select id='region_id'></select></div>".render({
+                        u: 'Região'
+                    }));
+                    $("#dashboard-content .content #region_id").append($("<option value=''>$$se...</option>".render({
+                        se: 'Selecione'
+                    })));
+                    var data_region = SUPER_CACHE_data_region;
+
+                    $.ajax({
+                        async: false,
+                        type: 'GET',
+                        dataType: 'json',
+                        url: api_path + '/api/city/$$city/region?api_key=$$key'.render2({
+                            key: $.cookie("key"),
+                            city: getIdFromUrl(user_info.city)
+                        }),
+                        success: function(data, textStatus, jqXHR) {
+                            data_region = data.regions;
+                            SUPER_CACHE_data_region = data_region;
+                        }
+                    });
+
+
+                    data_region.sort(function(a, b) {
+
+                        a = a.upper_region + a.name,
+                            b = b.upper_region + b.name;
+
+                        return a.localeCompare(b);
+                    });
+
+                    $.each(data_region, function(index, item) {
+
+                        $("#dashboard-content .content #region_id").append($("<option value='$$id'>$$nome</option>".render({
+                            id: item.id,
+                            nome: (item.depth_level == 3 ? '- ' : '') + item.name
+                        })));
+
+
+                    });
+
+
+
 
                     $("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='variable'>$$v: <select id='variable_id'></select></div>".render({
                         v: 'Variável'
@@ -4049,7 +4061,7 @@ $(document).ready(function() {
                             if (erro == 0) {
                                 if (!retorno.error) {
                                     $(".value_via_file .form-aviso").setWarning({
-                                        msg: "Arquivo enviado com sucesso<br/>"+ retorno.status
+                                        msg: "Arquivo enviado com sucesso<br/>" + retorno.status
                                     });
                                     $(clickedButton).html("Enviar");
                                     $(clickedButton).attr("is-disabled", 0);
@@ -5687,7 +5699,7 @@ $(document).ready(function() {
 
                     if ($.getUrlVar("option") == "add") {
                         $("#dashboard-content .content .botao-form[ref='enviar']").click(function() {
-                            if ($("#source").val() == '_new'){
+                            if ($("#source").val() == '_new') {
                                 $("#add-source").click();
                             }
 
@@ -5950,7 +5962,7 @@ $(document).ready(function() {
                         });
 
                         $("#dashboard-content .content .botao-form[ref='enviar']").click(function() {
-                            if ($("#source").val() == '_new'){
+                            if ($("#source").val() == '_new') {
                                 $("#add-source").click();
                             }
                             resetWarnings();
@@ -6260,7 +6272,6 @@ $(document).ready(function() {
 
 
 
-
                             indicators_table = "<div class='indicadores_list'>";
                             indicators_table += "<div class='status'></div>";
 
@@ -6273,7 +6284,7 @@ $(document).ready(function() {
 
                             //carrega indicadores por eixo
                             data_indicators.sort(function(a, b) {
-                                a = a.axis.name,  b = b.axis.name;
+                                a = a.axis.name, b = b.axis.name;
 
                                 return a.localeCompare(b);
                             });
@@ -6561,7 +6572,7 @@ $(document).ready(function() {
                                     $.each(district, function(index2, item2) {
                                         if (item2.upper_region_id == item.id) {
                                             in_loop++;
-                                            $("#region_id").append($("<option data-dp=3></option>").val(item2.id).html( ( in_loop == district_vs_len[item.id]  ?"╚" : "╠") + "═◎ $$e".render({
+                                            $("#region_id").append($("<option data-dp=3></option>").val(item2.id).html((in_loop == district_vs_len[item.id] ? "╚" : "╠") + "═◎ $$e".render({
                                                 e: item2.name
                                             })));
                                         }
@@ -6570,8 +6581,8 @@ $(document).ready(function() {
 
                             }
                             var data_variables = SUPER_CACHE_data_variables;
-                            if (!data_variables){
-                                data_variables=[];
+                            if (!data_variables) {
+                                data_variables = [];
                                 $.ajax({
                                     async: false,
                                     cache: true,
@@ -6589,7 +6600,7 @@ $(document).ready(function() {
                                             });
                                         });
 
-                                        SUPER_CACHE_data_variables= data_variables;
+                                        SUPER_CACHE_data_variables = data_variables;
                                     }
                                 });
                             }
@@ -6617,24 +6628,24 @@ $(document).ready(function() {
                                 location.hash = "#!/myindicator";
                             });
 
-                            if (!SUPERA_CACHE_YEARS){
+                            if (!SUPERA_CACHE_YEARS) {
                                 $.ajax({
                                     type: 'GET',
                                     cache: true,
-                                    async:false,
+                                    async: false,
                                     dataType: 'json',
                                     url: api_path + '/api/period/year'.render2({
                                         key: $.cookie("key")
                                     }),
                                     success: function(data, textStatus, jqXHR) {
-                                       SUPERA_CACHE_YEARS = data.options;
+                                        SUPERA_CACHE_YEARS = data.options;
                                     }
                                 });
                             }
 
                             $.each(SUPERA_CACHE_YEARS, function(index, value) {
                                 $("#dashboard-content .content .filter_indicator select#date_filter").append("<option value='$$_value'>$$_text</option>".render({
-                                    _text:value.text,
+                                    _text: value.text,
                                     _value: value.value
                                 }));
                             });
@@ -6662,7 +6673,7 @@ $(document).ready(function() {
                                         id: getIdFromUrl($.getUrlVar("url")),
                                         period: $("#dashboard-content .content .filter_indicator select#date_filter option:selected").val(),
                                         region: ($("#dashboard-content .content select#region_id option:selected").val()) ? "&region_id=" + $("#dashboard-content .content select#region_id option:selected").val() : "",
-                                        active_value: ($("#region_id option:selected").attr('data-dp')<=2 ) ? "&active_value=0" : ""
+                                        active_value: ($("#region_id option:selected").attr('data-dp') <= 2) ? "&active_value=0" : ""
                                     }),
                                     success: function(data, textStatus, jqXHR) {
                                         var data_variables = data.rows;
@@ -6718,7 +6729,7 @@ $(document).ready(function() {
 
                                         data_variations = [];
 
-                                         var formbuild = $("#dashboard-content .content .filter_result").append(buildForm(newform, data_indicator.name));
+                                        var formbuild = $("#dashboard-content .content .filter_result").append(buildForm(newform, data_indicator.name));
                                         $(formbuild).find("div .field:odd").addClass("odd");
                                         $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
                                         $(formbuild).find("#new_variation_add").html("$$e".render({
@@ -6836,12 +6847,12 @@ $(document).ready(function() {
                                                     if (isNaN(valor)) {
                                                         informou_valores_validos = false;
                                                     }
-                                                    if ( $("#dashboard-content .content .filter_result").find("#var_" + data_variables[index].id).val() != "" &&
-                                                         ($("#dashboard-content .content .filter_result").find("#source_" + data_variables[index].id).val() == "" ||
-                                                         $("#dashboard-content .content .filter_result").find("#source_" + data_variables[index].id).val() == "_new")
-                                                         ) {
+                                                    if ($("#dashboard-content .content .filter_result").find("#var_" + data_variables[index].id).val() != "" &&
+                                                        ($("#dashboard-content .content .filter_result").find("#source_" + data_variables[index].id).val() == "" ||
+                                                            $("#dashboard-content .content .filter_result").find("#source_" + data_variables[index].id).val() == "_new")
+                                                    ) {
 
-                                                        informou_valores=true;
+                                                        informou_valores = true;
                                                         informou_fontes = false;
                                                     }
                                                 }
@@ -6862,19 +6873,19 @@ $(document).ready(function() {
                                                 });
                                             }
 
-                                            if (!informou_valores  ) {
+                                            if (!informou_valores) {
                                                 $(".filter_result .form-aviso").setWarning({
                                                     msg: "Por favor informe os valores ou justificativa"
                                                 });
-                                            } else if (!informou_valores_validos ) {
+                                            } else if (!informou_valores_validos) {
                                                 $(".filter_result .form-aviso").setWarning({
                                                     msg: "Os valores devem ser apenas numéricos"
                                                 });
-                                            } else if (!informou_vvalores_validos  ) {
+                                            } else if (!informou_vvalores_validos) {
                                                 $(".filter_result .form-aviso").setWarning({
                                                     msg: "Os valores devem ser apenas números inteiros"
                                                 });
-                                            } else if (!informou_fontes  ) {
+                                            } else if (!informou_fontes) {
                                                 $(".filter_result .form-aviso").setWarning({
                                                     msg: "Por favor informe a fonte dos valores"
                                                 });
@@ -7925,7 +7936,7 @@ $(document).ready(function() {
                             }, {
                                 name: "page." + action + ".title",
                                 value: $(this).parent().parent().find("#title").val()
-                            },   {
+                            }, {
                                 name: "page." + action + ".content",
                                 value: $(this).parent().parent().find("#page_content").val()
                             }];
@@ -8393,7 +8404,7 @@ $(document).ready(function() {
                         }),
                         success: function(data, status, jqXHR) {
                             var classes = [];
-                            data.files = data.files ? data.files :  [];
+                            data.files = data.files ? data.files : [];
                             data.files.sort(function(a, b) {
                                 a = a.class_name,
                                     b = b.class_name;

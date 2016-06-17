@@ -4142,7 +4142,7 @@ $(document).ready(function() {
                                     $(".value_via_file_rotate .form-aviso").setWarning({
                                         msg: "Arquivo enviado com sucesso<br/>" + retorno.status
                                     });
-                                    console.log(retorno);
+
                                     $(clickedButton).html("Enviar");
                                     $(clickedButton).attr("is-disabled", 0);
                                 } else {

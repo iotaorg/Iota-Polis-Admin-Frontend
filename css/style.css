@@ -18,6 +18,12 @@ body, td, div{
     clear: both;
 }
 
+.value_via_file_rotate {
+    margin-top: 20px;
+}
+.value_via_file_rotate form, .value_via_file form {
+    width: 300px;
+}
 a{
     text-decoration: none;
 }

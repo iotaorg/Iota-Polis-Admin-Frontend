@@ -3873,9 +3873,7 @@ $(document).ready(function() {
                     $("#dashboard-content .content .variable-filter .form-pesquisa").append("<div class='user'>$$u: <select id='region_id'></select></div>".render({
                         u: 'Região'
                     }));
-                    $("#dashboard-content .content #region_id").append($("<option value=''>$$se...</option>".render({
-                        se: 'Selecione'
-                    })));
+
                     var data_region = SUPER_CACHE_data_region;
 
                     $.ajax({

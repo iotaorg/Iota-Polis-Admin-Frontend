@@ -3980,7 +3980,7 @@ $(document).ready(function() {
                     });
 
                     var now = new Date();
-                    now.setDate(now.getDate() - (10 * 365));
+                    now.setDate(now.getDate() - (20 * 365));
                     $("#dashboard-content .content .variable-filter input#data_ini").datepicker("setDate", now);
                     $("#dashboard-content .content .variable-filter input#data_fim").datepicker("setDate", new Date());
 
@@ -4183,19 +4183,8 @@ $(document).ready(function() {
 
 
 
-                    if (user_info.roles[0] != "admin") {
-                        carregaVariaveisEdit();
-                    } else {
-                        $("#dashboard-content .content .variable-filter #botao-pesquisar").attr("disabled", "disabled");
-                        $("#dashboard-content .content .variable-filter #user-id").change(function() {
-                            if ($(this).find("option:selected").val() != "") {
-                                carregaVariaveisEdit();
-                                $("#dashboard-content .content .variable-filter #botao-pesquisar").attr("disabled", false);
-                            } else {
-                                $("#dashboard-content .content .variable-filter #botao-pesquisar").attr("disabled", "disabled");
-                            }
-                        });
-                    }
+
+                    carregaVariaveisEdit();
 
                     function carregaTabelaVariaveisEdit() {
 
@@ -4218,9 +4207,10 @@ $(document).ready(function() {
                         $.ajax({
                             type: 'GET',
                             dataType: 'json',
-                            url: api_path + '/api/user/$$userid/variable?api_key=$$key&valid_from_begin=$$data_ini&valid_from_end=$$data_fim$$variavel'.render2({
+                            url: api_path + '/api/user/$$userid/variable?api_key=$$key&region_id=$$region&valid_from_begin=$$data_ini&valid_from_end=$$data_fim$$variavel'.render2({
                                 key: $.cookie("key"),
-                                userid: (user_info.roles[0] == "admin") ? $("#dashboard-content .content #user-id option:selected").val() : $.cookie("user.id"),
+                                userid: 1,
+                                region: $("#dashboard-content .content #region_id option:selected").val(),
                                 data_ini: data_ini[2] + "-" + data_ini[1] + "-" + data_ini[0],
                                 data_fim: data_fim[2] + "-" + data_fim[1] + "-" + data_fim[0],
                                 variavel: variavel_id
@@ -4232,16 +4222,18 @@ $(document).ready(function() {
                                             var data_formatada;
                                             if (item.period == "yearly") {
                                                 data_formatada = $.format.date(valor.value_of_date, "yyyy");
-                                            } else if (item.period == "daily") {
+                                            } else  {
                                                 data_formatada = $.convertDate(valor.value_of_date, " ");
                                             }
 
-                                            $("#dashboard-content .content #results tbody").append($("<tr><td>$$nome</td><td data='$$_date_of_value'>$$_data</td><td>$$_valor</td><td>$$_url</td></tr>".render({
+                                            $("#dashboard-content .content #results tbody").append(
+                                                $("<tr><td>$$nome</td><td data='$$_date_of_value'>$$_data</td><td data-region=$$region>$$_valor</td><td>$$_url</td></tr>".render({
                                                 nome: item.name,
                                                 _data: data_formatada,
+                                                region: valor.region_id,
                                                 _date_of_value: valor.value_of_date,
                                                 _valor: valor.value,
-                                                _url: valor.url
+                                                _url: item.variable_id
                                             })));
                                         });
                                     }
@@ -4286,6 +4278,7 @@ $(document).ready(function() {
                                         $("#results td.input").each(function() {
                                             if ($(this).find("input").length <= 0) {
                                                 if ($(this).find("a").length <= 0) {
+
                                                     $(this).html("<input type='text' class='input' width='10' value='$$valor'>".render2({
                                                         valor: $(this).html()
                                                     }));
@@ -4300,24 +4293,31 @@ $(document).ready(function() {
                                     e.preventDefault();
                                     var valor = $(this).parent().parent().find("td.input input.input").val();
                                     var url = $(this).attr("url");
+                                    var regionid= $(this).parents('tr:first').find("[data-region]").attr('data-region');
+
                                     var data = $(this).parent().parent().find("td.data").attr("data");
 
                                     args = [{
                                         name: "api_key",
                                         value: $.cookie("key")
-                                    }, {
-                                        name: "variable.value.update.value",
+                                    },
+                                    {
+                                        name: "region.variable.value.put.variable_id",
+                                        value: url
+                                    },
+                                    {
+                                        name: "region.variable.value.put.value",
                                         value: valor
                                     }, {
-                                        name: "variable.value.update.value_of_date",
+                                        name: "region.variable.value.put.value_of_date",
                                         value: data
                                     }];
 
                                     $.ajax({
                                         async: false,
-                                        type: 'POST',
+                                        type: 'PUT',
                                         dataType: 'json',
-                                        url: url,
+                                        url: '/api/city/1/region/'+regionid+'/value',
                                         data: args,
                                         success: function(data, status, jqXHR) {
                                             $("#aviso").setWarning({

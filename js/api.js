@@ -3102,6 +3102,32 @@ $(document).ready(function() {
 
 
                     var formbuild = $("#dashboard-content .content").append(buildForm(newform, txtOption));
+
+                    var $colors = $("#dashboard-content .form").append( '<div class="field add-colors"></div>' ).find('.add-colors');
+
+                    $colors.html('<div class="label">Configurar Cores</div><div class="input"><span style="float:right">Textos em branco serão ignorados</span> <button class="add">+ Adicionar</button></div><div class="clear"></div><div id="addcolors"></div>');
+
+                    function fill_colors_select(tselect){
+                        $(tselect).append('<option value="#FFF" style="color: #999">✹ Branco</option>');
+                        $(tselect).append('<option value="#000" style="color: #000">✹ Preto</option>');
+                        $(tselect).append('<option value="#d21b1b" style="color: #d21b1b">✹ Vermelho</option>');
+                        $(tselect).append('<option value="#FE9753" style="color: #FE9753">✹ Laranja</option>');
+                        $(tselect).append('<option value="#E2F98E" style="color: #E2F98E">✹ Amarelo</option>');
+                        $(tselect).append('<option value="#219859" style="color: #219859">✹ Verde</option>');
+
+                        $(tselect).change(function(){
+                            $(this).css('color', this.value == '#FFF' ? '#999' : this.value );
+                        }).change();
+                    }
+
+                    $colors.find('button.add').click( function(){
+                        var $elm = $('<div><input class="text addcolors-input" /><select class="addcolors-select"></select></div>');
+
+                       fill_colors_select($elm.find('.addcolors-select'));
+
+                       $('#addcolors').append($elm);
+                    });
+
                     $(formbuild).find("div .field:odd").addClass("odd");
                     $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
 

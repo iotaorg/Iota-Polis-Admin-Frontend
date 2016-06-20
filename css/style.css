@@ -1811,3 +1811,14 @@ input.add_new{
 #menu ul li[ref=logout] {
     float: right;
 }
+
+#addcolors {
+    margin-left: 132px;
+}
+#addcolors > div {
+    margin-bottom: 5px;
+}
+#addcolors select {
+    margin-left: 5px;
+}
+

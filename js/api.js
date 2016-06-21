@@ -3112,11 +3112,12 @@ $(document).ready(function() {
                         $(tselect).append('<option value="#000" style="color: #000">✹ Preto</option>');
                         $(tselect).append('<option value="#d21b1b" style="color: #d21b1b">✹ Vermelho</option>');
                         $(tselect).append('<option value="#FE9753" style="color: #FE9753">✹ Laranja</option>');
-                        $(tselect).append('<option value="#E2F98E" style="color: #E2F98E">✹ Amarelo</option>');
+                        $(tselect).append('<option value="#E2F98E" style="color: #c39a1f">✹ Amarelo</option>');
                         $(tselect).append('<option value="#219859" style="color: #219859">✹ Verde</option>');
 
+
                         $(tselect).change(function(){
-                            $(this).css('color', this.value == '#FFF' ? '#999' : this.value );
+                            $(this).css('color', this.value == '#FFF' ? '#999' :this.value == '#E2F98E' ? '#c39a1f' : this.value );
                         }).change();
                     }
 

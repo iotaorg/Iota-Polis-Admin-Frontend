@@ -3103,11 +3103,11 @@ $(document).ready(function() {
 
                     var formbuild = $("#dashboard-content .content").append(buildForm(newform, txtOption));
 
-                    var $colors = $("#dashboard-content .form").append( '<div class="field add-colors"></div>' ).find('.add-colors');
+                    var $colors = $("#dashboard-content .form").append('<div class="field add-colors"></div>').find('.add-colors');
 
                     $colors.html('<div class="label">Configurar Cores</div><div class="input"><span style="float:right">Textos em branco serão ignorados</span> <button class="add">+ Adicionar</button></div><div class="clear"></div><div id="addcolors"></div>');
 
-                    function fill_colors_select(tselect){
+                    function fill_colors_select(tselect) {
                         $(tselect).append('<option value="#FFF" style="color: #999">✹ Branco</option>');
                         $(tselect).append('<option value="#000" style="color: #000">✹ Preto</option>');
                         $(tselect).append('<option value="#d21b1b" style="color: #d21b1b">✹ Vermelho</option>');
@@ -3116,18 +3116,20 @@ $(document).ready(function() {
                         $(tselect).append('<option value="#219859" style="color: #219859">✹ Verde</option>');
 
 
-                        $(tselect).change(function(){
-                            $(this).css('color', this.value == '#FFF' ? '#999' :this.value == '#E2F98E' ? '#c39a1f' : this.value );
+                        $(tselect).change(function() {
+                            $(this).css('color', this.value == '#FFF' ? '#999' : this.value == '#E2F98E' ? '#c39a1f' : this.value);
                         }).change();
                     }
 
-                    $colors.find('button.add').click( function(){
+                    function _add_color_block() {
                         var $elm = $('<div><input class="text addcolors-input" /><select class="addcolors-select"></select></div>');
 
-                       fill_colors_select($elm.find('.addcolors-select'));
+                        fill_colors_select($elm.find('.addcolors-select'));
 
-                       $('#addcolors').append($elm);
-                    });
+                        $('#addcolors').append($elm);
+                        return $elm;
+                    };
+                    $colors.find('button.add').click(_add_color_block);
 
                     $(formbuild).find("div .field:odd").addClass("odd");
                     $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
@@ -3180,6 +3182,14 @@ $(document).ready(function() {
                                         if (data.measurement_unit) {
                                             $(formbuild).find("select#measurement_unit").val(data.measurement_unit.id);
                                         }
+                                        if (data.colors)
+                                            data.colors = JSON.parse(data.colors);
+
+                                        $.each(data.colors, function(nome, valor) {
+                                            var $elm = _add_color_block();
+                                            $elm.find('input').val(nome);
+                                            $elm.find('select option[value=' + valor + ']').prop('selected', 'selected').change();
+                                        });
                                         //$(formbuild).find("select#period").val(data.period);
 
                                         $(formbuild).find("select#source").val(data.source);
@@ -3241,6 +3251,14 @@ $(document).ready(function() {
                                 var url_action = $.getUrlVar("url");
                             }
 
+                            var cur_colors = {};
+                            $('.addcolors-input').each(function(i, e) {
+                                var $e = $(e);
+                                if ($e.val()) {
+                                    cur_colors[$e.val()] = $e.parent().find('select').val();
+                                }
+                            });
+
                             args = [{
                                 name: "api_key",
                                 value: $.cookie("key")
@@ -3262,6 +3280,9 @@ $(document).ready(function() {
                             }, {
                                 name: "variable." + action + ".period",
                                 value: 'yearly'
+                            }, {
+                                name: "variable." + action + ".colors",
+                                value: JSON.stringify(cur_colors)
                             }];
 
                             args.push({
@@ -4247,19 +4268,19 @@ $(document).ready(function() {
                                             var data_formatada;
                                             if (item.period == "yearly") {
                                                 data_formatada = $.format.date(valor.value_of_date, "yyyy");
-                                            } else  {
+                                            } else {
                                                 data_formatada = $.convertDate(valor.value_of_date, " ");
                                             }
 
                                             $("#dashboard-content .content #results tbody").append(
                                                 $("<tr><td>$$nome</td><td data='$$_date_of_value'>$$_data</td><td data-region=$$region>$$_valor</td><td>$$_url</td></tr>".render({
-                                                nome: item.name,
-                                                _data: data_formatada,
-                                                region: valor.region_id,
-                                                _date_of_value: valor.value_of_date,
-                                                _valor: valor.value,
-                                                _url: item.variable_id
-                                            })));
+                                                    nome: item.name,
+                                                    _data: data_formatada,
+                                                    region: valor.region_id,
+                                                    _date_of_value: valor.value_of_date,
+                                                    _valor: valor.value,
+                                                    _url: item.variable_id
+                                                })));
                                         });
                                     }
                                 });
@@ -4318,19 +4339,17 @@ $(document).ready(function() {
                                     e.preventDefault();
                                     var valor = $(this).parent().parent().find("td.input input.input").val();
                                     var url = $(this).attr("url");
-                                    var regionid= $(this).parents('tr:first').find("[data-region]").attr('data-region');
+                                    var regionid = $(this).parents('tr:first').find("[data-region]").attr('data-region');
 
                                     var data = $(this).parent().parent().find("td.data").attr("data");
 
                                     args = [{
                                         name: "api_key",
                                         value: $.cookie("key")
-                                    },
-                                    {
+                                    }, {
                                         name: "region.variable.value.put.variable_id",
                                         value: url
-                                    },
-                                    {
+                                    }, {
                                         name: "region.variable.value.put.value",
                                         value: valor
                                     }, {
@@ -4342,7 +4361,7 @@ $(document).ready(function() {
                                         async: false,
                                         type: 'PUT',
                                         dataType: 'json',
-                                        url: '/api/city/1/region/'+regionid+'/value',
+                                        url: '/api/city/1/region/' + regionid + '/value',
                                         data: args,
                                         success: function(data, status, jqXHR) {
                                             $("#aviso").setWarning({

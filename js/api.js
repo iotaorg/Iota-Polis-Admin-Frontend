@@ -262,7 +262,8 @@ $(document).ready(function() {
 
         submenu_label["customize"] = [];
         submenu_label["customize"].push({
-            "menus": "Menus"
+            "menus": "Menus",
+            "files_upload":"Arquivos de valores enviados"
         });
         submenu_label["customize"].push({
             "pages": "Páginas"
@@ -300,7 +301,7 @@ $(document).ready(function() {
         });
 
         menu_access["superadmin"] = ["dashboard", "parameters", "customize", "networks", "variable_user", "indicator_user", "logout", ];
-        submenu_access["superadmin"] = ["units", "myindicator", "indicator", "myvariableedit", "variable", "menus", "pages", "files", "prefs"];
+        submenu_access["superadmin"] = ["units", "myindicator", "indicator", "myvariableedit", "variable", "menus", "pages", "files","files_upload", "prefs"];
 
 
         var menu_item = "";
@@ -8355,6 +8356,48 @@ $(document).ready(function() {
                         })
                     });
                 }
+
+            } else if (getUrlSub() == "files_upload") {
+                /*  Arquivos  */
+                if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined) {
+
+                    var userList = buildDataTable({
+                        headers: ["Status", "Arquivo", "Data do envio"]
+                    });
+
+                    $("#dashboard-content .content").append(userList);
+
+                    $("#results").dataTable({
+                        iDisplayLength: 50,
+                        "oLanguage": get_datatable_lang(),
+                        "bProcessing": true,
+                        "sAjaxSource": api_path + '/api/file?api_key=$$key&hide_listing=0&content-type=application/json&lang=$$lang&columns=status_text,public_path,created_at'.render2({
+                            user: $.cookie("user.id"),
+                            lang: cur_lang,
+                            key: $.cookie("key")
+                        }),
+                        "aoColumnDefs": [{
+                            "sClass": "center",
+                            "aTargets": [1]
+                        }, {
+                            "fnRender": function(oObj, sVal) {
+                                sVal = "<a href='$$url' target='_blank' title='$$url'>Clique para fazer download</a>".render2({
+                                    url: sVal
+                                });
+                                return sVal;
+                            },
+                            "aTargets": [1]
+                        }, {
+                            "fnRender": function(oObj, sVal) {
+                                return $.format.date(sVal, "dd/MM/yyyy hh:mm");
+                            },
+                            "aTargets": [2]
+                        }
+                        ]
+                    });
+
+                }
+
             } else if (getUrlSub() == "files") {
                 /*  Arquivos  */
                 if ($.getUrlVar("option") == "list" || $.getUrlVar("option") == undefined) {

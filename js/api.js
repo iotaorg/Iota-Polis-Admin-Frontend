@@ -5077,8 +5077,16 @@ $(document).ready(function() {
                         input: ["select,source,iselect source", "text,source_new,itext300px"]
                     });
                     newform.push({
-                        label: "Campo texto reservado",
-                        input: ["textarea,goal_explanation,itext"]
+                        label: "Pre-concatenar (Ex: R$)",
+                        input: ["text,prepend_on_result,itext"]
+                    });
+                    newform.push({
+                        label: "Pos-concatenar (Ex: cm²)",
+                        input: ["text,append_on_result,itext"]
+                    });
+                    newform.push({
+                        label: "Visualizar como",
+                        input: ["select,graph_type,iselect"]
                     });
 
                     var formbuild = $("#dashboard-content .content").append(buildForm(newform, txtOption));
@@ -5122,11 +5130,15 @@ $(document).ready(function() {
                     //});
 
                     $.each(goal_operators, function(key, value) {
-                        $("#dashboard-content .content select#goal_operator").append($("<option></option>").val(key).html(value));
+                        $("#goal_operator").append($("<option></option>").val(key).html(value));
                     });
 
                     $.each(sort_directions, function(key, value) {
-                        $("#dashboard-content .content select#sort_direction").append($("<option></option>").val(key).html(value));
+                        $("#sort_direction").append($("<option></option>").val(key).html(value));
+                    });
+
+                    $.each([['line', 'Linha'], ['bar', 'Barra'], ['pie', 'Pizza']], function(key, value) {
+                        $("#graph_type").append($("<option></option>").val(value[0]).html(value[1]));
                     });
 
                     visibilityChanged();
@@ -5770,10 +5782,27 @@ $(document).ready(function() {
                                 }, {
                                     name: "indicator.create.formula",
                                     value: $(this).parent().parent().find("#formula").val()
-                                }, {
+                                },
+                                {
                                     name: "indicator.create.explanation",
                                     value: $(this).parent().parent().find("#explanation").val()
-                                }, {
+                                },
+
+                {
+                                    name: "indicator.create.append_on_result",
+                                    value: $(this).parent().parent().find("#append_on_result").val()
+                                },
+                        {
+                                    name: "indicator.create.prepend_on_result",
+                                    value: $(this).parent().parent().find("#prepend_on_result").val()
+                                },
+                                {
+                                    name: "indicator.create.graph_type",
+                                    value: $(this).parent().parent().find("#graph_type").val()
+                                },
+
+
+                                {
                                     name: "indicator.create.sort_direction",
                                     value: $(this).parent().parent().find("#sort_direction option:selected").val()
                                 }, {
@@ -5929,6 +5958,9 @@ $(document).ready(function() {
                                         $(formbuild).find("select#axis_id").val(data.axis_id);
                                         $(formbuild).find("select#source").val(data.source);
                                         $(formbuild).find("textarea#observations").val(data.observations);
+                                        $(formbuild).find("#append_on_result").val(data.append_on_result);
+                                        $(formbuild).find("#prepend_on_result").val(data.prepend_on_result);
+                                        $(formbuild).find("#graph_type").val(data.graph_type);
 
                                         $.each(data.network_configs, function(index, item) {
                                             if (item.network_id == user_info.network) {
@@ -6050,10 +6082,26 @@ $(document).ready(function() {
                                 }, {
                                     name: "indicator.update.source",
                                     value: $(this).parent().parent().find("#source").val()
-                                }, {
+                                },
+
+{
+                                    name: "indicator.update.append_on_result",
+                                    value: $(this).parent().parent().find("#append_on_result").val()
+                                },
+{
+                                    name: "indicator.update.prepend_on_result",
+                                    value: $(this).parent().parent().find("#prepend_on_result").val()
+                                },
+{
+                                    name: "indicator.update.graph_type",
+                                    value: $(this).parent().parent().find("#graph_type").val()
+                                },
+
+                                {
                                     name: "indicator.update.observations",
                                     value: $(this).parent().parent().find("#observations").val()
-                                }];
+                                }
+                                ];
 
 
                                 args.push({

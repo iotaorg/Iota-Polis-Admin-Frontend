@@ -2581,10 +2581,10 @@ $(document).ready(function() {
                         e: 'Selecione'
                     })));
                     template_elm.append($("<option></option>").val("layout1").html("$$e".render({
-                        e: 'layout1'
+                        e: 'Exibir Regiões'
                     })));
                     template_elm.append($("<option></option>").val("layout2").html("$$e".render({
-                        e: 'layout2 [falta escolher nomes melhores...]'
+                        e: 'Exibir UCs'
                     })));
 
                     if ($.getUrlVar("option") == "edit") {

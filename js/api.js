@@ -2546,7 +2546,7 @@ $(document).ready(function() {
 
                     var text_content = {
                         "txt_info_qualitativas": 'Informações qualitativas',
-                        "txt_condicionantes": 'Condicionantes ambientais',
+                        "txt_condicionantes": 'Condicionantes Ambientais e Projetos Relevantes',
                         "txt_focos": "Focos e Perguntas Orientadoras",
                         "txt_titulo_mapa": "Título do mapa",
                         "txt_descricao_mapa": "Descrição do mapa",
@@ -4142,7 +4142,7 @@ $(document).ready(function() {
                         label: "Arquivo Rotacionado (Apenas XLS)",
                         input: ["file,arquivo_rotate,itext"]
                     });
-                    var formbuild = $("#dashboard-content .content .value_via_file_rotate").append(buildForm(newform, "Importar valores rotacionados"));
+                    var formbuild = $("#dashboard-content .content .value_via_file_rotate").append(buildForm(newform, "Importar Painel de Status"));
                     $(formbuild).find("div .field:odd").addClass("odd");
                     $(formbuild).find(".form-buttons").width($(formbuild).find(".form").width());
                     $("#dashboard-content .content .value_via_file_rotate .botao-form[ref='cancelar']").hide();

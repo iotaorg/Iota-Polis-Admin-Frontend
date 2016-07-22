@@ -2340,7 +2340,7 @@ var updateFormula = function() {
 }
 
 var convertFormulaToCss = function() {
-    var operators = ["+", "-", "(", ")", "/", "*", "¢"];
+    var operators = ["+", "-", "(", ")", "/", "*", "CONCATENAR"];
     var operators_caption = {
         "+": "+",
         "-": "-",
@@ -2348,10 +2348,10 @@ var convertFormulaToCss = function() {
         ")": ")",
         "/": "÷",
         "*": "×",
-        "¢": "[ ]"
+        "CONCATENAR": "[ ]"
     };
     var formula = $("textarea#formula").val();
-    formula = formula.replace("CONCATENAR", "¢");
+    formula = formula.replace("CONCATENAR", "CONCATENAR");
     var formula_css = "";
     for (i = 0; i < formula.length; i++) {
         if ($.inArray(formula[i], operators) >= 0) {

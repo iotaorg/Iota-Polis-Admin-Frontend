@@ -5088,6 +5088,11 @@ $(document).ready(function() {
                         label: "Visualizar como",
                         input: ["select,graph_type,iselect"]
                     });
+                    newform.push({
+                        label: "Ordem",
+                        input: ["select,display_order,iselect"]
+                    });
+
 
                     var formbuild = $("#dashboard-content .content").append(buildForm(newform, txtOption));
                     $(formbuild).find("div .field:odd").addClass("odd");
@@ -5140,6 +5145,12 @@ $(document).ready(function() {
                     $.each([['line', 'Linha'], ['bar', 'Barra'], ['pie', 'Pizza']], function(key, value) {
                         $("#graph_type").append($("<option></option>").val(value[0]).html(value[1]));
                     });
+
+                    $.each(['0', '1', '2', '3', '4', '5', '6', '7','8','9','10','11','12','13','14','15'], function(key, value) {
+                        $("#display_order").append($("<option></option>").val(value).html(value));
+                    });
+
+
 
                     visibilityChanged();
 
@@ -5800,6 +5811,11 @@ $(document).ready(function() {
                                     name: "indicator.create.graph_type",
                                     value: $(this).parent().parent().find("#graph_type").val()
                                 },
+                                {
+                                    name: "indicator.create.display_order",
+                                    value: $(this).parent().parent().find("#display_order").val()
+                                },
+
 
 
                                 {
@@ -5961,6 +5977,9 @@ $(document).ready(function() {
                                         $(formbuild).find("#append_on_result").val(data.append_on_result);
                                         $(formbuild).find("#prepend_on_result").val(data.prepend_on_result);
                                         $(formbuild).find("#graph_type").val(data.graph_type);
+                                        $(formbuild).find("#display_order").val(data.display_order);
+
+
 
                                         $.each(data.network_configs, function(index, item) {
                                             if (item.network_id == user_info.network) {
@@ -6096,6 +6115,11 @@ $(document).ready(function() {
                                     name: "indicator.update.graph_type",
                                     value: $(this).parent().parent().find("#graph_type").val()
                                 },
+                                {
+                                    name: "indicator.update.display_order",
+                                    value: $(this).parent().parent().find("#display_order").val()
+                                },
+
 
                                 {
                                     name: "indicator.update.observations",

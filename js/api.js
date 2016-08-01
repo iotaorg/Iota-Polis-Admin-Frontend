@@ -6695,7 +6695,14 @@ $(document).ready(function() {
                                         }
                                     });
                                 });
+                                $.each(data_region, function(index, item) {
+                                    if (item.depth_level == 1 && !(item.name_url == 'LN')) {
 
+                                        $("#region_id").append($("<option data-dp=1></option>").val(item.id).html("# $$e".render({
+                                            e: item.name
+                                        })));
+                                    }
+                                });
                             }
                             var data_variables = SUPER_CACHE_data_variables;
                             if (!data_variables) {

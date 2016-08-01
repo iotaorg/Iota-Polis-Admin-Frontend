@@ -6645,7 +6645,7 @@ $(document).ready(function() {
                                     }
 
                                 });
-                                $("#dashboard-content .content select#region_id").append($("<option data-dp=1></option>").val("1").html("$$e".render({
+                                $("#dashboard-content .content select#region_id").append($("<option data-dp=1></option>").val("351").html("$$e".render({
                                     e: '◇ Litoral Sustentável'
                                 }))).change();
 
@@ -6696,7 +6696,7 @@ $(document).ready(function() {
                                     });
                                 });
                                 $.each(data_region, function(index, item) {
-                                    if (item.depth_level == 1 && !(item.name_url == 'LN')) {
+                                    if (item.depth_level == 1 && !(item.id == 351)) {
 
                                         $("#region_id").append($("<option data-dp=1></option>").val(item.id).html("# $$e".render({
                                             e: item.name
